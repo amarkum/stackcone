@@ -353,12 +353,117 @@ img {
   gap: var(--section-gap);
 }
 
+/* Stack tabs: AI, Data, Cloud, Products (StackOne-style) */
+.stack-tabs {
+  max-width: var(--container-max);
+  margin: 0 auto var(--section-gap);
+  padding: 0 var(--container-padding);
+}
+
+.stack-tab-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.stack-tabs-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 0;
+  padding: 1rem 0 0.5rem;
+}
+
+.stack-tab-btn {
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  padding: 0.5rem 0.25rem;
+  cursor: pointer;
+  transition: color 0.2s, font-weight 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stack-tab-btn:hover {
+  color: var(--text-mid);
+}
+
+#stack-tab-ai:checked ~ .stack-tabs-menu label[for="stack-tab-ai"],
+#stack-tab-data:checked ~ .stack-tabs-menu label[for="stack-tab-data"],
+#stack-tab-cloud:checked ~ .stack-tabs-menu label[for="stack-tab-cloud"],
+#stack-tab-products:checked ~ .stack-tabs-menu label[for="stack-tab-products"] {
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+.stack-tabs-content {
+  min-height: 12rem;
+  margin-top: 0;
+}
+
+.stack-tab-pane {
+  display: none;
+}
+
+#stack-tab-ai:checked ~ .stack-tabs-content #tab-pane-ai,
+#stack-tab-data:checked ~ .stack-tabs-content #tab-pane-data,
+#stack-tab-cloud:checked ~ .stack-tabs-content #tab-pane-cloud,
+#stack-tab-products:checked ~ .stack-tabs-content #tab-pane-products {
+  display: block;
+}
+
+.stack-tab-pane .service-card {
+  max-width: 100%;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 2.5rem 2.5rem;
+}
+
+.stack-tab-pane .service-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.stack-tab-pane .service-card .service-tagline {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1.75rem;
+}
+
+.stack-tab-pane .service-card .service-features {
+  margin-bottom: 1.5rem;
+}
+
+.stack-tab-pane .service-card .service-features li {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.stack-tab-pane .service-card::before,
+.stack-tab-pane .service-card--data::before {
+  display: none;
+}
+
 /* --- Service cards: title, tagline, bullet list, tech pills, CTA --- */
 .service-card {
   position: relative;
   padding: 2rem;
   border-radius: var(--radius-lg);
-  background: var(--bg-card);
+  background-color: var(--bg-card);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 14px 14px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
@@ -388,10 +493,11 @@ img {
   opacity: 1;
 }
 
-/* Data Engineering card — distinct style */
+/* Data Engineering card — same dotted background as others */
 .service-card--data {
-  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-soft) 100%);
-  border-color: var(--border);
+  background-color: var(--bg-card);
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 14px 14px;
 }
 
 .service-card--data::before {
@@ -406,8 +512,6 @@ img {
 
 .service-card--data .service-tagline {
   font-size: 1rem;
-  color: var(--text-bright);
-  font-weight: 600;
   margin-bottom: 1rem;
 }
 

@@ -68,85 +68,106 @@
     </section>
 
     <section id="services" class="services">
-      <div class="services-hero">
-        <h2 class="services-hero-title">AI, data, cloud, and products</h2>
-        <p class="services-hero-desc">We build the full stack—LLMs, RAG, pipelines, and infrastructure. Each service stands on its own or fits into a broader setup.</p>
-      </div>
-      <div class="service-grid">
-        <article class="service-card">
-          <h3>AI Engineering</h3>
-          <p class="service-tagline">We train models on your data and ship them into production.</p>
-          <ul class="service-features">
-            <li>Custom LLMs and fine-tuning</li>
-            <li>RAG: retrieval-augmented generation</li>
-            <li>Agents that run autonomously</li>
-            <li>Prompts tuned for your use case</li>
-            <li>LLMOps: monitoring and redeploys</li>
-          </ul>
-          <div class="service-tech-tags">
-            <span class="tech-tag"><img src="assets/icons/openai.svg" alt="" width="16" height="16"> OpenAI</span>
-            <span class="tech-tag"><img src="assets/icons/langchain.svg" alt="" width="16" height="16"> LangChain</span>
-            <span class="tech-tag"><img src="assets/icons/pinecone.svg" alt="" width="16" height="16"> Pinecone</span>
-            <span class="tech-tag"><img src="assets/icons/claude.svg" alt="" width="16" height="16"> Claude</span>
+      <div class="stack-tabs">
+        <input type="radio" name="stack-tab" id="stack-tab-ai" class="stack-tab-radio" checked>
+        <input type="radio" name="stack-tab" id="stack-tab-data" class="stack-tab-radio">
+        <input type="radio" name="stack-tab" id="stack-tab-cloud" class="stack-tab-radio">
+        <input type="radio" name="stack-tab" id="stack-tab-products" class="stack-tab-radio">
+        <div class="stack-tabs-menu" role="tablist">
+          <label for="stack-tab-ai" class="stack-tab-btn">AI</label>
+          <label for="stack-tab-data" class="stack-tab-btn">Data</label>
+          <label for="stack-tab-cloud" class="stack-tab-btn">Cloud</label>
+          <label for="stack-tab-products" class="stack-tab-btn">Products</label>
+        </div>
+        <div class="stack-tabs-content">
+          <div id="tab-pane-ai" class="stack-tab-pane" role="tabpanel">
+            <article class="service-card">
+              <h3>AI Engineering</h3>
+              <p class="service-tagline">We train models on your data and ship them into production. From prototype to production—LLMs, RAG, and agents that deliver real business value.</p>
+              <ul class="service-features">
+                <li>Custom LLMs and fine-tuning on your domain data</li>
+                <li>RAG: retrieval-augmented generation for grounded, accurate answers</li>
+                <li>Agents that run autonomously and orchestrate complex workflows</li>
+                <li>Prompts tuned for your use case—consistency, safety, and performance</li>
+                <li>LLMOps: monitoring, versioning, A/B tests, and redeploys</li>
+                <li>Vector stores, embeddings, and semantic search at scale</li>
+              </ul>
+              <div class="service-tech-tags">
+                <span class="tech-tag"><img src="assets/icons/openai.svg" alt="" width="16" height="16"> OpenAI</span>
+                <span class="tech-tag"><img src="assets/icons/langchain.svg" alt="" width="16" height="16"> LangChain</span>
+                <span class="tech-tag"><img src="assets/icons/pinecone.svg" alt="" width="16" height="16"> Pinecone</span>
+                <span class="tech-tag"><img src="assets/icons/claude.svg" alt="" width="16" height="16"> Claude</span>
+              </div>
+              <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+            </article>
           </div>
-          <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-        </article>
-        <article class="service-card service-card--data">
-          <h3>Data Engineering</h3>
-          <p class="service-tagline">Your data flows in. Clean, queryable, ready for models.</p>
-          <ul class="service-features">
-            <li>Streaming pipelines (Kafka, Flink)</li>
-            <li>Batch ETL and orchestration</li>
-            <li>Lakes and warehouses</li>
-            <li>Quality checks and lineage</li>
-            <li>ML feature stores</li>
-          </ul>
-          <div class="service-tech-tags">
-            <span class="tech-tag"><img src="assets/icons/apachekafka.svg" alt="" width="16" height="16"> Kafka</span>
-            <span class="tech-tag"><img src="assets/icons/apachespark.svg" alt="" width="16" height="16"> Spark</span>
-            <span class="tech-tag"><img src="assets/icons/apacheairflow.svg" alt="" width="16" height="16"> Airflow</span>
-            <span class="tech-tag"><img src="assets/icons/snowflake.svg" alt="" width="16" height="16"> Snowflake</span>
-            <span class="tech-tag"><img src="assets/icons/dbt.svg" alt="" width="16" height="16"> DBT</span>
+          <div id="tab-pane-data" class="stack-tab-pane" role="tabpanel">
+            <article class="service-card service-card--data">
+              <h3>Data Engineering</h3>
+              <p class="service-tagline">Your data flows in. Clean, queryable, ready for models. We build pipelines that scale from prototype to enterprise—streaming, batch, or hybrid.</p>
+              <ul class="service-features">
+                <li>Streaming pipelines with Kafka, Flink, or managed services</li>
+                <li>Batch ETL and orchestration with Airflow, Prefect, or custom</li>
+                <li>Data lakes and warehouses—Snowflake, BigQuery, Redshift, Databricks</li>
+                <li>Quality checks, profiling, and lineage for trust and compliance</li>
+                <li>ML feature stores for reproducible, production-ready features</li>
+                <li>Schema evolution, incremental loads, and idempotent pipelines</li>
+              </ul>
+              <div class="service-tech-tags">
+                <span class="tech-tag"><img src="assets/icons/apachekafka.svg" alt="" width="16" height="16"> Kafka</span>
+                <span class="tech-tag"><img src="assets/icons/apachespark.svg" alt="" width="16" height="16"> Spark</span>
+                <span class="tech-tag"><img src="assets/icons/apacheairflow.svg" alt="" width="16" height="16"> Airflow</span>
+                <span class="tech-tag"><img src="assets/icons/snowflake.svg" alt="" width="16" height="16"> Snowflake</span>
+                <span class="tech-tag"><img src="assets/icons/dbt.svg" alt="" width="16" height="16"> DBT</span>
+              </div>
+              <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+            </article>
           </div>
-          <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-        </article>
-        <article class="service-card">
-          <h3>Cloud & DevOps</h3>
-          <p class="service-tagline">Run it anywhere. Deploy in minutes. Sleep at night.</p>
-          <ul class="service-features">
-            <li>AWS, GCP, Azure—or all three</li>
-            <li>Kubernetes, containers, serverless</li>
-            <li>CI/CD pipelines that actually work</li>
-            <li>Terraform, Pulumi, IaC</li>
-            <li>Hardening, audits, compliance</li>
-          </ul>
-          <div class="service-tech-tags">
-            <span class="tech-tag"><img src="assets/icons/aws.svg" alt="" width="16" height="16"> AWS</span>
-            <span class="tech-tag"><img src="assets/icons/googlecloud.svg" alt="" width="16" height="16"> GCP</span>
-            <span class="tech-tag"><img src="assets/icons/azure.svg" alt="" width="16" height="16"> Azure</span>
-            <span class="tech-tag"><img src="assets/icons/kubernetes.svg" alt="" width="16" height="16"> Kubernetes</span>
-            <span class="tech-tag"><img src="assets/icons/terraform.svg" alt="" width="16" height="16"> Terraform</span>
+          <div id="tab-pane-cloud" class="stack-tab-pane" role="tabpanel">
+            <article class="service-card">
+              <h3>Cloud &amp; DevOps</h3>
+              <p class="service-tagline">Run it anywhere. Deploy in minutes. Sleep at night. We build and operate infrastructure that scales—multi-cloud, on-prem, or hybrid.</p>
+              <ul class="service-features">
+                <li>AWS, GCP, Azure—or all three with a unified approach</li>
+                <li>Kubernetes, containers, and serverless—pick the right fit</li>
+                <li>CI/CD pipelines that actually work—fast, reliable, observable</li>
+                <li>Terraform, Pulumi, and IaC for reproducible environments</li>
+                <li>Hardening, security audits, and compliance readiness</li>
+                <li>Cost optimization, autoscaling, and disaster recovery</li>
+              </ul>
+              <div class="service-tech-tags">
+                <span class="tech-tag"><img src="assets/icons/aws.svg" alt="" width="16" height="16"> AWS</span>
+                <span class="tech-tag"><img src="assets/icons/googlecloud.svg" alt="" width="16" height="16"> GCP</span>
+                <span class="tech-tag"><img src="assets/icons/azure.svg" alt="" width="16" height="16"> Azure</span>
+                <span class="tech-tag"><img src="assets/icons/kubernetes.svg" alt="" width="16" height="16"> Kubernetes</span>
+                <span class="tech-tag"><img src="assets/icons/terraform.svg" alt="" width="16" height="16"> Terraform</span>
+              </div>
+              <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+            </article>
           </div>
-          <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-        </article>
-        <article class="service-card">
-          <h3>AI-Powered Product Development</h3>
-          <p class="service-tagline">Apps and platforms where AI is part of the product, not an add-on.</p>
-          <ul class="service-features">
-            <li>Frontend + backend + APIs</li>
-            <li>AI wired into the UX from day one</li>
-            <li>Shipped end-to-end</li>
-            <li>Scalable from MVP to enterprise</li>
-          </ul>
-          <div class="service-tech-tags">
-            <span class="tech-tag"><img src="assets/icons/react.svg" alt="" width="16" height="16"> React</span>
-            <span class="tech-tag"><img src="assets/icons/nextjs.svg" alt="" width="16" height="16"> Next.js</span>
-            <span class="tech-tag"><img src="assets/icons/nodedotjs.svg" alt="" width="16" height="16"> Node.js</span>
-            <span class="tech-tag"><img src="assets/icons/python.svg" alt="" width="16" height="16"> Python</span>
-            <span class="tech-tag"><img src="assets/icons/fastapi.svg" alt="" width="16" height="16"> FastAPI</span>
+          <div id="tab-pane-products" class="stack-tab-pane" role="tabpanel">
+            <article class="service-card">
+              <h3>AI-Powered Product Development</h3>
+              <p class="service-tagline">Apps and platforms where AI is part of the product, not an add-on. Full-stack builds from idea to launch—frontend, backend, APIs, and AI-native UX.</p>
+              <ul class="service-features">
+                <li>Frontend + backend + APIs—React, Next.js, Flask, FastAPI, and more</li>
+                <li>AI wired into the UX from day one—chat, copilots, and intelligent flows</li>
+                <li>Shipped end-to-end with clear scope and handover documentation</li>
+                <li>Scalable from MVP to enterprise—architecture that grows with you</li>
+                <li>Design systems, component libraries, and consistent user experiences</li>
+                <li>Integration with third-party tools, auth, and real-time features</li>
+              </ul>
+              <div class="service-tech-tags">
+                <span class="tech-tag"><img src="assets/icons/react.svg" alt="" width="16" height="16"> React</span>
+                <span class="tech-tag"><img src="assets/icons/nextjs.svg" alt="" width="16" height="16"> Next.js</span>
+                <span class="tech-tag"><img src="assets/icons/nodedotjs.svg" alt="" width="16" height="16"> Node.js</span>
+                <span class="tech-tag"><img src="assets/icons/python.svg" alt="" width="16" height="16"> Python</span>
+                <span class="tech-tag"><img src="assets/icons/fastapi.svg" alt="" width="16" height="16"> FastAPI</span>
+              </div>
+              <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+            </article>
           </div>
-          <a href="#contact" class="service-learn">Learn More <svg class="learn-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-        </article>
+        </div>
       </div>
     </section>
 
@@ -168,55 +189,55 @@
         </article>
         <article class="portfolio-card">
           <h3>Portfolio accounting — Hazelcast & reconciliation</h3>
-          <p>Enhanced portfolio accounting systems with distributed caching (Hazelcast) and data reconciliation frameworks. Implemented monitoring for production performance.</p>
+          <p>Enhanced portfolio accounting systems with distributed caching (Hazelcast) and data reconciliation frameworks. Implemented monitoring agents for production performance and consistency between cache and database systems.</p>
         </article>
         <article class="portfolio-card">
           <h3>Data governance & quality platform</h3>
-          <p>Built enterprise Data Insight & Data Quality platform. Spark, Spark-SQL, Scala. Automated checks for null analysis and correlation detection. Data modeling and architecture.</p>
+          <p>Built enterprise Data Insight & Data Quality platform with Spark, Spark-SQL, and Scala. Automated checks for null analysis and correlation detection. Data modeling and architecture for governance initiatives.</p>
         </article>
         <article class="portfolio-card">
           <h3>Clinical ETL — Crunch & Hadoop</h3>
-          <p>End-to-end ETL pipelines with Apache Crunch and Hadoop MapReduce. Cleansing and normalizing clinical datasets in HDFS. REST services for downstream systems.</p>
+          <p>End-to-end ETL pipelines with Apache Crunch and Hadoop MapReduce. Cleansing and normalizing clinical datasets in HDFS. REST services (Beadledom/RESTEasy) for downstream systems and accessibility.</p>
         </article>
         <article class="portfolio-card">
           <h3>Investment bank desktop clients</h3>
-          <p>Rich desktop clients with Eclipse RCP, SWT, JFace. XML marshalling with JAXB. Requirement analysis, development, estimation, and production support.</p>
+          <p>Rich desktop clients with Eclipse RCP, SWT, and JFace. XML marshalling with JAXB. Requirement analysis, development, estimation, and production support for global investment bank workflows.</p>
         </article>
         <article class="portfolio-card">
           <h3>GCP Dataflow — Confluent to BigQuery</h3>
-          <p>Kafka to BigQuery streaming pipeline with monitoring.</p>
+          <p>Kafka to BigQuery streaming pipeline with real-time ingestion and monitoring. Built for high-throughput event data with schema validation and dead-letter handling.</p>
         </article>
         <article class="portfolio-card">
           <h3>Hadoop-to-GCP Migration</h3>
-          <p>Hadoop to GCP migration with validation and handover.</p>
+          <p>Hadoop to GCP migration with validation and handover. Data lineage preserved, jobs rewritten for Dataproc and BigQuery. Full documentation and runbooks for operations.</p>
         </article>
         <article class="portfolio-card">
           <h3>LLM Data Training — Code Review</h3>
-          <p>Code review for LLM training pipelines (Python, Docker).</p>
+          <p>Code review for LLM training pipelines in Python and Docker. Architecture review, best-practice guidance, and optimization for data loading and checkpointing.</p>
         </article>
         <article class="portfolio-card">
           <h3>RAG knowledge base — internal docs</h3>
-          <p>RAG for B2B SaaS: ingestion, embeddings, Pinecone, search API.</p>
+          <p>RAG for B2B SaaS: document ingestion, embeddings, Pinecone indexing, and search API. Internal docs searchable with semantic retrieval and citation support.</p>
         </article>
         <article class="portfolio-card">
           <h3>REST API — partner integrations</h3>
-          <p>Partner REST API (Flask, OpenAPI). Docs, SDK examples, runbooks.</p>
+          <p>Partner REST API with Flask and OpenAPI. Documentation, SDK examples, and runbooks. OAuth, rate limiting, and error handling for external integrations.</p>
         </article>
         <article class="portfolio-card">
           <h3>Full-stack dashboard — Flask + Tailwind</h3>
-          <p>Flask + Tailwind dashboard for pipeline health and SLA metrics.</p>
+          <p>Flask + Tailwind dashboard for pipeline health and SLA metrics. Real-time status, alerting, and drill-down into job runs and data quality.</p>
         </article>
         <article class="portfolio-card">
           <h3>ELK stack — log search & alerts</h3>
-          <p>ELK stack: Logstash, Elasticsearch, Kibana. Retention and alerting.</p>
+          <p>ELK stack: Logstash, Elasticsearch, Kibana. Centralized log aggregation, retention policies, and alerting for production incident response.</p>
         </article>
         <article class="portfolio-card">
           <h3>ML feature pipeline — training & serving</h3>
-          <p>ML pipeline: feature engineering, Airflow, model registry, serving API.</p>
+          <p>ML pipeline: feature engineering, Airflow orchestration, model registry, and serving API. End-to-end workflow from raw data to model predictions in production.</p>
         </article>
         <article class="portfolio-card">
           <h3>Internal copilot — LLM + tools</h3>
-          <p>Internal copilot that answers questions using company docs and can run approved tools (Jira, Slack). Built with an LLM backend, RAG over Confluence/Notion, and function calling. Delivered with access controls, audit logging, and documentation for the IT team.</p>
+          <p>Internal copilot that answers questions using company docs and runs approved tools (Jira, Slack). LLM backend, RAG over Confluence/Notion, function calling. Access controls and audit logging.</p>
         </article>
       </div>
     </section>
