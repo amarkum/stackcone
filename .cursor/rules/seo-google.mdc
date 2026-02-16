@@ -1,0 +1,37 @@
+---
+description: Optimize site content and markup for Google search (SEO)
+globs: "**/*.html"
+alwaysApply: false
+---
+
+# Google / SEO optimization
+
+When editing HTML or site content, keep the site optimized for Google search.
+
+## Meta and head
+
+- **Title**: Unique, descriptive, under ~60 chars. Include primary keyword and brand (e.g. "stackcone — Full stack, AI-first | RAG, AI, ML & LLM").
+- **Meta description**: Unique, under ~155 chars. Include value proposition and relevant keywords. No duplicate of title.
+- **Canonical**: Use `<link rel="canonical" href="https://stackcone.com/">` (or the exact URL of the page) to avoid duplicate-content issues.
+- **Open Graph** (og:title, og:description, og:url, og:image, og:type): Keep in sync with title/description for social sharing.
+- **Twitter Card** (twitter:card, twitter:title, twitter:description): Optional but recommended; keep aligned with OG.
+
+## Structure and content
+
+- **One H1 per page**: Main heading only. Use H2 for section titles, H3 for subsections. Don’t skip levels (e.g. H1 → H4).
+- **Semantic HTML**: Prefer `<main>`, `<section>`, `<article>`, `<header>`, `<footer>`, `<nav>` where appropriate.
+- **Images**: Always set meaningful `alt` text for accessibility and SEO. Avoid alt="" unless purely decorative.
+- **Links**: Use descriptive link text where possible; avoid "click here" or vague labels.
+
+## Structured data (JSON-LD)
+
+- For the homepage or key pages, consider `Organization` or `WebSite` schema so Google can show rich results.
+- Keep JSON-LD valid and minimal; don’t duplicate large blocks across pages.
+
+## Avoid
+
+- Keyword stuffing in titles or descriptions.
+- Multiple H1s or missing H1.
+- Blocking crawlers with meta robots unless intended (e.g. noindex for drafts).
+
+When adding or changing pages, update canonical, title, and description; preserve or add OG/Twitter and structured data as needed.
