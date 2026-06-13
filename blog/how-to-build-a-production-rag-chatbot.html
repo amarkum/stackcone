@@ -4,29 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
-  <title>How to Build a RAG Chatbot — Complete Guide | stackcone</title>
-  <meta name="description" content="A practical, step-by-step guide to building a production RAG chatbot: LLMs, embeddings, vector databases, architecture, Python code, and launch checklist.">
+  <title>How to Build a Production RAG Chatbot — Complete Guide | stackcone</title>
+  <meta name="description" content="Step-by-step guide to building a production RAG chatbot: LLMs, embeddings, vector databases, Python code, and launch checklist. Need RAG development help? stackcone ships RAG systems for enterprise and startups.">
+  <meta name="keywords" content="RAG chatbot, build RAG chatbot, RAG development, RAG developer, retrieval augmented generation, vector database, LLM chatbot, production RAG, RAG consulting, hire RAG developer">
   <link rel="canonical" href="https://stackcone.com/blog/how-to-build-a-production-rag-chatbot.html">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/how-to-build-a-production-rag-chatbot.html">
-  <meta property="og:title" content="How to Build a RAG Chatbot — Complete Guide">
-  <meta property="og:description" content="A practical, step-by-step guide to building a production RAG chatbot: LLMs, embeddings, vector databases, architecture, Python code, and launch checklist.">
+  <meta property="og:title" content="How to Build a Production RAG Chatbot — Complete Guide">
+  <meta property="og:description" content="Step-by-step guide to building a production RAG chatbot. LLMs, embeddings, vector databases, Python code, and launch checklist — plus RAG development services from stackcone.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How to Build a RAG Chatbot — Complete Guide">
-  <meta name="twitter:description" content="A practical, step-by-step guide to building a production RAG chatbot from scratch.">
+  <meta name="twitter:title" content="How to Build a Production RAG Chatbot — Complete Guide">
+  <meta name="twitter:description" content="Step-by-step guide to building a production RAG chatbot from scratch. Need RAG development? stackcone builds production RAG systems.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="../favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="blog.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "How to Build a RAG Chatbot — Complete Guide",
-    "description": "A practical guide to building a retrieval-augmented chatbot from scratch: concepts, stack, architecture, code, and launch.",
+    "headline": "How to Build a Production RAG Chatbot — Complete Guide",
+    "description": "A practical guide to building a retrieval-augmented chatbot from scratch: concepts, stack, architecture, code, and launch. RAG development services by stackcone.",
     "author": { "@type": "Organization", "name": "stackcone", "url": "https://stackcone.com" },
     "publisher": {
       "@type": "Organization",
@@ -35,244 +38,57 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-06-01",
-    "dateModified": "2026-06-01",
+    "dateModified": "2026-06-13",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/how-to-build-a-production-rag-chatbot.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
-    "keywords": ["RAG", "LLM", "vector database", "embeddings", "chatbot", "Python", "FastAPI"]
+    "keywords": ["RAG chatbot", "RAG development", "retrieval augmented generation", "vector database", "LLM", "embeddings", "Python", "FastAPI", "hire RAG developer"],
+    "articleSection": "AI Engineering",
+    "about": { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
   }
   </script>
-  <style>
-    :root {
-      --text: #1a1a1a;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --accent: #0066cc;
-      --bg-soft: #f9fafb;
-      --code-bg: #1e1e2e;
-      --article: 680px;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Source Sans 3', system-ui, sans-serif;
-      color: var(--text);
-      background: #fff;
-      line-height: 1.7;
-      font-size: 1.0625rem;
-    }
-    .header {
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
-      position: sticky;
-      top: 0;
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-    }
-    .header-inner {
-      max-width: calc(var(--article) + 3rem);
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-    .logo { height: 36px; width: auto; }
-    .header a.back { color: var(--accent); text-decoration: none; font-weight: 600; font-size: .9375rem; }
-    .header a.back:hover { text-decoration: underline; }
-    article {
-      max-width: var(--article);
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 4rem;
-    }
-    h1, h2, h3, h4 {
-      font-family: 'Lora', Georgia, serif;
-      letter-spacing: -.015em;
-      line-height: 1.25;
-    }
-    h1 { font-size: clamp(1.875rem, 5vw, 2.375rem); margin-bottom: .75rem; }
-    .meta { color: var(--muted); font-size: .9375rem; margin-bottom: 1.75rem; }
-    h2 {
-      font-size: 1.5rem;
-      margin: 2.75rem 0 1rem;
-      padding-top: .5rem;
-      border-top: 1px solid var(--border);
-    }
-    h2:first-of-type { border-top: none; padding-top: 0; margin-top: 2rem; }
-    h3 { font-size: 1.125rem; margin: 1.75rem 0 .75rem; font-weight: 600; }
-    p { margin-bottom: 1.125rem; }
-    a { color: var(--accent); }
-    strong { font-weight: 700; }
-    ul, ol { margin: 0 0 1.125rem 1.25rem; }
-    li { margin-bottom: .4rem; }
-    li ul, li ol { margin-top: .4rem; margin-bottom: .4rem; }
-    blockquote {
-      border-left: 3px solid var(--accent);
-      padding: .75rem 1rem;
-      margin: 1.5rem 0;
-      background: var(--bg-soft);
-      border-radius: 0 8px 8px 0;
-      color: #374151;
-    }
-    blockquote p:last-child { margin-bottom: 0; }
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 2rem 0;
-    }
-    .toc {
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-      margin: 2rem 0;
-    }
-    .toc h2 { border: none; margin: 0 0 .75rem; padding: 0; font-size: 1.125rem; }
-    .toc ol { margin: 0; padding-left: 1.25rem; }
-    .toc a { text-decoration: none; color: var(--text); }
-    .toc a:hover { color: var(--accent); text-decoration: underline; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.25rem 0 1.5rem;
-      font-size: .9375rem;
-    }
-    th, td {
-      border: 1px solid var(--border);
-      padding: .6rem .75rem;
-      text-align: left;
-      vertical-align: top;
-    }
-    th { background: var(--bg-soft); font-weight: 700; }
-    pre {
-      background: var(--code-bg);
-      color: #cdd6f4;
-      border-radius: 8px;
-      padding: 1rem 1.125rem;
-      overflow-x: auto;
-      margin: 1rem 0 1.25rem;
-      font-family: 'Source Code Pro', monospace;
-      font-size: .8125rem;
-      line-height: 1.55;
-    }
-    code {
-      font-family: 'Source Code Pro', monospace;
-      font-size: .875em;
-    }
-    p code, li code, td code {
-      background: var(--bg-soft);
-      padding: .1em .35em;
-      border-radius: 4px;
-      font-size: .85em;
-    }
-    pre code { background: none; padding: 0; font-size: inherit; }
-    .kw { color: #cba6f7; }
-    .fn { color: #89b4fa; }
-    .str { color: #a6e3a1; }
-    .cm { color: #6c7086; font-style: italic; }
-    .num { color: #fab387; }
-    .chart-wrap {
-      margin: 1.5rem 0 2rem;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #fff;
-    }
-    .chart-wrap canvas { max-height: 320px; }
-    .chart-caption {
-      font-size: .875rem;
-      color: var(--muted);
-      text-align: center;
-      margin-top: .75rem;
-    }
-    .pipeline {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: .35rem;
-      margin: 1.25rem 0 1.5rem;
-      padding: 1rem;
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-    .pipeline-step {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: .45rem .75rem;
-      font-size: .875rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .pipeline-step.optional {
-      border-style: dashed;
-      color: var(--muted);
-      font-weight: 500;
-    }
-    .pipeline-arrow {
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 1rem;
-    }
-    .checklist-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin: 1.5rem 0;
-    }
-    @media (max-width: 640px) {
-      .checklist-grid { grid-template-columns: 1fr; }
-    }
-    .checklist-col {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem 1.125rem;
-      background: var(--bg-soft);
-    }
-    .checklist-col h3 { margin-top: 0; font-size: 1rem; }
-    .checklist-col ul { list-style: none; margin: 0; padding: 0; }
-    .checklist-col li {
-      padding-left: 1.5rem;
-      position: relative;
-      margin-bottom: .5rem;
-      font-size: .9375rem;
-    }
-    .checklist-col li::before {
-      content: "☐";
-      position: absolute;
-      left: 0;
-      color: var(--muted);
-    }
-    .closing {
-      font-family: 'Lora', Georgia, serif;
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 1.5rem;
-      text-align: center;
-      font-size: .875rem;
-      color: var(--muted);
-    }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-    footer p { margin-bottom: .35rem; }
-  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Build a Production RAG Chatbot", "item": "https://stackcone.com/blog/how-to-build-a-production-rag-chatbot.html" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Build a Production RAG Chatbot",
+    "description": "Build a retrieval-augmented chatbot: ingest documents, embed and store in a vector database, retrieve relevant chunks, and generate answers with an LLM.",
+    "step": [
+      { "@type": "HowToStep", "name": "Set up document ingestion", "text": "Parse and chunk your documents, then generate embeddings for each chunk." },
+      { "@type": "HowToStep", "name": "Configure vector database", "text": "Store embeddings in a vector database such as Pinecone, pgvector, or Chroma for similarity search." },
+      { "@type": "HowToStep", "name": "Build retrieval pipeline", "text": "On each user query, embed the question and retrieve the top-k most relevant document chunks." },
+      { "@type": "HowToStep", "name": "Generate answers with LLM", "text": "Pass retrieved context and the user question to an LLM to produce grounded, cited answers." },
+      { "@type": "HowToStep", "name": "Deploy and monitor", "text": "Ship the RAG API with FastAPI or similar, add logging, and monitor retrieval quality and latency." }
+    ],
+    "tool": [{ "@type": "HowToTool", "name": "Python" }, { "@type": "HowToTool", "name": "OpenAI API" }, { "@type": "HowToTool", "name": "Vector database" }]
+  }
+  </script>
 </head>
-<body>
-  <header class="header">
+<body class="blog-page">
+  <header class="header blog-header">
     <div class="header-inner">
-      <a href="../"><img src="../logo/stackcone.png" alt="stackcone" class="logo" width="168" height="36"></a>
-      <a href="../" class="back">← Home</a>
+      <a href="../" class="logo-link">
+        <img src="../logo/stackcone.png" alt="stackcone" class="logo" width="220" height="48">
+      </a>
+      <nav class="nav blog-nav" aria-label="Blog navigation">
+        <a href="../">Home</a>
+        <a href="./">Blog</a>
+        <a href="../#contact">Contact</a>
+      </nav>
     </div>
   </header>
 
-  <article>
+  <article class="blog-article">
     <h1>How to Build a RAG Chatbot — Complete Guide</h1>
     <p class="meta"><strong>June 2026 · Beginner-friendly · Step-by-step</strong></p>
     <p>A practical guide to building a retrieval-augmented chatbot from scratch: concepts, stack, architecture, code, and launch.</p>
@@ -788,21 +604,31 @@ If the context does not contain the answer, say so clearly."""</span>
       </tbody>
     </table>
 
+    <aside class="blog-cta">
+      <p><strong>Need help building a production RAG chatbot?</strong></p>
+      <p>stackcone designs and ships RAG systems for enterprise and startups — document ingestion, vector search, LLM integration, and deployment. 10+ years experience, 100% job success on Upwork.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="mailto:hello@stackcone.com" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+
     <p class="closing">You're building a <strong>search layer</strong> plus a <strong>chat layer</strong>. Get search right first — the rest follows.</p>
   </article>
 
-  <footer>
-    <p><a href="./how-to-build-a-production-rag-chatbot.md">Markdown version</a> · <a href="https://stackcone.com/">stackcone.com</a></p>
-    <p>Full-stack &amp; AI engineering</p>
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
+      <p class="footer-copy">© stackcone. Full stack · Data engineering · RAG, AI, ML &amp; LLM. · <a href="./" style="color:inherit">Blog</a> · <a href="https://www.upwork.com/agencies/2022687811186513260/" style="color:inherit" rel="noopener noreferrer">Upwork</a> · <a href="https://www.linkedin.com/company/stackcone/" style="color:inherit" rel="noopener noreferrer">LinkedIn</a></p>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
-    Chart.defaults.font.family = "'Source Sans 3', system-ui, sans-serif";
-    Chart.defaults.color = '#6b7280';
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
 
-    const accent = '#0066cc';
-    const palette = ['#0066cc', '#3b82f6', '#60a5fa', '#93c5fd', '#1d4ed8', '#2563eb'];
+    const palette = ['#0a0a0a', '#404040', '#6b6b6b', '#a3a3a3', '#737373', '#525252'];
 
     new Chart(document.getElementById('roadmapChart'), {
       type: 'bar',
@@ -829,10 +655,10 @@ If the context does not contain the answer, say so clearly."""</span>
       data: {
         labels: ['Ease of use', 'Scalability', 'Speed', 'Features', 'Cost efficiency'],
         datasets: [
-          { label: 'Pinecone', data: [9, 9, 8, 7, 6], borderColor: '#0066cc', backgroundColor: 'rgba(0,102,204,.15)', pointBackgroundColor: '#0066cc' },
-          { label: 'Chroma', data: [10, 5, 7, 6, 10], borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,.12)', pointBackgroundColor: '#16a34a' },
-          { label: 'pgvector', data: [6, 8, 7, 8, 8], borderColor: '#9333ea', backgroundColor: 'rgba(147,51,234,.12)', pointBackgroundColor: '#9333ea' },
-          { label: 'Qdrant', data: [7, 9, 9, 9, 7], borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,.12)', pointBackgroundColor: '#ea580c' }
+          { label: 'Pinecone', data: [9, 9, 8, 7, 6], borderColor: '#0a0a0a', backgroundColor: 'rgba(10,10,10,.12)', pointBackgroundColor: '#0a0a0a' },
+          { label: 'Chroma', data: [10, 5, 7, 6, 10], borderColor: '#525252', backgroundColor: 'rgba(82,82,82,.12)', pointBackgroundColor: '#525252' },
+          { label: 'pgvector', data: [6, 8, 7, 8, 8], borderColor: '#737373', backgroundColor: 'rgba(115,115,115,.12)', pointBackgroundColor: '#737373' },
+          { label: 'Qdrant', data: [7, 9, 9, 9, 7], borderColor: '#a3a3a3', backgroundColor: 'rgba(163,163,163,.12)', pointBackgroundColor: '#a3a3a3' }
         ]
       },
       options: {
@@ -848,7 +674,7 @@ If the context does not contain the answer, say so clearly."""</span>
         datasets: [{
           label: 'Chunks',
           data: [40, 10, 8, 3],
-          backgroundColor: ['#0066cc', '#3b82f6', '#60a5fa', '#93c5fd'],
+          backgroundColor: ['#0a0a0a', '#404040', '#6b6b6b', '#a3a3a3'],
           borderRadius: 4
         }]
       },
@@ -867,7 +693,7 @@ If the context does not contain the answer, say so clearly."""</span>
         datasets: [{
           label: 'Latency (ms)',
           data: [80, 120, 200, 400, 1800],
-          backgroundColor: ['#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#0066cc'],
+          backgroundColor: ['#a3a3a3', '#737373', '#525252', '#404040', '#0a0a0a'],
           borderRadius: 4
         }]
       },
@@ -902,7 +728,7 @@ If the context does not contain the answer, say so clearly."""</span>
         labels: ['LLM output', 'LLM input', 'Rerank', 'Embed', 'Other'],
         datasets: [{
           data: [42, 28, 15, 10, 5],
-          backgroundColor: ['#0066cc', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe']
+          backgroundColor: ['#0a0a0a', '#404040', '#6b6b6b', '#a3a3a3', '#d4d4d4']
         }]
       },
       options: {
@@ -917,7 +743,7 @@ If the context does not contain the answer, say so clearly."""</span>
         labels: ['Must', 'Should', 'Later'],
         datasets: [{
           data: [6, 5, 4],
-          backgroundColor: ['#0066cc', '#3b82f6', '#93c5fd']
+          backgroundColor: ['#0a0a0a', '#525252', '#a3a3a3']
         }]
       },
       options: {
