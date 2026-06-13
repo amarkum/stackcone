@@ -1,99 +1,85 @@
 ---
-description: Create graph-based Solutions posts from a pasted problem statement (architecture, stack, implementation)
+description: Create Solutions posts from problem statements or Upwork jobs (architecture, stack, full implementation guide)
 globs: solutions/**
 alwaysApply: false
 ---
 
 # stackcone Solutions posts
 
-When the user pastes a **problem statement** or asks to create a **solution post**, produce a full Solutions brief in `solutions/` — same visual system as `blog/` (charts, pipelines, tables, SEO).
+When the user pastes a **problem statement**, an **Upwork job post**, or asks for a **solution post**, produce a full implementation-style brief in `solutions/` — same visual system as `blog/` (charts, pipelines, tables, SEO). The page should read like a technical proposal **plus** a build guide: how to architect, implement, operate, and report.
 
 ## Deliverables (always)
 
 1. `solutions/{slug}.html` — published page
 2. `solutions/{slug}.md` — markdown source (mirror of content)
-3. Update `solutions/solutions.json` — add entry
+3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page
 
-**Slug:** lowercase, hyphenated, derived from problem (e.g. `partner-api-oauth`, `rag-internal-copilot`). HTML filename = `{slug}.html`.
+**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). HTML filename = `{slug}.html`.
 
 ## solutions.json entry
 
 ```json
 {
   "id": "{slug}",
-  "title": "Short outcome-focused title",
-  "description": "One sentence: problem + approach (under ~155 chars)",
+  "title": "Outcome-focused title",
+  "description": "Problem + approach in one sentence (under ~155 chars)",
   "href": "./{slug}.html",
   "date": "YYYY-MM-DD",
   "dateLabel": "Month YYYY",
-  "category": "RAG | Data | API | Mobile | Docs | Platform",
+  "author": "Amar Kumar",
+  "category": "RAG | Data | API | Mobile | Docs | Platform | Automation",
   "tags": ["3–6 tags"],
-  "client": "Company name if mentioned, else omit field"
+  "client": "Company name if mentioned — omit otherwise",
+  "source": "upwork"
 }
 ```
 
-## Article page structure (required sections)
+Omit `source` if not from Upwork. Omit `client` if no company named.
 
-Use `blog-page` body, `blog-article` wrapper, `../styles.css` + `../blog/blog.css` + `solutions.css`, `/site-nav.js`, `/script.js`.
+## Article structure (required)
+
+Use `blog-page` body, `blog-article`, `../styles.css` + `../blog/blog.css` + `solutions.css`, `/site-nav.js`, `/script.js`.
 
 | Section | ID | Content |
 |---------|-----|---------|
-| Title + meta | — | H1 title; `<p class="meta">By Amar Kumar</p>` (no date) |
-| Summary | — | 2–3 sentences on the problem and outcome |
-| Table of contents | `.toc` | Links to all major sections below |
-| Problem | `#problem` | Context, pain points, constraints, who is affected |
-| Requirements | `#requirements` | Bulleted functional + non-functional requirements |
-| Architecture | `#architecture` | System diagram + data flow; **UML-style ASCII** in `<div class="arch-diagram"><pre>` **and** a `.pipeline` flow for the main path |
-| Stack | `#stack` | Table: layer → technology → role |
-| Implementation plan | `#implementation` | Phased plan in `.impl-phase` blocks (Phase 1–N with deliverables) |
-| What we built | `#what-we-built` | Concrete deliverables list (5+ bullets when company named) |
-| Charts | — | **At least 2** Chart.js charts in `.chart-wrap` (e.g. latency breakdown, component map, rollout phases) |
-| Glossary | `#glossary` | Key terms table |
-| CTA | `.blog-cta` | Same Upwork + Contact pattern as blog posts |
+| Title + meta | — | H1; `<p class="meta">By Amar Kumar</p>` (no date on page) |
+| Summary | — | 2–3 sentences: outcome and approach |
+| Table of contents | `.toc` | All major sections |
+| Job context | `#job-context` | **Required for Upwork posts:** distilled brief, niche, constraints, client technical level |
+| Problem | `#problem` | Pain points, why manual flow fails, YMYL/regulatory notes if relevant |
+| Requirements | `#requirements` | Functional + non-functional bullets from the brief |
+| Architecture | `#architecture` | ASCII diagram in `.arch-diagram` + `.pipeline` for main flow |
+| Recommended stack | `#recommended-stack` | Table + **why this stack** (vs n8n-only, vs alternatives) |
+| Agent / component design | `#agent-design` | Per-agent responsibilities, inputs/outputs, QA gates |
+| Implementation plan | `#implementation` | `.impl-phase` blocks — **4–6 phases** with deliverables, risks, rollback |
+| Reporting & ops | `#reporting` | Dashboards, APIs (GSC, Bing, rank tracking), alert cadence |
+| What we built | `#what-we-built` | 5+ concrete deliverables |
+| Effort estimate | `#estimate` | Hours range, hourly fit, ongoing maintenance — for Upwork-style scope |
+| Charts | — | **At least 2** Chart.js charts in `.chart-wrap` |
+| Glossary | `#glossary` | Terms table |
+| CTA | `.blog-cta` | Upwork + Contact links |
+
+## Upwork job posts
+
+- Parse mandatory skills, budget band, duration, and “what they want built” into Requirements and Agent design
+- Address explicit proposal asks (stack choice, reporting, examples approach) in **Recommended stack** and **Reporting**
+- Do **not** fabricate client names or fake case-study traffic numbers; describe credible architecture and measurable KPIs instead
+- `source: "upwork"` in JSON; optional one-line in Job context that this maps to an hourly engagement
 
 ## When a **company name** is mentioned
 
-Go **in depth** — this is a client-style brief:
+Set `client`, name in Problem, full component diagram, 4–6 implementation phases with timelines, ops runbooks, extra chart (deployment or request lifecycle).
 
-- Set `client` in `solutions.json`
-- Name the company in Problem (as scenario context, not marketing fluff)
-- Architecture: full component diagram (API, DB, queues, external systems, auth, observability)
-- Implementation: **4–6 phases** with timelines, risks, and rollback notes
-- What we built: specific integrations, SLAs, ops runbooks
-- Extra chart: e.g. deployment topology or request lifecycle
+## HTML conventions
 
-Do **not** invent confidential internals; describe a **credible production architecture** that fits the stated problem.
-
-## HTML conventions (match blog)
-
-- SEO: unique title, meta description, canonical, OG/Twitter, JSON-LD `Article` + `BreadcrumbList` (Home → Solutions → title)
-- Code: `<pre><code>` with span classes `.kw`, `.fn`, `.str`, `.cm` where used in blog
+- SEO: title, description, canonical, OG/Twitter, JSON-LD `Article` + `BreadcrumbList` (Home → **Solutions** → title)
 - Pipelines: `.pipeline` > `.pipeline-step` + `.pipeline-arrow`
-- Charts: Chart.js CDN at bottom; `chart-wrap` + caption; palette `['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2']`
-- Links: relative to solutions (`../contact/`, other solution/blog pages)
-- Author in JSON-LD can stay organization-focused; visible meta line is **By Amar Kumar**
-
-## UML / architecture diagram (ASCII example)
-
-```html
-<div class="arch-diagram" role="img" aria-label="System architecture">
-<pre>
-┌─────────────┐     ┌─────────────┐     ┌──────────────┐
-│   Client    │────▶│  API Layer  │────▶│  Data Store  │
-└─────────────┘     └─────────────┘     └──────────────┘
-                           │
-                           ▼
-                    ┌─────────────┐
-                    │ Vector Index│
-                    └─────────────┘
-</pre>
-</div>
-```
+- Charts: Chart.js CDN; palette `['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2']`
+- Visible author: **By Amar Kumar**
 
 ## Quality bar
 
-- Generic enough for a technical reader; avoid one-off folder paths unless the problem requires them
-- Problem → architecture → stack → implementation should read as one coherent story
-- No placeholder lorem; every section should teach how to solve the class of problem
-- After creating files, verify nav includes Solutions and listing loads from `solutions.json`
+- Teach how to build the system, not just what it does
+- Problem → architecture → stack → phases → reporting must be one coherent story
+- No lorem ipsum; no thin bullet lists without explanation
