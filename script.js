@@ -80,6 +80,9 @@ function initTestimonials(testimonials) {
     slice.forEach(function (t) {
       grid.appendChild(renderCard(t));
     });
+    if (typeof window.revealLandingCards === 'function') {
+      window.revealLandingCards(grid);
+    }
     renderPagination();
   }
 

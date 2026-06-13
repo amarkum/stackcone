@@ -25,6 +25,10 @@
   --section-padding-x: 1.5rem;
   --section-gap: 2rem;
   --container-padding: 1.5rem;
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --reveal-distance: 48px;
+  --reveal-duration: 1s;
 }
 
 *,
@@ -35,6 +39,15 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+body.landing-page {
+  scroll-snap-type: y proximity;
+}
+
+body.landing-page main > section {
+  scroll-snap-align: start;
+  scroll-margin-top: 5rem;
 }
 
 body {
@@ -146,6 +159,15 @@ img {
   z-index: 10;
   width: 100%;
   box-sizing: border-box;
+  transition: background 0.45s var(--ease-smooth), border-color 0.45s var(--ease-smooth), box-shadow 0.45s var(--ease-smooth), backdrop-filter 0.45s var(--ease-smooth);
+}
+
+.header.is-scrolled {
+  background: rgba(247, 247, 247, 0.78);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
 .header-inner {
@@ -288,6 +310,83 @@ img {
   flex-wrap: wrap;
   gap: 0.75rem 1rem;
   justify-content: center;
+}
+
+/* Landing page — Apple-style scroll & entrance */
+body.landing-page .hero {
+  min-height: min(88vh, 780px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  will-change: transform, opacity;
+}
+
+body.landing-page .hero-trust,
+body.landing-page .hero-title,
+body.landing-page .hero-desc,
+body.landing-page .hero-ctas {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+  animation: heroReveal var(--reveal-duration) var(--ease-out-expo) forwards;
+}
+
+body.landing-page .hero-trust { animation-delay: 0.08s; }
+body.landing-page .hero-title { animation-delay: 0.2s; }
+body.landing-page .hero-desc { animation-delay: 0.34s; }
+body.landing-page .hero-ctas { animation-delay: 0.48s; }
+
+@keyframes heroReveal {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+body.landing-page main > section:not(.hero) {
+  padding-top: clamp(4.5rem, 11vh, 6.5rem);
+  padding-bottom: clamp(4.5rem, 11vh, 6.5rem);
+}
+
+.reveal-child {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition:
+    opacity 0.85s var(--ease-out-expo),
+    transform 0.85s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+
+.reveal-child.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.testimonial-card.reveal-child {
+  transition-duration: 0.75s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body.landing-page {
+    scroll-snap-type: none;
+  }
+
+  body.landing-page .hero-trust,
+  body.landing-page .hero-title,
+  body.landing-page .hero-desc,
+  body.landing-page .hero-ctas,
+  .reveal-child {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 .cta {
