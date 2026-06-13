@@ -1,7 +1,6 @@
 /* Fullscreen controls + explicit Mermaid render for solution diagrams */
 (function () {
   var LIGHTBOX_ID = "diagram-lightbox";
-  var MERMAID_SELECTOR = ".diagram-wrap .mermaid-pending";
   var ZOOM_STEP = 1.2;
   var MIN_SCALE = 0.15;
   var MAX_SCALE = 5;
@@ -33,7 +32,26 @@
       "</svg>"
   };
 
-  var lightboxState = null;
+  function getMermaid() {
+    var api = window.mermaid;
+    if (!api) return null;
+    if (api.default && typeof api.default.initialize === "function") return api.default;
+    return api;
+  }
+
+  function findDiagramNodes() {
+    return Array.from(
+      document.querySelectorAll(
+        ".diagram-wrap .mermaid-pending, .diagram-wrap pre.mermaid, .diagram-wrap .mermaid"
+      )
+    );
+  }
+
+  function parseRenderResult(result) {
+    if (typeof result === "string") return { svg: result, bindFunctions: null };
+    if (result && result.svg) return result;
+    return { svg: "", bindFunctions: null };
+  }
 
   window.StackconeMermaidConfig = {
     startOnLoad: false,
@@ -373,22 +391,31 @@
   }
 
   function renderOneDiagram(node, index) {
-    var definition = node.textContent.trim();
+    var definition = (node.getAttribute("data-definition") || node.textContent || "").trim();
     if (!definition) return Promise.resolve();
 
-    node.textContent = "";
+    node.setAttribute("data-definition", definition);
 
-    return mermaid.render("stackcone-diagram-" + index, definition).then(function (result) {
-      node.innerHTML = result.svg;
+    var api = getMermaid();
+    var renderId = "stackcone-mmd-" + index + "-" + String(Date.now()).slice(-6);
+
+    return api.render(renderId, definition).then(function (result) {
+      var parsed = parseRenderResult(result);
+      if (!parsed.svg) throw new Error("Mermaid returned empty SVG");
+
+      node.innerHTML = parsed.svg;
       node.classList.add("is-rendered");
-      if (result.bindFunctions) {
-        result.bindFunctions(node);
-      }
+      node.removeAttribute("data-definition");
+
+      var wrap = node.closest(".diagram-wrap");
+      if (wrap) wrap.classList.add("is-diagram-rendered");
+
+      if (parsed.bindFunctions) parsed.bindFunctions(node);
     });
   }
 
   function renderMermaidDiagrams() {
-    var nodes = Array.from(document.querySelectorAll(MERMAID_SELECTOR));
+    var nodes = findDiagramNodes();
     if (!nodes.length) return Promise.resolve();
 
     var pending = nodes.filter(function (node) {
@@ -400,7 +427,8 @@
       return Promise.resolve();
     }
 
-    if (!window.mermaid) {
+    var api = getMermaid();
+    if (!api) {
       pending.forEach(function (node) {
         var wrap = node.closest(".diagram-wrap");
         if (wrap) showDiagramError(wrap, "Mermaid library failed to load.");
@@ -408,11 +436,12 @@
       return Promise.reject(new Error("Mermaid not loaded"));
     }
 
-    mermaid.initialize(window.StackconeMermaidConfig);
+    api.initialize(window.StackconeMermaidConfig);
 
     return Promise.all(
       pending.map(function (node, index) {
         return renderOneDiagram(node, index).catch(function (err) {
+          console.error("Mermaid render failed:", err);
           var wrap = node.closest(".diagram-wrap");
           if (wrap) showDiagramError(wrap, err && err.message ? err.message : "Parse error");
           throw err;
@@ -420,6 +449,7 @@
       })
     ).then(function () {
       initDiagramUI();
+      document.dispatchEvent(new CustomEvent("stackcone:mermaid-rendered"));
     });
   }
 
@@ -430,13 +460,34 @@
 
   document.addEventListener("stackcone:mermaid-rendered", initDiagramUI);
 
+  var booted = false;
+  var rendering = false;
+
   function boot() {
-    renderMermaidDiagrams().catch(function () {});
+    if (booted || rendering) return;
+    rendering = true;
+
+    renderMermaidDiagrams()
+      .then(function () {
+        var rendered = document.querySelector(".diagram-wrap .mermaid-pending.is-rendered svg");
+        booted = rendered || !findDiagramNodes().length;
+      })
+      .catch(function () {
+        booted = false;
+      })
+      .finally(function () {
+        rendering = false;
+      });
+  }
+
+  function scheduleBoot() {
+    boot();
+    window.addEventListener("load", boot, { once: true });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
+    document.addEventListener("DOMContentLoaded", scheduleBoot);
   } else {
-    boot();
+    scheduleBoot();
   }
 })();
