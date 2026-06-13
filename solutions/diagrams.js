@@ -29,8 +29,7 @@
   var ICONS = {
     zoomIn: iconImg("zoom-in"),
     zoomOut: iconImg("zoom-out"),
-    fit: iconImg("scan"),
-    pan: iconImg("move"),
+    fit: iconImg("fullscreen"),
     close: iconImg("x")
   };
 
@@ -111,11 +110,10 @@
             "<button type=\"button\" class=\"diagram-tool-btn\" data-diagram-zoom-out aria-label=\"Zoom out\" title=\"Zoom out (−)\">" + ICONS.zoomOut + "</button>" +
             "<button type=\"button\" class=\"diagram-tool-btn\" data-diagram-zoom-in aria-label=\"Zoom in\" title=\"Zoom in (+)\">" + ICONS.zoomIn + "</button>" +
             "<button type=\"button\" class=\"diagram-tool-btn\" data-diagram-fit aria-label=\"Fit to screen\" title=\"Fit to screen (0)\">" + ICONS.fit + "</button>" +
-            "<button type=\"button\" class=\"diagram-tool-btn diagram-tool-btn--pan is-active\" data-diagram-pan aria-label=\"Pan mode\" title=\"Drag to pan\" aria-pressed=\"true\">" + ICONS.pan + "</button>" +
           "</div>" +
           "<button type=\"button\" class=\"diagram-lightbox-close\" data-diagram-close aria-label=\"Close (Esc)\" title=\"Close (Esc)\">" + ICONS.close + "</button>" +
         "</div>" +
-        "<div class=\"diagram-lightbox-stage\" data-diagram-stage>" +
+        "<div class=\"diagram-lightbox-stage is-pan-enabled\" data-diagram-stage>" +
           "<div class=\"diagram-lightbox-canvas\" data-diagram-canvas></div>" +
         "</div>" +
       "</div>";
@@ -132,7 +130,6 @@
       zoomLightbox(1 / ZOOM_STEP);
     });
     lb.querySelector("[data-diagram-fit]").addEventListener("click", fitLightboxToScreen);
-    lb.querySelector("[data-diagram-pan]").addEventListener("click", togglePanMode);
 
     var stage = lb.querySelector("[data-diagram-stage]");
     stage.addEventListener("mousedown", onPanStart);
@@ -160,8 +157,7 @@
     return {
       lb: lb,
       stage: lb.querySelector("[data-diagram-stage]"),
-      canvas: lb.querySelector("[data-diagram-canvas]"),
-      panBtn: lb.querySelector("[data-diagram-pan]")
+      canvas: lb.querySelector("[data-diagram-canvas]")
     };
   }
 
@@ -223,18 +219,8 @@
     applyLightboxTransform();
   }
 
-  function togglePanMode() {
-    var els = getLightboxEls();
-    if (!els || !lightboxState) return;
-
-    lightboxState.panActive = !lightboxState.panActive;
-    els.panBtn.classList.toggle("is-active", lightboxState.panActive);
-    els.panBtn.setAttribute("aria-pressed", lightboxState.panActive ? "true" : "false");
-    els.stage.classList.toggle("is-pan-enabled", lightboxState.panActive);
-  }
-
   function onPanStart(e) {
-    if (!lightboxState || !lightboxState.panActive) return;
+    if (!lightboxState) return;
     if (e.type === "mousedown" && e.button !== 0) return;
 
     var point = e.touches ? e.touches[0] : e;
@@ -294,13 +280,9 @@
       y: 0,
       baseW: 0,
       baseH: 0,
-      panActive: true,
       dragging: false
     };
 
-    els.panBtn.classList.add("is-active");
-    els.panBtn.setAttribute("aria-pressed", "true");
-    els.stage.classList.add("is-pan-enabled");
     els.canvas.style.transformOrigin = "0 0";
 
     els.lb.hidden = false;
