@@ -51,8 +51,8 @@
   min-height: 180px;
 }
 
-.blog-article .diagram-wrap .mermaid,
-.blog-article .diagram-wrap pre.mermaid {
+.blog-article .diagram-wrap .mermaid-pending,
+.blog-article .diagram-wrap .mermaid-pending.is-rendered {
   display: block;
   width: auto;
   max-width: 100%;
@@ -60,10 +60,28 @@
   background: transparent;
 }
 
-.blog-article .diagram-wrap pre.mermaid.is-rendered {
+.blog-article .diagram-wrap .mermaid-pending:not(.is-rendered) {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
+.blog-article .diagram-wrap .mermaid-pending.is-rendered {
+  visibility: visible;
+  height: auto;
   border: 0;
   padding: 0;
   margin: 0;
+  background: transparent;
+}
+
+.blog-article .diagram-wrap .mermaid-pending.is-rendered svg {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
   background: transparent;
 }
 
@@ -73,15 +91,6 @@
   font-size: 0.875rem;
   color: var(--text-dim);
   text-align: center;
-}
-
-.blog-article .diagram-wrap .mermaid svg {
-  display: block;
-  margin: 0 auto;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  background: transparent;
 }
 
 .blog-article .diagram-caption {
@@ -257,8 +266,8 @@
   will-change: transform;
 }
 
-.diagram-lightbox-canvas pre.mermaid,
-.diagram-lightbox-canvas .mermaid {
+.diagram-lightbox-canvas .mermaid-pending,
+.diagram-lightbox-canvas .mermaid-pending.is-rendered {
   font-size: 14px;
   line-height: normal;
   color: inherit;

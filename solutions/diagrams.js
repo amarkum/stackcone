@@ -1,6 +1,7 @@
-/* Fullscreen controls for Mermaid diagrams — render via inline boot on solution pages */
+/* Fullscreen controls + explicit Mermaid render for solution diagrams */
 (function () {
   var LIGHTBOX_ID = "diagram-lightbox";
+  var MERMAID_SELECTOR = ".diagram-wrap .mermaid-pending";
   var ZOOM_STEP = 1.2;
   var MIN_SCALE = 0.15;
   var MAX_SCALE = 5;
@@ -296,7 +297,7 @@
   }
 
   function fitDiagramBody(body) {
-    var mermaidEl = body.querySelector("pre.mermaid");
+    var mermaidEl = body.querySelector(".mermaid-pending.is-rendered");
     if (!mermaidEl) return;
 
     var svg = mermaidEl.querySelector("svg");
@@ -353,7 +354,7 @@
       "</svg>";
 
     btn.addEventListener("click", function () {
-      var mermaidEl = wrap.querySelector("pre.mermaid");
+      var mermaidEl = wrap.querySelector(".mermaid-pending.is-rendered");
       if (mermaidEl && mermaidEl.querySelector("svg")) {
         openLightbox(title, mermaidEl);
       }
@@ -371,19 +372,27 @@
     window.addEventListener("resize", fitAllDiagrams);
   }
 
-  function renderMermaidDiagrams() {
-    var nodes = Array.from(document.querySelectorAll(".diagram-wrap pre.mermaid"));
-    if (!nodes.length) return Promise.resolve();
+  function renderOneDiagram(node, index) {
+    var definition = node.textContent.trim();
+    if (!definition) return Promise.resolve();
 
-    nodes.forEach(function (node) {
-      if (!node.querySelector("svg")) {
-        node.removeAttribute("data-processed");
-        node.classList.remove("is-rendered");
+    node.textContent = "";
+
+    return mermaid.render("stackcone-diagram-" + index, definition).then(function (result) {
+      node.innerHTML = result.svg;
+      node.classList.add("is-rendered");
+      if (result.bindFunctions) {
+        result.bindFunctions(node);
       }
     });
+  }
+
+  function renderMermaidDiagrams() {
+    var nodes = Array.from(document.querySelectorAll(MERMAID_SELECTOR));
+    if (!nodes.length) return Promise.resolve();
 
     var pending = nodes.filter(function (node) {
-      return !node.querySelector("svg");
+      return !node.classList.contains("is-rendered") && !node.querySelector("svg");
     });
 
     if (!pending.length) {
@@ -401,22 +410,17 @@
 
     mermaid.initialize(window.StackconeMermaidConfig);
 
-    return mermaid
-      .run({ nodes: pending })
-      .then(function () {
-        pending.forEach(function (node) {
-          node.classList.add("is-rendered");
-        });
-        initDiagramUI();
-      })
-      .catch(function (err) {
-        console.error("Mermaid render failed:", err);
-        pending.forEach(function (node) {
+    return Promise.all(
+      pending.map(function (node, index) {
+        return renderOneDiagram(node, index).catch(function (err) {
           var wrap = node.closest(".diagram-wrap");
           if (wrap) showDiagramError(wrap, err && err.message ? err.message : "Parse error");
+          throw err;
         });
-        throw err;
-      });
+      })
+    ).then(function () {
+      initDiagramUI();
+    });
   }
 
   window.StackconeDiagrams = {

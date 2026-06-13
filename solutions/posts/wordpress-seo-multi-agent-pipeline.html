@@ -151,7 +151,7 @@
 
     <div class="diagram-wrap" data-diagram-title="System architecture">
       <div class="diagram-body">
-        <pre class="mermaid">flowchart TB
+        <div class="mermaid-pending">flowchart TB
   classDef trigger fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef orch fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
   classDef agent fill:#f1f5f9,stroke:#64748b,color:#334155
@@ -183,14 +183,14 @@
   NT["Email / Slack\nweekly report"]:::ext
   PG --> SEO
   PG --> WP
-  PG --> NT</pre>
+  PG --> NT</div>
       </div>
       <p class="diagram-caption">System architecture — orchestrator, agents, state store, and external integrations</p>
     </div>
 
     <div class="diagram-wrap" data-diagram-title="Publish sequence">
       <div class="diagram-body">
-        <pre class="mermaid">sequenceDiagram
+        <div class="mermaid-pending">sequenceDiagram
   autonumber
   participant SCH as Scheduler
   participant OR as Orchestrator
@@ -212,7 +212,7 @@
     OR->>PG: log job_run + metrics
   else QA fail
     OR->>PG: requeue with notes
-  end</pre>
+  end</div>
       </div>
       <p class="diagram-caption">Publish sequence — QA gate before WordPress write</p>
     </div>
@@ -395,10 +395,6 @@
   <script src="/site-nav.js"></script>
   <script src="/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>
-    /* Prevent Mermaid auto-render before diagrams.js configures theme and runs .run() */
-    window.mermaid.initialize({ startOnLoad: false });
-  </script>
   <script src="/solutions/diagrams.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
