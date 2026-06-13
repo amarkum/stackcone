@@ -78,10 +78,11 @@
     flowchart: {
       useMaxWidth: false,
       curve: "basis",
-      padding: 16,
-      htmlLabels: false,
-      nodeSpacing: 32,
-      rankSpacing: 40
+      padding: 20,
+      htmlLabels: true,
+      nodeSpacing: 48,
+      rankSpacing: 52,
+      wrappingWidth: 220
     },
     sequence: {
       useMaxWidth: false,
@@ -321,73 +322,68 @@
     var svg = mermaidEl.querySelector("svg");
     if (!svg) return;
 
-    svg.style.width = "";
-    svg.style.height = "";
-    svg.style.maxWidth = "";
     mermaidEl.style.width = "";
     mermaidEl.style.height = "";
     mermaidEl.style.margin = "0 auto";
+    mermaidEl.style.maxWidth = "100%";
 
-    var maxW = body.clientWidth;
-    var naturalW = svg.getBoundingClientRect().width;
-    var naturalH = svg.getBoundingClientRect().height;
-
-    if (!naturalW || !naturalH) {
-      var dims = getSvgDimensions(svg);
-      naturalW = dims.w;
-      naturalH = dims.h;
-    }
-
-    if (naturalW > maxW && naturalW > 0) {
-      var scale = maxW / naturalW;
-      svg.style.width = Math.floor(naturalW * scale) + "px";
-      svg.style.height = Math.floor(naturalH * scale) + "px";
-    } else {
-      svg.style.width = "auto";
-      svg.style.height = "auto";
-      svg.style.maxWidth = "100%";
-    }
+    svg.style.width = "100%";
+    svg.style.height = "auto";
+    svg.style.maxWidth = "100%";
+    svg.style.overflow = "visible";
   }
 
   function fitAllDiagrams() {
     document.querySelectorAll(".diagram-wrap .diagram-body").forEach(fitDiagramBody);
   }
 
-  function addMaximizeButton(wrap) {
-    if (wrap.querySelector(".diagram-maximize")) return;
+  var MAXIMIZE_ICON =
+    "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
+      "<path d=\"M9 2h5v5M7 14H2V9M14 2l-6 6M2 14l6-6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>" +
+    "</svg>";
 
+  function openDiagramLightbox(wrap) {
     var title =
       wrap.getAttribute("data-diagram-title") ||
       (wrap.querySelector(".diagram-caption") && wrap.querySelector(".diagram-caption").textContent.trim()) ||
       "Diagram";
+    var mermaidEl = wrap.querySelector(".mermaid-pending.is-rendered");
+    if (mermaidEl && mermaidEl.querySelector("svg")) {
+      openLightbox(title, mermaidEl);
+    }
+  }
 
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "diagram-maximize";
-    btn.setAttribute("aria-label", "View diagram fullscreen");
-    btn.title = "Fullscreen";
-    btn.innerHTML =
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-        "<path d=\"M9 2h5v5M7 14H2V9M14 2l-6 6M2 14l6-6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>" +
-      "</svg>";
+  function wireMaximizeButton(wrap) {
+    var btn = wrap.querySelector(".diagram-maximize");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "diagram-maximize";
+      btn.setAttribute("aria-label", "View diagram fullscreen");
+      btn.title = "Fullscreen";
+      btn.innerHTML = MAXIMIZE_ICON;
+      wrap.insertBefore(btn, wrap.firstChild);
+    } else if (!btn.innerHTML.trim()) {
+      btn.innerHTML = MAXIMIZE_ICON;
+    }
 
+    if (btn.dataset.diagramWired === "true") return;
+    btn.dataset.diagramWired = "true";
     btn.addEventListener("click", function () {
-      var mermaidEl = wrap.querySelector(".mermaid-pending.is-rendered");
-      if (mermaidEl && mermaidEl.querySelector("svg")) {
-        openLightbox(title, mermaidEl);
-      }
+      openDiagramLightbox(wrap);
     });
-
-    wrap.insertBefore(btn, wrap.firstChild);
   }
 
   function initDiagramUI() {
-    document.querySelectorAll(".diagram-wrap").forEach(addMaximizeButton);
+    document.querySelectorAll(".diagram-wrap").forEach(wireMaximizeButton);
     requestAnimationFrame(function () {
       fitAllDiagrams();
       requestAnimationFrame(fitAllDiagrams);
     });
-    window.addEventListener("resize", fitAllDiagrams);
+    if (!window.__stackconeDiagramResizeBound) {
+      window.__stackconeDiagramResizeBound = true;
+      window.addEventListener("resize", fitAllDiagrams);
+    }
   }
 
   function renderOneDiagram(node, index) {
@@ -481,6 +477,7 @@
   }
 
   function scheduleBoot() {
+    document.querySelectorAll(".diagram-wrap").forEach(wireMaximizeButton);
     boot();
     window.addEventListener("load", boot, { once: true });
   }
