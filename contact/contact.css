@@ -11,6 +11,10 @@
   margin-bottom: 2rem;
 }
 
+.contact-other {
+  margin-bottom: 2rem;
+}
+
 .contact-form {
   display: flex;
   flex-direction: column;
@@ -121,37 +125,108 @@
   cursor: not-allowed;
 }
 
-.contact-form-status {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius);
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  margin-bottom: 0.25rem;
+body.contact-modal-open {
+  overflow: hidden;
 }
 
-.contact-form-status--success {
-  background: var(--bg-soft);
+.contact-modal[hidden] {
+  display: none;
+}
+
+.contact-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.contact-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.contact-modal-dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 26rem;
+  padding: 2rem 1.75rem 1.5rem;
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  color: var(--text-mid);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  text-align: center;
 }
 
-.contact-form-status--error {
+.contact-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.contact-modal-close:hover {
+  color: var(--text-bright);
+  background: var(--bg-soft);
+}
+
+.contact-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  font-size: 1.35rem;
+  font-weight: 700;
+  background: var(--bg-soft);
+  color: var(--text-bright);
+  border: 1px solid var(--border);
+}
+
+.contact-modal-icon--success {
+  background: var(--surface-dark);
+  color: #fff;
+  border-color: var(--surface-dark);
+}
+
+.contact-modal-icon--error {
   background: #fef2f2;
-  border: 1px solid #fecaca;
   color: #991b1b;
+  border-color: #fecaca;
 }
 
-.contact-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: start;
+.contact-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 0 0 0.5rem;
 }
 
-@media (max-width: 800px) {
-  .contact-split {
-    grid-template-columns: 1fr;
-  }
+.contact-modal-desc {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-mid);
+  margin: 0 0 1.25rem;
+}
+
+.contact-modal-action {
+  border: none;
+  cursor: pointer;
 }
 
 .contact-card {
@@ -159,7 +234,6 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
-  height: 100%;
 }
 
 .contact-card h2 {
@@ -174,6 +248,71 @@
   color: var(--text-mid);
   line-height: 1.6;
   margin: 0 0 1.25rem;
+}
+
+.contact-process {
+  width: 100%;
+  padding: 2rem 0 0;
+  border-top: 1px solid var(--border);
+}
+
+.contact-process h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--text-bright);
+}
+
+.contact-process-intro {
+  font-size: 0.9375rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+  max-width: 42rem;
+}
+
+.contact-process-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 800px) {
+  .contact-process-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-process-step {
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.contact-process-num {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+}
+
+.contact-process-step h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin: 0 0 0.5rem;
+  line-height: 1.3;
+}
+
+.contact-process-step p {
+  font-size: 0.9375rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+  margin: 0;
 }
 
 .contact-methods {
@@ -272,8 +411,4 @@
 .contact-trust-item span {
   font-size: 0.75rem;
   color: var(--text-dim);
-}
-
-.contact-process .approach-list {
-  margin-top: 0.5rem;
 }
