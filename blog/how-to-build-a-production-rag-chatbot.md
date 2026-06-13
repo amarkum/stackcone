@@ -1,6 +1,6 @@
 # How to Build a RAG Chatbot — Complete Guide
 
-**June 2026**
+**June 2026 · Published by Amar Kumar**
 
 A practical guide to building a retrieval-augmented chatbot from scratch: concepts, stack, architecture, code, and launch.
 
