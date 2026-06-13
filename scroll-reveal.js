@@ -16,6 +16,7 @@
     ".approach-item",
     ".stack-category",
     ".faq-item",
+    ".google-profile-logo",
     ".google-profile-inner",
     ".testimonials-grid",
     ".testimonials-pagination"
