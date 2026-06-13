@@ -89,16 +89,16 @@
   <article class="blog-article">
     <h1>Autonomous Multi-Agent SEO Content Pipeline for WordPress</h1>
     <p class="meta">By Amar Kumar</p>
-    <p>A technical owner runs a niche <strong>health / GLP-1</strong> site on WordPress with a few AI-assisted posts today — all manual. The goal is a <strong>scheduled, self-checking content engine</strong>: real keyword data in, E-E-A-T-aware articles out, published to WordPress, with weekly Google and Bing performance reports.</p>
+    <p>A proposed architecture for a technical site owner running a niche <strong>health / GLP-1</strong> WordPress site with manual AI-assisted posts today. The target is a <strong>scheduled, self-checking content engine</strong>: real keyword data in, E-E-A-T-aware articles out, published to WordPress, with weekly Google and Bing performance reports.</p>
 
     <blockquote>
-      <p><strong>Outcome:</strong> Three coordinated agents (research, writing, orchestration) plus reporting — maintainable Python services the owner can inspect, tune, and extend.</p>
+      <p><strong>Proposed outcome:</strong> Three coordinated agents (research, writing, orchestration) plus reporting — maintainable Python services the owner can inspect, tune, and extend.</p>
     </blockquote>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
       <ol>
-        <li><a href="#job-context">Job context</a></li>
+        <li><a href="#scenario">Scenario</a></li>
         <li><a href="#problem">Problem</a></li>
         <li><a href="#requirements">Requirements</a></li>
         <li><a href="#architecture">Architecture</a></li>
@@ -106,19 +106,19 @@
         <li><a href="#agent-design">Agent design</a></li>
         <li><a href="#implementation">Implementation plan</a></li>
         <li><a href="#reporting">Reporting &amp; ops</a></li>
-        <li><a href="#what-we-built">What we built</a></li>
+        <li><a href="#deliverables">Proposed deliverables</a></li>
         <li><a href="#estimate">Effort estimate</a></li>
         <li><a href="#glossary">Glossary</a></li>
       </ol>
     </nav>
 
-    <h2 id="job-context">Job context</h2>
-    <p><strong>Source:</strong> Upwork — AI Automation Engineer for an SEO content pipeline (hourly, expert, 1–3 months).</p>
+    <h2 id="scenario">Scenario</h2>
+    <p>This brief describes a <strong>proposed solution</strong> — not a shipped product. It maps a common pattern: YMYL WordPress site, technical owner, need for autonomous SEO content with guardrails.</p>
     <ul>
-      <li><strong>Site:</strong> WordPress, health / wellness, GLP-1 (weight-loss medication) — <strong>YMYL</strong> niche</li>
-      <li><strong>Client:</strong> Technical (front-end background, paid-media ops); wants architecture transparency, not black-box output</li>
+      <li><strong>Platform:</strong> WordPress, health / wellness, GLP-1 (weight-loss medication) — <strong>YMYL</strong> niche</li>
+      <li><strong>Owner profile:</strong> Technical (front-end background, paid-media ops); wants architecture transparency, not black-box output</li>
       <li><strong>Scope:</strong> Keyword agent, content agent, manager/orchestrator, WordPress publish, GSC + Bing reporting</li>
-      <li><strong>Data sources:</strong> DataForSEO, Ahrefs or SEMrush APIs, SERP data, Search Console; rank tracking as needed</li>
+      <li><strong>Data inputs:</strong> DataForSEO, Ahrefs or SEMrush APIs, SERP data, Search Console; rank tracking as needed</li>
     </ul>
 
     <h2 id="problem">Problem</h2>
@@ -147,46 +147,97 @@
     </ul>
 
     <h2 id="architecture">Architecture</h2>
-    <div class="arch-diagram" role="img" aria-label="Multi-agent SEO pipeline architecture">
-<pre>
-┌──────────────┐   cron / webhook   ┌─────────────────────┐
-│  Scheduler   │───────────────────▶│  Orchestrator Agent │
-│ (APScheduler)│                    │  LangGraph workflow │
-└──────────────┘                    └──────────┬──────────┘
-                                                 │
-         ┌───────────────────┬───────────────────┼───────────────────┐
-         ▼                   ▼                   ▼                   ▼
-┌─────────────────┐ ┌─────────────────┐ ┌──────────────┐   ┌──────────────┐
-│ Keyword Agent   │ │ Content Agent   │ │  QA / Policy │   │ Report Agent │
-│ SERP + volume   │ │ LLM + templates │ │  YMYL checks │   │ GSC + Bing   │
-└────────┬────────┘ └────────┬────────┘ └──────┬───────┘   └──────┬───────┘
-         │                   │                  │                  │
-         ▼                   ▼                  ▼                  ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ PostgreSQL: content_queue · job_runs · article_versions · metrics_daily │
-└─────────────────────────────────────────────────────────────────────────┘
-         │                   │                                  │
-         ▼                   ▼                                  ▼
-┌─────────────┐     ┌─────────────┐                    ┌─────────────┐
-│ DataForSEO  │     │ WordPress   │                    │ Email/Slack │
-│ Ahrefs API  │     │ REST API    │                    │ weekly PDF  │
-└─────────────┘     └─────────────┘                    └─────────────┘
-</pre>
+    <p>Three layers: a <strong>scheduler + orchestrator</strong> runs specialized agents, agents read/write <strong>PostgreSQL</strong> state, and external APIs handle SERP data, WordPress publishing, and owner reporting.</p>
+
+    <div class="diagram-wrap diagram-wrap--dark">
+      <pre class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '14px'}}}%%
+flowchart TB
+  classDef trigger fill:#2563eb,stroke:#1d4ed8,color:#fff
+  classDef orch fill:#7c3aed,stroke:#6d28d9,color:#fff
+  classDef agent fill:#334155,stroke:#64748b,color:#f8fafc
+  classDef data fill:#0f766e,stroke:#0d9488,color:#fff
+  classDef ext fill:#1e293b,stroke:#475569,color:#e2e8f0
+
+  SCH["Scheduler\nAPScheduler"]:::trigger
+  ORCH["Orchestrator Agent\nLangGraph workflow"]:::orch
+  SCH -->|"cron / webhook"| ORCH
+
+  KW["Keyword Agent\nSERP + volume"]:::agent
+  CT["Content Agent\nLLM + templates"]:::agent
+  QA["QA / Policy\nYMYL checks"]:::agent
+  RP["Report Agent\nGSC + Bing"]:::agent
+
+  ORCH --> KW
+  ORCH --> CT
+  ORCH --> QA
+  ORCH --> RP
+
+  PG[("PostgreSQL\ncontent_queue · job_runs\narticle_versions · metrics_daily")]:::data
+  KW --> PG
+  CT --> PG
+  QA --> PG
+  RP --> PG
+
+  SEO["DataForSEO / Ahrefs API"]:::ext
+  WP["WordPress REST API"]:::ext
+  NT["Email / Slack\nweekly report"]:::ext
+  PG --> SEO
+  PG --> WP
+  PG --> NT
+      </pre>
+      <p class="diagram-caption">System architecture — orchestrator, agents, state store, and external integrations</p>
+    </div>
+
+    <div class="diagram-wrap diagram-wrap--dark">
+      <pre class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '14px'}}}%%
+sequenceDiagram
+  autonumber
+  participant SCH as Scheduler
+  participant OR as Orchestrator
+  participant KW as Keyword Agent
+  participant CT as Content Agent
+  participant QA as QA / Policy
+  participant PG as PostgreSQL
+  participant WP as WordPress API
+
+  SCH->>OR: cron / webhook trigger
+  OR->>KW: fetch SERP + volume data
+  KW->>PG: upsert content_queue
+  OR->>CT: generate article from queue row
+  CT->>PG: save article_version
+  OR->>QA: YMYL + SEO rubric
+  QA-->>OR: pass or fail + feedback
+  alt QA pass
+    OR->>WP: publish post (idempotent slug)
+    OR->>PG: log job_run + metrics
+  else QA fail
+    OR->>PG: requeue with reviewer notes
+  end
+      </pre>
+      <p class="diagram-caption">Publish sequence — QA gate before WordPress write</p>
+    </div>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="archLayersChart" aria-label="Architecture layer component map"></canvas>
+      <p class="chart-caption">Component map by layer (count of major services)</p>
     </div>
 
     <p class="solution-section-label">End-to-end flow</p>
-    <div class="pipeline" role="img" aria-label="Content pipeline flow">
-      <span class="pipeline-step">Scheduler</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">Keyword queue</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">Draft article</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">QA gate</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">WordPress</span>
-      <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">Metrics rollup</span>
+    <div class="diagram-wrap diagram-wrap--light">
+      <pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'primaryColor': '#fafafa', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252'}}}%%
+flowchart LR
+  A[Scheduler] --> B[Keyword queue]
+  B --> C[Draft article]
+  C --> D[QA gate]
+  D --> E[WordPress]
+  E --> F[Metrics rollup]
+  classDef step fill:#fafafa,stroke:#0a0a0a,color:#0a0a0a
+  class A,B,C,D,E,F step
+      </pre>
+      <p class="diagram-caption">Happy-path pipeline from schedule to analytics</p>
     </div>
 
     <div class="chart-wrap">
@@ -287,18 +338,19 @@
     </table>
     <p>Weekly owner digest: side-by-side Google vs Bing trend lines, top 10 query movers, articles published, QA rejection reasons.</p>
 
-    <h2 id="what-we-built">What we built</h2>
+    <h2 id="deliverables">Proposed deliverables</h2>
+    <p>Following the phased plan above, a build would ship these artifacts:</p>
     <ul>
-      <li>LangGraph orchestrator with three agent roles and explicit QA state machine</li>
+      <li>LangGraph orchestrator with three agent roles and an explicit QA state machine</li>
       <li>PostgreSQL content queue with priority scoring from live SERP APIs</li>
       <li>Content agent with YMYL template, schema JSON-LD, and internal link injection</li>
       <li>WordPress publisher with draft-first mode and idempotent slug keys</li>
       <li>GSC + Bing ETL jobs and weekly HTML/PDF report generator</li>
-      <li>Docker Compose stack, .env template, and owner runbook for schedule and prompt edits</li>
+      <li>Docker Compose stack, <code>.env</code> template, and owner runbook for schedules and prompt edits</li>
     </ul>
 
     <h2 id="estimate">Effort estimate</h2>
-    <p>For an expert hourly engagement matching the job post ($65–85/hr range):</p>
+    <p>Indicative engineering effort for the phased plan (assumes APIs provisioned, one WordPress environment, human-in-the-loop for YMYL until QA thresholds are trusted):</p>
     <table>
       <thead>
         <tr><th>Scope</th><th>Hours (range)</th></tr>
@@ -308,7 +360,7 @@
         <tr><td>Ongoing maintenance / prompt tuning</td><td>8–15 hrs/month</td></tr>
       </tbody>
     </table>
-    <p>Assumes APIs provisioned by client, one WordPress environment, and human-in-the-loop for YMYL until QA thresholds are trusted.</p>
+    <p>Assumes APIs provisioned by the site owner, one WordPress environment, and human-in-the-loop for YMYL until QA thresholds are trusted.</p>
 
     <h2 id="glossary">Glossary</h2>
     <table>
@@ -329,8 +381,8 @@
       <p><strong>Building an agentic SEO pipeline?</strong></p>
       <p>stackcone designs multi-agent systems, data pipelines, and production integrations — with architecture you can own and extend.</p>
       <div class="blog-cta-links">
-        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
-        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+        <a href="../../contact/" class="cta cta--primary">Contact us</a>
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--secondary" rel="noopener noreferrer">Hire us on Upwork</a>
       </div>
     </aside>
   </article>
@@ -344,11 +396,56 @@
 
   <script src="/site-nav.js"></script>
   <script src="/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: "loose",
+      theme: "base",
+      themeVariables: {
+        fontFamily: "DM Sans, system-ui, sans-serif",
+        fontSize: "14px",
+        darkMode: false
+      },
+      flowchart: { curve: "basis", padding: 16, htmlLabels: true },
+      sequence: { actorMargin: 40, messageMargin: 28 }
+    });
+
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
     Chart.defaults.color = '#6b6b6b';
     const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('archLayersChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Orchestration', 'Agents', 'Data store', 'External APIs'],
+        datasets: [{
+          data: [2, 4, 1, 3],
+          backgroundColor: ['#7c3aed', '#2563eb', '#16a34a', '#ea580c'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var names = {
+                  0: 'Scheduler + Orchestrator',
+                  1: 'Keyword, Content, QA, Report',
+                  2: 'PostgreSQL',
+                  3: 'SEO APIs, WordPress, notifications'
+                };
+                return names[ctx.dataIndex] || ctx.label;
+              }
+            }
+          }
+        }
+      }
+    });
 
     new Chart(document.getElementById('agentShareChart'), {
       type: 'bar',

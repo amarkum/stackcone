@@ -1,12 +1,12 @@
 ---
-description: Create Solutions posts from problem statements or Upwork jobs (architecture, stack, full implementation guide)
+description: Create Solutions posts from problem statements (proposed architecture + implementation plan)
 globs: solutions/**
 alwaysApply: false
 ---
 
 # stackcone Solutions posts
 
-When the user pastes a **problem statement**, an **Upwork job post**, or asks for a **solution post**, produce a full implementation-style brief in `solutions/` — same visual system as `blog/` (charts, pipelines, tables, SEO). The page should read like a technical proposal **plus** a build guide: how to architect, implement, operate, and report.
+When the user pastes a **problem statement** or asks for a **solution post**, produce a full **proposed solution** brief in `solutions/` — same visual system as `blog/` (charts, Mermaid diagrams, tables, SEO). The page should read like a technical proposal and implementation plan: how to architect, build, operate, and report. **Do not** frame it as work already delivered or cite Upwork (or any job board) as the source.
 
 ## Deliverables (always)
 
@@ -30,12 +30,11 @@ When the user pastes a **problem statement**, an **Upwork job post**, or asks fo
   "author": "Amar Kumar",
   "category": "RAG | Data | API | Mobile | Docs | Platform | Automation",
   "tags": ["3–6 tags"],
-  "client": "Company name if mentioned — omit otherwise",
-  "source": "upwork"
+  "client": "Company name if mentioned — omit otherwise"
 }
 ```
 
-Omit `source` if not from Upwork. Omit `client` if no company named.
+Omit `client` if no company named. **Do not** add `source` fields (no `upwork`, no job-board provenance).
 
 ## Article structure (required)
 
@@ -44,39 +43,42 @@ Use `blog-page` body, `blog-article`, `../styles.css` + `../blog/blog.css` + `so
 | Section | ID | Content |
 |---------|-----|---------|
 | Title + meta | — | H1; `<p class="meta">By Amar Kumar</p>` (no date on page) |
-| Summary | — | 2–3 sentences: outcome and approach |
+| Summary | — | 2–3 sentences: **proposed** outcome and approach (future tense / “would”) |
 | Table of contents | `.toc` | All major sections |
-| Job context | `#job-context` | **Required for Upwork posts:** distilled brief, niche, constraints, client technical level |
+| Scenario | `#scenario` | Use case pattern, platform, owner profile, scope — state this is a **proposed solution** |
 | Problem | `#problem` | Pain points, why manual flow fails, YMYL/regulatory notes if relevant |
-| Requirements | `#requirements` | Functional + non-functional bullets from the brief |
-| Architecture | `#architecture` | ASCII diagram in `.arch-diagram` + `.pipeline` for main flow |
+| Requirements | `#requirements` | Functional + non-functional bullets |
+| Architecture | `#architecture` | **Mermaid.js** diagrams (not ASCII): system flowchart + sequence/UML view + optional LR pipeline; **Chart.js** component/layer chart in `.chart-wrap--architecture` |
 | Recommended stack | `#recommended-stack` | Table + **why this stack** (vs n8n-only, vs alternatives) |
 | Agent / component design | `#agent-design` | Per-agent responsibilities, inputs/outputs, QA gates |
 | Implementation plan | `#implementation` | `.impl-phase` blocks — **4–6 phases** with deliverables, risks, rollback |
 | Reporting & ops | `#reporting` | Dashboards, APIs (GSC, Bing, rank tracking), alert cadence |
-| What we built | `#what-we-built` | 5+ concrete deliverables |
-| Effort estimate | `#estimate` | Hours range, hourly fit, ongoing maintenance — for Upwork-style scope |
-| Charts | — | **At least 2** Chart.js charts in `.chart-wrap` |
+| Proposed deliverables | `#deliverables` | 5+ concrete artifacts the build **would** ship (not “what we built”) |
+| Effort estimate | `#estimate` | Hours range, ongoing maintenance — indicative, no job-post pricing |
+| Charts | — | **At least 3** Chart.js charts in `.chart-wrap` (include one architecture/component map chart) |
 | Glossary | `#glossary` | Terms table |
-| CTA | `.blog-cta` | Upwork + Contact links |
+| CTA | `.blog-cta` | Contact primary; Upwork link optional secondary |
 
-## Upwork job posts
+## Tone and framing
 
-- Parse mandatory skills, budget band, duration, and “what they want built” into Requirements and Agent design
-- Address explicit proposal asks (stack choice, reporting, examples approach) in **Recommended stack** and **Reporting**
-- Do **not** fabricate client names or fake case-study traffic numbers; describe credible architecture and measurable KPIs instead
-- `source: "upwork"` in JSON; optional one-line in Job context that this maps to an hourly engagement
+- **Proposed solution / implementation plan** — not a case study or portfolio win
+- Use: “proposed”, “would include”, “following this plan”, “indicative effort”
+- Avoid: “we built”, “what we delivered”, “source: Upwork”, “client hired us”, past-tense delivery claims
+- Do **not** fabricate company names or fake traffic numbers; describe credible architecture and measurable KPIs instead
+- Upwork job posts may be **input** for requirements — never **output** as labeled source on the page
 
 Also add JSON-LD `BreadcrumbList`: Home → Solutions → page title (canonical URL on each item).
 
 ## When a **company name** is mentioned
 
-Set `client`, name in Problem, full component diagram, 4–6 implementation phases with timelines, ops runbooks, extra chart (deployment or request lifecycle).
+Set `client`, name in Problem or Scenario, full component diagram, 4–6 implementation phases with timelines, ops runbooks, extra chart (deployment or request lifecycle).
 
 ## HTML conventions
 
-- Pipelines: `.pipeline` > `.pipeline-step` + `.pipeline-arrow`
+- **Architecture diagrams:** Mermaid.js CDN (`mermaid@10`); wrap each diagram in `.diagram-wrap` with `.diagram-wrap--dark` (system + sequence) or `.diagram-wrap--light` (simple LR pipeline). Use `%%{init: ...}%%` per diagram for theme. Captions: `.diagram-caption`. Do **not** use ASCII `.arch-diagram` blocks.
+- Simple flows can use Mermaid `flowchart LR` instead of `.pipeline` on solution pages (blog pages may still use `.pipeline`).
 - Charts: Chart.js CDN; palette `['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2']`
+- Initialize Mermaid before Chart.js; `mermaid.initialize({ startOnLoad: true, securityLevel: 'loose' })`
 - Visible author: **By Amar Kumar**
 
 ## SEO — meta tags and keywords (required)
@@ -132,7 +134,7 @@ Keep listing metadata aligned with SEO (helps internal search + consistency):
 - Section H2s use secondary keywords where accurate (`#architecture`, `#recommended-stack`, etc.)
 - TOC links use descriptive anchor IDs (already in template)
 - Chart `aria-label` and captions describe the chart in plain language (indexable adjacent text)
-- CTA links: descriptive text (`Hire us on Upwork`, not `click here`)
+- CTA links: descriptive text (`Contact us`, not `click here`)
 
 ### Avoid
 
@@ -140,6 +142,7 @@ Keep listing metadata aligned with SEO (helps internal search + consistency):
 - Keyword stuffing in meta tags or headings
 - Missing canonical or wrong domain/path
 - Empty `keywords` or JSON-LD `keywords` array
+- Upwork / job-board **source** labels on the page or in JSON
 
 
 ## Quality bar

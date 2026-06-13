@@ -2,18 +2,20 @@
 
 **By Amar Kumar**
 
-A technical owner runs a niche **health / GLP-1** WordPress site with manual AI-assisted posts today. Target: a **scheduled, self-checking content engine** — real keyword data in, E-E-A-T-aware articles out, WordPress publishing, weekly Google and Bing reports.
+A **proposed architecture** for a technical site owner running a niche **health / GLP-1** WordPress site with manual AI-assisted posts today. Target: a **scheduled, self-checking content engine** — real keyword data in, E-E-A-T-aware articles out, WordPress publishing, weekly Google and Bing reports.
+
+**Proposed outcome:** Three coordinated agents (research, writing, orchestration) plus reporting — maintainable Python services the owner can inspect, tune, and extend.
 
 ---
 
-## Job context
+## Scenario
 
-**Source:** Upwork — AI Automation Engineer for SEO content pipeline (hourly, expert, 1–3 months).
+This brief describes a **proposed solution**, not a shipped product. Common pattern: YMYL WordPress site, technical owner, autonomous SEO content with guardrails.
 
-- **Site:** WordPress, GLP-1 / wellness — **YMYL**
-- **Client:** Technical; wants architecture transparency
+- **Platform:** WordPress, GLP-1 / wellness — **YMYL**
+- **Owner profile:** Technical; wants architecture transparency
 - **Agents:** Keyword research, content writing, manager/orchestrator
-- **Data:** DataForSEO, Ahrefs/SEMrush, SERP, Search Console, Bing Webmaster
+- **Data inputs:** DataForSEO, Ahrefs/SEMrush, SERP, Search Console, Bing Webmaster
 
 ## Problem
 
@@ -34,6 +36,8 @@ One-off AI posts do not compound. Without queue, QA, and analytics loop, YMYL or
 - Idempotent WordPress publishing
 
 ## Architecture
+
+Published HTML includes three Mermaid diagrams (system flowchart, publish sequence, LR pipeline) plus a Chart.js component-layer doughnut chart. Summary:
 
 ```
 Scheduler → Orchestrator (LangGraph)
@@ -78,7 +82,7 @@ Use n8n for Slack/email only; keep agent logic in Python.
 - Weekly: clicks, impressions, position, rank deltas, publish log
 - Optional: Slack/email digest
 
-## What we built
+## Proposed deliverables
 
 - LangGraph orchestrator with QA state machine
 - PostgreSQL content queue from SERP APIs
@@ -89,8 +93,10 @@ Use n8n for Slack/email only; keep agent logic in Python.
 
 ## Effort estimate
 
-- **Initial build:** 90–120 hours
-- **Ongoing:** 8–15 hours/month
+Indicative engineering effort for the phased plan:
+
+- **Initial build (phases 1–6):** 90–120 hours
+- **Ongoing maintenance / tuning:** 8–15 hours/month
 
 ## Glossary
 
