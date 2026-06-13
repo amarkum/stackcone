@@ -1052,47 +1052,124 @@ body.landing-page main > section:not(.hero) {
   color: var(--text-mid);
 }
 
-/* Google Business Profile */
-.google-profile {
+/* Find us online — Google & LinkedIn */
+.find-us {
   padding: var(--section-padding-y) var(--section-padding-x);
   border-top: 1px solid var(--border);
-  background: var(--bg-card);
+  background: var(--bg-soft);
 }
 
-.google-profile-inner {
+.find-us-header,
+.find-us-grid {
   max-width: var(--container-max);
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   padding: 0 var(--container-padding);
-  text-align: center;
 }
 
-.google-profile-logo {
+.find-us-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.find-us-header .section-title {
+  margin-bottom: 0.5rem;
+}
+
+.find-us-header .section-intro {
+  margin: 0 auto;
+  max-width: 36rem;
+}
+
+.find-us-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.find-us-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 2rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.find-us-card:hover {
+  border-color: var(--text-dim);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.find-us-logo {
   display: block;
   width: auto;
   height: 2rem;
-  margin: 0 auto 1rem;
+  margin-bottom: 0.25rem;
 }
 
-.google-profile-label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-dim);
-  font-weight: 600;
-  margin: 0 0 0.5rem;
+.find-us-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  margin-bottom: 0.25rem;
 }
 
-.google-profile .section-title {
-  margin: 0 0 0.75rem;
-  padding: 0;
+.find-us-brand img {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
 }
 
-.google-profile-desc {
-  font-size: 1rem;
+.find-us-brand-name {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #0a66c2;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.find-us-desc {
+  font-size: 0.9375rem;
   color: var(--text-mid);
-  line-height: 1.6;
-  margin: 0 auto 1.25rem;
-  max-width: 32rem;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 16rem;
+}
+
+.find-us-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.25rem;
+  padding: 0.65rem 1.25rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.find-us-card:hover .find-us-action {
+  border-color: var(--accent);
+  background: var(--bg-soft);
+}
+
+@media (max-width: 640px) {
+  .find-us-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Testimonials */

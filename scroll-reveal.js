@@ -16,8 +16,8 @@
     ".approach-item",
     ".stack-category",
     ".faq-item",
-    ".google-profile-logo",
-    ".google-profile-inner",
+    ".find-us-header",
+    ".find-us-card",
     ".testimonials-grid",
     ".testimonials-pagination"
   ].join(", ");
