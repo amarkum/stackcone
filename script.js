@@ -23,14 +23,15 @@ if (navToggle && header) {
 
 if (navOverlay) navOverlay.addEventListener('click', closeMenu);
 
-// Smooth scroll and close menu when a nav link is clicked
+// Smooth scroll for same-page anchors only
 document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   anchor.addEventListener('click', function (e) {
     var href = this.getAttribute('href');
     if (href === '#') return;
-    e.preventDefault();
     var target = document.querySelector(href);
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     closeMenu();
   });
 });
@@ -139,11 +140,17 @@ function initTestimonials(testimonials) {
   renderPage();
 }
 
+function assetPrefix() {
+  var segments = window.location.pathname.replace(/\/$/, '').split('/').filter(Boolean);
+  if (segments.length && segments[segments.length - 1].indexOf('.') !== -1) segments.pop();
+  return segments.length ? '../'.repeat(segments.length) : '';
+}
+
 function loadTestimonials() {
   var grid = document.getElementById('testimonials-grid');
   var paginationEl = document.getElementById('testimonials-pagination');
   if (!grid || !paginationEl) return;
-  fetch('data/testimonials.json')
+  fetch(assetPrefix() + 'data/testimonials.json')
     .then(function (r) { return r.json(); })
     .then(function (data) { initTestimonials(Array.isArray(data) ? data : testimonialsFallback); })
     .catch(function () { initTestimonials(testimonialsFallback); });
