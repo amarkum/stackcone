@@ -4,32 +4,42 @@
   var ZOOM_STEP = 1.2;
   var MIN_SCALE = 0.15;
   var MAX_SCALE = 5;
-  var ICONS = {
-    zoomIn:
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-        "<circle cx=\"7\" cy=\"7\" r=\"4.5\" stroke=\"currentColor\" stroke-width=\"1.5\"/>" +
-        "<path d=\"M10 10l3.5 3.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>" +
-        "<path d=\"M7 5v4M5 7h4\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>" +
-      "</svg>",
-    zoomOut:
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-        "<circle cx=\"7\" cy=\"7\" r=\"4.5\" stroke=\"currentColor\" stroke-width=\"1.5\"/>" +
-        "<path d=\"M10 10l3.5 3.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>" +
-        "<path d=\"M5 7h4\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>" +
-      "</svg>",
-    fit:
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-        "<path d=\"M2 5V2h3M14 5V2h-3M2 11v3h3M14 11v3h-3\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>" +
-        "<path d=\"M5 2h6v6H5zM5 8h6v6H5z\" stroke=\"currentColor\" stroke-width=\"1.25\"/>" +
-      "</svg>",
-    pan:
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-        "<path d=\"M4 8.5V5.5a1.5 1.5 0 1 1 3 0V10M8 7V4.5a1.5 1.5 0 1 1 3 0V10M4 10v1.5a1.5 1.5 0 0 0 3 0V10\" stroke=\"currentColor\" stroke-width=\"1.25\" stroke-linecap=\"round\"/>" +
-      "</svg>",
-    close:
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-        "<path d=\"M4 4l8 8M12 4l-8 8\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/>" +
+  function lucideIcon(paths) {
+    return (
+      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">" +
+      paths +
       "</svg>"
+    );
+  }
+
+  var ICONS = {
+    zoomIn: lucideIcon(
+      "<circle cx=\"11\" cy=\"11\" r=\"8\"/>" +
+      "<line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/>" +
+      "<line x1=\"11\" y1=\"8\" x2=\"11\" y2=\"14\"/>" +
+      "<line x1=\"8\" y1=\"11\" x2=\"14\" y2=\"11\"/>"
+    ),
+    zoomOut: lucideIcon(
+      "<circle cx=\"11\" cy=\"11\" r=\"8\"/>" +
+      "<line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/>" +
+      "<line x1=\"8\" y1=\"11\" x2=\"14\" y2=\"11\"/>"
+    ),
+    fit: lucideIcon(
+      "<path d=\"M8 3H5a2 2 0 0 0-2 2v3\"/>" +
+      "<path d=\"M21 8V5a2 2 0 0 0-2-2h-3\"/>" +
+      "<path d=\"M3 16v3a2 2 0 0 0 2 2h3\"/>" +
+      "<path d=\"M16 21h3a2 2 0 0 0 2-2v-3\"/>"
+    ),
+    pan: lucideIcon(
+      "<path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/>" +
+      "<path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"/>" +
+      "<path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"/>" +
+      "<path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/>"
+    ),
+    close: lucideIcon(
+      "<path d=\"M18 6 6 18\"/>" +
+      "<path d=\"m6 6 12 12\"/>"
+    )
   };
 
   function getMermaid() {
@@ -337,10 +347,16 @@
     document.querySelectorAll(".diagram-wrap .diagram-body").forEach(fitDiagramBody);
   }
 
-  var MAXIMIZE_ICON =
-    "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" aria-hidden=\"true\">" +
-      "<path d=\"M9 2h5v5M7 14H2V9M14 2l-6 6M2 14l6-6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>" +
-    "</svg>";
+  var MAXIMIZE_ICON = lucideIcon(
+    "<path d=\"m15 15 6 6\"/>" +
+    "<path d=\"m15 9 6-6\"/>" +
+    "<path d=\"M21 16v5h-5\"/>" +
+    "<path d=\"M21 8V3h-5\"/>" +
+    "<path d=\"M3 16v5h5\"/>" +
+    "<path d=\"m3 21 6-6\"/>" +
+    "<path d=\"M3 8V3h5\"/>" +
+    "<path d=\"M9 9 3 3\"/>"
+  );
 
   function openDiagramLightbox(wrap) {
     var title =
