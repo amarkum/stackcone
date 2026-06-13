@@ -1,6 +1,6 @@
 # How to Publish a Knowledge Base to GitHub Pages
 
-**me**
+**By Amar Kumar**
 
 A production pipeline for keeping a RAG chatbot and a public docs site in sync — with shared cloud storage for editing and GitHub Pages for the public site.
 

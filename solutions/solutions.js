@@ -9,33 +9,39 @@
     return d.innerHTML;
   }
 
-  function renderPost(p) {
-    var tags = p.tags
+  function renderSolution(s) {
+    var tags = (s.tags || [])
       .map(function (t) {
         return "<span class=\"tag\">" + escapeHtml(t) + "</span>";
       })
       .join("");
 
-    var searchText = (
-      p.title + " " + p.description + " " + p.category + " " + p.tags.join(" ")
-    ).toLowerCase();
+    var searchParts = [s.title, s.description, s.category];
+    if (s.client) searchParts.push(s.client);
+    if (s.tags) searchParts = searchParts.concat(s.tags);
+    var searchText = searchParts.join(" ").toLowerCase();
+
+    var clientLine = s.client
+      ? "<div class=\"solution-client\">" + escapeHtml(s.client) + "</div>"
+      : "";
 
     return (
-      "<a class=\"post-card\" href=\"" + escapeHtml(p.href) + "\"" +
-        " data-category=\"" + escapeHtml(p.category) + "\"" +
-        " data-year=\"" + escapeHtml(p.date.slice(0, 4)) + "\"" +
-        " data-tags=\"" + escapeHtml(p.tags.join(",")) + "\"" +
+      "<a class=\"post-card solution-card\" href=\"" + escapeHtml(s.href) + "\"" +
+        " data-category=\"" + escapeHtml(s.category) + "\"" +
+        " data-year=\"" + escapeHtml(s.date.slice(0, 4)) + "\"" +
+        " data-tags=\"" + escapeHtml((s.tags || []).join(",")) + "\"" +
         " data-search=\"" + escapeHtml(searchText) + "\">" +
-        "<div class=\"post-meta\">By " + escapeHtml(p.author) + "</div>" +
-        "<h2>" + escapeHtml(p.title) + "</h2>" +
-        "<p>" + escapeHtml(p.description) + "</p>" +
+        "<div class=\"post-meta\">By " + escapeHtml(s.author || "Amar Kumar") + "</div>" +
+        clientLine +
+        "<h2>" + escapeHtml(s.title) + "</h2>" +
+        "<p>" + escapeHtml(s.description) + "</p>" +
         "<div class=\"tags\">" + tags + "</div>" +
       "</a>"
     );
   }
 
   function applyFilters() {
-    var cards = document.querySelectorAll(".post-card");
+    var cards = document.querySelectorAll(".solution-card");
     var visible = 0;
     var query = searchQuery.trim().toLowerCase();
 
@@ -51,14 +57,14 @@
       if (show) visible += 1;
     });
 
-    var empty = document.getElementById("blog-empty");
+    var empty = document.getElementById("solutions-empty");
     if (empty) empty.classList.toggle("is-hidden", visible > 0);
   }
 
-  function buildCategoryFilter(posts) {
+  function buildCategoryFilter(items) {
     var categories = ["all"];
-    posts.forEach(function (p) {
-      if (categories.indexOf(p.category) < 0) categories.push(p.category);
+    items.forEach(function (s) {
+      if (categories.indexOf(s.category) < 0) categories.push(s.category);
     });
     categories.sort(function (a, b) {
       if (a === "all") return -1;
@@ -66,7 +72,7 @@
       return a.localeCompare(b);
     });
 
-    var el = document.getElementById("blog-topic-select");
+    var el = document.getElementById("solutions-topic-select");
     if (!el) return;
 
     el.innerHTML = categories
@@ -77,10 +83,10 @@
       .join("");
   }
 
-  function buildDateFilter(posts) {
-    var years = posts
-      .map(function (p) {
-        return p.date.slice(0, 4);
+  function buildDateFilter(items) {
+    var years = items
+      .map(function (s) {
+        return s.date.slice(0, 4);
       })
       .filter(function (y, i, arr) {
         return arr.indexOf(y) === i;
@@ -89,7 +95,7 @@
         return b.localeCompare(a);
       });
 
-    var el = document.getElementById("blog-date-select");
+    var el = document.getElementById("solutions-date-select");
     if (!el) return;
 
     var options = ["<option value=\"all\">All time</option>"];
@@ -102,9 +108,9 @@
   }
 
   function bindFilters() {
-    var searchEl = document.getElementById("blog-search");
-    var topicEl = document.getElementById("blog-topic-select");
-    var dateEl = document.getElementById("blog-date-select");
+    var searchEl = document.getElementById("solutions-search");
+    var topicEl = document.getElementById("solutions-topic-select");
+    var dateEl = document.getElementById("solutions-date-select");
 
     if (searchEl) {
       searchEl.addEventListener("input", function () {
@@ -128,29 +134,34 @@
     }
   }
 
-  function init(posts) {
-    var list = document.getElementById("blog-posts");
+  function init(items) {
+    var list = document.getElementById("solutions-list");
     if (!list) return;
 
-    list.innerHTML = posts.map(renderPost).join("");
-    buildCategoryFilter(posts);
-    buildDateFilter(posts);
+    if (!items.length) {
+      list.innerHTML = "<p class=\"blog-empty\">No solution briefs yet. Paste a problem statement in Cursor to generate one.</p>";
+      return;
+    }
+
+    list.innerHTML = items.map(renderSolution).join("");
+    buildCategoryFilter(items);
+    buildDateFilter(items);
     bindFilters();
     applyFilters();
   }
 
-  fetch("./posts.json")
+  fetch("./solutions.json")
     .then(function (res) {
-      if (!res.ok) throw new Error("Failed to load posts");
+      if (!res.ok) throw new Error("Failed to load solutions");
       return res.json();
     })
     .then(function (data) {
-      init(data.posts || []);
+      init(data.solutions || []);
     })
     .catch(function () {
-      var list = document.getElementById("blog-posts");
+      var list = document.getElementById("solutions-list");
       if (list) {
-        list.innerHTML = "<p class=\"blog-error\">Could not load blog posts. Please refresh the page.</p>";
+        list.innerHTML = "<p class=\"blog-error\">Could not load solutions. Please refresh the page.</p>";
       }
     });
 })();

@@ -2,6 +2,7 @@
   var NAV_ITEMS = [
     { href: "/", label: "Home" },
     { href: "/work/", label: "Portfolio" },
+    { href: "/solutions/", label: "Solutions" },
     { href: "/blog/", label: "Blog" },
     { href: "/contact/", label: "Contact" }
   ];
