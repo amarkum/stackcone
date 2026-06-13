@@ -1,6 +1,6 @@
+/* Fullscreen controls for Mermaid diagrams — render via inline boot on solution pages */
 (function () {
   var LIGHTBOX_ID = "diagram-lightbox";
-  var MERMAID_SELECTOR = ".diagram-wrap pre.mermaid";
   var ZOOM_STEP = 1.2;
   var MIN_SCALE = 0.15;
   var MAX_SCALE = 5;
@@ -33,7 +33,45 @@
   };
 
   var lightboxState = null;
-  var mermaidReady = false;
+
+  window.StackconeMermaidConfig = {
+    startOnLoad: false,
+    securityLevel: "loose",
+    theme: "base",
+    themeVariables: {
+      fontFamily: "DM Sans, system-ui, sans-serif",
+      fontSize: "12px",
+      mainBkg: "#ffffff",
+      background: "#ffffff",
+      primaryColor: "#f8fafc",
+      primaryTextColor: "#0a0a0a",
+      primaryBorderColor: "#d4d4d4",
+      lineColor: "#525252",
+      actorBkg: "#f8fafc",
+      actorTextColor: "#0a0a0a",
+      actorLineColor: "#525252",
+      signalColor: "#525252",
+      signalTextColor: "#0a0a0a",
+      labelBoxBkgColor: "#fafafa",
+      labelBoxBorderColor: "#d4d4d4",
+      labelTextColor: "#0a0a0a"
+    },
+    flowchart: {
+      useMaxWidth: false,
+      curve: "basis",
+      padding: 16,
+      htmlLabels: false,
+      nodeSpacing: 32,
+      rankSpacing: 40
+    },
+    sequence: {
+      useMaxWidth: false,
+      actorMargin: 40,
+      messageMargin: 32,
+      boxMargin: 10,
+      wrap: true
+    }
+  };
 
   function ensureLightbox() {
     if (document.getElementById(LIGHTBOX_ID)) return;
@@ -82,7 +120,6 @@
     document.addEventListener("mouseup", onPanEnd);
     document.addEventListener("touchmove", onPanMove, { passive: false });
     document.addEventListener("touchend", onPanEnd);
-
     document.addEventListener("keydown", onLightboxKeydown);
   }
 
@@ -325,95 +362,72 @@
     wrap.insertBefore(btn, wrap.firstChild);
   }
 
-  function initMermaid() {
-    if (!window.mermaid) return false;
+  function initDiagramUI() {
+    document.querySelectorAll(".diagram-wrap").forEach(addMaximizeButton);
+    requestAnimationFrame(function () {
+      fitAllDiagrams();
+      requestAnimationFrame(fitAllDiagrams);
+    });
+    window.addEventListener("resize", fitAllDiagrams);
+  }
 
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "loose",
-      theme: "base",
-      themeVariables: {
-        fontFamily: "DM Sans, system-ui, sans-serif",
-        fontSize: "12px",
-        mainBkg: "#ffffff",
-        background: "#ffffff",
-        primaryColor: "#f8fafc",
-        primaryTextColor: "#0a0a0a",
-        primaryBorderColor: "#d4d4d4",
-        lineColor: "#525252",
-        actorBkg: "#f8fafc",
-        actorTextColor: "#0a0a0a",
-        actorLineColor: "#525252",
-        signalColor: "#525252",
-        signalTextColor: "#0a0a0a",
-        labelBoxBkgColor: "#fafafa",
-        labelBoxBorderColor: "#d4d4d4",
-        labelTextColor: "#0a0a0a"
-      },
-      flowchart: {
-        useMaxWidth: false,
-        curve: "basis",
-        padding: 16,
-        htmlLabels: false,
-        nodeSpacing: 32,
-        rankSpacing: 40
-      },
-      sequence: {
-        useMaxWidth: false,
-        actorMargin: 40,
-        messageMargin: 32,
-        boxMargin: 10,
-        wrap: true
+  function renderMermaidDiagrams() {
+    var nodes = Array.from(document.querySelectorAll(".diagram-wrap pre.mermaid"));
+    if (!nodes.length) return Promise.resolve();
+
+    nodes.forEach(function (node) {
+      if (!node.querySelector("svg")) {
+        node.removeAttribute("data-processed");
+        node.classList.remove("is-rendered");
       }
     });
 
-    return true;
-  }
-
-  function renderDiagrams() {
-    var nodes = Array.from(document.querySelectorAll(MERMAID_SELECTOR)).filter(function (node) {
-      return !node.querySelector("svg") && !node.hasAttribute("data-processed");
+    var pending = nodes.filter(function (node) {
+      return !node.querySelector("svg");
     });
 
-    if (!nodes.length) {
-      fitAllDiagrams();
-      return;
+    if (!pending.length) {
+      initDiagramUI();
+      return Promise.resolve();
     }
 
-    if (!initMermaid()) {
-      nodes.forEach(function (node) {
+    if (!window.mermaid) {
+      pending.forEach(function (node) {
         var wrap = node.closest(".diagram-wrap");
         if (wrap) showDiagramError(wrap, "Mermaid library failed to load.");
       });
-      return;
+      return Promise.reject(new Error("Mermaid not loaded"));
     }
 
-    document.querySelectorAll(".diagram-wrap").forEach(addMaximizeButton);
+    mermaid.initialize(window.StackconeMermaidConfig);
 
-    mermaid
-      .run({ nodes: nodes })
+    return mermaid
+      .run({ nodes: pending })
       .then(function () {
-        nodes.forEach(function (node) {
+        pending.forEach(function (node) {
           node.classList.add("is-rendered");
         });
-        requestAnimationFrame(function () {
-          fitAllDiagrams();
-          requestAnimationFrame(fitAllDiagrams);
-        });
-        window.addEventListener("resize", fitAllDiagrams);
-        mermaidReady = true;
+        initDiagramUI();
       })
       .catch(function (err) {
         console.error("Mermaid render failed:", err);
-        nodes.forEach(function (node) {
+        pending.forEach(function (node) {
           var wrap = node.closest(".diagram-wrap");
-          if (wrap) showDiagramError(wrap, String(err && err.message ? err.message : "Parse error"));
+          if (wrap) showDiagramError(wrap, err && err.message ? err.message : "Parse error");
         });
+        throw err;
       });
   }
 
+  window.StackconeDiagrams = {
+    render: renderMermaidDiagrams,
+    initUI: initDiagramUI
+  };
+
+  document.addEventListener("stackcone:mermaid-rendered", initDiagramUI);
+
   function boot() {
-    renderDiagrams();
+    renderMermaidDiagrams().catch(function () {});
   }
 
   if (document.readyState === "loading") {
