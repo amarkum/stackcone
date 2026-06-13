@@ -23,14 +23,17 @@
   margin-bottom: 2rem;
 }
 
-.work-clients-label,
-.work-sidebar-label {
+.work-clients-label {
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-dim);
   margin: 0 0 0.65rem;
+}
+
+.work-main {
+  max-width: 52rem;
 }
 
 .work-clients-list {
@@ -57,72 +60,6 @@
   color: var(--text-bright);
   border-color: var(--text-bright);
   background: var(--bg-soft);
-}
-
-.work-split {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 2.5rem;
-  align-items: start;
-}
-
-@media (max-width: 960px) {
-  .work-split {
-    grid-template-columns: 1fr;
-  }
-}
-
-.work-sidebar {
-  position: sticky;
-  top: 5rem;
-  max-height: calc(100vh - 6rem);
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-@media (max-width: 960px) {
-  .work-sidebar {
-    position: static;
-    max-height: none;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .work-sidebar-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-  }
-
-  .work-sidebar-nav a {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.65rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    border-left: 1px solid var(--border) !important;
-  }
-}
-
-.work-sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.work-sidebar-nav a {
-  font-size: 0.8125rem;
-  color: var(--text-mid);
-  text-decoration: none;
-  padding: 0.35rem 0;
-  border-left: 2px solid transparent;
-  padding-left: 0.65rem;
-  line-height: 1.35;
-}
-
-.work-sidebar-nav a:hover {
-  color: var(--text-bright);
-  border-left-color: var(--border);
 }
 
 .case-study {
@@ -241,12 +178,28 @@
   color: var(--text-bright);
 }
 
-.case-lead {
-  font-size: 0.975rem;
+.case-problem {
+  margin: 0 0 1.25rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.case-problem h3 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin: 0 0 0.5rem;
+}
+
+.case-problem p {
+  font-size: 0.9375rem;
   color: var(--text-mid);
   line-height: 1.65;
   margin: 0;
-  max-width: 52rem;
 }
 
 .case-links {
@@ -302,6 +255,10 @@
 
 .case-tech {
   margin: 0 0 1.25rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
 }
 
 .case-tech h3 {
@@ -311,6 +268,13 @@
   letter-spacing: 0.06em;
   color: var(--text-dim);
   margin: 0 0 0.65rem;
+}
+
+.case-tech-summary {
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  margin: 0 0 0.75rem;
+  line-height: 1.45;
 }
 
 .case-tech-tags {
@@ -327,20 +291,4 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--bg-card);
-}
-
-.case-outcome {
-  font-size: 0.9rem;
-  color: var(--text-mid);
-  line-height: 1.55;
-  margin: 0;
-  padding: 0.85rem 1rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--text-bright);
-  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-}
-
-.case-outcome strong {
-  color: var(--text-bright);
 }

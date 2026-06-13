@@ -27,16 +27,28 @@
     );
   }
 
-  function renderTechnologies(p) {
-    if (!p.technologies || !p.technologies.length) return '';
-    return (
-      '<div class="case-tech">' +
-        '<h3>Technologies used</h3>' +
-        '<div class="case-tech-tags">' +
+  function renderTechStack(p) {
+    var hasTags = p.technologies && p.technologies.length;
+    var hasDomain = p.domain;
+    if (!hasTags && !hasDomain) return '';
+
+    var summary = hasDomain
+      ? '<p class="case-tech-summary">' + escapeHtml(p.domain) + '</p>'
+      : '';
+
+    var tags = hasTags
+      ? '<div class="case-tech-tags">' +
           p.technologies.map(function (tech) {
             return '<span class="case-tech-tag">' + escapeHtml(tech) + '</span>';
           }).join('') +
-        '</div>' +
+        '</div>'
+      : '';
+
+    return (
+      '<div class="case-tech">' +
+        '<h3>Tech stack</h3>' +
+        summary +
+        tags +
       '</div>'
     );
   }
@@ -45,23 +57,25 @@
     if (!p.client) return '';
 
     var logos = '';
-    if (p.employerLogo) {
-      logos += '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.employerLogo)) + '" alt="" width="80" height="28">';
-    }
     if (p.endClientLogo) {
-      logos += '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.endClientLogo)) + '" alt="" width="80" height="28">';
+      logos =
+        '<div class="case-client-logos">' +
+          '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.endClientLogo)) + '" alt="" width="80" height="28">' +
+        '</div>';
     }
 
     var names;
     if (p.endClient && p.endClient !== p.client) {
       names =
         '<span class="case-client-names">' +
-          '<strong>' + escapeHtml(p.client) + '</strong>' +
-          ' <span class="case-client-sep">·</span> Worked with ' +
+          'Employed at ' + escapeHtml(p.client) +
+          ' <span class="case-client-sep">·</span> Client: ' +
           '<strong>' + escapeHtml(p.endClient) + '</strong>' +
         '</span>';
+    } else if (p.employer) {
+      names = '<span class="case-client-names">Employed at <strong>' + escapeHtml(p.client) + '</strong></span>';
     } else {
-      names = '<span class="case-client-names"><strong>' + escapeHtml(p.client) + '</strong></span>';
+      names = '<span class="case-client-names">Client: <strong>' + escapeHtml(p.client) + '</strong></span>';
     }
 
     var meta = '';
@@ -76,7 +90,7 @@
 
     return (
       '<div class="case-client-row">' +
-        (logos ? '<div class="case-client-logos">' + logos + '</div>' : '') +
+        logos +
         names +
         meta +
       '</div>'
@@ -84,23 +98,23 @@
   }
 
   function renderProject(p) {
+    var problemHtml = p.problem
+      ? '<div class="case-problem"><h3>The problem</h3><p>' + escapeHtml(p.problem) + '</p></div>'
+      : '';
+
     return (
       '<article class="case-study" id="' + escapeHtml(p.id) + '" data-client="' + escapeHtml(p.client || '') + '">' +
         '<div class="case-header">' +
-          '<div class="case-meta">' +
-            '<span class="case-tag">' + escapeHtml(p.domain) + '</span>' +
-          '</div>' +
           renderClientRow(p) +
           '<h2>' + escapeHtml(p.title) + '</h2>' +
-          '<p class="case-lead">' + escapeHtml(p.lead) + '</p>' +
           renderLinks(p) +
         '</div>' +
+        problemHtml +
         '<div class="case-about">' +
-          '<h3>About this project</h3>' +
+          '<h3>What we built</h3>' +
           '<ul>' + listItems(p.implementation) + '</ul>' +
         '</div>' +
-        renderTechnologies(p) +
-        '<p class="case-outcome"><strong>Outcome:</strong> ' + escapeHtml(p.outcome) + '</p>' +
+        renderTechStack(p) +
       '</article>'
     );
   }
@@ -117,7 +131,7 @@
   function renderClientFilter(clients) {
     return (
       '<div class="work-clients">' +
-        '<p class="work-clients-label">Clients &amp; employers</p>' +
+        '<p class="work-clients-label">Clients</p>' +
         '<div class="work-clients-list">' +
           '<button type="button" class="client-pill is-active" data-client="all">All projects</button>' +
           clients.map(function (c) {
@@ -133,20 +147,6 @@
           }).join('') +
         '</div>' +
       '</div>'
-    );
-  }
-
-  function renderSidebar(projects) {
-    return (
-      '<aside class="work-sidebar" aria-label="Project list">' +
-        '<p class="work-sidebar-label">Projects</p>' +
-        '<nav class="work-sidebar-nav">' +
-          projects.map(function (p) {
-            var name = p.title.split(' — ')[0];
-            return '<a href="#' + escapeHtml(p.id) + '">' + escapeHtml(name) + '</a>';
-          }).join('') +
-        '</nav>' +
-      '</aside>'
     );
   }
 
@@ -175,11 +175,8 @@
 
     layout.innerHTML =
       renderClientFilter(clients) +
-      '<div class="work-split">' +
-        renderSidebar(projects) +
-        '<div class="work-main" id="work-cases">' +
-          projects.map(renderProject).join('') +
-        '</div>' +
+      '<div class="work-main" id="work-cases">' +
+        projects.map(renderProject).join('') +
       '</div>';
 
     bindClientFilter();
