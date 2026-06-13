@@ -17,7 +17,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="stackcone Blog — RAG, LLM &amp; AI Engineering Guides">
   <meta name="twitter:description" content="Practical guides on building production RAG chatbots, LLM systems, and AI engineering.">
-  <link rel="icon" type="image/png" href="../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
@@ -45,24 +46,35 @@
       <h1>Blog</h1>
       <p class="blog-intro">Practical guides on RAG, LLMs, and shipping AI systems to production.</p>
 
-      <div class="blog-filters">
-        <div class="blog-filter-row">
-          <span class="blog-filter-label">Topic</span>
-          <div class="blog-filter-pills" id="blog-category-filters" role="group" aria-label="Filter by topic"></div>
+      <div class="blog-layout">
+        <div class="blog-content">
+          <div class="blog-posts" id="blog-posts"></div>
+          <p class="blog-empty is-hidden" id="blog-empty">No posts match these filters.</p>
         </div>
-        <div class="blog-filter-row">
-          <span class="blog-filter-label">Date</span>
-          <div class="blog-filter-pills" id="blog-date-filters" role="group" aria-label="Filter by date"></div>
-        </div>
-      </div>
 
-      <div class="blog-posts" id="blog-posts"></div>
-      <p class="blog-empty is-hidden" id="blog-empty">No posts match these filters.</p>
+        <aside class="blog-sidebar" aria-label="Blog sidebar">
+          <div class="blog-sidebar-block blog-filters">
+            <div class="blog-filter-group">
+              <h2 class="blog-sidebar-title">Topic</h2>
+              <div class="blog-filter-pills" id="blog-category-filters" role="group" aria-label="Filter by topic"></div>
+            </div>
+            <div class="blog-filter-group">
+              <h2 class="blog-sidebar-title">Date</h2>
+              <div class="blog-filter-pills" id="blog-date-filters" role="group" aria-label="Filter by date"></div>
+            </div>
+          </div>
+
+          <div class="blog-sidebar-block blog-featured" id="blog-featured-block">
+            <h2 class="blog-sidebar-title">Featured</h2>
+            <div class="blog-featured-list" id="blog-featured"></div>
+          </div>
+        </aside>
+      </div>
     </div>
   </main>
   <footer class="footer">
     <div class="footer-inner">
-      <img src="../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
+      <img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
