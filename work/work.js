@@ -126,67 +126,16 @@
     );
   }
 
-  function normalizeClients(data) {
-    if (data.clients && data.clients.length && typeof data.clients[0] === 'object') {
-      return data.clients;
-    }
-    return (data.clients || []).map(function (name) {
-      return { name: name, logo: null };
-    });
-  }
-
-  function renderClientFilter(clients) {
-    return (
-      '<div class="work-clients">' +
-        '<p class="work-clients-label">Clients</p>' +
-        '<div class="work-clients-list">' +
-          '<button type="button" class="client-pill is-active" data-client="all">All projects</button>' +
-          clients.map(function (c) {
-            var logoHtml = c.logo
-              ? '<img src="' + escapeHtml(logoPath(c.logo)) + '" alt="" width="56" height="20" class="client-pill-logo">'
-              : '';
-            return (
-              '<button type="button" class="client-pill' + (c.logo ? ' client-pill--has-logo' : '') + '" data-client="' + escapeHtml(c.name) + '">' +
-                logoHtml +
-                '<span>' + escapeHtml(c.name) + '</span>' +
-              '</button>'
-            );
-          }).join('') +
-        '</div>' +
-      '</div>'
-    );
-  }
-
-  function bindClientFilter() {
-    var pills = document.querySelectorAll('.client-pill');
-    var studies = document.querySelectorAll('.case-study');
-    pills.forEach(function (pill) {
-      pill.addEventListener('click', function () {
-        var client = pill.getAttribute('data-client');
-        pills.forEach(function (p) { p.classList.remove('is-active'); });
-        pill.classList.add('is-active');
-        studies.forEach(function (study) {
-          var match = client === 'all' || study.getAttribute('data-client') === client;
-          study.classList.toggle('is-hidden', !match);
-        });
-      });
-    });
-  }
-
   function init(data) {
     var layout = document.getElementById('work-layout');
     if (!layout) return;
 
     var projects = data.projects || data;
-    var clients = normalizeClients(data);
 
     layout.innerHTML =
-      renderClientFilter(clients) +
       '<div class="work-main" id="work-cases">' +
         projects.map(renderProject).join('') +
       '</div>';
-
-    bindClientFilter();
   }
 
   fetch('projects.json')
