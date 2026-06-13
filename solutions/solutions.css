@@ -180,6 +180,7 @@
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .diagram-lightbox-header {
@@ -236,8 +237,7 @@
   height: 16px;
 }
 
-.diagram-tool-btn.is-active .diagram-icon,
-.diagram-lightbox-close:hover .diagram-icon {
+.diagram-tool-btn.is-active .diagram-icon {
   filter: brightness(0) invert(1);
 }
 
@@ -272,8 +272,13 @@
 }
 
 .diagram-lightbox-close:hover {
-  color: var(--text-bright, #0a0a0a);
-  border-color: var(--text-dim, #a3a3a3);
+  background: var(--text-bright, #0a0a0a);
+  border-color: var(--text-bright, #0a0a0a);
+  color: var(--bg-card, #fff);
+}
+
+.diagram-lightbox-close:hover .diagram-icon {
+  filter: brightness(0) invert(1);
 }
 
 .diagram-lightbox-stage {
