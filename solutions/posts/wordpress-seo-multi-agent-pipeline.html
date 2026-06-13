@@ -149,9 +149,9 @@
     <h2 id="architecture">Architecture</h2>
     <p>Three layers: a <strong>scheduler + orchestrator</strong> runs specialized agents, agents read/write <strong>PostgreSQL</strong> state, and external APIs handle SERP data, WordPress publishing, and owner reporting.</p>
 
-    <div class="diagram-wrap diagram-wrap--sequence">
-      <pre class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252', 'actorBkg': '#f8fafc', 'actorTextColor': '#0a0a0a', 'actorLineColor': '#525252', 'signalColor': '#525252', 'signalTextColor': '#0a0a0a', 'labelBoxBkgColor': '#fafafa', 'labelBoxBorderColor': '#d4d4d4', 'labelTextColor': '#0a0a0a'}, 'flowchart': {'useMaxWidth': false, 'padding': 28, 'htmlLabels': true, 'nodeSpacing': 52, 'rankSpacing': 60}, 'sequence': {'useMaxWidth': false, 'actorMargin': 72, 'messageMargin': 44, 'boxMargin': 14, 'wrap': true}}}%%
+    <div class="diagram-wrap diagram-wrap--fit">
+      <div class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'mainBkg': '#ffffff', 'background': '#ffffff', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252'}, 'flowchart': {'useMaxWidth': true, 'padding': 20, 'htmlLabels': true, 'nodeSpacing': 40, 'rankSpacing': 48}}}%%
 flowchart TB
   classDef trigger fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef orch fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
@@ -185,13 +185,13 @@ flowchart TB
   PG --> SEO
   PG --> WP
   PG --> NT
-      </pre>
+      </div>
       <p class="diagram-caption">System architecture — orchestrator, agents, state store, and external integrations</p>
     </div>
 
-    <div class="diagram-wrap diagram-wrap--sequence">
-      <pre class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252', 'actorBkg': '#f8fafc', 'actorTextColor': '#0a0a0a', 'actorLineColor': '#525252', 'signalColor': '#525252', 'signalTextColor': '#0a0a0a', 'labelBoxBkgColor': '#fafafa', 'labelBoxBorderColor': '#d4d4d4', 'labelTextColor': '#0a0a0a'}, 'sequence': {'useMaxWidth': false, 'actorMargin': 72, 'messageMargin': 44, 'boxMargin': 14, 'wrap': true}}}%%
+    <div class="diagram-wrap diagram-wrap--scroll">
+      <div class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '12px', 'mainBkg': '#ffffff', 'background': '#ffffff', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252', 'actorBkg': '#f8fafc', 'actorTextColor': '#0a0a0a', 'actorLineColor': '#525252', 'signalColor': '#525252', 'signalTextColor': '#0a0a0a', 'labelBoxBkgColor': '#fafafa', 'labelBoxBorderColor': '#d4d4d4', 'labelTextColor': '#0a0a0a'}, 'sequence': {'useMaxWidth': false, 'actorMargin': 56, 'messageMargin': 36, 'boxMargin': 10, 'wrap': true}}}%%
 sequenceDiagram
   autonumber
   participant SCH as Scheduler
@@ -215,7 +215,7 @@ sequenceDiagram
   else QA fail
     OR->>PG: requeue with notes
   end
-      </pre>
+      </div>
       <p class="diagram-caption">Publish sequence — QA gate before WordPress write</p>
     </div>
 
@@ -225,20 +225,20 @@ sequenceDiagram
     </div>
 
     <p class="solution-section-label">End-to-end flow</p>
-    <div class="diagram-wrap">
-      <pre class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'primaryColor': '#fafafa', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252'}, 'flowchart': {'useMaxWidth': false, 'padding': 24, 'htmlLabels': true, 'nodeSpacing': 40}}}%%
-flowchart LR
-  A[Scheduler] --> B[Keyword queue]
-  B --> C[Draft article]
-  C --> D[QA gate]
-  D --> E[WordPress]
-  E --> F[Metrics rollup]
-  classDef step fill:#fafafa,stroke:#0a0a0a,color:#0a0a0a
-  class A,B,C,D,E,F step
-      </pre>
-      <p class="diagram-caption">Happy-path pipeline from schedule to analytics</p>
+    <div class="pipeline" role="img" aria-label="Happy-path pipeline from schedule to analytics">
+      <span class="pipeline-step">Scheduler</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Keyword queue</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Draft article</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">QA gate</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">WordPress</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Metrics rollup</span>
     </div>
+    <p class="diagram-caption">Happy-path pipeline from schedule to analytics</p>
 
     <div class="chart-wrap">
       <canvas id="agentShareChart" aria-label="Build effort by component"></canvas>
@@ -400,12 +400,14 @@ flowchart LR
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
     mermaid.initialize({
-      startOnLoad: true,
+      startOnLoad: false,
       securityLevel: "loose",
       theme: "base",
       themeVariables: {
         fontFamily: "DM Sans, system-ui, sans-serif",
         fontSize: "13px",
+        mainBkg: "#ffffff",
+        background: "#ffffff",
         primaryColor: "#f8fafc",
         primaryTextColor: "#0a0a0a",
         primaryBorderColor: "#d4d4d4",
@@ -420,20 +422,24 @@ flowchart LR
         labelTextColor: "#0a0a0a"
       },
       flowchart: {
-        useMaxWidth: false,
+        useMaxWidth: true,
         curve: "basis",
-        padding: 28,
+        padding: 20,
         htmlLabels: true,
-        nodeSpacing: 52,
-        rankSpacing: 60
+        nodeSpacing: 40,
+        rankSpacing: 48
       },
       sequence: {
         useMaxWidth: false,
-        actorMargin: 72,
-        messageMargin: 44,
-        boxMargin: 14,
+        actorMargin: 56,
+        messageMargin: 36,
+        boxMargin: 10,
         wrap: true
       }
+    });
+
+    window.addEventListener("load", function () {
+      mermaid.run({ querySelector: ".mermaid" });
     });
 
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
