@@ -4,42 +4,34 @@
   var ZOOM_STEP = 1.2;
   var MIN_SCALE = 0.15;
   var MAX_SCALE = 5;
-  function lucideIcon(paths) {
+  var iconsBase = null;
+
+  function getIconsBase() {
+    if (iconsBase) return iconsBase;
+    var scripts = document.getElementsByTagName("script");
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      var src = scripts[i].getAttribute("src");
+      if (src && src.indexOf("diagrams.js") !== -1) {
+        iconsBase = src.replace(/diagrams\.js(\?.*)?$/, "icons/");
+        return iconsBase;
+      }
+    }
+    iconsBase = "/solutions/icons/";
+    return iconsBase;
+  }
+
+  function iconImg(name) {
     return (
-      "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">" +
-      paths +
-      "</svg>"
+      "<img class=\"diagram-icon\" src=\"" + getIconsBase() + name + ".svg\" width=\"16\" height=\"16\" alt=\"\" aria-hidden=\"true\" decoding=\"async\">"
     );
   }
 
   var ICONS = {
-    zoomIn: lucideIcon(
-      "<circle cx=\"11\" cy=\"11\" r=\"8\"/>" +
-      "<line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/>" +
-      "<line x1=\"11\" y1=\"8\" x2=\"11\" y2=\"14\"/>" +
-      "<line x1=\"8\" y1=\"11\" x2=\"14\" y2=\"11\"/>"
-    ),
-    zoomOut: lucideIcon(
-      "<circle cx=\"11\" cy=\"11\" r=\"8\"/>" +
-      "<line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/>" +
-      "<line x1=\"8\" y1=\"11\" x2=\"14\" y2=\"11\"/>"
-    ),
-    fit: lucideIcon(
-      "<path d=\"M8 3H5a2 2 0 0 0-2 2v3\"/>" +
-      "<path d=\"M21 8V5a2 2 0 0 0-2-2h-3\"/>" +
-      "<path d=\"M3 16v3a2 2 0 0 0 2 2h3\"/>" +
-      "<path d=\"M16 21h3a2 2 0 0 0 2-2v-3\"/>"
-    ),
-    pan: lucideIcon(
-      "<path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/>" +
-      "<path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"/>" +
-      "<path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"/>" +
-      "<path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/>"
-    ),
-    close: lucideIcon(
-      "<path d=\"M18 6 6 18\"/>" +
-      "<path d=\"m6 6 12 12\"/>"
-    )
+    zoomIn: iconImg("zoom-in"),
+    zoomOut: iconImg("zoom-out"),
+    fit: iconImg("scan"),
+    pan: iconImg("move"),
+    close: iconImg("x")
   };
 
   function getMermaid() {
@@ -347,16 +339,7 @@
     document.querySelectorAll(".diagram-wrap .diagram-body").forEach(fitDiagramBody);
   }
 
-  var MAXIMIZE_ICON = lucideIcon(
-    "<path d=\"m15 15 6 6\"/>" +
-    "<path d=\"m15 9 6-6\"/>" +
-    "<path d=\"M21 16v5h-5\"/>" +
-    "<path d=\"M21 8V3h-5\"/>" +
-    "<path d=\"M3 16v5h5\"/>" +
-    "<path d=\"m3 21 6-6\"/>" +
-    "<path d=\"M3 8V3h5\"/>" +
-    "<path d=\"M9 9 3 3\"/>"
-  );
+  var MAXIMIZE_ICON = iconImg("expand");
 
   function openDiagramLightbox(wrap) {
     var title =
