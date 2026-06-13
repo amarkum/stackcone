@@ -10,12 +10,12 @@ When the user pastes a **problem statement**, an **Upwork job post**, or asks fo
 
 ## Deliverables (always)
 
-1. `solutions/{slug}.html` — published page
-2. `solutions/{slug}.md` — markdown source (mirror of content)
+1. `solutions/posts/{slug}.html` — published page
+2. `solutions/posts/{slug}.md` — markdown source (mirror of content)
 3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page
 
-**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). HTML filename = `{slug}.html`.
+**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Files live in `solutions/posts/{slug}.html` and `solutions/posts/{slug}.md`.
 
 ## solutions.json entry
 
@@ -24,7 +24,7 @@ When the user pastes a **problem statement**, an **Upwork job post**, or asks fo
   "id": "{slug}",
   "title": "Outcome-focused title",
   "description": "Problem + approach in one sentence (under ~155 chars)",
-  "href": "./{slug}.html",
+  "href": "./posts/{slug}.html",
   "date": "YYYY-MM-DD",
   "dateLabel": "Month YYYY",
   "author": "Amar Kumar",
@@ -67,16 +67,80 @@ Use `blog-page` body, `blog-article`, `../styles.css` + `../blog/blog.css` + `so
 - Do **not** fabricate client names or fake case-study traffic numbers; describe credible architecture and measurable KPIs instead
 - `source: "upwork"` in JSON; optional one-line in Job context that this maps to an hourly engagement
 
+Also add JSON-LD `BreadcrumbList`: Home → Solutions → page title (canonical URL on each item).
+
 ## When a **company name** is mentioned
 
 Set `client`, name in Problem, full component diagram, 4–6 implementation phases with timelines, ops runbooks, extra chart (deployment or request lifecycle).
 
 ## HTML conventions
 
-- SEO: title, description, canonical, OG/Twitter, JSON-LD `Article` + `BreadcrumbList` (Home → **Solutions** → title)
 - Pipelines: `.pipeline` > `.pipeline-step` + `.pipeline-arrow`
 - Charts: Chart.js CDN; palette `['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2']`
 - Visible author: **By Amar Kumar**
+
+## SEO — meta tags and keywords (required)
+
+Follow `.cursor/rules/seo-google.mdc`. Every new solution page must have **unique, keyword-targeted** head tags — not copy-pasted from other solutions.
+
+### Keyword research (before writing `<head>`)
+
+1. Pick **one primary keyword** (what a buyer would search, e.g. `multi-agent SEO pipeline`, `WordPress AI content automation`).
+2. Pick **3–5 secondary keywords** (stack, niche, outcome, e.g. `LangGraph`, `Search Console API`, `YMYL content`).
+3. Use primary keyword in **title**, **H1** (natural phrasing), first summary paragraph, and **meta description**.
+4. Scatter secondary keywords in H2s, stack table, tags, and body — never stuff.
+
+### Required `<head>` fields
+
+| Tag | Rules |
+|-----|--------|
+| `<title>` | Primary keyword + outcome; `\| stackcone Solutions` suffix; **≤ 60 chars** |
+| `<meta name="description">` | Value prop + primary keyword + 1 secondary; **≤ 155 chars**; unique per page |
+| `<meta name="keywords">` | **6–10** comma-separated terms: primary, secondaries, niche, stack names |
+| `<link rel="canonical">` | `https://stackcone.com/solutions/posts/{slug}.html` — exact URL |
+| `og:title` | Same as title or slightly shorter (no suffix if too long) |
+| `og:description` | Can differ from meta description but same intent; **≤ 155 chars** |
+| `og:url` | Same as canonical |
+| `og:type` | `article` |
+| `og:image` | `https://stackcone.com/logo/stackcone.png` |
+| `twitter:card` | `summary_large_image` |
+| `twitter:title` / `twitter:description` | Align with OG |
+
+### JSON-LD `Article` block
+
+Include in every solution HTML:
+
+- `headline` — matches H1
+- `description` — matches or expands meta description
+- `keywords` — **array of 6–10 strings** (mirror `meta keywords` plus 1–2 long-tail phrases)
+- `articleSection` — match `category` from `solutions.json` (e.g. `Automation`, `RAG`)
+- `datePublished` / `dateModified` — post date
+- `author` / `publisher` — as in existing blog/solution templates
+- `mainEntityOfPage.@id` — canonical URL
+
+### `solutions.json` alignment
+
+Keep listing metadata aligned with SEO (helps internal search + consistency):
+
+- `title` — same as H1 (short form OK)
+- `description` — **same text as** `<meta name="description">` (or trim to ~155 chars)
+- `tags` — overlap with `meta keywords` (3–6 tags)
+
+### On-page SEO
+
+- **One H1** only; must include primary keyword naturally
+- Section H2s use secondary keywords where accurate (`#architecture`, `#recommended-stack`, etc.)
+- TOC links use descriptive anchor IDs (already in template)
+- Chart `aria-label` and captions describe the chart in plain language (indexable adjacent text)
+- CTA links: descriptive text (`Hire us on Upwork`, not `click here`)
+
+### Avoid
+
+- Duplicate title/description across solutions
+- Keyword stuffing in meta tags or headings
+- Missing canonical or wrong domain/path
+- Empty `keywords` or JSON-LD `keywords` array
+
 
 ## Quality bar
 
