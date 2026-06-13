@@ -104,7 +104,7 @@
 .blog-search-input:focus,
 .blog-filter-select:focus {
   outline: none;
-  border-color: var(--text-bright);
+  border-color: var(--accent);
   background: var(--bg-card);
 }
 
@@ -165,7 +165,7 @@
 }
 
 .post-card:hover {
-  border-color: var(--text-dim);
+  border-color: var(--accent);
   box-shadow: var(--shadow-md);
   color: inherit;
 }
@@ -258,13 +258,13 @@
 .blog-article a:not(.cta) {
   color: var(--text-bright);
   text-decoration: underline;
-  text-decoration-color: var(--border);
+  text-decoration-color: var(--accent-muted);
   text-underline-offset: 2px;
 }
 
 .blog-article a:not(.cta):hover {
-  color: var(--text-dim);
-  text-decoration-color: var(--text-dim);
+  color: var(--accent);
+  text-decoration-color: var(--accent);
 }
 
 .blog-article strong {
@@ -289,7 +289,7 @@
 }
 
 .blog-article blockquote {
-  border-left: 3px solid var(--text-bright);
+  border-left: 3px solid var(--accent);
   padding: 0 0 0 1rem;
   margin: 1rem 0;
   background: none;
@@ -334,7 +334,7 @@
 }
 
 .blog-article .toc a:hover {
-  color: var(--text-bright);
+  color: var(--accent);
   text-decoration: underline;
 }
 
@@ -539,27 +539,47 @@
 .blog-cta {
   margin: 2.5rem 0;
   padding: 1.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--surface-dark);
+  border: 1px solid var(--surface-dark);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  color: #fff;
+}
+
+.blog-cta h2 {
+  color: #fff;
+  border-bottom: none;
+  margin-top: 0;
+  padding-bottom: 0;
 }
 
 .blog-cta p {
   margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .blog-cta p:last-of-type {
   margin-bottom: 1.25rem;
 }
 
+.blog-cta-actions,
 .blog-cta-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+.blog-cta .cta--secondary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.blog-cta .cta--secondary:hover {
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .blog-cta-links .cta {
