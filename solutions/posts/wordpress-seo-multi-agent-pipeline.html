@@ -149,31 +149,31 @@
     <h2 id="architecture">Architecture</h2>
     <p>Three layers: a <strong>scheduler + orchestrator</strong> runs specialized agents, agents read/write <strong>PostgreSQL</strong> state, and external APIs handle SERP data, WordPress publishing, and owner reporting.</p>
 
-    <div class="diagram-wrap diagram-wrap--dark">
+    <div class="diagram-wrap diagram-wrap--sequence">
       <pre class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '14px'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252', 'actorBkg': '#f8fafc', 'actorTextColor': '#0a0a0a', 'actorLineColor': '#525252', 'signalColor': '#525252', 'signalTextColor': '#0a0a0a', 'labelBoxBkgColor': '#fafafa', 'labelBoxBorderColor': '#d4d4d4', 'labelTextColor': '#0a0a0a'}, 'flowchart': {'useMaxWidth': false, 'padding': 28, 'htmlLabels': true, 'nodeSpacing': 52, 'rankSpacing': 60}, 'sequence': {'useMaxWidth': false, 'actorMargin': 72, 'messageMargin': 44, 'boxMargin': 14, 'wrap': true}}}%%
 flowchart TB
-  classDef trigger fill:#2563eb,stroke:#1d4ed8,color:#fff
-  classDef orch fill:#7c3aed,stroke:#6d28d9,color:#fff
-  classDef agent fill:#334155,stroke:#64748b,color:#f8fafc
-  classDef data fill:#0f766e,stroke:#0d9488,color:#fff
-  classDef ext fill:#1e293b,stroke:#475569,color:#e2e8f0
+  classDef trigger fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef orch fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef agent fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef data fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  classDef ext fill:#f8fafc,stroke:#475569,color:#334155
 
-  SCH["Scheduler\nAPScheduler"]:::trigger
-  ORCH["Orchestrator Agent\nLangGraph workflow"]:::orch
+  SCH["Scheduler<br/>APScheduler"]:::trigger
+  ORCH["Orchestrator Agent<br/>LangGraph workflow"]:::orch
   SCH -->|"cron / webhook"| ORCH
 
-  KW["Keyword Agent\nSERP + volume"]:::agent
-  CT["Content Agent\nLLM + templates"]:::agent
-  QA["QA / Policy\nYMYL checks"]:::agent
-  RP["Report Agent\nGSC + Bing"]:::agent
+  KW["Keyword Agent<br/>SERP + volume"]:::agent
+  CT["Content Agent<br/>LLM + templates"]:::agent
+  QA["QA / Policy<br/>YMYL checks"]:::agent
+  RP["Report Agent<br/>GSC + Bing"]:::agent
 
   ORCH --> KW
   ORCH --> CT
   ORCH --> QA
   ORCH --> RP
 
-  PG[("PostgreSQL\ncontent_queue · job_runs\narticle_versions · metrics_daily")]:::data
+  PG[("PostgreSQL<br/>content_queue · job_runs<br/>article_versions · metrics_daily")]:::data
   KW --> PG
   CT --> PG
   QA --> PG
@@ -181,7 +181,7 @@ flowchart TB
 
   SEO["DataForSEO / Ahrefs API"]:::ext
   WP["WordPress REST API"]:::ext
-  NT["Email / Slack\nweekly report"]:::ext
+  NT["Email / Slack<br/>weekly report"]:::ext
   PG --> SEO
   PG --> WP
   PG --> NT
@@ -189,31 +189,31 @@ flowchart TB
       <p class="diagram-caption">System architecture — orchestrator, agents, state store, and external integrations</p>
     </div>
 
-    <div class="diagram-wrap diagram-wrap--dark">
+    <div class="diagram-wrap diagram-wrap--sequence">
       <pre class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '14px'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252', 'actorBkg': '#f8fafc', 'actorTextColor': '#0a0a0a', 'actorLineColor': '#525252', 'signalColor': '#525252', 'signalTextColor': '#0a0a0a', 'labelBoxBkgColor': '#fafafa', 'labelBoxBorderColor': '#d4d4d4', 'labelTextColor': '#0a0a0a'}, 'sequence': {'useMaxWidth': false, 'actorMargin': 72, 'messageMargin': 44, 'boxMargin': 14, 'wrap': true}}}%%
 sequenceDiagram
   autonumber
   participant SCH as Scheduler
   participant OR as Orchestrator
-  participant KW as Keyword Agent
-  participant CT as Content Agent
-  participant QA as QA / Policy
-  participant PG as PostgreSQL
-  participant WP as WordPress API
+  participant KW as Keyword
+  participant CT as Content
+  participant QA as QA Policy
+  participant PG as Database
+  participant WP as WordPress
 
   SCH->>OR: cron / webhook trigger
-  OR->>KW: fetch SERP + volume data
+  OR->>KW: fetch SERP + volume
   KW->>PG: upsert content_queue
-  OR->>CT: generate article from queue row
+  OR->>CT: generate from queue row
   CT->>PG: save article_version
   OR->>QA: YMYL + SEO rubric
   QA-->>OR: pass or fail + feedback
   alt QA pass
-    OR->>WP: publish post (idempotent slug)
+    OR->>WP: publish (idempotent slug)
     OR->>PG: log job_run + metrics
   else QA fail
-    OR->>PG: requeue with reviewer notes
+    OR->>PG: requeue with notes
   end
       </pre>
       <p class="diagram-caption">Publish sequence — QA gate before WordPress write</p>
@@ -225,9 +225,9 @@ sequenceDiagram
     </div>
 
     <p class="solution-section-label">End-to-end flow</p>
-    <div class="diagram-wrap diagram-wrap--light">
+    <div class="diagram-wrap">
       <pre class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'primaryColor': '#fafafa', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'primaryColor': '#fafafa', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252'}, 'flowchart': {'useMaxWidth': false, 'padding': 24, 'htmlLabels': true, 'nodeSpacing': 40}}}%%
 flowchart LR
   A[Scheduler] --> B[Keyword queue]
   B --> C[Draft article]
@@ -405,11 +405,35 @@ flowchart LR
       theme: "base",
       themeVariables: {
         fontFamily: "DM Sans, system-ui, sans-serif",
-        fontSize: "14px",
-        darkMode: false
+        fontSize: "13px",
+        primaryColor: "#f8fafc",
+        primaryTextColor: "#0a0a0a",
+        primaryBorderColor: "#d4d4d4",
+        lineColor: "#525252",
+        actorBkg: "#f8fafc",
+        actorTextColor: "#0a0a0a",
+        actorLineColor: "#525252",
+        signalColor: "#525252",
+        signalTextColor: "#0a0a0a",
+        labelBoxBkgColor: "#fafafa",
+        labelBoxBorderColor: "#d4d4d4",
+        labelTextColor: "#0a0a0a"
       },
-      flowchart: { curve: "basis", padding: 16, htmlLabels: true },
-      sequence: { actorMargin: 40, messageMargin: 28 }
+      flowchart: {
+        useMaxWidth: false,
+        curve: "basis",
+        padding: 28,
+        htmlLabels: true,
+        nodeSpacing: 52,
+        rankSpacing: 60
+      },
+      sequence: {
+        useMaxWidth: false,
+        actorMargin: 72,
+        messageMargin: 44,
+        boxMargin: 14,
+        wrap: true
+      }
     });
 
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";

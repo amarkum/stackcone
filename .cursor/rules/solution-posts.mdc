@@ -75,7 +75,7 @@ Set `client`, name in Problem or Scenario, full component diagram, 4–6 impleme
 
 ## HTML conventions
 
-- **Architecture diagrams:** Mermaid.js CDN (`mermaid@10`); wrap each diagram in `.diagram-wrap` with `.diagram-wrap--dark` (system + sequence) or `.diagram-wrap--light` (simple LR pipeline). Use `%%{init: ...}%%` per diagram for theme. Captions: `.diagram-caption`. Do **not** use ASCII `.arch-diagram` blocks.
+- **Architecture diagrams:** Mermaid.js CDN (`mermaid@10`); wrap each diagram in `.diagram-wrap` (light theme, `theme: base`). Use `.diagram-wrap--sequence` for wide sequence diagrams. Use `%%{init: ...}%%` with `useMaxWidth: false`, `<br/>` line breaks in node labels, and light `classDef` colors. Captions: `.diagram-caption`. Do **not** use ASCII `.arch-diagram` blocks or dark diagram backgrounds.
 - Simple flows can use Mermaid `flowchart LR` instead of `.pipeline` on solution pages (blog pages may still use `.pipeline`).
 - Charts: Chart.js CDN; palette `['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2']`
 - Initialize Mermaid before Chart.js; `mermaid.initialize({ startOnLoad: true, securityLevel: 'loose' })`
