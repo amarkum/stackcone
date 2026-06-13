@@ -101,10 +101,11 @@
 
 /* Article */
 .blog-article {
-  --article: 680px;
-  max-width: var(--article);
+  max-width: var(--container-max);
+  width: 100%;
   margin: 0 auto;
   padding: 2.5rem var(--container-padding) 4rem;
+  box-sizing: border-box;
 }
 
 .blog-article h1 {
@@ -148,14 +149,14 @@
   color: var(--text-mid);
 }
 
-.blog-article a {
+.blog-article a:not(.cta) {
   color: var(--text-bright);
   text-decoration: underline;
   text-decoration-color: var(--border);
   text-underline-offset: 2px;
 }
 
-.blog-article a:hover {
+.blog-article a:not(.cta):hover {
   color: var(--text-dim);
   text-decoration-color: var(--text-dim);
 }
@@ -427,12 +428,5 @@
 .blog-cta-links .cta {
   font-size: 0.875rem;
   padding: 0.75rem 1.25rem;
-}
-
-.blog-cta-links .cta:hover {
-  color: inherit;
-}
-
-.blog-cta-links .cta--primary:hover {
-  color: #fff;
+  text-decoration: none;
 }

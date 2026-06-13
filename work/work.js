@@ -97,11 +97,18 @@
     );
   }
 
-  function renderProject(p) {
-    var problemHtml = p.problem
-      ? '<div class="case-problem"><h3>The problem</h3><p>' + escapeHtml(p.problem) + '</p></div>'
-      : '';
+  function renderBrief(p) {
+    if (!p.brief) return '';
+    var label = p.briefType === 'requirement' ? 'Requirement' : 'Problem';
+    return (
+      '<div class="case-brief">' +
+        '<h3>' + escapeHtml(label) + '</h3>' +
+        '<p>' + escapeHtml(p.brief) + '</p>' +
+      '</div>'
+    );
+  }
 
+  function renderProject(p) {
     return (
       '<article class="case-study" id="' + escapeHtml(p.id) + '" data-client="' + escapeHtml(p.client || '') + '">' +
         '<div class="case-header">' +
@@ -109,7 +116,7 @@
           '<h2>' + escapeHtml(p.title) + '</h2>' +
           renderLinks(p) +
         '</div>' +
-        problemHtml +
+        renderBrief(p) +
         '<div class="case-about">' +
           '<h3>What we built</h3>' +
           '<ul>' + listItems(p.implementation) + '</ul>' +
