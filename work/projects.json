@@ -1,0 +1,411 @@
+[
+  {
+    "id": "aadhya-self-drive",
+    "title": "Aadhya Self Drive — Flutter iOS & Android",
+    "domain": "Mobile · Flutter · Travel",
+    "client": "Aadhya Self Drive",
+    "clientUrl": "https://www.aadhya.icu/",
+    "links": [
+      { "label": "Client website", "url": "https://www.aadhya.icu/" },
+      { "label": "Google Play", "url": "https://play.google.com/store/apps/details?id=com.aadhyatours.selfdrive" },
+      { "label": "App Store", "url": "https://apps.apple.com/in/app/aadhya-self-drive/id6763628669" }
+    ],
+    "lead": "Cross-platform mobile app for Aadhya Self Drive — a self-drive car rental service. stackcone built and shipped the Flutter app on iOS and Android; Aadhya Self Drive is an active stackcone client.",
+    "requirements": [
+      "Browse and book hatchback, sedan, and SUV rentals for hourly or daily use",
+      "Secure in-app document upload for renter verification",
+      "Owner portal for fleet operators to manage vehicles and bookings",
+      "Transparent pricing, payments, and customer support from the app"
+    ],
+    "implementation": [
+      "Flutter app for iOS and Android from a single codebase",
+      "Booking flow with location-based search, flexible rental durations, and trip management",
+      "TestFlight and Play Store release pipeline with store listing assets and version updates",
+      "Monetization through in-app booking and payment flows tied to the rental backend"
+    ],
+    "outcome": "Live on the App Store and Google Play with 1K+ Android downloads and 5-star iOS ratings. Client site at aadhya.icu — ongoing stackcone engagement.",
+    "arch": {
+      "labels": ["Flutter UI", "Booking & payments", "Document upload", "Rental API", "Owner portal"],
+      "values": [28, 22, 15, 25, 10]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [14, 16, 38, 22, 10]
+    }
+  },
+  {
+    "id": "cabinetsense",
+    "title": "CabinetSense — SaaS platform & RAG assistant",
+    "domain": "AI · Full-stack · GCP",
+    "lead": "Commercial SketchUp cabinet-design SaaS with a Java App Engine cloud platform, support operations dashboard, and a Python Cloud Run RAG service with multi-LLM routing.",
+    "requirements": [
+      "Support team needed Kanban and list views for tickets with role-scoped access",
+      "Embedded AI chat inside SketchUp with usage-based billing and credit tracking",
+      "Multi-stage RAG over a knowledge base with streaming responses and admin telemetry"
+    ],
+    "implementation": [
+      "Refactored support board from JSP to lazy JSON APIs with batch Datastore loads",
+      "FastAPI RAG on Cloud Run: Pinecone retrieval, Cohere rerank, MMR, multi-LLM routing",
+      "JWT auth, FastSpring licensing, BigQuery nightly export for AI usage and feedback"
+    ],
+    "outcome": "End-to-end SaaS platform with production RAG, metered AI billing, and support ops UI used daily by customers and the support team.",
+    "arch": {
+      "labels": ["SketchUp + Web UI", "Java App Engine", "Cloud Run RAG", "Pinecone + LLMs", "BigQuery telemetry"],
+      "values": [18, 22, 25, 20, 15]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [12, 18, 42, 18, 10]
+    }
+  },
+  {
+    "id": "rag-knowledge-base",
+    "title": "RAG knowledge base — internal docs search",
+    "domain": "AI · RAG · Python",
+    "lead": "Retrieval-augmented search for a B2B SaaS internal documentation library with semantic retrieval and cited answers.",
+    "requirements": [
+      "Make internal docs searchable with natural language, not keyword-only search",
+      "Return answers grounded in source documents with citations",
+      "Support incremental ingestion as documentation changes"
+    ],
+    "implementation": [
+      "Document ingestion pipeline: parse, chunk, embed, and index in Pinecone",
+      "Search API with top-k retrieval and LLM generation with source attribution",
+      "Admin hooks for re-indexing and monitoring retrieval quality"
+    ],
+    "outcome": "Internal teams query company docs in plain language and get cited answers from the live knowledge base.",
+    "arch": {
+      "labels": ["Doc sources", "Ingest & chunk", "Embeddings", "Vector index", "Search API + LLM"],
+      "values": [15, 20, 15, 25, 25]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [15, 15, 40, 20, 10]
+    }
+  },
+  {
+    "id": "internal-copilot",
+    "title": "Internal copilot — LLM with tools",
+    "domain": "AI · Agents · RAG",
+    "lead": "Internal assistant that answers from company docs and runs approved tools such as Jira and Slack with access controls and audit logging.",
+    "requirements": [
+      "Answer questions using Confluence, Notion, and internal wikis",
+      "Execute approved tool calls for ticketing and messaging workflows",
+      "Enforce role-based access and maintain an audit trail"
+    ],
+    "implementation": [
+      "RAG layer over Confluence and Notion with function-calling orchestration",
+      "Tool adapters for Jira and Slack with scoped credentials",
+      "Access controls, prompt guardrails, and request logging for compliance"
+    ],
+    "outcome": "Employees get grounded answers and can trigger approved actions without leaving the chat interface.",
+    "arch": {
+      "labels": ["Chat UI", "LLM + tools", "RAG retrieval", "Jira / Slack APIs", "Audit log"],
+      "values": [15, 28, 22, 20, 15]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [14, 16, 38, 22, 10]
+    }
+  },
+  {
+    "id": "ai-invoice-bot",
+    "title": "AI Invoice Bot — OCR + LLM extraction",
+    "domain": "AI · OCR · Automation",
+    "lead": "Upload invoice images or PDFs, run OCR, and use an LLM to extract parties, amounts, and line items into structured data.",
+    "requirements": [
+      "Accept invoice images and PDFs from customers",
+      "Extract who owes whom and how much with high accuracy",
+      "Return structured JSON suitable for downstream accounting systems"
+    ],
+    "implementation": [
+      "Tesseract and Google Cloud Vision for OCR preprocessing",
+      "LLM parsing pipeline with schema validation and confidence checks",
+      "API endpoint and error handling for malformed or low-quality scans"
+    ],
+    "outcome": "Manual invoice data entry replaced with automated extraction ready for review and import.",
+    "arch": {
+      "labels": ["Upload UI", "OCR engines", "LLM parser", "Validation", "Structured output"],
+      "values": [12, 25, 30, 18, 15]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [10, 15, 45, 20, 10]
+    }
+  },
+  {
+    "id": "llm-training-review",
+    "title": "LLM training pipeline — code review",
+    "domain": "AI · MLOps · Python",
+    "lead": "Architecture and code review for LLM training pipelines in Python and Docker, focusing on data loading, checkpointing, and production readiness.",
+    "requirements": [
+      "Review training pipeline architecture for scalability and reproducibility",
+      "Improve data loading, checkpointing, and recovery patterns",
+      "Align with MLOps best practices for containerized training jobs"
+    ],
+    "implementation": [
+      "Audited Python training code and Docker image build process",
+      "Recommended batching, checkpoint strategy, and failure recovery",
+      "Documented runbooks for retraining and model artifact versioning"
+    ],
+    "outcome": "Training pipeline hardened for repeatable runs with clearer recovery paths and reviewed architecture.",
+    "arch": {
+      "labels": ["Raw datasets", "Data loader", "Training job", "Checkpoints", "Model registry"],
+      "values": [20, 22, 28, 18, 12]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [20, 25, 30, 15, 10]
+    }
+  },
+  {
+    "id": "gcp-dataflow-bq",
+    "title": "GCP Dataflow — Confluent to BigQuery",
+    "domain": "Data · Streaming · GCP",
+    "lead": "Kafka to BigQuery streaming pipeline for high-throughput event ingestion with schema validation and dead-letter handling.",
+    "requirements": [
+      "Stream events from Confluent Kafka into BigQuery in near real time",
+      "Validate schemas and route bad records to a dead-letter path",
+      "Monitor throughput and latency for production SLAs"
+    ],
+    "implementation": [
+      "Apache Beam pipeline on Dataflow with autoscaling workers",
+      "Schema registry integration and DLQ topic for failed records",
+      "Cloud Monitoring dashboards and alerting on lag and error rates"
+    ],
+    "outcome": "Reliable streaming ingest at scale with observability and a clear path for bad data.",
+    "arch": {
+      "labels": ["Kafka / Confluent", "Dataflow", "Transform", "BigQuery", "Monitoring"],
+      "values": [22, 28, 18, 22, 10]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [12, 18, 40, 20, 10]
+    }
+  },
+  {
+    "id": "hadoop-gcp-migration",
+    "title": "Hadoop-to-GCP migration",
+    "domain": "Cloud · Migration · BigQuery",
+    "lead": "On-prem Hadoop workloads migrated to GCP with Dataproc and BigQuery, preserving data lineage and operational runbooks.",
+    "requirements": [
+      "Migrate batch and streaming jobs off Hadoop without business disruption",
+      "Preserve data lineage and validation between old and new systems",
+      "Hand over runbooks so the client team can operate GCP workloads"
+    ],
+    "implementation": [
+      "Inventory of Hive, MapReduce, and Spark jobs with dependency mapping",
+      "Rewrote pipelines for Dataproc and BigQuery with phased cutover",
+      "Parallel validation runs and documentation for operations"
+    ],
+    "outcome": "Hadoop estate retired on schedule with validated BigQuery targets and full handover docs.",
+    "arch": {
+      "labels": ["Hadoop sources", "Migration ETL", "Dataproc", "BigQuery", "Validation"],
+      "values": [25, 20, 22, 23, 10]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [15, 20, 35, 15, 15]
+    }
+  },
+  {
+    "id": "ml-feature-pipeline",
+    "title": "ML feature pipeline — training & serving",
+    "domain": "ML · MLOps · Airflow",
+    "lead": "End-to-end ML workflow from feature engineering through model registry to a production serving API.",
+    "requirements": [
+      "Reproducible feature engineering from raw operational data",
+      "Orchestrated training runs with versioned models",
+      "Low-latency serving API for downstream applications"
+    ],
+    "implementation": [
+      "Feature store patterns with Airflow orchestration",
+      "Model registry integration and promotion gates",
+      "REST serving layer with monitoring and rollback support"
+    ],
+    "outcome": "Single pipeline from raw data to production predictions with traceable model versions.",
+    "arch": {
+      "labels": ["Raw data", "Feature jobs", "Training", "Model registry", "Serving API"],
+      "values": [18, 24, 22, 16, 20]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [12, 18, 42, 18, 10]
+    }
+  },
+  {
+    "id": "data-governance",
+    "title": "Data governance & quality platform",
+    "domain": "Data · Spark · Enterprise",
+    "lead": "Enterprise Data Insight and Data Quality platform with Spark, automated profiling, and governance workflows.",
+    "requirements": [
+      "Automated data quality checks across large analytical datasets",
+      "Null analysis, correlation detection, and profiling at scale",
+      "Data models and architecture to support governance initiatives"
+    ],
+    "implementation": [
+      "Spark and Spark-SQL jobs for profiling and rule execution",
+      "Scala services for correlation and anomaly detection",
+      "Governance dashboards and metadata integration for stewards"
+    ],
+    "outcome": "Central quality platform giving data teams repeatable checks and visibility into dataset health.",
+    "arch": {
+      "labels": ["Source systems", "Spark profiling", "Quality rules", "Metadata", "Steward UI"],
+      "values": [20, 28, 22, 15, 15]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [18, 22, 35, 15, 10]
+    }
+  },
+  {
+    "id": "clinical-etl",
+    "title": "Clinical ETL — Crunch & Hadoop",
+    "domain": "Healthcare · ETL · Hadoop",
+    "lead": "Regulated clinical data pipelines on Hadoop with cleansing, normalization, and REST access for downstream systems.",
+    "requirements": [
+      "Ingest and normalize clinical datasets at scale on HDFS",
+      "Meet healthcare data handling and audit expectations",
+      "Expose cleansed data via REST for consuming applications"
+    ],
+    "implementation": [
+      "Apache Crunch and MapReduce pipelines for cleansing and transforms",
+      "HDFS storage layout with partitioning for analytical queries",
+      "Beadledom REST services for governed downstream access"
+    ],
+    "outcome": "Clinical data ready for analytics and applications with controlled REST endpoints.",
+    "arch": {
+      "labels": ["Clinical feeds", "Crunch ETL", "HDFS", "REST services", "Downstream apps"],
+      "values": [22, 28, 20, 18, 12]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [16, 18, 38, 18, 10]
+    }
+  },
+  {
+    "id": "portfolio-accounting",
+    "title": "Portfolio accounting — cache & reconciliation",
+    "domain": "Finance · Java · Caching",
+    "lead": "Portfolio accounting enhancements with Hazelcast distributed caching, reconciliation frameworks, and production monitoring.",
+    "requirements": [
+      "Reduce latency on portfolio calculations for trading workflows",
+      "Keep cache and database views consistent under load",
+      "Monitor production performance and catch drift early"
+    ],
+    "implementation": [
+      "Hazelcast cluster for hot portfolio data with cache invalidation rules",
+      "Reconciliation jobs comparing cache snapshots to authoritative DB",
+      "AppDynamics agents and alerting for production incidents"
+    ],
+    "outcome": "Faster portfolio reads with automated reconciliation and production-grade monitoring.",
+    "arch": {
+      "labels": ["Trading feeds", "Core DB", "Hazelcast", "Reconciliation", "Monitoring"],
+      "values": [18, 22, 28, 17, 15]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [14, 16, 40, 20, 10]
+    }
+  },
+  {
+    "id": "investment-bank-desktop",
+    "title": "Investment bank desktop clients",
+    "domain": "Finance · Java · Desktop",
+    "lead": "Rich desktop clients for global investment bank workflows using Eclipse RCP, SWT, and XML marshalling.",
+    "requirements": [
+      "Desktop UI for complex trading and operations workflows",
+      "Reliable XML data exchange with backend services",
+      "Ongoing production support and enhancement delivery"
+    ],
+    "implementation": [
+      "Eclipse RCP shell with SWT and JFace UI components",
+      "JAXB marshalling for structured message formats",
+      "Requirements analysis, estimation, and release support"
+    ],
+    "outcome": "Stable desktop clients used in daily bank operations with maintained production support.",
+    "arch": {
+      "labels": ["Desktop UI", "JAXB layer", "Services", "Backend systems", "Operations users"],
+      "values": [30, 18, 22, 20, 10]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [20, 20, 35, 15, 10]
+    }
+  },
+  {
+    "id": "rest-api-partners",
+    "title": "REST API — partner integrations",
+    "domain": "API · Flask · OpenAPI",
+    "lead": "Partner-facing REST API with OpenAPI specs, OAuth, rate limiting, and SDK examples for external integrations.",
+    "requirements": [
+      "Documented API for third-party partners with clear auth model",
+      "Rate limiting and consistent error responses",
+      "SDK examples and runbooks for integration teams"
+    ],
+    "implementation": [
+      "Flask API with OpenAPI 3 documentation and OAuth flows",
+      "Rate limits, idempotency keys, and structured error codes",
+      "Client SDK samples and partner onboarding runbooks"
+    ],
+    "outcome": "Partners integrate via a stable, documented API with predictable limits and support material.",
+    "arch": {
+      "labels": ["Partner clients", "API gateway", "Flask services", "Auth + limits", "Core data"],
+      "values": [15, 18, 28, 17, 22]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [15, 15, 38, 22, 10]
+    }
+  },
+  {
+    "id": "pipeline-dashboard",
+    "title": "Full-stack dashboard — pipeline health",
+    "domain": "Full-stack · Flask · Tailwind",
+    "lead": "Flask and Tailwind dashboard for pipeline health, SLA metrics, real-time status, and drill-down into job runs.",
+    "requirements": [
+      "Single view of pipeline health and SLA compliance",
+      "Drill-down from summary metrics into individual job runs",
+      "Alerting when pipelines miss SLAs or fail quality checks"
+    ],
+    "implementation": [
+      "Flask backend aggregating run metadata and quality signals",
+      "Tailwind UI with status cards, filters, and detail panels",
+      "Alert hooks integrated with existing notification channels"
+    ],
+    "outcome": "Ops teams see pipeline health at a glance and investigate failures without switching tools.",
+    "arch": {
+      "labels": ["Dashboard UI", "Flask API", "Metrics store", "Orchestrator", "Alerting"],
+      "values": [25, 22, 20, 23, 10]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [12, 15, 43, 20, 10]
+    }
+  },
+  {
+    "id": "elk-stack",
+    "title": "ELK stack — log search & alerts",
+    "domain": "DevOps · Observability",
+    "lead": "Centralized logging with Logstash, Elasticsearch, and Kibana plus retention policies and production alerting.",
+    "requirements": [
+      "Aggregate logs from distributed services into one searchable store",
+      "Define retention and index lifecycle policies",
+      "Alert on error spikes and known failure patterns"
+    ],
+    "implementation": [
+      "Logstash pipelines with parsing rules per service",
+      "Elasticsearch cluster sizing and index templates",
+      "Kibana dashboards and watcher-style alerts for incidents"
+    ],
+    "outcome": "Faster incident response with centralized search and proactive alerts.",
+    "arch": {
+      "labels": ["App logs", "Logstash", "Elasticsearch", "Kibana", "Alerts"],
+      "values": [20, 22, 28, 18, 12]
+    },
+    "phases": {
+      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
+      "values": [10, 15, 45, 20, 10]
+    }
+  }
+]
