@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
-  <title>Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline | stackcone</title>
-  <meta name="description" content="Generic pipeline to publish a knowledge base to GitHub Pages: raw/ staging, master/ markdown, Pinecone indexing, MkDocs build, and incremental sync. Works with Dropbox or similar storage.">
-  <meta name="keywords" content="knowledge base GitHub Pages, cloud storage sync, MkDocs, Pinecone, RAG pipeline, incremental sync, sync-state.json, SSE streaming, knowledge base publishing, stackcone">
+  <title>How to Publish a Knowledge Base to GitHub Pages — Production Pipeline | stackcone</title>
+  <meta name="description" content="Generic pipeline to publish a knowledge base: drafts → published markdown → vector index + MkDocs → GitHub Pages, with incremental sync.">
+  <meta name="keywords" content="knowledge base GitHub Pages, cloud storage sync, MkDocs, vector database, RAG pipeline, incremental sync, documentation publishing, stackcone">
   <link rel="canonical" href="https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html">
-  <meta property="og:title" content="Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline">
-  <meta property="og:description" content="Repeatable pipeline: staged drafts → published master/ → Pinecone + MkDocs → GitHub Pages. Incremental sync and editorial workflow.">
+  <meta property="og:title" content="How to Publish a Knowledge Base to GitHub Pages — Production Pipeline">
+  <meta property="og:description" content="Repeatable pipeline: drafts → published markdown → vector index + MkDocs → GitHub Pages. Incremental sync and editorial workflow.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Publishing a Knowledge Base to GitHub Pages from Dropbox">
-  <meta name="twitter:description" content="Dropbox → master markdown → Pinecone + MkDocs → GitHub Pages. Incremental sync and editorial workflow from stackcone.">
+  <meta name="twitter:title" content="How to Publish a Knowledge Base to GitHub Pages">
+  <meta name="twitter:description" content="Cloud storage → published markdown → vector index + MkDocs → GitHub Pages. Incremental sync and editorial workflow.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
@@ -29,8 +29,8 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline",
-    "description": "How to publish a knowledge base to GitHub Pages: generic folder layout, incremental sync via sync-state.json, Pinecone indexing, MkDocs build, editorial workflow, HTTP connection pooling, and SSE progress streaming.",
+    "headline": "How to Publish a Knowledge Base to GitHub Pages — Production Pipeline",
+    "description": "How to publish a knowledge base to GitHub Pages: folder roles, incremental sync via sync-state.json, vector indexing, MkDocs build, editorial workflow, HTTP connection pooling, and SSE progress streaming.",
     "author": { "@type": "Person", "name": "Amar Kumar" },
     "publisher": {
       "@type": "Organization",
@@ -42,7 +42,7 @@
     "dateModified": "2026-06-13",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
-    "keywords": ["knowledge base", "GitHub Pages", "Dropbox sync", "MkDocs", "Pinecone", "RAG pipeline", "incremental sync", "SSE streaming"],
+    "keywords": ["knowledge base", "GitHub Pages", "cloud storage sync", "MkDocs", "vector database", "RAG pipeline", "incremental sync", "SSE streaming"],
     "articleSection": "AI Engineering",
     "about": { "@type": "Thing", "name": "Knowledge Base Publishing" }
   }
@@ -54,7 +54,7 @@
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
-      { "@type": "ListItem", "position": 3, "name": "Publishing a Knowledge Base to GitHub Pages from Dropbox", "item": "https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html" }
+      { "@type": "ListItem", "position": 3, "name": "How to Publish a Knowledge Base to GitHub Pages", "item": "https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html" }
     ]
   }
   </script>
@@ -76,12 +76,12 @@
   </header>
 
   <article class="blog-article">
-    <h1>Publishing a Knowledge Base to GitHub Pages from Dropbox</h1>
-    <p class="meta">June 2026 · Published by Amar Kumar</p>
-    <p>A production pipeline for keeping a RAG chatbot and a public docs site in sync — with Dropbox as the editorial source of truth and GitHub Pages as the published output.</p>
+    <h1>How to Publish a Knowledge Base to GitHub Pages</h1>
+    <p class="meta">me</p>
+    <p>A production pipeline for keeping a RAG chatbot and a public docs site in sync — with shared cloud storage for editing and GitHub Pages for the public site.</p>
 
-    <p>Your team needs one place to edit docs, a chatbot that stays current, and a public site users can browse. This article describes a <strong>repeatable production pipeline</strong>: staged content in <code>raw/</code>, published markdown in <code>master/</code>, a sync job that indexes only what changed, and a MkDocs build pushed to GitHub Pages.</p>
-    <p>Dropbox is used here as the shared drive — the same pattern works with S3, Google Drive, or any folder your editors already use.</p>
+    <p>Teams often need two outputs from the same markdown: a <strong>public documentation site</strong> and an optional <strong>vector index</strong> for a RAG chatbot. This article describes a repeatable pipeline — drafts in one folder, approved pages in another, a sync job that processes only changes, and a static site build for GitHub Pages.</p>
+    <p>The pattern works with any shared folder or cloud storage — Dropbox, S3, Google Drive, or a git-backed workflow.</p>
 
     <p>If you are new to RAG itself, start with our companion guide: <a href="how-to-build-a-production-rag-chatbot.html">How to Build a Production RAG Chatbot</a>.</p>
 
@@ -108,7 +108,7 @@
 
     <div class="chart-wrap">
       <canvas id="folderChart" aria-label="KB folder file distribution"></canvas>
-      <p class="chart-caption">Conceptual file counts by top-level folder (example KB ~350 assets)</p>
+      <p class="chart-caption">Conceptual file counts by top-level folder (illustrative proportions)</p>
     </div>
 
     <h2 id="why-this-layout">Why this layout</h2>
@@ -118,60 +118,55 @@
       <li><strong>Dual output</strong> — vectors for the chatbot <em>and</em> HTML for humans</li>
       <li><strong>Speed</strong> — re-embedding 200 docs when one paragraph changed is wasteful</li>
     </ul>
-    <p>The fix is a strict separation: <code>raw/</code> for drafts, <code>master/</code> as the sole sync source for published markdown, and <code>site/</code> as a generated mirror for the static site.</p>
+    <p>The fix is a strict separation: <code>drafts/</code> for drafts, <code>published/</code> as the sole sync source for published markdown, and <code>site/</code> as a generated mirror for the static site.</p>
 
     <h2 id="folder-layout">Recommended folder layout</h2>
-    <p>Use a single root folder (example: <code>kb/</code> on Dropbox). Adapt names to your team — the roles below matter more than the exact paths.</p>
+    <p>Pick a root folder in your storage (example: <code>docs/</code>). Adapt names to your team — the roles below matter more than the exact paths.</p>
     <table>
       <thead>
         <tr><th>Path</th><th>Purpose</th><th>Synced by job?</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>kb/raw/</code></td><td>Staging — drafts and imports awaiting review</td><td>No</td></tr>
-        <tr><td><code>kb/master/</code></td><td>Published <code>.md</code> — <strong>sole source</strong> for sync job</td><td>Yes (read)</td></tr>
-        <tr><td><code>kb/site/</code></td><td>Mirror of master, formatted for MkDocs nav</td><td>Yes (write)</td></tr>
-        <tr><td><code>kb/metadata/sync-state.json</code></td><td>Incremental sync state (content hashes, chunk IDs)</td><td>Yes (read/write)</td></tr>
-        <tr><td><code>kb/assets/</code></td><td>Images and files referenced by markdown</td><td>Copied to site on sync</td></tr>
+        <tr><td><code>drafts/</code></td><td>Staging — work in progress, not indexed or published</td><td>No</td></tr>
+        <tr><td><code>published/</code></td><td>Approved <code>.md</code> — <strong>sole input</strong> for the sync job</td><td>Yes (read)</td></tr>
+        <tr><td><code>site/</code></td><td>Mirror of published content, formatted for MkDocs nav</td><td>Yes (write)</td></tr>
+        <tr><td><code>metadata/sync-state.json</code></td><td>Incremental sync state (content hashes, chunk IDs)</td><td>Yes (read/write)</td></tr>
+        <tr><td><code>assets/</code></td><td>Images and files referenced by markdown</td><td>Copied to site on sync</td></tr>
       </tbody>
     </table>
 
-    <pre><code>kb/
-├── raw/                    <span class="cm">← staging (never indexed directly)</span>
-├── master/                 <span class="cm">← published .md — sole sync source</span>
-├── site/                   <span class="cm">← MkDocs tree (generated)</span>
+    <pre><code>docs/
+├── drafts/                 <span class="cm">← staging (not indexed)</span>
+├── published/              <span class="cm">← approved .md — sync source</span>
+├── site/                   <span class="cm">← static site output (generated)</span>
 ├── metadata/
-│   └── sync-state.json     <span class="cm">← incremental sync state</span>
+│   └── sync-state.json
 └── assets/                 <span class="cm">← images and attachments</span></code></pre>
 
-    <div class="chart-wrap">
-      <canvas id="sourcesChart" aria-label="KB content by source type"></canvas>
-      <p class="chart-caption">Published articles in master/ by content source type</p>
-    </div>
-
     <h2 id="two-pipelines">Two pipelines: ingest and publish</h2>
-    <p>Content enters through human or AI-assisted review. Only the publish pipeline touches Pinecone and GitHub.</p>
+    <p>Content enters through human or AI-assisted review. Only the publish pipeline touches the vector index and GitHub.</p>
 
-    <h3>Offline — raw content to master (editorial)</h3>
-    <div class="pipeline" role="img" aria-label="Offline ingest: Raw sources to AI or human review to Master markdown">
-      <span class="pipeline-step">Raw sources</span>
+    <h3>Offline — drafts to published (editorial)</h3>
+    <div class="pipeline" role="img" aria-label="Offline ingest: Source material to review to published markdown">
+      <span class="pipeline-step">Source material</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">AI summarize / draft</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Human review</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">Publish to master/</span>
+      <span class="pipeline-step">Publish to published/</span>
     </div>
-    <p>Draft content lands in <code>raw/</code>. An editor promotes approved pages into <code>master/</code>. Nothing in <code>raw/</code> is embedded or published.</p>
+    <p>Draft content lands in <code>drafts/</code>. An editor promotes approved pages into <code>published/</code>. Nothing in <code>drafts/</code> is embedded or published.</p>
 
-    <h3>Sync — master to vectors and GitHub Pages</h3>
-    <div class="pipeline" role="img" aria-label="Sync publish: Master markdown to Sync job to Chunk embed Pinecone to MkDocs mirror to GitHub Pages">
-      <span class="pipeline-step">master/ .md</span>
+    <h3>Sync — published to vectors and GitHub Pages</h3>
+    <div class="pipeline" role="img" aria-label="Sync publish: Published markdown to sync job to embed to vector index to MkDocs to GitHub Pages">
+      <span class="pipeline-step">published/ .md</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Sync job</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Chunk + embed</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">Pinecone upsert</span>
+      <span class="pipeline-step">Vector DB upsert</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Mirror site/</span>
       <span class="pipeline-arrow">→</span>
@@ -179,11 +174,11 @@
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Git push → GitHub Pages</span>
     </div>
-    <p>The sync job reads <strong>only</strong> <code>master/**/*.md</code> (plus tracker state). Changed files are chunked, embedded, upserted to Pinecone, copied into the MkDocs tree, built, and pushed.</p>
+    <p>The sync job reads <strong>only</strong> <code>published/**/*.md</code> (plus tracker state). Changed files are chunked, embedded, upserted to your vector database, copied into the MkDocs tree, built, and pushed.</p>
 
     <div class="chart-wrap">
-      <canvas id="publishFlowChart" aria-label="Content funnel from raw to GitHub Pages"></canvas>
-      <p class="chart-caption">Editorial funnel: raw items → reviewed → published → indexed → live on GitHub Pages</p>
+      <canvas id="publishFlowChart" aria-label="Content funnel from drafts to GitHub Pages"></canvas>
+      <p class="chart-caption">Editorial funnel: drafts → reviewed → published → indexed → live on GitHub Pages</p>
     </div>
 
     <h2 id="sync-job-flow">Sync job flow</h2>
@@ -195,66 +190,64 @@
     </div>
 
     <ol>
-      <li><strong>List files</strong> — walk <code>master/</code>, compare against <code>sync-state.json</code></li>
+      <li><strong>List files</strong> — walk <code>published/</code>, compare against <code>sync-state.json</code></li>
       <li><strong>Load markdown</strong> — download changed <code>.md</code> from storage (pooled HTTP)</li>
       <li><strong>Chunk + embed</strong> — split text, call embedding API in batches</li>
-      <li><strong>Pinecone upsert</strong> — write vectors; delete stale chunk IDs for removed sections</li>
+      <li><strong>Vector DB upsert</strong> — write vectors; delete stale chunk IDs for removed sections</li>
       <li><strong>Mirror site/</strong> — copy changed pages + assets into MkDocs tree</li>
       <li><strong>Build + push</strong> — <code>mkdocs build</code>, commit <code>site/</code>, push to <code>gh-pages</code> branch</li>
     </ol>
 
     <h2 id="draft-to-published">Draft to published workflow</h2>
-    <p>Any source — product notes, imports, or AI-generated drafts — should become structured markdown in <code>raw/</code>, then move to <code>master/</code> only after review.</p>
-    <div class="pipeline" role="img" aria-label="Editorial pipeline: Source content to AI draft to review to master">
+    <p>Any source — product notes, imports, or AI-generated drafts — should become structured markdown in <code>drafts/</code>, then move to <code>published/</code> only after review.</p>
+    <div class="pipeline" role="img" aria-label="Editorial pipeline: Source content to draft to review to published">
       <span class="pipeline-step">Source content</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">AI draft (optional)</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">raw/</span>
+      <span class="pipeline-step">drafts/</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Review</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">master/</span>
+      <span class="pipeline-step">published/</span>
     </div>
-    <p>Each page should have a clear title, concise body, and optional front matter (topic, status, last reviewed). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new master files automatically.</p>
+    <p>Each page should have a clear title, concise body, and optional front matter (status, topic). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new published files automatically.</p>
 
-    <pre><code><span class="cm"># raw/api-authentication.md (draft)</span>
+    <pre><code><span class="cm"># drafts/new-page.md</span>
 ---
 status: draft
-topic: integrations
 ---
 
-## How do I authenticate API requests?
+# Page title
 
-Use an API key in the Authorization header. Keys are created in
-Settings → API. Rotate keys from the same screen.
+Body text goes here.
 
-<span class="cm"># After review → moved to master/api-authentication.md</span></code></pre>
+<span class="cm"># After review → published/new-page.md</span></code></pre>
 
     <h2 id="incremental-sync">Incremental sync</h2>
-    <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per master file. Only files whose hash changed (or are new) go through embed + upsert.</p>
+    <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per published file. Only files whose hash changed (or are new) go through embed + upsert.</p>
 
     <pre><code>{
   <span class="str">"last_sync"</span>: <span class="str">"2026-06-12T14:30:00Z"</span>,
   <span class="str">"files"</span>: {
-    <span class="str">"/master/getting-started.md"</span>: {
+    <span class="str">"/published/page-a.md"</span>: {
       <span class="str">"hash"</span>: <span class="str">"sha256:a3f9..."</span>,
-      <span class="str">"chunk_ids"</span>: [<span class="str">"getting-started_0"</span>, <span class="str">"getting-started_1"</span>],
+      <span class="str">"chunk_ids"</span>: [<span class="str">"page-a_0"</span>, <span class="str">"page-a_1"</span>],
       <span class="str">"indexed_at"</span>: <span class="str">"2026-06-10T09:00:00Z"</span>
     },
-    <span class="str">"/master/billing-faq.md"</span>: {
+    <span class="str">"/published/page-b.md"</span>: {
       <span class="str">"hash"</span>: <span class="str">"sha256:b71c..."</span>,
-      <span class="str">"chunk_ids"</span>: [<span class="str">"billing-faq_0"</span>],
+      <span class="str">"chunk_ids"</span>: [<span class="str">"page-b_0"</span>],
       <span class="str">"indexed_at"</span>: <span class="str">"2026-06-12T14:30:00Z"</span>
     }
   }
 }</code></pre>
 
-    <p>On delete: remove the file entry from the tracker, delete its chunk IDs from Pinecone, and drop the mirrored MkDocs page. Unchanged files are skipped entirely.</p>
+    <p>On delete: remove the file entry from the tracker, delete its chunk IDs from the vector index, and drop the mirrored MkDocs page. Unchanged files are skipped entirely.</p>
 
     <div class="chart-wrap">
       <canvas id="incrementalChart" aria-label="Full sync vs incremental sync duration"></canvas>
-      <p class="chart-caption">Relative sync duration: full re-index vs incremental (typical 45-doc KB, 2 files changed)</p>
+      <p class="chart-caption">Relative sync duration: full re-index vs incremental (most files unchanged)</p>
     </div>
 
     <h2 id="connection-pooling">HTTP connection pooling</h2>
@@ -284,15 +277,15 @@ session.headers.update({
 
     <pre><code><span class="cm">// SSE events during sync</span>
 event: progress
-data: {"stage":"embed","file":"billing-faq.md","done":3,"total":5,"pct":60}
+data: {"stage":"embed","file":"page-b.md","done":3,"total":5,"pct":60}
 
 event: progress
-data: {"stage":"pinecone","file":"billing-faq.md","chunks":4,"pct":72}
+data: {"stage":"vector","file":"page-b.md","chunks":4,"pct":72}
 
 event: complete
-data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
+data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
 
-    <p>Stages map cleanly to the sync pipeline: <code>list</code> → <code>load</code> → <code>embed</code> → <code>pinecone</code> → <code>mkdocs</code> → <code>github</code> → <code>complete</code>.</p>
+    <p>Stages map cleanly to the sync pipeline: <code>list</code> → <code>load</code> → <code>embed</code> → <code>vector</code> → <code>mkdocs</code> → <code>github</code> → <code>complete</code>.</p>
 
     <h2 id="sync-checklist">Sync step checklist</h2>
     <table>
@@ -301,11 +294,11 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
       </thead>
       <tbody>
         <tr><td>1</td><td>Load <code>sync-state.json</code> from storage</td><td>Read</td></tr>
-        <tr><td>2</td><td>List all <code>master/**/*.md</code> paths and content hashes</td><td>—</td></tr>
+        <tr><td>2</td><td>List all <code>published/**/*.md</code> paths and content hashes</td><td>—</td></tr>
         <tr><td>3</td><td>Diff: new, changed, deleted vs tracker</td><td>—</td></tr>
         <tr><td>4</td><td>Download changed files (pooled HTTP)</td><td>—</td></tr>
         <tr><td>5</td><td>Chunk + embed changed content only</td><td>—</td></tr>
-        <tr><td>6</td><td>Upsert vectors to Pinecone; delete removed chunk IDs</td><td>—</td></tr>
+        <tr><td>6</td><td>Upsert vectors to the vector database; delete removed chunk IDs</td><td>—</td></tr>
         <tr><td>7</td><td>Mirror changed pages + assets to <code>site/</code></td><td>—</td></tr>
         <tr><td>8</td><td>Run <code>mkdocs build</code>; push <code>site/</code> to GitHub Pages</td><td>—</td></tr>
         <tr><td>9</td><td>Write updated hashes and chunk IDs to tracker</td><td>Write</td></tr>
@@ -319,20 +312,20 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     tracker = load_tracker()                    <span class="cm"># download sync-state.json</span>
     session = create_storage_session()          <span class="cm"># pooled HTTP</span>
 
-    master_files = list_master_md(session)
-    diff = compute_diff(master_files, tracker)  <span class="cm"># new | changed | deleted</span>
+    published_files = list_published_md(session)
+    diff = compute_diff(published_files, tracker)  <span class="cm"># new | changed | deleted</span>
 
     emit(<span class="str">"list"</span>, total=<span class="fn">len</span>(diff.changed) + <span class="fn">len</span>(diff.new))
 
     <span class="kw">for</span> path <span class="kw">in</span> diff.deleted:
-        delete_pinecone_chunks(tracker.files[path].chunk_ids)
+        delete_vector_chunks(tracker.files[path].chunk_ids)
         remove_site_page(path)
         <span class="kw">del</span> tracker.files[path]
 
     <span class="kw">for</span> path <span class="kw">in</span> diff.new + diff.changed:
         text = download_md(session, path)
         chunks = chunk_and_embed(text)
-        upsert_pinecone(path, chunks)
+        upsert_vectors(path, chunks)
         mirror_to_site(path, text)
         tracker.files[path] = {<span class="str">"hash"</span>: hash(text), <span class="str">"chunk_ids"</span>: [c.id <span class="kw">for</span> c <span class="kw">in</span> chunks]}
 
@@ -360,15 +353,15 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
         <tr><th>Term</th><th>Meaning</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>master/</strong></td><td>Published markdown — only folder the sync job reads for indexing</td></tr>
-        <tr><td><strong>raw/</strong></td><td>Staging area; content must be reviewed before promotion to master</td></tr>
+        <tr><td><strong>published/</strong></td><td>Published markdown — only folder the sync job reads for indexing</td></tr>
+        <tr><td><strong>drafts/</strong></td><td>Staging area; content must be reviewed before promotion to published</td></tr>
         <tr><td><strong>sync-state.json</strong></td><td>JSON state file tracking content hashes and vector chunk IDs per file</td></tr>
         <tr><td><strong>Incremental sync</strong></td><td>Re-index only files whose hash changed since last run</td></tr>
         <tr><td><strong>Connection pooling</strong></td><td>Reusing TCP/TLS connections across HTTP requests to the same host</td></tr>
         <tr><td><strong>SSE</strong></td><td>Server-Sent Events — one-way stream of progress updates to the browser</td></tr>
-        <tr><td><strong>Site mirror</strong></td><td>Generated copy of master content laid out for MkDocs navigation</td></tr>
+        <tr><td><strong>Site mirror</strong></td><td>Generated copy of published content laid out for MkDocs navigation</td></tr>
         <tr><td><strong>GitHub Pages</strong></td><td>Static site hosting from a repo branch (typically <code>gh-pages</code>)</td></tr>
-        <tr><td><strong>Editorial workflow</strong></td><td>Review path from draft content in raw/ to approved pages in master/</td></tr>
+        <tr><td><strong>Editorial workflow</strong></td><td>Review path from draft content in drafts/ to approved pages in published/</td></tr>
       </tbody>
     </table>
 
@@ -381,7 +374,7 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
       </div>
     </aside>
 
-    <p class="closing">Treat <code>master/</code> as a contract: if it is in master, it is searchable <em>and</em> publishable. Everything else stays in raw until a human approves it.</p>
+    <p class="closing">Treat <code>published/</code> as a contract: if a file is in <code>published/</code>, it is searchable <em>and</em> publishable. Everything else stays in <code>drafts/</code> until a human approves it.</p>
   </article>
 
   <footer class="footer">
@@ -403,7 +396,7 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     new Chart(document.getElementById('syncStagesChart'), {
       type: 'bar',
       data: {
-        labels: ['List files', 'Load MD', 'Embed', 'Pinecone upsert', 'MkDocs', 'GitHub'],
+        labels: ['List files', 'Load MD', 'Embed', 'Vector DB upsert', 'MkDocs', 'GitHub'],
         datasets: [{
           label: 'Time %',
           data: [5, 10, 45, 25, 10, 5],
@@ -423,9 +416,9 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     new Chart(document.getElementById('folderChart'), {
       type: 'doughnut',
       data: {
-        labels: ['raw/', 'master/', 'site/', 'metadata/', 'assets/'],
+        labels: ['drafts/', 'published/', 'site/', 'metadata/', 'assets/'],
         datasets: [{
-          data: [180, 45, 45, 3, 120],
+          data: [40, 25, 25, 5, 15],
           backgroundColor: ['#2563eb', '#16a34a', '#7c3aed', '#ea580c', '#0891b2']
         }]
       },
@@ -450,24 +443,6 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
         responsive: true,
         plugins: { legend: { display: false } },
         scales: { y: { beginAtZero: true, title: { display: true, text: 'Relative units' } } }
-      }
-    });
-
-    new Chart(document.getElementById('sourcesChart'), {
-      type: 'bar',
-      data: {
-        labels: ['Editorial', 'Imports', 'Refined', 'Other'],
-        datasets: [{
-          label: 'Articles',
-          data: [28, 12, 8, 5],
-          backgroundColor: palette.slice(0, 4),
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, title: { display: true, text: 'Count' } } }
       }
     });
 
@@ -500,10 +475,10 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     new Chart(document.getElementById('publishFlowChart'), {
       type: 'bar',
       data: {
-        labels: ['Raw', 'Reviewed', 'Master', 'Indexed', 'GitHub Pages'],
+        labels: ['Drafts', 'Reviewed', 'Published', 'Indexed', 'Live'],
         datasets: [{
           label: 'Items',
-          data: [100, 60, 45, 45, 45],
+          data: [50, 35, 25, 25, 25],
           backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'],
           borderRadius: 4
         }]

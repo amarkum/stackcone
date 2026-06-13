@@ -26,7 +26,7 @@
         " data-year=\"" + escapeHtml(p.date.slice(0, 4)) + "\"" +
         " data-tags=\"" + escapeHtml(p.tags.join(",")) + "\"" +
         " data-search=\"" + escapeHtml(searchText) + "\">" +
-        "<div class=\"post-meta\">" + escapeHtml(p.dateLabel) + " · Published by " + escapeHtml(p.author) + "</div>" +
+        "<div class=\"post-meta\">me</div>" +
         "<h2>" + escapeHtml(p.title) + "</h2>" +
         "<p>" + escapeHtml(p.description) + "</p>" +
         "<div class=\"tags\">" + tags + "</div>" +
