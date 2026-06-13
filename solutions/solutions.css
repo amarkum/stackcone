@@ -9,51 +9,78 @@
   margin-bottom: 0.35rem;
 }
 
-/* Polished architecture diagrams (Mermaid + Chart.js) */
+/* Architecture diagrams (Mermaid + maximize lightbox) */
 .blog-article .diagram-wrap {
+  position: relative;
   margin: 1.5rem 0;
-  padding: 1.25rem 1rem 1rem;
+  padding: 2.75rem 1rem 1rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--bg-card);
 }
 
-.blog-article .diagram-wrap--fit {
-  overflow: hidden;
+.blog-article .diagram-maximize {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-soft);
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.blog-article .diagram-wrap--scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
+.blog-article .diagram-maximize:hover {
+  background: var(--bg-card);
+  color: var(--text-bright);
+  border-color: var(--text-dim);
 }
 
-.blog-article .diagram-wrap .mermaid {
+.blog-article .diagram-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+.blog-article .diagram-wrap .mermaid,
+.blog-article .diagram-wrap pre.mermaid {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  background: transparent;
+}
+
+.blog-article .diagram-wrap pre.mermaid.is-rendered {
+  border: 0;
+  padding: 0;
   margin: 0;
   background: transparent;
 }
 
-.blog-article .diagram-wrap--fit .mermaid svg {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  background: transparent;
+.blog-article .diagram-error {
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-dim);
+  text-align: center;
 }
 
-.blog-article .diagram-wrap--scroll .mermaid {
-  width: max-content;
-  min-width: 100%;
-}
-
-.blog-article .diagram-wrap--scroll .mermaid svg {
+.blog-article .diagram-wrap .mermaid svg {
   display: block;
+  margin: 0 auto;
   width: auto;
-  max-width: none;
   height: auto;
-  min-width: 720px;
+  max-width: 100%;
   background: transparent;
 }
 
@@ -90,12 +117,181 @@
   margin-bottom: 0.5rem;
 }
 
+/* Fullscreen diagram lightbox */
+.diagram-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.diagram-lightbox[hidden] {
+  display: none;
+}
+
+.diagram-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.6);
+}
+
+.diagram-lightbox-panel {
+  position: relative;
+  z-index: 1;
+  width: 98vw;
+  height: 96vh;
+  max-width: none;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+}
+
+.diagram-lightbox-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border, #e5e5e5);
+}
+
+.diagram-lightbox-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-bright, #0a0a0a);
+  line-height: 1.3;
+}
+
+.diagram-lightbox-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.diagram-tool-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: 6px;
+  background: var(--bg-soft, #fafafa);
+  color: var(--text-mid, #6b6b6b);
+  cursor: pointer;
+}
+
+.diagram-tool-btn svg {
+  display: block;
+}
+
+.diagram-tool-btn:hover {
+  color: var(--text-bright, #0a0a0a);
+  border-color: var(--text-dim, #a3a3a3);
+}
+
+.diagram-tool-btn.is-active {
+  background: var(--text-bright, #0a0a0a);
+  border-color: var(--text-bright, #0a0a0a);
+  color: var(--bg-card, #fff);
+}
+
+.diagram-lightbox-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: 6px;
+  background: var(--bg-soft, #fafafa);
+  color: var(--text-mid, #6b6b6b);
+  cursor: pointer;
+}
+
+.diagram-lightbox-close svg {
+  display: block;
+}
+
+.diagram-lightbox-close:hover {
+  color: var(--text-bright, #0a0a0a);
+  border-color: var(--text-dim, #a3a3a3);
+}
+
+.diagram-lightbox-stage {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-soft, #fafafa);
+  touch-action: none;
+}
+
+.diagram-lightbox-stage.is-pan-enabled {
+  cursor: grab;
+}
+
+.diagram-lightbox-stage.is-pan-enabled.is-dragging {
+  cursor: grabbing;
+}
+
+.diagram-lightbox-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.diagram-lightbox-canvas pre.mermaid,
+.diagram-lightbox-canvas .mermaid {
+  font-size: 14px;
+  line-height: normal;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.diagram-lightbox-canvas svg {
+  display: block;
+  max-width: none;
+}
+
 @media (max-width: 640px) {
   .blog-article .diagram-wrap {
-    padding: 1rem 0.75rem;
+    padding: 2.5rem 0.75rem 0.85rem;
   }
 
-  .blog-article .diagram-wrap--scroll .mermaid svg {
-    min-width: 640px;
+  .diagram-lightbox {
+    padding: 0;
+  }
+
+  .diagram-lightbox-panel {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .diagram-lightbox-stage {
+    min-height: 0;
+  }
+
+  .diagram-lightbox-tools {
+    gap: 0.25rem;
   }
 }

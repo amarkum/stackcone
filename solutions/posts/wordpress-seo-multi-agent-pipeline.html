@@ -149,31 +149,30 @@
     <h2 id="architecture">Architecture</h2>
     <p>Three layers: a <strong>scheduler + orchestrator</strong> runs specialized agents, agents read/write <strong>PostgreSQL</strong> state, and external APIs handle SERP data, WordPress publishing, and owner reporting.</p>
 
-    <div class="diagram-wrap diagram-wrap--fit">
-      <div class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '13px', 'mainBkg': '#ffffff', 'background': '#ffffff', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252'}, 'flowchart': {'useMaxWidth': true, 'padding': 20, 'htmlLabels': true, 'nodeSpacing': 40, 'rankSpacing': 48}}}%%
-flowchart TB
+    <div class="diagram-wrap" data-diagram-title="System architecture">
+      <div class="diagram-body">
+        <pre class="mermaid">flowchart TB
   classDef trigger fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
   classDef orch fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
   classDef agent fill:#f1f5f9,stroke:#64748b,color:#334155
   classDef data fill:#ccfbf1,stroke:#0d9488,color:#115e59
   classDef ext fill:#f8fafc,stroke:#475569,color:#334155
 
-  SCH["Scheduler<br/>APScheduler"]:::trigger
-  ORCH["Orchestrator Agent<br/>LangGraph workflow"]:::orch
+  SCH["Scheduler\nAPScheduler"]:::trigger
+  ORCH["Orchestrator Agent\nLangGraph workflow"]:::orch
   SCH -->|"cron / webhook"| ORCH
 
-  KW["Keyword Agent<br/>SERP + volume"]:::agent
-  CT["Content Agent<br/>LLM + templates"]:::agent
-  QA["QA / Policy<br/>YMYL checks"]:::agent
-  RP["Report Agent<br/>GSC + Bing"]:::agent
+  KW["Keyword Agent\nSERP + volume"]:::agent
+  CT["Content Agent\nLLM + templates"]:::agent
+  QA["QA / Policy\nYMYL checks"]:::agent
+  RP["Report Agent\nGSC + Bing"]:::agent
 
   ORCH --> KW
   ORCH --> CT
   ORCH --> QA
   ORCH --> RP
 
-  PG[("PostgreSQL<br/>content_queue · job_runs<br/>article_versions · metrics_daily")]:::data
+  PG[("PostgreSQL\ncontent_queue · job_runs\narticle_versions · metrics_daily")]:::data
   KW --> PG
   CT --> PG
   QA --> PG
@@ -181,18 +180,17 @@ flowchart TB
 
   SEO["DataForSEO / Ahrefs API"]:::ext
   WP["WordPress REST API"]:::ext
-  NT["Email / Slack<br/>weekly report"]:::ext
+  NT["Email / Slack\nweekly report"]:::ext
   PG --> SEO
   PG --> WP
-  PG --> NT
+  PG --> NT</pre>
       </div>
       <p class="diagram-caption">System architecture — orchestrator, agents, state store, and external integrations</p>
     </div>
 
-    <div class="diagram-wrap diagram-wrap--scroll">
-      <div class="mermaid">
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'DM Sans, system-ui, sans-serif', 'fontSize': '12px', 'mainBkg': '#ffffff', 'background': '#ffffff', 'primaryColor': '#f8fafc', 'primaryTextColor': '#0a0a0a', 'primaryBorderColor': '#d4d4d4', 'lineColor': '#525252', 'actorBkg': '#f8fafc', 'actorTextColor': '#0a0a0a', 'actorLineColor': '#525252', 'signalColor': '#525252', 'signalTextColor': '#0a0a0a', 'labelBoxBkgColor': '#fafafa', 'labelBoxBorderColor': '#d4d4d4', 'labelTextColor': '#0a0a0a'}, 'sequence': {'useMaxWidth': false, 'actorMargin': 56, 'messageMargin': 36, 'boxMargin': 10, 'wrap': true}}}%%
-sequenceDiagram
+    <div class="diagram-wrap" data-diagram-title="Publish sequence">
+      <div class="diagram-body">
+        <pre class="mermaid">sequenceDiagram
   autonumber
   participant SCH as Scheduler
   participant OR as Orchestrator
@@ -214,7 +212,7 @@ sequenceDiagram
     OR->>PG: log job_run + metrics
   else QA fail
     OR->>PG: requeue with notes
-  end
+  end</pre>
       </div>
       <p class="diagram-caption">Publish sequence — QA gate before WordPress write</p>
     </div>
@@ -397,51 +395,9 @@ sequenceDiagram
   <script src="/site-nav.js"></script>
   <script src="/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "loose",
-      theme: "base",
-      themeVariables: {
-        fontFamily: "DM Sans, system-ui, sans-serif",
-        fontSize: "13px",
-        mainBkg: "#ffffff",
-        background: "#ffffff",
-        primaryColor: "#f8fafc",
-        primaryTextColor: "#0a0a0a",
-        primaryBorderColor: "#d4d4d4",
-        lineColor: "#525252",
-        actorBkg: "#f8fafc",
-        actorTextColor: "#0a0a0a",
-        actorLineColor: "#525252",
-        signalColor: "#525252",
-        signalTextColor: "#0a0a0a",
-        labelBoxBkgColor: "#fafafa",
-        labelBoxBorderColor: "#d4d4d4",
-        labelTextColor: "#0a0a0a"
-      },
-      flowchart: {
-        useMaxWidth: true,
-        curve: "basis",
-        padding: 20,
-        htmlLabels: true,
-        nodeSpacing: 40,
-        rankSpacing: 48
-      },
-      sequence: {
-        useMaxWidth: false,
-        actorMargin: 56,
-        messageMargin: 36,
-        boxMargin: 10,
-        wrap: true
-      }
-    });
-
-    window.addEventListener("load", function () {
-      mermaid.run({ querySelector: ".mermaid" });
-    });
-
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
     Chart.defaults.color = '#6b6b6b';
     const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
