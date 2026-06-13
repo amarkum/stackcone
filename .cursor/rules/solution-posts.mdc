@@ -10,12 +10,12 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
 
 ## Deliverables (always)
 
-1. `solutions/posts/{slug}.html` — published page
-2. `solutions/posts/{slug}.md` — markdown source (mirror of content)
+1. `solutions/{slug}.html` — published page
+2. `solutions/{slug}.md` — markdown source (mirror of content)
 3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page
 
-**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Files live in `solutions/posts/{slug}.html` and `solutions/posts/{slug}.md`.
+**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Files live in `solutions/{slug}.html` and `solutions/{slug}.md`.
 
 ## solutions.json entry
 
@@ -24,7 +24,7 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
   "id": "{slug}",
   "title": "Outcome-focused title",
   "description": "Problem + approach in one sentence (under ~155 chars)",
-  "href": "./posts/{slug}.html",
+  "href": "./{slug}.html",
   "date": "YYYY-MM-DD",
   "dateLabel": "Month YYYY",
   "author": "Amar Kumar",
@@ -72,21 +72,21 @@ Omit `client` if no company named. **Do not** add `source` fields (no `upwork`, 
 
 **Mermaid theme/config:** only in `solutions/diagrams.js` (`StackconeMermaidConfig`). Never `%%{init:...}%%` in post HTML.
 
-## Path convention (`solutions/posts/{slug}.html`)
+## Path convention (`solutions/{slug}.html`)
 
-All paths below are **relative from** `solutions/posts/`. Do not use root-absolute `/…` paths (breaks local `file://` preview).
+All paths below are **relative from** `solutions/`. Do not use root-absolute `/…` paths (breaks local `file://` preview).
 
 | Asset | Path |
 |-------|------|
-| CSS | `../../styles.css`, `../../blog/blog.css`, `../solutions.css` |
-| Favicon | `../../favicon/dark-favicon.png`, `../../favicon/white-favicon.png` |
-| Logo | `../../logo/stackcone.png` |
-| Contact CTA | `../../contact/` |
-| Mermaid + diagrams | `../diagrams.js?v={N}` — bump `{N}` when `diagrams.js` changes |
-| Site JS | `../../site-nav.js`, `../../script.js` |
-| Diagram fullscreen icon | `../icons/expand.svg` |
+| CSS | `../styles.css`, `../blog/blog.css`, `solutions.css` |
+| Favicon | `../favicon/dark-favicon.png`, `../favicon/white-favicon.png` |
+| Logo | `../logo/stackcone.png` |
+| Contact CTA | `../contact/` |
+| Mermaid + diagrams | `diagrams.js?v={N}` — bump `{N}` when `diagrams.js` changes |
+| Site JS | `../site-nav.js`, `../script.js` |
+| Diagram fullscreen icon | `icons/expand.svg` |
 
-Canonical / OG URLs always `https://stackcone.com/solutions/posts/{slug}.html`.
+Canonical / OG URLs always `https://stackcone.com/solutions/{slug}.html`.
 
 ## Exact HTML — full page skeleton
 
@@ -102,9 +102,9 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
   <title>{title ≤60 chars} | stackcone Solutions</title>
   <meta name="description" content="{meta description ≤155 chars}">
   <meta name="keywords" content="{6–10 comma-separated keywords}">
-  <link rel="canonical" href="https://stackcone.com/solutions/posts/{slug}.html">
+  <link rel="canonical" href="https://stackcone.com/solutions/{slug}.html">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://stackcone.com/solutions/posts/{slug}.html">
+  <meta property="og:url" content="https://stackcone.com/solutions/{slug}.html">
   <meta property="og:title" content="{og title}">
   <meta property="og:description" content="{og description ≤155 chars}">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
@@ -113,14 +113,14 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
   <meta name="twitter:title" content="{twitter title}">
   <meta name="twitter:description" content="{twitter description}">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
-  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
-  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/png" href="../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../styles.css">
-  <link rel="stylesheet" href="../../blog/blog.css">
-  <link rel="stylesheet" href="../solutions.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../blog/blog.css">
+  <link rel="stylesheet" href="solutions.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -136,7 +136,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
     },
     "datePublished": "{YYYY-MM-DD}",
     "dateModified": "{YYYY-MM-DD}",
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/posts/{slug}.html" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/{slug}.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
     "articleSection": "{category from solutions.json}",
     "keywords": ["{keyword1}", "{keyword2}", "..."]
@@ -149,7 +149,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
       { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
-      { "@type": "ListItem", "position": 3, "name": "{short title for breadcrumb}", "item": "https://stackcone.com/solutions/posts/{slug}.html" }
+      { "@type": "ListItem", "position": 3, "name": "{short title for breadcrumb}", "item": "https://stackcone.com/solutions/{slug}.html" }
     ]
   }
   </script>
@@ -159,7 +159,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
     <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
     <div class="header-inner">
       <a href="/" class="logo-link">
-        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+        <img src="../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
       </a>
       <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
         <span class="nav-toggle-bar"></span>
@@ -195,7 +195,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
       <h2>Discuss this architecture</h2>
       <p>{CTA paragraph}</p>
       <div class="blog-cta-actions">
-        <a href="../../contact/" class="cta cta--primary">Contact us</a>
+        <a href="../contact/" class="cta cta--primary">Contact us</a>
         <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--secondary" rel="noopener noreferrer">Hire us on Upwork</a>
       </div>
     </aside>
@@ -203,15 +203,15 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
 
   <footer class="footer">
     <div class="footer-inner">
-      <img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
+      <img src="../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script src="../diagrams.js?v={N}"></script>
-  <script src="../../site-nav.js"></script>
-  <script src="../../script.js"></script>
+  <script src="diagrams.js?v={N}"></script>
+  <script src="../site-nav.js"></script>
+  <script src="../script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
@@ -229,7 +229,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
 </html>
 ```
 
-**Footer script order (required):** `mermaid.min.js` → `../diagrams.js` → `site-nav.js` → `script.js` → `chart.js` → inline Chart init.
+**Footer script order (required):** `mermaid.min.js` → `diagrams.js` → `site-nav.js` → `script.js` → `chart.js` → inline Chart init.
 
 ## Exact HTML — Mermaid diagram card
 
@@ -238,7 +238,7 @@ Use **`mermaid-pending`** (never `class="mermaid"` — Mermaid auto-scans that c
 ```html
 <div class="diagram-wrap" data-diagram-title="{fullscreen title}">
   <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
-    <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+    <img class="diagram-icon" src="icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
   </button>
   <div class="diagram-body">
     <div class="mermaid-pending">flowchart TB
@@ -301,7 +301,7 @@ Use `.chart-wrap--architecture` on the architecture/component map chart only. Ot
 - Copy `diagrams.js`, `solutions.css`, or icon SVGs into the post file
 - Inline Mermaid `%%{init}%%` blocks
 - Use `class="mermaid"` on diagram source nodes
-- Root-absolute script paths (`/solutions/diagrams.js`) in `solutions/posts/*.html`
+- Root-absolute script paths (`/solutions/diagrams.js`) in `solutions/*.html`
 - Duplicate lightbox HTML/JS (handled by `diagrams.js`)
 
 ## Tone and framing
@@ -336,7 +336,7 @@ Follow `.cursor/rules/seo-google.mdc`. Every new solution page must have **uniqu
 | `<title>` | Primary keyword + outcome; `\| stackcone Solutions` suffix; **≤ 60 chars** |
 | `<meta name="description">` | Value prop + primary keyword + 1 secondary; **≤ 155 chars**; unique per page |
 | `<meta name="keywords">` | **6–10** comma-separated terms: primary, secondaries, niche, stack names |
-| `<link rel="canonical">` | `https://stackcone.com/solutions/posts/{slug}.html` — exact URL |
+| `<link rel="canonical">` | `https://stackcone.com/solutions/{slug}.html` — exact URL |
 | `og:title` | Same as title or slightly shorter (no suffix if too long) |
 | `og:description` | Can differ from meta description but same intent; **≤ 155 chars** |
 | `og:url` | Same as canonical |
