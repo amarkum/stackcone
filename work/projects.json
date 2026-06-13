@@ -1,16 +1,25 @@
 [
   {
     "id": "aadhya-self-drive",
-    "title": "Aadhya Self Drive — Flutter iOS & Android",
-    "domain": "Mobile · Flutter · Travel",
+    "title": "Aadhya Self Drive \u2014 Flutter iOS & Android",
+    "domain": "Mobile \u00b7 Flutter \u00b7 Travel",
     "client": "Aadhya Self Drive",
     "clientUrl": "https://www.aadhya.icu/",
     "links": [
-      { "label": "Client website", "url": "https://www.aadhya.icu/" },
-      { "label": "Google Play", "url": "https://play.google.com/store/apps/details?id=com.aadhyatours.selfdrive" },
-      { "label": "App Store", "url": "https://apps.apple.com/in/app/aadhya-self-drive/id6763628669" }
+      {
+        "label": "Client website",
+        "url": "https://www.aadhya.icu/"
+      },
+      {
+        "label": "Google Play",
+        "url": "https://play.google.com/store/apps/details?id=com.aadhyatours.selfdrive"
+      },
+      {
+        "label": "App Store",
+        "url": "https://apps.apple.com/in/app/aadhya-self-drive/id6763628669"
+      }
     ],
-    "lead": "Cross-platform mobile app for Aadhya Self Drive — a self-drive car rental service. stackcone built and shipped the Flutter app on iOS and Android; Aadhya Self Drive is an active stackcone client.",
+    "lead": "Cross-platform mobile app for Aadhya Self Drive \u2014 a self-drive car rental service. stackcone built and shipped the Flutter app on iOS and Android; Aadhya Self Drive is an active stackcone client.",
     "requirements": [
       "Browse and book hatchback, sedan, and SUV rentals for hourly or daily use",
       "Secure in-app document upload for renter verification",
@@ -23,21 +32,65 @@
       "TestFlight and Play Store release pipeline with store listing assets and version updates",
       "Monetization through in-app booking and payment flows tied to the rental backend"
     ],
-    "outcome": "Live on the App Store and Google Play with 1K+ Android downloads and 5-star iOS ratings. Client site at aadhya.icu — ongoing stackcone engagement.",
-    "arch": {
-      "labels": ["Flutter UI", "Booking & payments", "Document upload", "Rental API", "Owner portal"],
-      "values": [28, 22, 15, 25, 10]
-    },
+    "outcome": "Live on the App Store and Google Play with 1K+ Android downloads and 5-star iOS ratings. Client site at aadhya.icu \u2014 ongoing stackcone engagement.",
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [14, 16, 38, 22, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        14,
+        16,
+        38,
+        22,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Flutter UI",
+          "subtitle": "UI",
+          "type": "source",
+          "detail": "Flutter app for iOS and Android from a single codebase"
+        },
+        {
+          "title": "Booking & payments",
+          "subtitle": "payments",
+          "type": "process",
+          "detail": "Booking flow with location-based search, flexible rental durations, and trip management"
+        },
+        {
+          "title": "Document upload",
+          "subtitle": "upload",
+          "type": "process",
+          "detail": "TestFlight and Play Store release pipeline with store listing assets and version updates"
+        },
+        {
+          "title": "Rental API",
+          "subtitle": "API",
+          "type": "store",
+          "detail": "Monetization through in-app booking and payment flows tied to the rental backend"
+        },
+        {
+          "title": "Owner portal",
+          "subtitle": "portal",
+          "type": "consumer",
+          "detail": "Browse and book hatchback, sedan, and SUV rentals for hourly or daily use"
+        }
+      ],
+      "stack": "Flutter \u00b7 iOS \u00b7 Android \u00b7 REST API",
+      "orchestration": null
     }
   },
   {
     "id": "cabinetsense",
-    "title": "CabinetSense — SaaS platform & RAG assistant",
-    "domain": "AI · Full-stack · GCP",
-    "lead": "Commercial SketchUp cabinet-design SaaS with a Java App Engine cloud platform, support operations dashboard, and a Python Cloud Run RAG service with multi-LLM routing.",
+    "title": "CabinetSense \u2014 SaaS platform & RAG assistant",
+    "domain": "AI \u00b7 Full-stack \u00b7 GCP",
+    "lead": "Commercial SketchUp cabinet-design SaaS for CabinetSense \u2014 an active stackcone client on Upwork since 2023. Java App Engine platform, support dashboard, and Python Cloud Run RAG with multi-LLM routing.",
     "requirements": [
       "Support team needed Kanban and list views for tickets with role-scoped access",
       "Embedded AI chat inside SketchUp with usage-based billing and credit tracking",
@@ -48,20 +101,67 @@
       "FastAPI RAG on Cloud Run: Pinecone retrieval, Cohere rerank, MMR, multi-LLM routing",
       "JWT auth, FastSpring licensing, BigQuery nightly export for AI usage and feedback"
     ],
-    "outcome": "End-to-end SaaS platform with production RAG, metered AI billing, and support ops UI used daily by customers and the support team.",
-    "arch": {
-      "labels": ["SketchUp + Web UI", "Java App Engine", "Cloud Run RAG", "Pinecone + LLMs", "BigQuery telemetry"],
-      "values": [18, 22, 25, 20, 15]
-    },
+    "outcome": "Long-running Upwork engagement: support ops UI, licensing, and production RAG used daily by CabinetSense customers and support staff.",
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [12, 18, 42, 18, 10]
-    }
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        12,
+        18,
+        42,
+        18,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "SketchUp + Web UI",
+          "subtitle": "UI",
+          "type": "source",
+          "detail": "Refactored support board from JSP to lazy JSON APIs with batch Datastore loads"
+        },
+        {
+          "title": "Java App Engine",
+          "subtitle": "Engine",
+          "type": "process",
+          "detail": "FastAPI RAG on Cloud Run: Pinecone retrieval, Cohere rerank, MMR, multi-LLM routing"
+        },
+        {
+          "title": "Cloud Run RAG",
+          "subtitle": "RAG",
+          "type": "process",
+          "detail": "JWT auth, FastSpring licensing, BigQuery nightly export for AI usage and feedback"
+        },
+        {
+          "title": "Pinecone + LLMs",
+          "subtitle": "LLMs",
+          "type": "store",
+          "detail": "Support team needed Kanban and list views for tickets with role-scoped access"
+        },
+        {
+          "title": "BigQuery telemetry",
+          "subtitle": "telemetry",
+          "type": "consumer",
+          "detail": "Embedded AI chat inside SketchUp with usage-based billing and credit tracking"
+        }
+      ],
+      "stack": "Java App Engine \u00b7 Cloud Run \u00b7 FastAPI \u00b7 Pinecone \u00b7 BigQuery",
+      "orchestration": "Airflow + Cloud Tasks orchestration"
+    },
+    "client": "CabinetSense",
+    "clientUrl": "https://www.cabinetsense.com/",
+    "upwork": "Millcreek Custom Cabinets \u00b7 active Upwork since 2023"
   },
   {
     "id": "rag-knowledge-base",
-    "title": "RAG knowledge base — internal docs search",
-    "domain": "AI · RAG · Python",
+    "title": "RAG knowledge base \u2014 internal docs search",
+    "domain": "AI \u00b7 RAG \u00b7 Python",
     "lead": "Retrieval-augmented search for a B2B SaaS internal documentation library with semantic retrieval and cited answers.",
     "requirements": [
       "Make internal docs searchable with natural language, not keyword-only search",
@@ -74,19 +174,65 @@
       "Admin hooks for re-indexing and monitoring retrieval quality"
     ],
     "outcome": "Internal teams query company docs in plain language and get cited answers from the live knowledge base.",
-    "arch": {
-      "labels": ["Doc sources", "Ingest & chunk", "Embeddings", "Vector index", "Search API + LLM"],
-      "values": [15, 20, 15, 25, 25]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [15, 15, 40, 20, 10]
-    }
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        15,
+        15,
+        40,
+        20,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Doc sources",
+          "subtitle": "sources",
+          "type": "source",
+          "detail": "Document ingestion pipeline: parse, chunk, embed, and index in Pinecone"
+        },
+        {
+          "title": "Ingest & chunk",
+          "subtitle": "chunk",
+          "type": "process",
+          "detail": "Search API with top-k retrieval and LLM generation with source attribution"
+        },
+        {
+          "title": "Embeddings",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Admin hooks for re-indexing and monitoring retrieval quality"
+        },
+        {
+          "title": "Vector index",
+          "subtitle": "index",
+          "type": "store",
+          "detail": "Make internal docs searchable with natural language, not keyword-only search"
+        },
+        {
+          "title": "Search API + LLM",
+          "subtitle": "LLM",
+          "type": "consumer",
+          "detail": "Return answers grounded in source documents with citations"
+        }
+      ],
+      "stack": "Python \u00b7 Pinecone \u00b7 OpenAI \u00b7 FastAPI",
+      "orchestration": null
+    },
+    "client": "Komal HK",
+    "upwork": "AI chatbot app \u00b7 Dec 2023 \u2013 Jan 2024 \u00b7 5.0"
   },
   {
     "id": "internal-copilot",
-    "title": "Internal copilot — LLM with tools",
-    "domain": "AI · Agents · RAG",
+    "title": "Internal copilot \u2014 LLM with tools",
+    "domain": "AI \u00b7 Agents \u00b7 RAG",
     "lead": "Internal assistant that answers from company docs and runs approved tools such as Jira and Slack with access controls and audit logging.",
     "requirements": [
       "Answer questions using Confluence, Notion, and internal wikis",
@@ -99,20 +245,64 @@
       "Access controls, prompt guardrails, and request logging for compliance"
     ],
     "outcome": "Employees get grounded answers and can trigger approved actions without leaving the chat interface.",
-    "arch": {
-      "labels": ["Chat UI", "LLM + tools", "RAG retrieval", "Jira / Slack APIs", "Audit log"],
-      "values": [15, 28, 22, 20, 15]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [14, 16, 38, 22, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        14,
+        16,
+        38,
+        22,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Chat UI",
+          "subtitle": "UI",
+          "type": "source",
+          "detail": "RAG layer over Confluence and Notion with function-calling orchestration"
+        },
+        {
+          "title": "LLM + tools",
+          "subtitle": "tools",
+          "type": "process",
+          "detail": "Tool adapters for Jira and Slack with scoped credentials"
+        },
+        {
+          "title": "RAG retrieval",
+          "subtitle": "retrieval",
+          "type": "process",
+          "detail": "Access controls, prompt guardrails, and request logging for compliance"
+        },
+        {
+          "title": "Jira / Slack APIs",
+          "subtitle": "APIs",
+          "type": "store",
+          "detail": "Answer questions using Confluence, Notion, and internal wikis"
+        },
+        {
+          "title": "Audit log",
+          "subtitle": "log",
+          "type": "consumer",
+          "detail": "Execute approved tool calls for ticketing and messaging workflows"
+        }
+      ],
+      "stack": "LangChain \u00b7 OpenAI \u00b7 Confluence \u00b7 Jira \u00b7 Slack APIs",
+      "orchestration": null
     }
   },
   {
     "id": "ai-invoice-bot",
-    "title": "AI Invoice Bot — OCR + LLM extraction",
-    "domain": "AI · OCR · Automation",
-    "lead": "Upload invoice images or PDFs, run OCR, and use an LLM to extract parties, amounts, and line items into structured data.",
+    "title": "AI Invoice Bot \u2014 OCR + LLM extraction",
+    "domain": "AI \u00b7 OCR \u00b7 Automation",
+    "lead": "Invoice OCR and LLM extraction for Unjumbled \u2014 upload images or PDFs and get structured party, amount, and line-item data.",
     "requirements": [
       "Accept invoice images and PDFs from customers",
       "Extract who owes whom and how much with high accuracy",
@@ -123,21 +313,67 @@
       "LLM parsing pipeline with schema validation and confidence checks",
       "API endpoint and error handling for malformed or low-quality scans"
     ],
-    "outcome": "Manual invoice data entry replaced with automated extraction ready for review and import.",
-    "arch": {
-      "labels": ["Upload UI", "OCR engines", "LLM parser", "Validation", "Structured output"],
-      "values": [12, 25, 30, 18, 15]
-    },
+    "outcome": "Unjumbled clients upload invoices and receive structured JSON ready for accounting workflows.",
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [10, 15, 45, 20, 10]
-    }
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        10,
+        15,
+        45,
+        20,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Upload UI",
+          "subtitle": "UI",
+          "type": "source",
+          "detail": "Tesseract and Google Cloud Vision for OCR preprocessing"
+        },
+        {
+          "title": "OCR engines",
+          "subtitle": "engines",
+          "type": "process",
+          "detail": "LLM parsing pipeline with schema validation and confidence checks"
+        },
+        {
+          "title": "LLM parser",
+          "subtitle": "parser",
+          "type": "process",
+          "detail": "API endpoint and error handling for malformed or low-quality scans"
+        },
+        {
+          "title": "Validation",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Accept invoice images and PDFs from customers"
+        },
+        {
+          "title": "Structured output",
+          "subtitle": "output",
+          "type": "consumer",
+          "detail": "Extract who owes whom and how much with high accuracy"
+        }
+      ],
+      "stack": "Tesseract \u00b7 Google Vision \u00b7 LLM \u00b7 Python",
+      "orchestration": null
+    },
+    "client": "Unjumbled",
+    "upwork": "Upwork client"
   },
   {
     "id": "llm-training-review",
-    "title": "LLM training pipeline — code review",
-    "domain": "AI · MLOps · Python",
-    "lead": "Architecture and code review for LLM training pipelines in Python and Docker, focusing on data loading, checkpointing, and production readiness.",
+    "title": "LLM training pipeline \u2014 code review",
+    "domain": "AI \u00b7 MLOps \u00b7 Python",
+    "lead": "Code and architecture review for SME Careers LLM training pipelines in Python and Docker \u2014 data loading, checkpointing, and production readiness.",
     "requirements": [
       "Review training pipeline architecture for scalability and reproducibility",
       "Improve data loading, checkpointing, and recovery patterns",
@@ -148,20 +384,66 @@
       "Recommended batching, checkpoint strategy, and failure recovery",
       "Documented runbooks for retraining and model artifact versioning"
     ],
-    "outcome": "Training pipeline hardened for repeatable runs with clearer recovery paths and reviewed architecture.",
-    "arch": {
-      "labels": ["Raw datasets", "Data loader", "Training job", "Checkpoints", "Model registry"],
-      "values": [20, 22, 28, 18, 12]
-    },
+    "outcome": "SME Careers shipped a hardened training pipeline with clearer recovery paths and reviewed architecture. 5.0 Upwork rating.",
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [20, 25, 30, 15, 10]
-    }
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        20,
+        25,
+        30,
+        15,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Raw datasets",
+          "subtitle": "datasets",
+          "type": "source",
+          "detail": "Audited Python training code and Docker image build process"
+        },
+        {
+          "title": "Data loader",
+          "subtitle": "loader",
+          "type": "process",
+          "detail": "Recommended batching, checkpoint strategy, and failure recovery"
+        },
+        {
+          "title": "Training job",
+          "subtitle": "job",
+          "type": "process",
+          "detail": "Documented runbooks for retraining and model artifact versioning"
+        },
+        {
+          "title": "Checkpoints",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Review training pipeline architecture for scalability and reproducibility"
+        },
+        {
+          "title": "Model registry",
+          "subtitle": "registry",
+          "type": "consumer",
+          "detail": "Improve data loading, checkpointing, and recovery patterns"
+        }
+      ],
+      "stack": "Python \u00b7 Docker \u00b7 PyTorch \u00b7 MLflow",
+      "orchestration": null
+    },
+    "client": "SME Careers",
+    "upwork": "Senior Code Reviewer for LLM Data Training \u00b7 Jul\u2013Aug 2025 \u00b7 5.0"
   },
   {
     "id": "gcp-dataflow-bq",
-    "title": "GCP Dataflow — Confluent to BigQuery",
-    "domain": "Data · Streaming · GCP",
+    "title": "GCP Dataflow \u2014 Confluent to BigQuery",
+    "domain": "Data \u00b7 Streaming \u00b7 GCP",
     "lead": "Kafka to BigQuery streaming pipeline for high-throughput event ingestion with schema validation and dead-letter handling.",
     "requirements": [
       "Stream events from Confluent Kafka into BigQuery in near real time",
@@ -174,19 +456,65 @@
       "Cloud Monitoring dashboards and alerting on lag and error rates"
     ],
     "outcome": "Reliable streaming ingest at scale with observability and a clear path for bad data.",
-    "arch": {
-      "labels": ["Kafka / Confluent", "Dataflow", "Transform", "BigQuery", "Monitoring"],
-      "values": [22, 28, 18, 22, 10]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [12, 18, 40, 20, 10]
-    }
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        12,
+        18,
+        40,
+        20,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Kafka / Confluent",
+          "subtitle": "Confluent",
+          "type": "source",
+          "detail": "Apache Beam pipeline on Dataflow with autoscaling workers"
+        },
+        {
+          "title": "Dataflow",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Schema registry integration and DLQ topic for failed records"
+        },
+        {
+          "title": "Transform",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Cloud Monitoring dashboards and alerting on lag and error rates"
+        },
+        {
+          "title": "BigQuery",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Stream events from Confluent Kafka into BigQuery in near real time"
+        },
+        {
+          "title": "Monitoring",
+          "subtitle": "",
+          "type": "consumer",
+          "detail": "Validate schemas and route bad records to a dead-letter path"
+        }
+      ],
+      "stack": "Kafka \u00b7 Confluent \u00b7 Dataflow \u00b7 BigQuery",
+      "orchestration": "Streaming pipeline orchestration"
+    },
+    "client": "CrossroadsCX",
+    "upwork": "GCP Dataflow Confluent to BigQuery \u00b7 May\u2013Jun 2023 \u00b7 5.0"
   },
   {
     "id": "hadoop-gcp-migration",
     "title": "Hadoop-to-GCP migration",
-    "domain": "Cloud · Migration · BigQuery",
+    "domain": "Cloud \u00b7 Migration \u00b7 BigQuery",
     "lead": "On-prem Hadoop workloads migrated to GCP with Dataproc and BigQuery, preserving data lineage and operational runbooks.",
     "requirements": [
       "Migrate batch and streaming jobs off Hadoop without business disruption",
@@ -199,19 +527,65 @@
       "Parallel validation runs and documentation for operations"
     ],
     "outcome": "Hadoop estate retired on schedule with validated BigQuery targets and full handover docs.",
-    "arch": {
-      "labels": ["Hadoop sources", "Migration ETL", "Dataproc", "BigQuery", "Validation"],
-      "values": [25, 20, 22, 23, 10]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [15, 20, 35, 15, 15]
-    }
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        15,
+        20,
+        35,
+        15,
+        15
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Hadoop sources",
+          "subtitle": "sources",
+          "type": "source",
+          "detail": "Inventory of Hive, MapReduce, and Spark jobs with dependency mapping"
+        },
+        {
+          "title": "Migration ETL",
+          "subtitle": "ETL",
+          "type": "process",
+          "detail": "Rewrote pipelines for Dataproc and BigQuery with phased cutover"
+        },
+        {
+          "title": "Dataproc",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Parallel validation runs and documentation for operations"
+        },
+        {
+          "title": "BigQuery",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Migrate batch and streaming jobs off Hadoop without business disruption"
+        },
+        {
+          "title": "Validation",
+          "subtitle": "",
+          "type": "consumer",
+          "detail": "Preserve data lineage and validation between old and new systems"
+        }
+      ],
+      "stack": "Hadoop \u00b7 Dataproc \u00b7 BigQuery \u00b7 Airflow",
+      "orchestration": "Phased cutover validation"
+    },
+    "client": "SaiKumar",
+    "upwork": "Hadoop-to-GCP Migration \u00b7 Dec 2024 \u00b7 5.0"
   },
   {
     "id": "ml-feature-pipeline",
-    "title": "ML feature pipeline — training & serving",
-    "domain": "ML · MLOps · Airflow",
+    "title": "ML feature pipeline \u2014 training & serving",
+    "domain": "ML \u00b7 MLOps \u00b7 Airflow",
     "lead": "End-to-end ML workflow from feature engineering through model registry to a production serving API.",
     "requirements": [
       "Reproducible feature engineering from raw operational data",
@@ -224,19 +598,63 @@
       "REST serving layer with monitoring and rollback support"
     ],
     "outcome": "Single pipeline from raw data to production predictions with traceable model versions.",
-    "arch": {
-      "labels": ["Raw data", "Feature jobs", "Training", "Model registry", "Serving API"],
-      "values": [18, 24, 22, 16, 20]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [12, 18, 42, 18, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        12,
+        18,
+        42,
+        18,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Raw data",
+          "subtitle": "data",
+          "type": "source",
+          "detail": "Feature store patterns with Airflow orchestration"
+        },
+        {
+          "title": "Feature jobs",
+          "subtitle": "jobs",
+          "type": "process",
+          "detail": "Model registry integration and promotion gates"
+        },
+        {
+          "title": "Training",
+          "subtitle": "",
+          "type": "process",
+          "detail": "REST serving layer with monitoring and rollback support"
+        },
+        {
+          "title": "Model registry",
+          "subtitle": "registry",
+          "type": "store",
+          "detail": "Reproducible feature engineering from raw operational data"
+        },
+        {
+          "title": "Serving API",
+          "subtitle": "API",
+          "type": "consumer",
+          "detail": "Orchestrated training runs with versioned models"
+        }
+      ],
+      "stack": "Airflow \u00b7 Spark \u00b7 MLflow \u00b7 FastAPI",
+      "orchestration": "Airflow DAG orchestration"
     }
   },
   {
     "id": "data-governance",
     "title": "Data governance & quality platform",
-    "domain": "Data · Spark · Enterprise",
+    "domain": "Data \u00b7 Spark \u00b7 Enterprise",
     "lead": "Enterprise Data Insight and Data Quality platform with Spark, automated profiling, and governance workflows.",
     "requirements": [
       "Automated data quality checks across large analytical datasets",
@@ -249,19 +667,63 @@
       "Governance dashboards and metadata integration for stewards"
     ],
     "outcome": "Central quality platform giving data teams repeatable checks and visibility into dataset health.",
-    "arch": {
-      "labels": ["Source systems", "Spark profiling", "Quality rules", "Metadata", "Steward UI"],
-      "values": [20, 28, 22, 15, 15]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [18, 22, 35, 15, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        18,
+        22,
+        35,
+        15,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Source systems",
+          "subtitle": "systems",
+          "type": "source",
+          "detail": "Spark and Spark-SQL jobs for profiling and rule execution"
+        },
+        {
+          "title": "Spark profiling",
+          "subtitle": "profiling",
+          "type": "process",
+          "detail": "Scala services for correlation and anomaly detection"
+        },
+        {
+          "title": "Quality rules",
+          "subtitle": "rules",
+          "type": "process",
+          "detail": "Governance dashboards and metadata integration for stewards"
+        },
+        {
+          "title": "Metadata",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Automated data quality checks across large analytical datasets"
+        },
+        {
+          "title": "Steward UI",
+          "subtitle": "UI",
+          "type": "consumer",
+          "detail": "Null analysis, correlation detection, and profiling at scale"
+        }
+      ],
+      "stack": "Spark \u00b7 Scala \u00b7 Spark-SQL",
+      "orchestration": null
     }
   },
   {
     "id": "clinical-etl",
-    "title": "Clinical ETL — Crunch & Hadoop",
-    "domain": "Healthcare · ETL · Hadoop",
+    "title": "Clinical ETL \u2014 Crunch & Hadoop",
+    "domain": "Healthcare \u00b7 ETL \u00b7 Hadoop",
     "lead": "Regulated clinical data pipelines on Hadoop with cleansing, normalization, and REST access for downstream systems.",
     "requirements": [
       "Ingest and normalize clinical datasets at scale on HDFS",
@@ -274,19 +736,63 @@
       "Beadledom REST services for governed downstream access"
     ],
     "outcome": "Clinical data ready for analytics and applications with controlled REST endpoints.",
-    "arch": {
-      "labels": ["Clinical feeds", "Crunch ETL", "HDFS", "REST services", "Downstream apps"],
-      "values": [22, 28, 20, 18, 12]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [16, 18, 38, 18, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        16,
+        18,
+        38,
+        18,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Clinical feeds",
+          "subtitle": "feeds",
+          "type": "source",
+          "detail": "Apache Crunch and MapReduce pipelines for cleansing and transforms"
+        },
+        {
+          "title": "Crunch ETL",
+          "subtitle": "ETL",
+          "type": "process",
+          "detail": "HDFS storage layout with partitioning for analytical queries"
+        },
+        {
+          "title": "HDFS",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Beadledom REST services for governed downstream access"
+        },
+        {
+          "title": "REST services",
+          "subtitle": "services",
+          "type": "store",
+          "detail": "Ingest and normalize clinical datasets at scale on HDFS"
+        },
+        {
+          "title": "Downstream apps",
+          "subtitle": "apps",
+          "type": "consumer",
+          "detail": "Meet healthcare data handling and audit expectations"
+        }
+      ],
+      "stack": "Crunch \u00b7 Hadoop \u00b7 HDFS \u00b7 REST",
+      "orchestration": null
     }
   },
   {
     "id": "portfolio-accounting",
-    "title": "Portfolio accounting — cache & reconciliation",
-    "domain": "Finance · Java · Caching",
+    "title": "Portfolio accounting \u2014 cache & reconciliation",
+    "domain": "Finance \u00b7 Java \u00b7 Caching",
     "lead": "Portfolio accounting enhancements with Hazelcast distributed caching, reconciliation frameworks, and production monitoring.",
     "requirements": [
       "Reduce latency on portfolio calculations for trading workflows",
@@ -299,19 +805,63 @@
       "AppDynamics agents and alerting for production incidents"
     ],
     "outcome": "Faster portfolio reads with automated reconciliation and production-grade monitoring.",
-    "arch": {
-      "labels": ["Trading feeds", "Core DB", "Hazelcast", "Reconciliation", "Monitoring"],
-      "values": [18, 22, 28, 17, 15]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [14, 16, 40, 20, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        14,
+        16,
+        40,
+        20,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Trading feeds",
+          "subtitle": "feeds",
+          "type": "source",
+          "detail": "Hazelcast cluster for hot portfolio data with cache invalidation rules"
+        },
+        {
+          "title": "Core DB",
+          "subtitle": "DB",
+          "type": "process",
+          "detail": "Reconciliation jobs comparing cache snapshots to authoritative DB"
+        },
+        {
+          "title": "Hazelcast",
+          "subtitle": "",
+          "type": "process",
+          "detail": "AppDynamics agents and alerting for production incidents"
+        },
+        {
+          "title": "Reconciliation",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Reduce latency on portfolio calculations for trading workflows"
+        },
+        {
+          "title": "Monitoring",
+          "subtitle": "",
+          "type": "consumer",
+          "detail": "Keep cache and database views consistent under load"
+        }
+      ],
+      "stack": "Java \u00b7 Hazelcast \u00b7 AppDynamics",
+      "orchestration": null
     }
   },
   {
     "id": "investment-bank-desktop",
     "title": "Investment bank desktop clients",
-    "domain": "Finance · Java · Desktop",
+    "domain": "Finance \u00b7 Java \u00b7 Desktop",
     "lead": "Rich desktop clients for global investment bank workflows using Eclipse RCP, SWT, and XML marshalling.",
     "requirements": [
       "Desktop UI for complex trading and operations workflows",
@@ -324,19 +874,63 @@
       "Requirements analysis, estimation, and release support"
     ],
     "outcome": "Stable desktop clients used in daily bank operations with maintained production support.",
-    "arch": {
-      "labels": ["Desktop UI", "JAXB layer", "Services", "Backend systems", "Operations users"],
-      "values": [30, 18, 22, 20, 10]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [20, 20, 35, 15, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        20,
+        20,
+        35,
+        15,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Desktop UI",
+          "subtitle": "UI",
+          "type": "source",
+          "detail": "Eclipse RCP shell with SWT and JFace UI components"
+        },
+        {
+          "title": "JAXB layer",
+          "subtitle": "layer",
+          "type": "process",
+          "detail": "JAXB marshalling for structured message formats"
+        },
+        {
+          "title": "Services",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Requirements analysis, estimation, and release support"
+        },
+        {
+          "title": "Backend systems",
+          "subtitle": "systems",
+          "type": "store",
+          "detail": "Desktop UI for complex trading and operations workflows"
+        },
+        {
+          "title": "Operations users",
+          "subtitle": "users",
+          "type": "consumer",
+          "detail": "Reliable XML data exchange with backend services"
+        }
+      ],
+      "stack": "Eclipse RCP \u00b7 SWT \u00b7 JAXB",
+      "orchestration": null
     }
   },
   {
     "id": "rest-api-partners",
-    "title": "REST API — partner integrations",
-    "domain": "API · Flask · OpenAPI",
+    "title": "REST API \u2014 partner integrations",
+    "domain": "API \u00b7 Flask \u00b7 OpenAPI",
     "lead": "Partner-facing REST API with OpenAPI specs, OAuth, rate limiting, and SDK examples for external integrations.",
     "requirements": [
       "Documented API for third-party partners with clear auth model",
@@ -349,19 +943,63 @@
       "Client SDK samples and partner onboarding runbooks"
     ],
     "outcome": "Partners integrate via a stable, documented API with predictable limits and support material.",
-    "arch": {
-      "labels": ["Partner clients", "API gateway", "Flask services", "Auth + limits", "Core data"],
-      "values": [15, 18, 28, 17, 22]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [15, 15, 38, 22, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        15,
+        15,
+        38,
+        22,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Partner clients",
+          "subtitle": "clients",
+          "type": "source",
+          "detail": "Flask API with OpenAPI 3 documentation and OAuth flows"
+        },
+        {
+          "title": "API gateway",
+          "subtitle": "gateway",
+          "type": "process",
+          "detail": "Rate limits, idempotency keys, and structured error codes"
+        },
+        {
+          "title": "Flask services",
+          "subtitle": "services",
+          "type": "process",
+          "detail": "Client SDK samples and partner onboarding runbooks"
+        },
+        {
+          "title": "Auth + limits",
+          "subtitle": "limits",
+          "type": "store",
+          "detail": "Documented API for third-party partners with clear auth model"
+        },
+        {
+          "title": "Core data",
+          "subtitle": "data",
+          "type": "consumer",
+          "detail": "Rate limiting and consistent error responses"
+        }
+      ],
+      "stack": "Flask \u00b7 OpenAPI \u00b7 OAuth",
+      "orchestration": null
     }
   },
   {
     "id": "pipeline-dashboard",
-    "title": "Full-stack dashboard — pipeline health",
-    "domain": "Full-stack · Flask · Tailwind",
+    "title": "Full-stack dashboard \u2014 pipeline health",
+    "domain": "Full-stack \u00b7 Flask \u00b7 Tailwind",
     "lead": "Flask and Tailwind dashboard for pipeline health, SLA metrics, real-time status, and drill-down into job runs.",
     "requirements": [
       "Single view of pipeline health and SLA compliance",
@@ -374,19 +1012,63 @@
       "Alert hooks integrated with existing notification channels"
     ],
     "outcome": "Ops teams see pipeline health at a glance and investigate failures without switching tools.",
-    "arch": {
-      "labels": ["Dashboard UI", "Flask API", "Metrics store", "Orchestrator", "Alerting"],
-      "values": [25, 22, 20, 23, 10]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [12, 15, 43, 20, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        12,
+        15,
+        43,
+        20,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "Dashboard UI",
+          "subtitle": "UI",
+          "type": "source",
+          "detail": "Flask backend aggregating run metadata and quality signals"
+        },
+        {
+          "title": "Flask API",
+          "subtitle": "API",
+          "type": "process",
+          "detail": "Tailwind UI with status cards, filters, and detail panels"
+        },
+        {
+          "title": "Metrics store",
+          "subtitle": "store",
+          "type": "process",
+          "detail": "Alert hooks integrated with existing notification channels"
+        },
+        {
+          "title": "Orchestrator",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Single view of pipeline health and SLA compliance"
+        },
+        {
+          "title": "Alerting",
+          "subtitle": "",
+          "type": "consumer",
+          "detail": "Drill-down from summary metrics into individual job runs"
+        }
+      ],
+      "stack": "Flask \u00b7 Tailwind \u00b7 PostgreSQL",
+      "orchestration": null
     }
   },
   {
     "id": "elk-stack",
-    "title": "ELK stack — log search & alerts",
-    "domain": "DevOps · Observability",
+    "title": "ELK stack \u2014 log search & alerts",
+    "domain": "DevOps \u00b7 Observability",
     "lead": "Centralized logging with Logstash, Elasticsearch, and Kibana plus retention policies and production alerting.",
     "requirements": [
       "Aggregate logs from distributed services into one searchable store",
@@ -399,13 +1081,57 @@
       "Kibana dashboards and watcher-style alerts for incidents"
     ],
     "outcome": "Faster incident response with centralized search and proactive alerts.",
-    "arch": {
-      "labels": ["App logs", "Logstash", "Elasticsearch", "Kibana", "Alerts"],
-      "values": [20, 22, 28, 18, 12]
-    },
     "phases": {
-      "labels": ["Requirements", "Design", "Build", "Test", "Handover"],
-      "values": [10, 15, 45, 20, 10]
+      "labels": [
+        "Requirements",
+        "Design",
+        "Build",
+        "Test",
+        "Handover"
+      ],
+      "values": [
+        10,
+        15,
+        45,
+        20,
+        10
+      ]
+    },
+    "architecture": {
+      "nodes": [
+        {
+          "title": "App logs",
+          "subtitle": "logs",
+          "type": "source",
+          "detail": "Logstash pipelines with parsing rules per service"
+        },
+        {
+          "title": "Logstash",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Elasticsearch cluster sizing and index templates"
+        },
+        {
+          "title": "Elasticsearch",
+          "subtitle": "",
+          "type": "process",
+          "detail": "Kibana dashboards and watcher-style alerts for incidents"
+        },
+        {
+          "title": "Kibana",
+          "subtitle": "",
+          "type": "store",
+          "detail": "Aggregate logs from distributed services into one searchable store"
+        },
+        {
+          "title": "Alerts",
+          "subtitle": "",
+          "type": "consumer",
+          "detail": "Define retention and index lifecycle policies"
+        }
+      ],
+      "stack": "Logstash \u00b7 Elasticsearch \u00b7 Kibana",
+      "orchestration": null
     }
   }
 ]
