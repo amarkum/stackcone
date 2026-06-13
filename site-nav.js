@@ -1,7 +1,7 @@
 (function () {
   var NAV_ITEMS = [
     { href: "/", label: "Home" },
-    { href: "/work/", label: "Our Work" },
+    { href: "/work/", label: "Portfolio" },
     { href: "/blog/", label: "Blog" },
     { href: "/contact/", label: "Contact" }
   ];
