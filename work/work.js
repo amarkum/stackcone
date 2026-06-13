@@ -5,6 +5,11 @@
     return d.innerHTML;
   }
 
+  function logoPath(filename) {
+    if (!filename) return '';
+    return '../assets/clients/' + filename;
+  }
+
   function listItems(items) {
     return items.map(function (item) {
       return '<li>' + escapeHtml(item) + '</li>';
@@ -22,82 +27,109 @@
     );
   }
 
-  function renderPhases(p) {
-    if (!p.phases) return '';
-    var labels = p.phases.labels;
-    var values = p.phases.values;
+  function renderTechnologies(p) {
+    if (!p.technologies || !p.technologies.length) return '';
     return (
-      '<div class="phase-timeline">' +
-        '<h4>Implementation phases</h4>' +
-        '<div class="phase-bars">' +
-          labels.map(function (label, i) {
-            return (
-              '<div class="phase-row">' +
-                '<span class="phase-label">' + escapeHtml(label) + '</span>' +
-                '<div class="phase-track"><div class="phase-fill" style="width:' + values[i] + '%"></div></div>' +
-                '<span class="phase-pct">' + values[i] + '%</span>' +
-              '</div>'
-            );
+      '<div class="case-tech">' +
+        '<h3>Technologies used</h3>' +
+        '<div class="case-tech-tags">' +
+          p.technologies.map(function (tech) {
+            return '<span class="case-tech-tag">' + escapeHtml(tech) + '</span>';
           }).join('') +
         '</div>' +
       '</div>'
     );
   }
 
-  function renderProject(p) {
-    var clientBadge = p.client
-      ? '<span class="case-client-badge">' + escapeHtml(p.client) + '</span>'
-      : '';
-    var upworkLine = p.upwork && typeof p.upwork === 'string'
-      ? '<p class="case-upwork">' + escapeHtml(p.upwork) + '</p>'
-      : '';
-    var archHtml = p.architecture
-      ? '<div class="arch-diagram">' + ArchDiagram.render(p.id, p.architecture) + '</div>'
-      : '';
+  function renderClientRow(p) {
+    if (!p.client) return '';
 
+    var logos = '';
+    if (p.employerLogo) {
+      logos += '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.employerLogo)) + '" alt="" width="80" height="28">';
+    }
+    if (p.endClientLogo) {
+      logos += '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.endClientLogo)) + '" alt="" width="80" height="28">';
+    }
+
+    var names;
+    if (p.endClient && p.endClient !== p.client) {
+      names =
+        '<span class="case-client-names">' +
+          '<strong>' + escapeHtml(p.client) + '</strong>' +
+          ' <span class="case-client-sep">·</span> Worked with ' +
+          '<strong>' + escapeHtml(p.endClient) + '</strong>' +
+        '</span>';
+    } else {
+      names = '<span class="case-client-names"><strong>' + escapeHtml(p.client) + '</strong></span>';
+    }
+
+    var meta = '';
+    if (p.role || p.period) {
+      meta =
+        '<p class="case-role">' +
+          (p.role ? escapeHtml(p.role) : '') +
+          (p.role && p.period ? ' · ' : '') +
+          (p.period ? escapeHtml(p.period) : '') +
+        '</p>';
+    }
+
+    return (
+      '<div class="case-client-row">' +
+        (logos ? '<div class="case-client-logos">' + logos + '</div>' : '') +
+        names +
+        meta +
+      '</div>'
+    );
+  }
+
+  function renderProject(p) {
     return (
       '<article class="case-study" id="' + escapeHtml(p.id) + '" data-client="' + escapeHtml(p.client || '') + '">' +
         '<div class="case-header">' +
           '<div class="case-meta">' +
             '<span class="case-tag">' + escapeHtml(p.domain) + '</span>' +
-            clientBadge +
           '</div>' +
+          renderClientRow(p) +
           '<h2>' + escapeHtml(p.title) + '</h2>' +
-          upworkLine +
           '<p class="case-lead">' + escapeHtml(p.lead) + '</p>' +
           renderLinks(p) +
         '</div>' +
-        archHtml +
-        '<div class="case-grid">' +
-          '<div class="case-block"><h3>Requirements</h3><ul>' + listItems(p.requirements) + '</ul></div>' +
-          '<div class="case-block"><h3>Implementation</h3><ul>' + listItems(p.implementation) + '</ul></div>' +
+        '<div class="case-about">' +
+          '<h3>About this project</h3>' +
+          '<ul>' + listItems(p.implementation) + '</ul>' +
         '</div>' +
+        renderTechnologies(p) +
         '<p class="case-outcome"><strong>Outcome:</strong> ' + escapeHtml(p.outcome) + '</p>' +
-        renderPhases(p) +
       '</article>'
     );
   }
 
-  function uniqueClients(projects) {
-    var seen = {};
-    var list = [];
-    projects.forEach(function (p) {
-      if (p.client && !seen[p.client]) {
-        seen[p.client] = true;
-        list.push(p.client);
-      }
+  function normalizeClients(data) {
+    if (data.clients && data.clients.length && typeof data.clients[0] === 'object') {
+      return data.clients;
+    }
+    return (data.clients || []).map(function (name) {
+      return { name: name, logo: null };
     });
-    return list;
   }
 
   function renderClientFilter(clients) {
     return (
       '<div class="work-clients">' +
-        '<p class="work-clients-label">Clients</p>' +
+        '<p class="work-clients-label">Clients &amp; employers</p>' +
         '<div class="work-clients-list">' +
           '<button type="button" class="client-pill is-active" data-client="all">All projects</button>' +
           clients.map(function (c) {
-            return '<button type="button" class="client-pill" data-client="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>';
+            var logoHtml = c.logo
+              ? '<img src="' + escapeHtml(logoPath(c.logo)) + '" alt="" width="56" height="20" class="client-pill-logo">'
+              : '';
+            return (
+              '<button type="button" class="client-pill' + (c.logo ? ' client-pill--has-logo' : '') + '" data-client="' + escapeHtml(c.name) + '">' +
+                logoHtml +
+                '<span>' + escapeHtml(c.name) + '</span>' +
+              '</button>'
+            );
           }).join('') +
         '</div>' +
       '</div>'
@@ -134,11 +166,13 @@
     });
   }
 
-  function init(projects) {
+  function init(data) {
     var layout = document.getElementById('work-layout');
     if (!layout) return;
 
-    var clients = uniqueClients(projects);
+    var projects = data.projects || data;
+    var clients = normalizeClients(data);
+
     layout.innerHTML =
       renderClientFilter(clients) +
       '<div class="work-split">' +
@@ -148,14 +182,11 @@
         '</div>' +
       '</div>';
 
-    document.querySelectorAll('.arch-diagram').forEach(function (el) {
-      ArchDiagram.bind(el);
-    });
     bindClientFilter();
   }
 
   fetch('projects.json')
     .then(function (r) { return r.json(); })
-    .catch(function () { return []; })
+    .catch(function () { return { clients: [], projects: [] }; })
     .then(init);
 })();
