@@ -64,7 +64,8 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-dim);
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.5rem;
+  display: block;
 }
 
 .blog-filter-group + .blog-filter-group {
@@ -73,32 +74,47 @@
   border-top: 1px solid var(--border);
 }
 
-.blog-filters .blog-filter-pills {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+.blog-filters .blog-filter-group {
+  margin: 0;
 }
 
-.blog-filter-pill {
+.blog-search-input,
+.blog-filter-select {
   font-family: var(--font);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-mid);
-  padding: 0.45rem 0.75rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg-soft);
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
-  text-align: left;
+  font-size: 0.875rem;
+  color: var(--text-bright);
   width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  box-sizing: border-box;
+  transition: border-color 0.15s, background 0.15s;
 }
 
-.blog-filter-pill:hover,
-.blog-filter-pill.is-active {
-  color: var(--text-bright);
+.blog-search-input::placeholder {
+  color: var(--text-dim);
+}
+
+.blog-search-input:hover,
+.blog-filter-select:hover {
+  border-color: var(--text-dim);
+}
+
+.blog-search-input:focus,
+.blog-filter-select:focus {
+  outline: none;
   border-color: var(--text-bright);
   background: var(--bg-card);
+}
+
+.blog-filter-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  padding-right: 2rem;
 }
 
 .blog-sidebar-block.is-hidden {

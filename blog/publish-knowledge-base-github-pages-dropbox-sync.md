@@ -22,7 +22,7 @@ If you are new to RAG itself, start with our companion guide: [How to Build a Pr
 2. [Recommended folder layout](#folder-layout)
 3. [Two pipelines: ingest and publish](#two-pipelines)
 4. [Sync job flow](#sync-job-flow)
-5. [Support content → KB](#support-to-kb)
+5. [Draft to published workflow](#draft-to-published)
 6. [Incremental sync](#incremental-sync)
 7. [HTTP connection pooling](#connection-pooling)
 8. [SSE progress streaming](#sse-progress)
@@ -46,14 +46,11 @@ The fix is a strict separation: `raw/` for drafts, `master/` as the sole sync so
 
 ## Recommended folder layout
 
-Use a single root folder (example: `kb/` on Dropbox). The names below are conventions — adapt subfolders to your content types.
+Use a single root folder (example: `kb/` on Dropbox). Adapt names to your team — the roles below matter more than the exact paths.
 
 | Path | Purpose | Synced by job? |
 |------|---------|----------------|
-| `kb/raw/` | Staging: drafts, imports, AI-generated Q&A awaiting review | No |
-| `kb/raw/support/` | Q&A drafts from support tickets or chat transcripts | No |
-| `kb/raw/imports/` | PDFs, specs, one-pagers awaiting review | No |
-| `kb/raw/notes/` | Internal notes to distill into articles | No |
+| `kb/raw/` | Staging — drafts and imports awaiting review | No |
 | `kb/master/` | Published `.md` — **sole source** for sync job | Yes (read) |
 | `kb/site/` | Mirror of master, formatted for MkDocs nav | Yes (write) |
 | `kb/metadata/sync-state.json` | Incremental sync state (content hashes, chunk IDs) | Yes (read/write) |
@@ -61,33 +58,17 @@ Use a single root folder (example: `kb/` on Dropbox). The names below are conven
 
 ```
 kb/
-├── raw/                          ← staging (never indexed directly)
-│   ├── support/
-│   │   ├── ticket-1042.md
-│   │   └── ticket-1087.md
-│   ├── imports/
-│   │   └── product-spec-v3.md
-│   └── notes/
-│       └── 2026-05-kickoff.md
-├── master/                       ← published .md — SOLE sync source
-│   ├── getting-started.md
-│   ├── billing-faq.md
-│   └── integrations/
-│       └── slack.md
-├── site/                         ← mirror for docs site (generated)
-│   ├── docs/
-│   │   └── ...
-│   └── mkdocs.yml
+├── raw/                    ← staging (never indexed directly)
+├── master/                 ← published .md — sole sync source
+├── site/                   ← MkDocs tree (generated)
 ├── metadata/
-│   └── sync-state.json           ← incremental sync state
-└── assets/
-    ├── screenshot-dashboard.png
-    └── logo-partner.svg
+│   └── sync-state.json     ← incremental sync state
+└── assets/                 ← images and attachments
 ```
 
-**Conceptual file counts by folder:** raw/ ~180, master/ ~45, mkdocs/ ~45, metadata/ ~3, images/ ~120.
+**Conceptual file counts by folder:** raw/ ~180, master/ ~45, site/ ~45, metadata/ ~3, assets/ ~120.
 
-**Published articles in master/ by source type:** support Q&A 28, imports 12, notes 8, other 5.
+**Published articles in master/ by source type:** editorial 28, imports 12, refined 8, other 5.
 
 ---
 
@@ -101,7 +82,7 @@ Content enters through human or AI-assisted review. Only the publish pipeline to
 Raw sources → AI summarize / draft → Human review → Publish to master/
 ```
 
-Tickets, imports, and notes land in `raw/`. An editor (or AI + editor) promotes approved content into `master/`. Nothing in `raw/` is embedded or published.
+Draft content lands in `raw/`. An editor (or AI + editor) promotes approved content into `master/`. Nothing in `raw/` is embedded or published.
 
 ### Sync — master to vectors and GitHub Pages
 
@@ -137,30 +118,29 @@ A typical run processes six stages. Embedding dominates wall time; listing and g
 
 ---
 
-## Support content → KB pipeline
+## Draft to published workflow
 
-Resolved support conversations are a strong KB source — if you turn them into structured Q&A instead of dumping raw threads into search.
+Any source — product notes, imports, or AI-generated drafts — should become structured markdown in `raw/`, then move to `master/` only after review.
 
 ```
-Closed ticket → AI summarize → Q&A markdown → raw/support/ → Review → master/
+Source content → AI draft (optional) → raw/ → Review → master/
 ```
 
-Each item becomes a markdown file with a clear question heading, a concise answer, and metadata (source ID, topic, date). Editors fix tone and redact PII before moving the file to `master/`. The next sync run picks it up automatically.
+Each page should have a clear title, concise body, and optional front matter (topic, status, last reviewed). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new master files automatically.
 
 ```markdown
-# raw/support/ticket-1042.md (draft)
+# raw/api-authentication.md (draft)
 ---
-source_id: ticket-1042
-topic: billing
 status: draft
+topic: integrations
 ---
 
-## How do I change my subscription plan mid-cycle?
+## How do I authenticate API requests?
 
-You can upgrade or downgrade from **Settings → Billing**. Changes prorate
-immediately for upgrades; downgrades take effect at the next renewal date.
+Use an API key in the Authorization header. Keys are created in
+Settings → API. Rotate keys from the same screen.
 
-# After review → copied/renamed to master/billing-change-plan.md
+# After review → moved to master/api-authentication.md
 ```
 
 ---
@@ -323,7 +303,7 @@ def compute_diff(remote_files, tracker):
 | **SSE** | Server-Sent Events — one-way stream of progress updates to the browser |
 | **Site mirror** | Generated copy of master content laid out for MkDocs navigation |
 | **GitHub Pages** | Static site hosting from a repo branch (typically `gh-pages`) |
-| **Support-to-KB** | Pipeline that turns resolved support threads into reviewed Q&A articles |
+| **Editorial workflow** | Review path from draft content in raw/ to approved pages in master/ |
 
 ---
 

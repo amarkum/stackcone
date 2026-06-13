@@ -11,12 +11,12 @@
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html">
   <meta property="og:title" content="Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline">
-  <meta property="og:description" content="Repeatable pipeline: staged raw/ → published master/ → Pinecone + MkDocs → GitHub Pages. Incremental sync and support Q&A workflow.">
+  <meta property="og:description" content="Repeatable pipeline: staged drafts → published master/ → Pinecone + MkDocs → GitHub Pages. Incremental sync and editorial workflow.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Publishing a Knowledge Base to GitHub Pages from Dropbox">
-  <meta name="twitter:description" content="Dropbox → master markdown → Pinecone + MkDocs → GitHub Pages. Incremental sync, ticket-to-KB pipeline, and production lessons from stackcone.">
+  <meta name="twitter:description" content="Dropbox → master markdown → Pinecone + MkDocs → GitHub Pages. Incremental sync and editorial workflow from stackcone.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline",
-    "description": "How to publish a knowledge base to GitHub Pages: generic folder layout, incremental sync via sync-state.json, Pinecone indexing, MkDocs build, support-to-KB workflow, HTTP connection pooling, and SSE progress streaming.",
+    "description": "How to publish a knowledge base to GitHub Pages: generic folder layout, incremental sync via sync-state.json, Pinecone indexing, MkDocs build, editorial workflow, HTTP connection pooling, and SSE progress streaming.",
     "author": { "@type": "Person", "name": "Amar Kumar" },
     "publisher": {
       "@type": "Organization",
@@ -96,7 +96,7 @@
         <li><a href="#folder-layout">Recommended folder layout</a></li>
         <li><a href="#two-pipelines">Two pipelines: ingest and publish</a></li>
         <li><a href="#sync-job-flow">Sync job flow</a></li>
-        <li><a href="#support-to-kb">Support content → KB</a></li>
+        <li><a href="#draft-to-published">Draft to published workflow</a></li>
         <li><a href="#incremental-sync">Incremental sync</a></li>
         <li><a href="#connection-pooling">HTTP connection pooling</a></li>
         <li><a href="#sse-progress">SSE progress streaming</a></li>
@@ -121,16 +121,13 @@
     <p>The fix is a strict separation: <code>raw/</code> for drafts, <code>master/</code> as the sole sync source for published markdown, and <code>site/</code> as a generated mirror for the static site.</p>
 
     <h2 id="folder-layout">Recommended folder layout</h2>
-    <p>Use a single root folder (example: <code>kb/</code> on Dropbox). Adapt subfolders to your content types.</p>
+    <p>Use a single root folder (example: <code>kb/</code> on Dropbox). Adapt names to your team — the roles below matter more than the exact paths.</p>
     <table>
       <thead>
         <tr><th>Path</th><th>Purpose</th><th>Synced by job?</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>kb/raw/</code></td><td>Staging: drafts, imports, AI-generated Q&amp;A awaiting review</td><td>No</td></tr>
-        <tr><td><code>kb/raw/support/</code></td><td>Q&amp;A drafts from support tickets or chat transcripts</td><td>No</td></tr>
-        <tr><td><code>kb/raw/imports/</code></td><td>PDFs, specs, one-pagers awaiting review</td><td>No</td></tr>
-        <tr><td><code>kb/raw/notes/</code></td><td>Internal notes to distill into articles</td><td>No</td></tr>
+        <tr><td><code>kb/raw/</code></td><td>Staging — drafts and imports awaiting review</td><td>No</td></tr>
         <tr><td><code>kb/master/</code></td><td>Published <code>.md</code> — <strong>sole source</strong> for sync job</td><td>Yes (read)</td></tr>
         <tr><td><code>kb/site/</code></td><td>Mirror of master, formatted for MkDocs nav</td><td>Yes (write)</td></tr>
         <tr><td><code>kb/metadata/sync-state.json</code></td><td>Incremental sync state (content hashes, chunk IDs)</td><td>Yes (read/write)</td></tr>
@@ -139,32 +136,16 @@
     </table>
 
     <pre><code>kb/
-├── raw/                          <span class="cm">← staging (never indexed directly)</span>
-│   ├── support/
-│   │   ├── ticket-1042.md
-│   │   └── ticket-1087.md
-│   ├── imports/
-│   │   └── product-spec-v3.md
-│   └── notes/
-│       └── 2026-05-kickoff.md
-├── master/                       <span class="cm">← published .md — SOLE sync source</span>
-│   ├── getting-started.md
-│   ├── billing-faq.md
-│   └── integrations/
-│       └── slack.md
-├── site/                         <span class="cm">← mirror for docs site (generated)</span>
-│   ├── docs/
-│   │   └── ...
-│   └── mkdocs.yml
+├── raw/                    <span class="cm">← staging (never indexed directly)</span>
+├── master/                 <span class="cm">← published .md — sole sync source</span>
+├── site/                   <span class="cm">← MkDocs tree (generated)</span>
 ├── metadata/
-│   └── sync-state.json           <span class="cm">← incremental sync state</span>
-└── assets/
-    ├── screenshot-dashboard.png
-    └── logo-partner.svg</code></pre>
+│   └── sync-state.json     <span class="cm">← incremental sync state</span>
+└── assets/                 <span class="cm">← images and attachments</span></code></pre>
 
     <div class="chart-wrap">
       <canvas id="sourcesChart" aria-label="KB content by source type"></canvas>
-      <p class="chart-caption">Published articles in master/ by original source type</p>
+      <p class="chart-caption">Published articles in master/ by content source type</p>
     </div>
 
     <h2 id="two-pipelines">Two pipelines: ingest and publish</h2>
@@ -180,7 +161,7 @@
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Publish to master/</span>
     </div>
-    <p>Support content, imports, and notes land in <code>raw/</code>. An editor promotes approved content into <code>master/</code>. Nothing in <code>raw/</code> is embedded or published.</p>
+    <p>Draft content lands in <code>raw/</code>. An editor promotes approved pages into <code>master/</code>. Nothing in <code>raw/</code> is embedded or published.</p>
 
     <h3>Sync — master to vectors and GitHub Pages</h3>
     <div class="pipeline" role="img" aria-label="Sync publish: Master markdown to Sync job to Chunk embed Pinecone to MkDocs mirror to GitHub Pages">
@@ -222,34 +203,33 @@
       <li><strong>Build + push</strong> — <code>mkdocs build</code>, commit <code>site/</code>, push to <code>gh-pages</code> branch</li>
     </ol>
 
-    <h2 id="support-to-kb">Support content → KB</h2>
-    <p>Resolved support conversations are a strong KB source — if you turn them into structured Q&amp;A instead of dumping raw threads into search.</p>
-    <div class="pipeline" role="img" aria-label="Support pipeline: Closed ticket to AI Q and A markdown to raw support to review to master">
-      <span class="pipeline-step">Closed ticket</span>
+    <h2 id="draft-to-published">Draft to published workflow</h2>
+    <p>Any source — product notes, imports, or AI-generated drafts — should become structured markdown in <code>raw/</code>, then move to <code>master/</code> only after review.</p>
+    <div class="pipeline" role="img" aria-label="Editorial pipeline: Source content to AI draft to review to master">
+      <span class="pipeline-step">Source content</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">AI summarize → Q&amp;A</span>
+      <span class="pipeline-step">AI draft (optional)</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">raw/support/</span>
+      <span class="pipeline-step">raw/</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Review</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">master/</span>
     </div>
-    <p>Each item becomes a markdown file with a clear question heading, a concise answer, and metadata (source ID, topic, date). Editors fix tone and redact PII before moving the file to <code>master/</code>. The next sync run picks it up automatically.</p>
+    <p>Each page should have a clear title, concise body, and optional front matter (topic, status, last reviewed). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new master files automatically.</p>
 
-    <pre><code><span class="cm"># raw/support/ticket-1042.md (draft)</span>
+    <pre><code><span class="cm"># raw/api-authentication.md (draft)</span>
 ---
-source_id: ticket-1042
-topic: billing
 status: draft
+topic: integrations
 ---
 
-## How do I change my subscription plan mid-cycle?
+## How do I authenticate API requests?
 
-You can upgrade or downgrade from **Settings → Billing**. Changes prorate
-immediately for upgrades; downgrades take effect at the next renewal date.
+Use an API key in the Authorization header. Keys are created in
+Settings → API. Rotate keys from the same screen.
 
-<span class="cm"># After review → copied/renamed to master/billing-change-plan.md</span></code></pre>
+<span class="cm"># After review → moved to master/api-authentication.md</span></code></pre>
 
     <h2 id="incremental-sync">Incremental sync</h2>
     <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per master file. Only files whose hash changed (or are new) go through embed + upsert.</p>
@@ -388,7 +368,7 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
         <tr><td><strong>SSE</strong></td><td>Server-Sent Events — one-way stream of progress updates to the browser</td></tr>
         <tr><td><strong>Site mirror</strong></td><td>Generated copy of master content laid out for MkDocs navigation</td></tr>
         <tr><td><strong>GitHub Pages</strong></td><td>Static site hosting from a repo branch (typically <code>gh-pages</code>)</td></tr>
-        <tr><td><strong>Support-to-KB</strong></td><td>Pipeline that turns resolved support threads into reviewed Q&amp;A articles</td></tr>
+        <tr><td><strong>Editorial workflow</strong></td><td>Review path from draft content in raw/ to approved pages in master/</td></tr>
       </tbody>
     </table>
 
@@ -476,7 +456,7 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     new Chart(document.getElementById('sourcesChart'), {
       type: 'bar',
       data: {
-        labels: ['Support Q&A', 'Imports', 'Notes', 'Other'],
+        labels: ['Editorial', 'Imports', 'Refined', 'Other'],
         datasets: [{
           label: 'Articles',
           data: [28, 12, 8, 5],

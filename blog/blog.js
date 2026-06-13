@@ -1,6 +1,7 @@
 (function () {
   var categoryFilter = "all";
   var yearFilter = "all";
+  var searchQuery = "";
 
   function escapeHtml(s) {
     var d = document.createElement("div");
@@ -15,8 +16,16 @@
       })
       .join("");
 
+    var searchText = (
+      p.title + " " + p.description + " " + p.category + " " + p.tags.join(" ")
+    ).toLowerCase();
+
     return (
-      "<a class=\"post-card\" href=\"" + escapeHtml(p.href) + "\" data-category=\"" + escapeHtml(p.category) + "\" data-year=\"" + escapeHtml(p.date.slice(0, 4)) + "\" data-tags=\"" + escapeHtml(p.tags.join(",")) + "\">" +
+      "<a class=\"post-card\" href=\"" + escapeHtml(p.href) + "\"" +
+        " data-category=\"" + escapeHtml(p.category) + "\"" +
+        " data-year=\"" + escapeHtml(p.date.slice(0, 4)) + "\"" +
+        " data-tags=\"" + escapeHtml(p.tags.join(",")) + "\"" +
+        " data-search=\"" + escapeHtml(searchText) + "\">" +
         "<div class=\"post-meta\">" + escapeHtml(p.dateLabel) + " · Published by " + escapeHtml(p.author) + "</div>" +
         "<h2>" + escapeHtml(p.title) + "</h2>" +
         "<p>" + escapeHtml(p.description) + "</p>" +
@@ -28,17 +37,16 @@
   function applyFilters() {
     var cards = document.querySelectorAll(".post-card");
     var visible = 0;
+    var query = searchQuery.trim().toLowerCase();
 
     cards.forEach(function (card) {
       var cat = card.getAttribute("data-category");
       var year = card.getAttribute("data-year");
-      var tags = (card.getAttribute("data-tags") || "").split(",");
-      var catMatch =
-        categoryFilter === "all" ||
-        cat === categoryFilter ||
-        tags.indexOf(categoryFilter) >= 0;
+      var searchText = card.getAttribute("data-search") || "";
+      var catMatch = categoryFilter === "all" || cat === categoryFilter;
       var yearMatch = yearFilter === "all" || year === yearFilter;
-      var show = catMatch && yearMatch;
+      var searchMatch = !query || searchText.indexOf(query) >= 0;
+      var show = catMatch && yearMatch && searchMatch;
       card.classList.toggle("is-hidden", !show);
       if (show) visible += 1;
     });
@@ -47,38 +55,29 @@
     if (empty) empty.classList.toggle("is-hidden", visible > 0);
   }
 
-  function setActivePill(group, value) {
-    document.querySelectorAll(".blog-filter-pill[data-filter=\"" + group + "\"]").forEach(function (btn) {
-      btn.classList.toggle("is-active", btn.getAttribute("data-value") === value);
-    });
-  }
-
-  function buildCategoryFilters(posts) {
-    var topics = ["all"];
+  function buildCategoryFilter(posts) {
+    var categories = ["all"];
     posts.forEach(function (p) {
-      if (topics.indexOf(p.category) < 0) topics.push(p.category);
-      p.tags.forEach(function (t) {
-        if (topics.indexOf(t) < 0) topics.push(t);
-      });
+      if (categories.indexOf(p.category) < 0) categories.push(p.category);
+    });
+    categories.sort(function (a, b) {
+      if (a === "all") return -1;
+      if (b === "all") return 1;
+      return a.localeCompare(b);
     });
 
-    var el = document.getElementById("blog-category-filters");
+    var el = document.getElementById("blog-topic-select");
     if (!el) return;
 
-    el.innerHTML = topics
-      .map(function (topic) {
-        var label = topic === "all" ? "All topics" : topic;
-        var active = topic === "all" ? " is-active" : "";
-        return (
-          "<button type=\"button\" class=\"blog-filter-pill" + active + "\" data-filter=\"category\" data-value=\"" + escapeHtml(topic) + "\">" +
-            escapeHtml(label) +
-          "</button>"
-        );
+    el.innerHTML = categories
+      .map(function (cat) {
+        var label = cat === "all" ? "All topics" : cat;
+        return "<option value=\"" + escapeHtml(cat) + "\">" + escapeHtml(label) + "</option>";
       })
       .join("");
   }
 
-  function buildDateFilters(posts) {
+  function buildDateFilter(posts) {
     var years = posts
       .map(function (p) {
         return p.date.slice(0, 4);
@@ -90,37 +89,43 @@
         return b.localeCompare(a);
       });
 
-    var el = document.getElementById("blog-date-filters");
+    var el = document.getElementById("blog-date-select");
     if (!el) return;
 
-    var buttons = [
-      "<button type=\"button\" class=\"blog-filter-pill is-active\" data-filter=\"year\" data-value=\"all\">All time</button>"
-    ];
-
+    var options = ["<option value=\"all\">All time</option>"];
     years.forEach(function (year) {
-      buttons.push(
-        "<button type=\"button\" class=\"blog-filter-pill\" data-filter=\"year\" data-value=\"" + escapeHtml(year) + "\">" + escapeHtml(year) + "</button>"
+      options.push(
+        "<option value=\"" + escapeHtml(year) + "\">" + escapeHtml(year) + "</option>"
       );
     });
-
-    el.innerHTML = buttons.join("");
+    el.innerHTML = options.join("");
   }
 
   function bindFilters() {
-    document.querySelectorAll(".blog-filter-pill").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var group = btn.getAttribute("data-filter");
-        var value = btn.getAttribute("data-value");
-        if (group === "category") {
-          categoryFilter = value;
-          setActivePill("category", value);
-        } else if (group === "year") {
-          yearFilter = value;
-          setActivePill("year", value);
-        }
+    var searchEl = document.getElementById("blog-search");
+    var topicEl = document.getElementById("blog-topic-select");
+    var dateEl = document.getElementById("blog-date-select");
+
+    if (searchEl) {
+      searchEl.addEventListener("input", function () {
+        searchQuery = searchEl.value;
         applyFilters();
       });
-    });
+    }
+
+    if (topicEl) {
+      topicEl.addEventListener("change", function () {
+        categoryFilter = topicEl.value;
+        applyFilters();
+      });
+    }
+
+    if (dateEl) {
+      dateEl.addEventListener("change", function () {
+        yearFilter = dateEl.value;
+        applyFilters();
+      });
+    }
   }
 
   function init(posts) {
@@ -128,8 +133,8 @@
     if (!list) return;
 
     list.innerHTML = posts.map(renderPost).join("");
-    buildCategoryFilters(posts);
-    buildDateFilters(posts);
+    buildCategoryFilter(posts);
+    buildDateFilter(posts);
     bindFilters();
     applyFilters();
   }
