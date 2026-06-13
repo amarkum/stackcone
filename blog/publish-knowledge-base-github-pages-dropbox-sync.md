@@ -6,7 +6,9 @@ A production pipeline for keeping a RAG chatbot and a public docs site in sync �
 
 ---
 
-Your team already lives in Dropbox. Your chatbot needs fresh vectors. Your users need a browsable docs site. This article walks through the pipeline we run in production: staged content in `/raw/`, published markdown in `/master/`, a sync job that indexes only what changed, and a MkDocs build pushed to GitHub Pages.
+Your team needs one place to edit docs, a chatbot that stays current, and a public site users can browse. This article describes a **repeatable production pipeline**: staged content in `raw/`, published markdown in `master/`, a sync job that indexes only what changed, and a MkDocs build pushed to GitHub Pages.
+
+Dropbox is used here as the shared drive — the same pattern works with S3, Google Drive, or any folder your editors already use.
 
 If you are new to RAG itself, start with our companion guide: [How to Build a Production RAG Chatbot](how-to-build-a-production-rag-chatbot.html).
 
@@ -17,10 +19,10 @@ If you are new to RAG itself, start with our companion guide: [How to Build a Pr
 ## Table of contents
 
 1. [Why this layout](#why-this-layout)
-2. [Dropbox folder layout](#dropbox-folder-layout)
+2. [Recommended folder layout](#folder-layout)
 3. [Two pipelines: ingest and publish](#two-pipelines)
 4. [Sync job flow](#sync-job-flow)
-5. [Ticket-to-KB pipeline](#ticket-to-kb)
+5. [Support content → KB](#support-to-kb)
 6. [Incremental sync](#incremental-sync)
 7. [HTTP connection pooling](#connection-pooling)
 8. [SSE progress streaming](#sse-progress)
@@ -38,55 +40,54 @@ Three problems to solve at once:
 - **Dual output** — vectors for the chatbot *and* HTML for humans  
 - **Speed** — re-embedding 200 docs when one paragraph changed is wasteful  
 
-The fix is a strict separation: `/raw/` for drafts and source material, `/master/` as the sole sync source for published markdown, and `/mkdocs/` as a generated mirror for the static site.
+The fix is a strict separation: `raw/` for drafts, `master/` as the sole sync source for published markdown, and `site/` as a generated mirror for the static site.
 
 ---
 
-## Dropbox folder layout
+## Recommended folder layout
+
+Use a single root folder (example: `kb/` on Dropbox). The names below are conventions — adapt subfolders to your content types.
 
 | Path | Purpose | Synced by job? |
 |------|---------|----------------|
-| `/knowledgebase/raw/` | Staging: tickets, documents, meeting notes, videos (transcripts) | No |
-| `/knowledgebase/raw/tickets/` | AI-generated Q&A from archived support tickets (`CS-n.md`) | No |
-| `/knowledgebase/raw/documents/` | Imported PDFs, specs, one-pagers awaiting review | No |
-| `/knowledgebase/raw/meeting-notes/` | Internal notes distilled into KB articles | No |
-| `/knowledgebase/raw/videos/` | Transcripts and show notes from training videos | No |
-| `/knowledgebase/master/` | Published `.md` — **sole source** for sync job | Yes (read) |
-| `/knowledgebase/mkdocs/` | Mirror of master, formatted for MkDocs nav | Yes (write) |
-| `/knowledgebase/metadata/file-sync-tracker.json` | Incremental sync state (content hashes, last run) | Yes (read/write) |
-| `/knowledgebase/images/` | Shared assets referenced by markdown | Copied to mkdocs on sync |
+| `kb/raw/` | Staging: drafts, imports, AI-generated Q&A awaiting review | No |
+| `kb/raw/support/` | Q&A drafts from support tickets or chat transcripts | No |
+| `kb/raw/imports/` | PDFs, specs, one-pagers awaiting review | No |
+| `kb/raw/notes/` | Internal notes to distill into articles | No |
+| `kb/master/` | Published `.md` — **sole source** for sync job | Yes (read) |
+| `kb/site/` | Mirror of master, formatted for MkDocs nav | Yes (write) |
+| `kb/metadata/sync-state.json` | Incremental sync state (content hashes, chunk IDs) | Yes (read/write) |
+| `kb/assets/` | Images and files referenced by markdown | Copied to site on sync |
 
 ```
-knowledgebase/
+kb/
 ├── raw/                          ← staging (never indexed directly)
-│   ├── tickets/
-│   │   ├── CS-1042.md
-│   │   └── CS-1087.md
-│   ├── documents/
+│   ├── support/
+│   │   ├── ticket-1042.md
+│   │   └── ticket-1087.md
+│   ├── imports/
 │   │   └── product-spec-v3.md
-│   ├── meeting-notes/
-│   │   └── 2026-05-kickoff.md
-│   └── videos/
-│       └── onboarding-transcript.md
+│   └── notes/
+│       └── 2026-05-kickoff.md
 ├── master/                       ← published .md — SOLE sync source
 │   ├── getting-started.md
 │   ├── billing-faq.md
 │   └── integrations/
 │       └── slack.md
-├── mkdocs/                       ← mirror for docs site (generated)
+├── site/                         ← mirror for docs site (generated)
 │   ├── docs/
 │   │   └── ...
 │   └── mkdocs.yml
 ├── metadata/
-│   └── file-sync-tracker.json    ← incremental sync state
-└── images/
+│   └── sync-state.json           ← incremental sync state
+└── assets/
     ├── screenshot-dashboard.png
     └── logo-partner.svg
 ```
 
 **Conceptual file counts by folder:** raw/ ~180, master/ ~45, mkdocs/ ~45, metadata/ ~3, images/ ~120.
 
-**Published articles in master/ by source type:** tickets 28, documents 12, meeting-notes 8, videos 5.
+**Published articles in master/ by source type:** support Q&A 28, imports 12, notes 8, other 5.
 
 ---
 
@@ -100,15 +101,15 @@ Content enters through human or AI-assisted review. Only the publish pipeline to
 Raw sources → AI summarize / draft → Human review → Publish to master/
 ```
 
-Tickets, meeting notes, and imports land in `/raw/`. An editor (or AI + editor) promotes approved content into `/master/`. Nothing in `/raw/` is embedded or published.
+Tickets, imports, and notes land in `raw/`. An editor (or AI + editor) promotes approved content into `master/`. Nothing in `raw/` is embedded or published.
 
 ### Sync — master to vectors and GitHub Pages
 
 ```
-master/ .md → Sync job → Chunk + embed → Pinecone upsert → Mirror mkdocs/ → MkDocs build → Git push → GitHub Pages
+master/ .md → Sync job → Chunk + embed → Pinecone upsert → Mirror site/ → MkDocs build → Git push → GitHub Pages
 ```
 
-The sync job reads **only** `/master/*.md` (plus tracker state). Changed files are chunked, embedded, upserted to Pinecone, copied into the MkDocs tree, built, and pushed.
+The sync job reads **only** `master/**/*.md` (plus tracker state). Changed files are chunked, embedded, upserted to Pinecone, copied into the MkDocs tree, built, and pushed.
 
 **Editorial funnel:** Raw 100 → Reviewed 60 → Master 45 → Indexed 45 → GitHub Pages 45.
 
@@ -127,30 +128,30 @@ A typical run processes six stages. Embedding dominates wall time; listing and g
 | MkDocs | 10% |
 | GitHub | 5% |
 
-1. **List files** — walk `/master/`, compare against `file-sync-tracker.json`  
-2. **Load markdown** — download changed `.md` from Dropbox (pooled HTTP)  
+1. **List files** — walk `master/`, compare against `sync-state.json`  
+2. **Load markdown** — download changed `.md` from storage (pooled HTTP)  
 3. **Chunk + embed** — split text, call embedding API in batches  
 4. **Pinecone upsert** — write vectors; delete stale chunk IDs for removed sections  
-5. **Mirror mkdocs/** — copy changed pages + images into MkDocs tree  
+5. **Mirror site/** — copy changed pages + assets into MkDocs tree  
 6. **Build + push** — `mkdocs build`, commit `site/`, push to `gh-pages` branch  
 
 ---
 
-## Ticket-to-KB pipeline
+## Support content → KB pipeline
 
-Support tickets are a gold mine — if you turn them into structured Q&A instead of dumping raw threads into search.
+Resolved support conversations are a strong KB source — if you turn them into structured Q&A instead of dumping raw threads into search.
 
 ```
-Archived ticket → AI summarize → Q&A → raw/tickets/CS-n.md → Review → master/
+Closed ticket → AI summarize → Q&A markdown → raw/support/ → Review → master/
 ```
 
-Each ticket becomes a markdown file with a clear question heading, a concise answer, and metadata (ticket ID, product area, date). Editors fix tone and redact PII before moving the file to `/master/`. The next sync run picks it up automatically.
+Each item becomes a markdown file with a clear question heading, a concise answer, and metadata (source ID, topic, date). Editors fix tone and redact PII before moving the file to `master/`. The next sync run picks it up automatically.
 
 ```markdown
-# raw/tickets/CS-1042.md (draft)
+# raw/support/ticket-1042.md (draft)
 ---
-ticket_id: CS-1042
-product: billing
+source_id: ticket-1042
+topic: billing
 status: draft
 ---
 
@@ -166,7 +167,7 @@ immediately for upgrades; downgrades take effect at the next renewal date.
 
 ## Incremental sync
 
-Full re-index on every run does not scale. `file-sync-tracker.json` stores a content hash per master file. Only files whose hash changed (or are new) go through embed + upsert.
+Full re-index on every run does not scale. `sync-state.json` stores a content hash per master file. Only files whose hash changed (or are new) go through embed + upsert.
 
 ```json
 {
@@ -194,9 +195,9 @@ On delete: remove the file entry from the tracker, delete its chunk IDs from Pin
 
 ## HTTP connection pooling
 
-The Dropbox API is called dozens of times per sync — list folder, download each changed file, upload mkdocs mirror, update tracker. Without connection reuse, every call pays a fresh TCP + TLS handshake (~150–300 ms per request on top of API latency).
+The storage API is called dozens of times per sync — list folder, download each changed file, upload site mirror, update tracker. Without connection reuse, every call pays a fresh TCP + TLS handshake (~150–300 ms per request on top of API latency).
 
-Use a shared `requests.Session()` (or equivalent HTTP client with keep-alive) for all Dropbox calls in a run. In production we saw roughly **150–300 ms saved per API call**, which adds up when listing and downloading 20+ files.
+Use a shared HTTP session with keep-alive for all storage calls in a run. Teams often see roughly **150–300 ms saved per API call**, which adds up when listing and downloading 20+ files.
 
 | Operation | Without pooling (ms) | With pooling (ms) |
 |-----------|---------------------|-------------------|
@@ -208,18 +209,15 @@ Use a shared `requests.Session()` (or equivalent HTTP client with keep-alive) fo
 ```python
 import requests
 
-# One session per sync run — reuse across all Dropbox calls
+# One session per sync run — reuse across all storage API calls
 session = requests.Session()
 session.headers.update({
-    "Authorization": f"Bearer {DROPBOX_TOKEN}",
+    "Authorization": f"Bearer {STORAGE_TOKEN}",
     "Content-Type": "application/json",
 })
 
-def dropbox_download(path: str) -> bytes:
-    return session.post(
-        "https://content.dropboxapi.com/2/files/download",
-        headers={"Dropbox-API-Arg": json.dumps({"path": path})},
-    ).content
+def download_file(path: str) -> bytes:
+    return session.get(f"{STORAGE_API_BASE}/files/download", params={"path": path}).content
 ```
 
 ---
@@ -250,13 +248,13 @@ Stages map cleanly to the sync pipeline: `list` → `load` → `embed` → `pine
 
 | Step | Action | Updates tracker? |
 |------|--------|------------------|
-| 1 | Load `file-sync-tracker.json` from Dropbox | Read |
-| 2 | List all `/master/**/*.md` paths and content hashes | — |
+| 1 | Load `sync-state.json` from storage | Read |
+| 2 | List all `master/**/*.md` paths and content hashes | — |
 | 3 | Diff: new, changed, deleted vs tracker | — |
 | 4 | Download changed files (pooled HTTP) | — |
 | 5 | Chunk + embed changed content only | — |
 | 6 | Upsert vectors to Pinecone; delete removed chunk IDs | — |
-| 7 | Mirror changed pages + images to `/mkdocs/` | — |
+| 7 | Mirror changed pages + assets to `site/` | — |
 | 8 | Run `mkdocs build`; push `site/` to GitHub Pages | — |
 | 9 | Write updated hashes and chunk IDs to tracker | Write |
 | 10 | Emit SSE `complete` event with summary stats | — |
@@ -269,8 +267,8 @@ Stages map cleanly to the sync pipeline: `list` → `load` → `embed` → `pine
 
 ```python
 def run_sync(emit):
-    tracker = load_tracker()                    # Dropbox download
-    session = create_dropbox_session()          # pooled HTTP
+    tracker = load_tracker()                    # download sync-state.json
+    session = create_storage_session()        # pooled HTTP
 
     master_files = list_master_md(session)
     diff = compute_diff(master_files, tracker)  # new | changed | deleted
@@ -286,7 +284,7 @@ def run_sync(emit):
         text = download_md(session, path)
         chunks = chunk_and_embed(text)
         upsert_pinecone(path, chunks)
-        mirror_to_mkdocs(path, text)
+        mirror_to_site(path, text)
         tracker.files[path] = {"hash": hash(text), "chunk_ids": [c.id for c in chunks]}
 
     build_and_push_github_pages()
@@ -319,14 +317,14 @@ def compute_diff(remote_files, tracker):
 |------|---------|
 | **master/** | Published markdown — only folder the sync job reads for indexing |
 | **raw/** | Staging area; content must be reviewed before promotion to master |
-| **file-sync-tracker.json** | JSON state file tracking content hashes and Pinecone chunk IDs per file |
+| **sync-state.json** | JSON state file tracking content hashes and vector chunk IDs per file |
 | **Incremental sync** | Re-index only files whose hash changed since last run |
 | **Connection pooling** | Reusing TCP/TLS connections across HTTP requests to the same host |
 | **SSE** | Server-Sent Events — one-way stream of progress updates to the browser |
-| **MkDocs mirror** | Generated copy of master content laid out for MkDocs navigation |
+| **Site mirror** | Generated copy of master content laid out for MkDocs navigation |
 | **GitHub Pages** | Static site hosting from a repo branch (typically `gh-pages`) |
-| **Ticket-to-KB** | Pipeline that turns support tickets into reviewed Q&A articles |
+| **Support-to-KB** | Pipeline that turns resolved support threads into reviewed Q&A articles |
 
 ---
 
-Treat `/master/` as a contract: if it is in master, it is searchable *and* publishable. Everything else stays in raw until a human says yes.
+Treat `master/` as a contract: if it is in master, it is searchable *and* publishable. Everything else stays in raw until a human approves it.

@@ -80,11 +80,11 @@ A **golden eval set** is a fixed list of questions with known correct source doc
 ```json
 {
   "id": "eval-014",
-  "question": "How do I export a cut list to CSV?",
-  "expected_doc_id": "export-cut-list",
-  "expected_section": "CSV export",
-  "tags": ["export", "cut-list"],
-  "notes": "Users often say 'download parts list'"
+  "question": "How do I reset my password?",
+  "expected_doc_id": "account-settings",
+  "expected_section": "Password reset",
+  "tags": ["account", "password"],
+  "notes": "Users often say 'forgot login'"
 }
 ```
 

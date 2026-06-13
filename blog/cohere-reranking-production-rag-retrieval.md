@@ -6,7 +6,7 @@ How to tune retrieval in a production RAG system: wide vector recall, Cohere rer
 
 ---
 
-Vector search alone is fast but imprecise. A reranker fixes ranking — but calling it on every request adds ~200 ms and ~$0.002 per call. This guide covers the patterns we use in production to get rerank quality without burning budget on obvious hits.
+Vector search alone is fast but imprecise. A reranker fixes ranking — but calling it on every request adds ~200 ms and ~$0.002 per call. This guide covers common production patterns for rerank quality without burning budget on obvious hits.
 
 Part two of our RAG series. Start with [How to Build a Production RAG Chatbot](how-to-build-a-production-rag-chatbot.html) if you need the foundations.
 

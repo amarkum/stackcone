@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
   <title>Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline | stackcone</title>
-  <meta name="description" content="How to publish a knowledge base to GitHub Pages from Dropbox: folder layout, incremental sync, Pinecone indexing, MkDocs build, ticket-to-KB pipeline, and SSE progress streaming. Production RAG pipeline by stackcone.">
-  <meta name="keywords" content="knowledge base GitHub Pages, Dropbox sync, MkDocs, Pinecone, RAG pipeline, incremental sync, file-sync-tracker, SSE streaming, knowledge base publishing, stackcone">
+  <meta name="description" content="Generic pipeline to publish a knowledge base to GitHub Pages: raw/ staging, master/ markdown, Pinecone indexing, MkDocs build, and incremental sync. Works with Dropbox or similar storage.">
+  <meta name="keywords" content="knowledge base GitHub Pages, cloud storage sync, MkDocs, Pinecone, RAG pipeline, incremental sync, sync-state.json, SSE streaming, knowledge base publishing, stackcone">
   <link rel="canonical" href="https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/publish-knowledge-base-github-pages-dropbox-sync.html">
   <meta property="og:title" content="Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline">
-  <meta property="og:description" content="Real production pipeline: Dropbox master folder → chunk + embed → Pinecone + MkDocs mirror → GitHub Pages. Incremental sync, ticket-to-KB, connection pooling, and SSE progress.">
+  <meta property="og:description" content="Repeatable pipeline: staged raw/ → published master/ → Pinecone + MkDocs → GitHub Pages. Incremental sync and support Q&A workflow.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +30,7 @@
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Publishing a Knowledge Base to GitHub Pages from Dropbox — Production Pipeline",
-    "description": "How to publish a knowledge base from Dropbox to GitHub Pages: folder layout, incremental sync via file-sync-tracker.json, Pinecone indexing, MkDocs build, ticket-to-KB pipeline, HTTP connection pooling, and SSE progress streaming.",
+    "description": "How to publish a knowledge base to GitHub Pages: generic folder layout, incremental sync via sync-state.json, Pinecone indexing, MkDocs build, support-to-KB workflow, HTTP connection pooling, and SSE progress streaming.",
     "author": { "@type": "Person", "name": "Amar Kumar" },
     "publisher": {
       "@type": "Organization",
@@ -80,7 +80,8 @@
     <p class="meta">June 2026 · Published by Amar Kumar</p>
     <p>A production pipeline for keeping a RAG chatbot and a public docs site in sync — with Dropbox as the editorial source of truth and GitHub Pages as the published output.</p>
 
-    <p>Your team already lives in Dropbox. Your chatbot needs fresh vectors. Your users need a browsable docs site. This article walks through the pipeline we run in production: staged content in <code>/raw/</code>, published markdown in <code>/master/</code>, a sync job that indexes only what changed, and a MkDocs build pushed to GitHub Pages.</p>
+    <p>Your team needs one place to edit docs, a chatbot that stays current, and a public site users can browse. This article describes a <strong>repeatable production pipeline</strong>: staged content in <code>raw/</code>, published markdown in <code>master/</code>, a sync job that indexes only what changed, and a MkDocs build pushed to GitHub Pages.</p>
+    <p>Dropbox is used here as the shared drive — the same pattern works with S3, Google Drive, or any folder your editors already use.</p>
 
     <p>If you are new to RAG itself, start with our companion guide: <a href="how-to-build-a-production-rag-chatbot.html">How to Build a Production RAG Chatbot</a>.</p>
 
@@ -92,10 +93,10 @@
       <h2>Table of contents</h2>
       <ol>
         <li><a href="#why-this-layout">Why this layout</a></li>
-        <li><a href="#dropbox-folder-layout">Dropbox folder layout</a></li>
+        <li><a href="#folder-layout">Recommended folder layout</a></li>
         <li><a href="#two-pipelines">Two pipelines: ingest and publish</a></li>
         <li><a href="#sync-job-flow">Sync job flow</a></li>
-        <li><a href="#ticket-to-kb">Ticket-to-KB pipeline</a></li>
+        <li><a href="#support-to-kb">Support content → KB</a></li>
         <li><a href="#incremental-sync">Incremental sync</a></li>
         <li><a href="#connection-pooling">HTTP connection pooling</a></li>
         <li><a href="#sse-progress">SSE progress streaming</a></li>
@@ -106,60 +107,58 @@
     </nav>
 
     <div class="chart-wrap">
-      <canvas id="folderChart" aria-label="Dropbox folder file distribution"></canvas>
-      <p class="chart-caption">Conceptual file counts by top-level folder (production KB ~350 assets)</p>
+      <canvas id="folderChart" aria-label="KB folder file distribution"></canvas>
+      <p class="chart-caption">Conceptual file counts by top-level folder (example KB ~350 assets)</p>
     </div>
 
     <h2 id="why-this-layout">Why this layout</h2>
     <p>Three problems to solve at once:</p>
     <ul>
-      <li><strong>Editorial control</strong> — not everything in Dropbox should be searchable or public</li>
+      <li><strong>Editorial control</strong> — not everything in staging should be searchable or public</li>
       <li><strong>Dual output</strong> — vectors for the chatbot <em>and</em> HTML for humans</li>
       <li><strong>Speed</strong> — re-embedding 200 docs when one paragraph changed is wasteful</li>
     </ul>
-    <p>The fix is a strict separation: <code>/raw/</code> for drafts and source material, <code>/master/</code> as the sole sync source for published markdown, and <code>/mkdocs/</code> as a generated mirror for the static site.</p>
+    <p>The fix is a strict separation: <code>raw/</code> for drafts, <code>master/</code> as the sole sync source for published markdown, and <code>site/</code> as a generated mirror for the static site.</p>
 
-    <h2 id="dropbox-folder-layout">Dropbox folder layout</h2>
+    <h2 id="folder-layout">Recommended folder layout</h2>
+    <p>Use a single root folder (example: <code>kb/</code> on Dropbox). Adapt subfolders to your content types.</p>
     <table>
       <thead>
         <tr><th>Path</th><th>Purpose</th><th>Synced by job?</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>/knowledgebase/raw/</code></td><td>Staging: tickets, documents, meeting notes, videos (transcripts)</td><td>No</td></tr>
-        <tr><td><code>/knowledgebase/raw/tickets/</code></td><td>AI-generated Q&amp;A from archived support tickets (<code>CS-n.md</code>)</td><td>No</td></tr>
-        <tr><td><code>/knowledgebase/raw/documents/</code></td><td>Imported PDFs, specs, one-pagers awaiting review</td><td>No</td></tr>
-        <tr><td><code>/knowledgebase/raw/meeting-notes/</code></td><td>Internal notes distilled into KB articles</td><td>No</td></tr>
-        <tr><td><code>/knowledgebase/raw/videos/</code></td><td>Transcripts and show notes from training videos</td><td>No</td></tr>
-        <tr><td><code>/knowledgebase/master/</code></td><td>Published <code>.md</code> — <strong>sole source</strong> for sync job</td><td>Yes (read)</td></tr>
-        <tr><td><code>/knowledgebase/mkdocs/</code></td><td>Mirror of master, formatted for MkDocs nav</td><td>Yes (write)</td></tr>
-        <tr><td><code>/knowledgebase/metadata/file-sync-tracker.json</code></td><td>Incremental sync state (content hashes, last run)</td><td>Yes (read/write)</td></tr>
-        <tr><td><code>/knowledgebase/images/</code></td><td>Shared assets referenced by markdown</td><td>Copied to mkdocs on sync</td></tr>
+        <tr><td><code>kb/raw/</code></td><td>Staging: drafts, imports, AI-generated Q&amp;A awaiting review</td><td>No</td></tr>
+        <tr><td><code>kb/raw/support/</code></td><td>Q&amp;A drafts from support tickets or chat transcripts</td><td>No</td></tr>
+        <tr><td><code>kb/raw/imports/</code></td><td>PDFs, specs, one-pagers awaiting review</td><td>No</td></tr>
+        <tr><td><code>kb/raw/notes/</code></td><td>Internal notes to distill into articles</td><td>No</td></tr>
+        <tr><td><code>kb/master/</code></td><td>Published <code>.md</code> — <strong>sole source</strong> for sync job</td><td>Yes (read)</td></tr>
+        <tr><td><code>kb/site/</code></td><td>Mirror of master, formatted for MkDocs nav</td><td>Yes (write)</td></tr>
+        <tr><td><code>kb/metadata/sync-state.json</code></td><td>Incremental sync state (content hashes, chunk IDs)</td><td>Yes (read/write)</td></tr>
+        <tr><td><code>kb/assets/</code></td><td>Images and files referenced by markdown</td><td>Copied to site on sync</td></tr>
       </tbody>
     </table>
 
-    <pre><code>knowledgebase/
+    <pre><code>kb/
 ├── raw/                          <span class="cm">← staging (never indexed directly)</span>
-│   ├── tickets/
-│   │   ├── CS-1042.md
-│   │   └── CS-1087.md
-│   ├── documents/
+│   ├── support/
+│   │   ├── ticket-1042.md
+│   │   └── ticket-1087.md
+│   ├── imports/
 │   │   └── product-spec-v3.md
-│   ├── meeting-notes/
-│   │   └── 2026-05-kickoff.md
-│   └── videos/
-│       └── onboarding-transcript.md
+│   └── notes/
+│       └── 2026-05-kickoff.md
 ├── master/                       <span class="cm">← published .md — SOLE sync source</span>
 │   ├── getting-started.md
 │   ├── billing-faq.md
 │   └── integrations/
 │       └── slack.md
-├── mkdocs/                       <span class="cm">← mirror for docs site (generated)</span>
+├── site/                         <span class="cm">← mirror for docs site (generated)</span>
 │   ├── docs/
 │   │   └── ...
 │   └── mkdocs.yml
 ├── metadata/
-│   └── file-sync-tracker.json    <span class="cm">← incremental sync state</span>
-└── images/
+│   └── sync-state.json           <span class="cm">← incremental sync state</span>
+└── assets/
     ├── screenshot-dashboard.png
     └── logo-partner.svg</code></pre>
 
@@ -181,7 +180,7 @@
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Publish to master/</span>
     </div>
-    <p>Tickets, meeting notes, and imports land in <code>/raw/</code>. An editor (or AI + editor) promotes approved content into <code>/master/</code>. Nothing in <code>/raw/</code> is embedded or published.</p>
+    <p>Support content, imports, and notes land in <code>raw/</code>. An editor promotes approved content into <code>master/</code>. Nothing in <code>raw/</code> is embedded or published.</p>
 
     <h3>Sync — master to vectors and GitHub Pages</h3>
     <div class="pipeline" role="img" aria-label="Sync publish: Master markdown to Sync job to Chunk embed Pinecone to MkDocs mirror to GitHub Pages">
@@ -193,13 +192,13 @@
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Pinecone upsert</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">Mirror mkdocs/</span>
+      <span class="pipeline-step">Mirror site/</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">MkDocs build</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Git push → GitHub Pages</span>
     </div>
-    <p>The sync job reads <strong>only</strong> <code>/master/*.md</code> (plus tracker state). Changed files are chunked, embedded, upserted to Pinecone, copied into the MkDocs tree, built, and pushed.</p>
+    <p>The sync job reads <strong>only</strong> <code>master/**/*.md</code> (plus tracker state). Changed files are chunked, embedded, upserted to Pinecone, copied into the MkDocs tree, built, and pushed.</p>
 
     <div class="chart-wrap">
       <canvas id="publishFlowChart" aria-label="Content funnel from raw to GitHub Pages"></canvas>
@@ -215,33 +214,33 @@
     </div>
 
     <ol>
-      <li><strong>List files</strong> — walk <code>/master/</code>, compare against <code>file-sync-tracker.json</code></li>
-      <li><strong>Load markdown</strong> — download changed <code>.md</code> from Dropbox (pooled HTTP)</li>
+      <li><strong>List files</strong> — walk <code>master/</code>, compare against <code>sync-state.json</code></li>
+      <li><strong>Load markdown</strong> — download changed <code>.md</code> from storage (pooled HTTP)</li>
       <li><strong>Chunk + embed</strong> — split text, call embedding API in batches</li>
       <li><strong>Pinecone upsert</strong> — write vectors; delete stale chunk IDs for removed sections</li>
-      <li><strong>Mirror mkdocs/</strong> — copy changed pages + images into MkDocs tree</li>
+      <li><strong>Mirror site/</strong> — copy changed pages + assets into MkDocs tree</li>
       <li><strong>Build + push</strong> — <code>mkdocs build</code>, commit <code>site/</code>, push to <code>gh-pages</code> branch</li>
     </ol>
 
-    <h2 id="ticket-to-kb">Ticket-to-KB pipeline</h2>
-    <p>Support tickets are a gold mine — if you turn them into structured Q&amp;A instead of dumping raw threads into search.</p>
-    <div class="pipeline" role="img" aria-label="Ticket pipeline: Archived ticket to AI Q and A markdown to raw tickets to review to master">
-      <span class="pipeline-step">Archived ticket</span>
+    <h2 id="support-to-kb">Support content → KB</h2>
+    <p>Resolved support conversations are a strong KB source — if you turn them into structured Q&amp;A instead of dumping raw threads into search.</p>
+    <div class="pipeline" role="img" aria-label="Support pipeline: Closed ticket to AI Q and A markdown to raw support to review to master">
+      <span class="pipeline-step">Closed ticket</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">AI summarize → Q&amp;A</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">raw/tickets/CS-n.md</span>
+      <span class="pipeline-step">raw/support/</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Review</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">master/</span>
     </div>
-    <p>Each ticket becomes a markdown file with a clear question heading, a concise answer, and metadata (ticket ID, product area, date). Editors fix tone and redact PII before moving the file to <code>/master/</code>. The next sync run picks it up automatically.</p>
+    <p>Each item becomes a markdown file with a clear question heading, a concise answer, and metadata (source ID, topic, date). Editors fix tone and redact PII before moving the file to <code>master/</code>. The next sync run picks it up automatically.</p>
 
-    <pre><code><span class="cm"># raw/tickets/CS-1042.md (draft)</span>
+    <pre><code><span class="cm"># raw/support/ticket-1042.md (draft)</span>
 ---
-ticket_id: CS-1042
-product: billing
+source_id: ticket-1042
+topic: billing
 status: draft
 ---
 
@@ -253,7 +252,7 @@ immediately for upgrades; downgrades take effect at the next renewal date.
 <span class="cm"># After review → copied/renamed to master/billing-change-plan.md</span></code></pre>
 
     <h2 id="incremental-sync">Incremental sync</h2>
-    <p>Full re-index on every run does not scale. <code>file-sync-tracker.json</code> stores a content hash per master file. Only files whose hash changed (or are new) go through embed + upsert.</p>
+    <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per master file. Only files whose hash changed (or are new) go through embed + upsert.</p>
 
     <pre><code>{
   <span class="str">"last_sync"</span>: <span class="str">"2026-06-12T14:30:00Z"</span>,
@@ -279,28 +278,25 @@ immediately for upgrades; downgrades take effect at the next renewal date.
     </div>
 
     <h2 id="connection-pooling">HTTP connection pooling</h2>
-    <p>The Dropbox API is called dozens of times per sync — list folder, download each changed file, upload mkdocs mirror, update tracker. Without connection reuse, every call pays a fresh TCP + TLS handshake (~150–300&nbsp;ms per request on top of API latency).</p>
-    <p>Use a shared <code>requests.Session()</code> (or equivalent HTTP client with keep-alive) for all Dropbox calls in a run. In production we saw roughly <strong>150–300&nbsp;ms saved per API call</strong>, which adds up when listing and downloading 20+ files.</p>
+    <p>The storage API is called dozens of times per sync — list folder, download each changed file, upload site mirror, update tracker. Without connection reuse, every call pays a fresh TCP + TLS handshake (~150–300&nbsp;ms per request on top of API latency).</p>
+    <p>Use a shared HTTP session with keep-alive for all storage calls in a run. Teams often see roughly <strong>150–300&nbsp;ms saved per API call</strong>, which adds up when listing and downloading 20+ files.</p>
 
     <div class="chart-wrap">
-      <canvas id="latencyChart" aria-label="Dropbox API latency with and without connection pooling"></canvas>
-      <p class="chart-caption">Average Dropbox API call latency: new connection vs pooled session (ms)</p>
+      <canvas id="latencyChart" aria-label="Storage API latency with and without connection pooling"></canvas>
+      <p class="chart-caption">Average storage API call latency: new connection vs pooled session (ms)</p>
     </div>
 
     <pre><code><span class="kw">import</span> requests
 
-<span class="cm"># One session per sync run — reuse across all Dropbox calls</span>
+<span class="cm"># One session per sync run — reuse across all storage API calls</span>
 session = requests.Session()
 session.headers.update({
-    <span class="str">"Authorization"</span>: <span class="str">f"Bearer {DROPBOX_TOKEN}"</span>,
+    <span class="str">"Authorization"</span>: <span class="str">f"Bearer {STORAGE_TOKEN}"</span>,
     <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
 })
 
-<span class="kw">def</span> <span class="fn">dropbox_download</span>(path: <span class="fn">str</span>) -&gt; <span class="fn">bytes</span>:
-    <span class="kw">return</span> session.post(
-        <span class="str">"https://content.dropboxapi.com/2/files/download"</span>,
-        headers={<span class="str">"Dropbox-API-Arg"</span>: json.dumps({<span class="str">"path"</span>: path})},
-    ).content</code></pre>
+<span class="kw">def</span> <span class="fn">download_file</span>(path: <span class="fn">str</span>) -&gt; <span class="fn">bytes</span>:
+    <span class="kw">return</span> session.get(<span class="str">f"{STORAGE_API_BASE}/files/download"</span>, params={<span class="str">"path"</span>: path}).content</code></pre>
 
     <h2 id="sse-progress">SSE progress streaming</h2>
     <p>Sync jobs can run several minutes. Expose progress via <strong>Server-Sent Events (SSE)</strong> so the admin UI shows live status without polling.</p>
@@ -324,13 +320,13 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
         <tr><th>Step</th><th>Action</th><th>Updates tracker?</th></tr>
       </thead>
       <tbody>
-        <tr><td>1</td><td>Load <code>file-sync-tracker.json</code> from Dropbox</td><td>Read</td></tr>
-        <tr><td>2</td><td>List all <code>/master/**/*.md</code> paths and content hashes</td><td>—</td></tr>
+        <tr><td>1</td><td>Load <code>sync-state.json</code> from storage</td><td>Read</td></tr>
+        <tr><td>2</td><td>List all <code>master/**/*.md</code> paths and content hashes</td><td>—</td></tr>
         <tr><td>3</td><td>Diff: new, changed, deleted vs tracker</td><td>—</td></tr>
         <tr><td>4</td><td>Download changed files (pooled HTTP)</td><td>—</td></tr>
         <tr><td>5</td><td>Chunk + embed changed content only</td><td>—</td></tr>
         <tr><td>6</td><td>Upsert vectors to Pinecone; delete removed chunk IDs</td><td>—</td></tr>
-        <tr><td>7</td><td>Mirror changed pages + images to <code>/mkdocs/</code></td><td>—</td></tr>
+        <tr><td>7</td><td>Mirror changed pages + assets to <code>site/</code></td><td>—</td></tr>
         <tr><td>8</td><td>Run <code>mkdocs build</code>; push <code>site/</code> to GitHub Pages</td><td>—</td></tr>
         <tr><td>9</td><td>Write updated hashes and chunk IDs to tracker</td><td>Write</td></tr>
         <tr><td>10</td><td>Emit SSE <code>complete</code> event with summary stats</td><td>—</td></tr>
@@ -340,8 +336,8 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     <h2 id="code-snippets">Code snippets</h2>
     <h3>Sync job pseudocode</h3>
     <pre><code><span class="kw">def</span> <span class="fn">run_sync</span>(emit):
-    tracker = load_tracker()                    <span class="cm"># Dropbox download</span>
-    session = create_dropbox_session()          <span class="cm"># pooled HTTP</span>
+    tracker = load_tracker()                    <span class="cm"># download sync-state.json</span>
+    session = create_storage_session()          <span class="cm"># pooled HTTP</span>
 
     master_files = list_master_md(session)
     diff = compute_diff(master_files, tracker)  <span class="cm"># new | changed | deleted</span>
@@ -350,14 +346,14 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
 
     <span class="kw">for</span> path <span class="kw">in</span> diff.deleted:
         delete_pinecone_chunks(tracker.files[path].chunk_ids)
-        remove_mkdocs_page(path)
+        remove_site_page(path)
         <span class="kw">del</span> tracker.files[path]
 
     <span class="kw">for</span> path <span class="kw">in</span> diff.new + diff.changed:
         text = download_md(session, path)
         chunks = chunk_and_embed(text)
         upsert_pinecone(path, chunks)
-        mirror_to_mkdocs(path, text)
+        mirror_to_site(path, text)
         tracker.files[path] = {<span class="str">"hash"</span>: hash(text), <span class="str">"chunk_ids"</span>: [c.id <span class="kw">for</span> c <span class="kw">in</span> chunks]}
 
     build_and_push_github_pages()
@@ -386,26 +382,26 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
       <tbody>
         <tr><td><strong>master/</strong></td><td>Published markdown — only folder the sync job reads for indexing</td></tr>
         <tr><td><strong>raw/</strong></td><td>Staging area; content must be reviewed before promotion to master</td></tr>
-        <tr><td><strong>file-sync-tracker.json</strong></td><td>JSON state file tracking content hashes and Pinecone chunk IDs per file</td></tr>
+        <tr><td><strong>sync-state.json</strong></td><td>JSON state file tracking content hashes and vector chunk IDs per file</td></tr>
         <tr><td><strong>Incremental sync</strong></td><td>Re-index only files whose hash changed since last run</td></tr>
         <tr><td><strong>Connection pooling</strong></td><td>Reusing TCP/TLS connections across HTTP requests to the same host</td></tr>
         <tr><td><strong>SSE</strong></td><td>Server-Sent Events — one-way stream of progress updates to the browser</td></tr>
-        <tr><td><strong>MkDocs mirror</strong></td><td>Generated copy of master content laid out for MkDocs navigation</td></tr>
+        <tr><td><strong>Site mirror</strong></td><td>Generated copy of master content laid out for MkDocs navigation</td></tr>
         <tr><td><strong>GitHub Pages</strong></td><td>Static site hosting from a repo branch (typically <code>gh-pages</code>)</td></tr>
-        <tr><td><strong>Ticket-to-KB</strong></td><td>Pipeline that turns support tickets into reviewed Q&amp;A articles</td></tr>
+        <tr><td><strong>Support-to-KB</strong></td><td>Pipeline that turns resolved support threads into reviewed Q&amp;A articles</td></tr>
       </tbody>
     </table>
 
     <aside class="blog-cta">
       <p><strong>Need help building a production RAG knowledge base?</strong></p>
-      <p>stackcone designs and ships RAG systems for enterprise and startups — Dropbox ingestion, vector search, docs publishing, and chatbot deployment. 10+ years experience, 100% job success on Upwork.</p>
+      <p>stackcone designs and ships RAG systems for enterprise and startups — document ingestion, vector search, docs publishing, and chatbot deployment. 10+ years experience, 100% job success on Upwork.</p>
       <div class="blog-cta-links">
         <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
         <a href="../contact/" class="cta cta--secondary">Contact us</a>
       </div>
     </aside>
 
-    <p class="closing">Treat <code>/master/</code> as a contract: if it is in master, it is searchable <em>and</em> publishable. Everything else stays in raw until a human says yes.</p>
+    <p class="closing">Treat <code>master/</code> as a contract: if it is in master, it is searchable <em>and</em> publishable. Everything else stays in raw until a human approves it.</p>
   </article>
 
   <footer class="footer">
@@ -447,7 +443,7 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     new Chart(document.getElementById('folderChart'), {
       type: 'doughnut',
       data: {
-        labels: ['raw/', 'master/', 'mkdocs/', 'metadata/', 'images/'],
+        labels: ['raw/', 'master/', 'site/', 'metadata/', 'assets/'],
         datasets: [{
           data: [180, 45, 45, 3, 120],
           backgroundColor: ['#2563eb', '#16a34a', '#7c3aed', '#ea580c', '#0891b2']
@@ -480,7 +476,7 @@ data: {"files_indexed":2,"files_skipped":43,"duration_s":94}</code></pre>
     new Chart(document.getElementById('sourcesChart'), {
       type: 'bar',
       data: {
-        labels: ['Tickets', 'Documents', 'Meeting notes', 'Videos'],
+        labels: ['Support Q&A', 'Imports', 'Notes', 'Other'],
         datasets: [{
           label: 'Articles',
           data: [28, 12, 8, 5],
