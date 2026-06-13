@@ -1,4 +1,27 @@
 (function () {
+  var PER_PAGE = 3;
+  var currentPage = 0;
+  var allProjects = [];
+
+  var PROJECT_ORDER = [
+    'cabinetsense',
+    'internal-copilot',
+    'ai-invoice-bot',
+    'llm-training-review',
+    'gcp-dataflow-bq',
+    'rest-api-partners',
+    'aadhya-self-drive',
+    'rag-knowledge-base',
+    'hadoop-gcp-migration',
+    'ml-feature-pipeline',
+    'pipeline-dashboard',
+    'elk-stack',
+    'portfolio-accounting',
+    'investment-bank-desktop',
+    'clinical-etl',
+    'data-governance'
+  ];
+
   function escapeHtml(s) {
     var d = document.createElement('div');
     d.textContent = s;
@@ -14,6 +37,22 @@
     return items.map(function (item) {
       return '<li>' + escapeHtml(item) + '</li>';
     }).join('');
+  }
+
+  function sortProjects(projects) {
+    var byId = {};
+    projects.forEach(function (p) {
+      byId[p.id] = p;
+    });
+    var ordered = PROJECT_ORDER.filter(function (id) {
+      return byId[id];
+    });
+    projects.forEach(function (p) {
+      if (ordered.indexOf(p.id) < 0) ordered.push(p.id);
+    });
+    return ordered.map(function (id) {
+      return byId[id];
+    });
   }
 
   function renderLinks(p) {
@@ -126,16 +165,81 @@
     );
   }
 
+  function totalPages() {
+    return Math.max(1, Math.ceil(allProjects.length / PER_PAGE));
+  }
+
+  function renderPage() {
+    var casesEl = document.getElementById('work-cases');
+    if (!casesEl) return;
+
+    var start = currentPage * PER_PAGE;
+    var pageProjects = allProjects.slice(start, start + PER_PAGE);
+    casesEl.innerHTML = pageProjects.map(renderProject).join('');
+    renderPagination();
+
+    var layout = document.getElementById('work-layout');
+    if (layout && currentPage > 0) {
+      layout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function renderPagination() {
+    var el = document.getElementById('work-pagination');
+    if (!el) return;
+
+    var total = totalPages();
+    if (total <= 1) {
+      el.innerHTML = '';
+      el.hidden = true;
+      return;
+    }
+
+    el.hidden = false;
+    var html = '';
+
+    html += '<button type="button" data-page="prev"' + (currentPage === 0 ? ' disabled' : '') + '>Previous</button>';
+
+    for (var i = 0; i < total; i += 1) {
+      var active = i === currentPage ? ' class="active"' : '';
+      html += '<button type="button" data-page="' + i + '"' + active + '>' + (i + 1) + '</button>';
+    }
+
+    html += '<button type="button" data-page="next"' + (currentPage >= total - 1 ? ' disabled' : '') + '>Next</button>';
+
+    el.innerHTML = html;
+
+    el.querySelectorAll('button[data-page]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var action = btn.getAttribute('data-page');
+        if (action === 'prev' && currentPage > 0) {
+          currentPage -= 1;
+          renderPage();
+        } else if (action === 'next' && currentPage < total - 1) {
+          currentPage += 1;
+          renderPage();
+        } else if (action !== 'prev' && action !== 'next') {
+          currentPage = parseInt(action, 10);
+          renderPage();
+        }
+      });
+    });
+  }
+
   function init(data) {
     var layout = document.getElementById('work-layout');
     if (!layout) return;
 
-    var projects = data.projects || data;
+    allProjects = sortProjects(data.projects || data);
+    currentPage = 0;
 
     layout.innerHTML =
-      '<div class="work-main" id="work-cases">' +
-        projects.map(renderProject).join('') +
+      '<div class="work-main">' +
+        '<div id="work-cases" class="work-cases"></div>' +
+        '<nav class="work-pagination" id="work-pagination" aria-label="Case study pagination"></nav>' +
       '</div>';
+
+    renderPage();
   }
 
   fetch('projects.json')

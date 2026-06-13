@@ -96,8 +96,8 @@
   "projects": [
     {
       "id": "aadhya-self-drive",
-      "title": "Aadhya Self Drive \u2014 Flutter iOS & Android",
-      "domain": "Mobile \u00b7 Flutter \u00b7 Travel",
+      "title": "Aadhya Self Drive — Flutter iOS & Android",
+      "domain": "Mobile · Flutter · Travel",
       "client": "Shenali De Silva",
       "links": [
         {
@@ -114,10 +114,11 @@
         }
       ],
       "implementation": [
-        "Flutter app for iOS and Android from a single codebase",
-        "Booking flow with location-based search, flexible rental durations, and trip management",
-        "TestFlight and Play Store release pipeline with store listing assets and version updates",
-        "Monetization through in-app booking and payment flows tied to the rental backend"
+        "Flutter app for iOS and Android with location-based search, flexible rental durations, and end-to-end trip management",
+        "Booking flow with document upload, renter verification steps, and payment integration tied to the rental backend",
+        "TestFlight and Google Play release pipeline including store listings, screenshots, and versioned rollout updates",
+        "Push notifications for booking confirmations, trip reminders, and status changes",
+        "Performance tuning for offline-tolerant flows, deep links from marketing pages, and analytics on conversion steps"
       ],
       "technologies": [
         "Flutter",
@@ -128,16 +129,18 @@
         "Firebase"
       ],
       "briefType": "requirement",
-      "brief": "Ship a cross-platform mobile app for self-drive car rental \u2014 browse vehicles, verify renters, book trips, and accept payments on iOS and Android from one Flutter codebase, with App Store and Play Store release."
+      "brief": "Ship a cross-platform mobile app for Aadhya Self Drive so renters browse vehicles, complete verification, book trips, and pay on iOS and Android from one Flutter codebase, with App Store and Play Store release."
     },
     {
       "id": "cabinetsense",
-      "title": "CabinetSense \u2014 SaaS platform & RAG assistant",
-      "domain": "AI \u00b7 Full-stack \u00b7 GCP",
+      "title": "CabinetSense — SaaS platform & RAG assistant",
+      "domain": "AI · Full-stack · GCP",
       "implementation": [
-        "Refactored support board from JSP to lazy JSON APIs with batch Datastore loads",
-        "FastAPI RAG on Cloud Run: Pinecone retrieval, Cohere rerank, MMR, multi-LLM routing",
-        "JWT auth, FastSpring licensing, BigQuery nightly export for AI usage and feedback"
+        "Refactored the legacy support board from JSP to lazy JSON APIs with batch Google Cloud Datastore loads, cutting page load time and enabling real-time ticket updates",
+        "Built a FastAPI RAG service on Cloud Run with Pinecone retrieval, Cohere rerank, MMR diversity, and multi-LLM routing so answers stay grounded in product docs",
+        "Integrated JWT authentication, FastSpring licensing, and usage metering so AI features bill correctly per customer tier",
+        "Shipped nightly BigQuery exports for AI usage, feedback scores, and support metrics so product and ops can track adoption",
+        "Connected SketchUp extension workflows so designers query documentation and support context without leaving the design tool"
       ],
       "client": "Millcreek Custom Cabinets Inc.",
       "technologies": [
@@ -153,16 +156,18 @@
         "JWT"
       ],
       "briefType": "requirement",
-      "brief": "Modernize support operations with Kanban/list ticketing, embed an AI assistant inside SketchUp with usage-based billing, and deploy production RAG over CabinetSense product documentation."
+      "brief": "Modernize Millcreek support operations with a Kanban and list ticketing board, embed an AI assistant inside SketchUp for cabinet designers, and deploy production RAG over CabinetSense product documentation with usage-based billing and nightly analytics export."
     },
     {
       "id": "rag-knowledge-base",
-      "title": "RAG knowledge base \u2014 internal docs search",
-      "domain": "AI \u00b7 RAG \u00b7 Python",
+      "title": "RAG knowledge base — internal docs search",
+      "domain": "AI · RAG · Python",
       "implementation": [
-        "Offline ingestion pipeline: parse PDFs and HTML, chunk with metadata, embed with OpenAI, and upsert vectors into Pinecone",
-        "FastAPI search service: embed the question, retrieve top-k chunks, rerank, and generate answers with inline source citations",
-        "Admin endpoints to trigger re-indexing, compare retrieval scores, and monitor index freshness after doc updates"
+        "Offline ingestion pipeline: parse PDFs and HTML, chunk with metadata (title, section, URL), embed with OpenAI, upsert into Pinecone",
+        "FastAPI search service: embed questions, retrieve top-k chunks, rerank for relevance, and generate answers with inline source citations",
+        "Admin endpoints to trigger full or incremental re-index, compare retrieval scores on test questions, and monitor index freshness",
+        "Authentication on search APIs, rate limits per team, and logging of queries for quality review",
+        "Evaluation harness with golden questions so search quality is measured after every documentation update"
       ],
       "client": "Komal HK",
       "technologies": [
@@ -174,16 +179,18 @@
         "Embeddings"
       ],
       "briefType": "requirement",
-      "brief": "Deliver an internal RAG search over B2B SaaS documentation \u2014 natural-language queries, semantic retrieval from wikis and PDFs, cited answers, and re-indexing when content changes."
+      "brief": "Deliver an internal RAG search system for Komal HK over B2B SaaS documentation — natural-language queries, semantic retrieval from wikis and PDFs, cited answers, and re-indexing when content changes."
     },
     {
       "id": "internal-copilot",
-      "title": "Internal copilot \u2014 LLM with tools",
-      "domain": "AI \u00b7 Agents \u00b7 RAG",
+      "title": "Internal copilot — LLM with tools",
+      "domain": "AI · Agents · RAG",
       "implementation": [
-        "RAG layer over Confluence and Notion with function-calling orchestration",
-        "Tool adapters for Jira and Slack with scoped credentials",
-        "Access controls, prompt guardrails, and request logging for compliance"
+        "RAG retrieval layer over Confluence and Notion with chunking, metadata filters, and citation links in every answer",
+        "Function-calling orchestration with tool adapters for Jira (create/update tickets) and Slack (post summaries) using scoped OAuth credentials",
+        "Role-based access controls so users only retrieve docs and run actions they are permitted to perform",
+        "Prompt guardrails, PII redaction in logs, and request audit trails for security and compliance review",
+        "FastAPI service with streaming responses, conversation history, and admin dashboard for prompt and tool configuration"
       ],
       "client": "Finer Technologies, Inc.",
       "technologies": [
@@ -195,16 +202,18 @@
         "FastAPI"
       ],
       "briefType": "requirement",
-      "brief": "Build an internal copilot that answers from Confluence and Notion, runs approved Jira and Slack actions, and enforces role-based access with full audit logging."
+      "brief": "Build an internal copilot for Finer Technologies that answers from Confluence and Notion, runs approved Jira and Slack actions on behalf of users, and enforces role-based access with full audit logging for compliance."
     },
     {
       "id": "ai-invoice-bot",
-      "title": "AI Invoice Bot \u2014 OCR + LLM extraction",
-      "domain": "AI \u00b7 OCR \u00b7 Automation",
+      "title": "AI Invoice Bot — OCR + LLM extraction",
+      "domain": "AI · OCR · Automation",
       "implementation": [
-        "Tesseract and Google Cloud Vision for OCR preprocessing",
-        "LLM parsing pipeline with schema validation and confidence checks",
-        "API endpoint and error handling for malformed or low-quality scans"
+        "Tesseract and Google Cloud Vision preprocessing pipeline for skew correction, denoising, and text region detection on photographed invoices",
+        "LLM structured extraction with JSON schema validation, confidence scoring, and human-review flags for low-quality scans",
+        "FastAPI endpoints for batch upload, async processing queues, and structured error responses when OCR or parsing fails",
+        "Dockerized workers with retry logic, dead-letter handling for malformed files, and reconciliation reports for finance teams",
+        "Integration hooks so extracted fields map cleanly into downstream accounting and ERP import formats"
       ],
       "client": "M2i Consulting",
       "technologies": [
@@ -216,16 +225,18 @@
         "Docker"
       ],
       "briefType": "problem",
-      "brief": "Invoice data was entered manually from photos and PDFs, causing reconciliation errors on party names, totals, and line items and slowing accounting workflows."
+      "brief": "Eliminate manual invoice entry from photos and PDFs for M2i Consulting by building an OCR plus LLM extraction pipeline that validates party names, line items, and totals before data reaches accounting workflows."
     },
     {
       "id": "llm-training-review",
-      "title": "LLM training pipeline \u2014 code review",
-      "domain": "AI \u00b7 MLOps \u00b7 Python",
+      "title": "LLM training pipeline — code review",
+      "domain": "AI · MLOps · Python",
       "implementation": [
-        "Audited Python training code and Docker image build process",
-        "Recommended batching, checkpoint strategy, and failure recovery",
-        "Documented runbooks for retraining and model artifact versioning"
+        "Full audit of training code: batching strategy, gradient accumulation, memory usage, and distributed training configuration",
+        "Checkpoint strategy with versioned model artifacts, automatic resume from last good state, and S3-compatible storage layout",
+        "Docker image hardening: multi-stage builds, pinned dependencies, GPU runtime flags, and health checks for orchestrators",
+        "Runbooks for retraining schedules, hyperparameter sweeps, rollback procedures, and on-call escalation paths",
+        "Recommendations for CI validation, dataset versioning with Git, and monitoring training loss and GPU utilization"
       ],
       "client": "SME Careers",
       "technologies": [
@@ -236,16 +247,18 @@
         "Git"
       ],
       "briefType": "requirement",
-      "brief": "Review and harden SME Careers\u2019 Python/Docker LLM training pipeline \u2014 data loading, checkpointing, recovery, and production-readiness for containerized training jobs."
+      "brief": "Review and harden SME Careers' Python and Docker LLM training pipeline — improve data loading, checkpointing, failure recovery, and operational runbooks so containerized training jobs are production-ready."
     },
     {
       "id": "gcp-dataflow-bq",
-      "title": "GCP Dataflow \u2014 Confluent to BigQuery",
-      "domain": "Data \u00b7 Streaming \u00b7 GCP",
+      "title": "GCP Dataflow — Confluent to BigQuery",
+      "domain": "Data · Streaming · GCP",
       "implementation": [
-        "Apache Beam pipeline on Dataflow with autoscaling workers",
-        "Schema registry integration and DLQ topic for failed records",
-        "Cloud Monitoring dashboards and alerting on lag and error rates"
+        "Apache Beam pipeline on GCP Dataflow with autoscaling workers and configurable parallelism per topic",
+        "Confluent schema registry integration with Avro/JSON deserialization and explicit handling of schema evolution",
+        "Dead-letter topic and BigQuery error tables so poison messages never block the main stream",
+        "Cloud Monitoring dashboards and alerting on consumer lag, DLQ volume, and pipeline failure rates",
+        "Documented deployment, backfill procedures, and cost tuning guidance for ops handover"
       ],
       "client": "CrossroadsCX",
       "technologies": [
@@ -256,16 +269,18 @@
         "Python"
       ],
       "briefType": "requirement",
-      "brief": "Stream Confluent Kafka events into BigQuery in near real time with schema validation, dead-letter handling for bad records, and monitoring for throughput and lag."
+      "brief": "Stream Confluent Kafka events into BigQuery for CrossroadsCX in near real time, with schema validation, dead-letter handling for bad records, and dashboards for throughput, lag, and error rates."
     },
     {
       "id": "hadoop-gcp-migration",
       "title": "Hadoop-to-GCP migration",
-      "domain": "Cloud \u00b7 Migration \u00b7 BigQuery",
+      "domain": "Cloud · Migration · BigQuery",
       "implementation": [
-        "Inventory of Hive, MapReduce, and Spark jobs with dependency mapping",
-        "Rewrote pipelines for Dataproc and BigQuery with phased cutover",
-        "Parallel validation runs and documentation for operations"
+        "Inventory of Hive, MapReduce, and Spark jobs with dependency mapping and risk-ranked migration plan",
+        "Rewrote pipelines for Dataproc and BigQuery with phased cutover and parallel validation against legacy outputs",
+        "Airflow orchestration for migrated jobs with SLA monitoring and rollback paths during transition",
+        "Documentation for operations: cluster sizing, cost controls, and runbooks for on-call engineers",
+        "Sign-off criteria with row-count and aggregate reconciliation reports for each migrated pipeline"
       ],
       "client": "SaiKumar",
       "technologies": [
@@ -278,16 +293,18 @@
         "Airflow"
       ],
       "briefType": "problem",
-      "brief": "On-prem Hadoop was costly to operate and blocking cloud adoption; batch and streaming jobs had to move to GCP without breaking lineage validation or daily reporting."
+      "brief": "Migrate SaiKumar's on-prem Hadoop batch and streaming workloads to GCP without breaking lineage validation or daily reporting — reduce ops cost and unblock cloud-native analytics."
     },
     {
       "id": "ml-feature-pipeline",
-      "title": "ML feature pipeline \u2014 training & serving",
-      "domain": "ML \u00b7 MLOps \u00b7 Airflow",
+      "title": "ML feature pipeline — training & serving",
+      "domain": "ML · MLOps · Airflow",
       "implementation": [
-        "Feature store patterns with Airflow orchestration",
-        "Model registry integration and promotion gates",
-        "REST serving layer with monitoring and rollback support"
+        "Feature store patterns with Airflow DAGs for daily feature computation and backfill on schema changes",
+        "MLflow integration for experiment tracking, model registry, and promotion gates before production deploy",
+        "REST serving layer on Kubernetes with autoscaling, latency monitoring, and one-click rollback to prior model versions",
+        "Data validation steps between stages so bad upstream data does not poison training or serving",
+        "Documentation and handover for the client team to operate retraining and releases independently"
       ],
       "client": "Diana Fernandez",
       "technologies": [
@@ -299,17 +316,18 @@
         "Airflow"
       ],
       "briefType": "problem",
-      "brief": "Feature engineering was repeated manually for every training run, with no single path from raw data to versioned models and a production serving API."
+      "brief": "Build a single orchestrated path for Diana Fernandez from raw data through feature engineering, model training, registry promotion, and a production serving API — ending manual per-run feature rebuilds."
     },
     {
       "id": "data-governance",
       "title": "Data governance & quality platform",
-      "domain": "Data \u00b7 Spark \u00b7 Enterprise",
+      "domain": "Data · Spark · Enterprise",
       "implementation": [
-        "Built an enterprise Data Insight & Data Quality platform for governance workflows",
-        "Developed scalable analytics solutions utilizing Spark, Spark-SQL, and Scala",
-        "Implemented automated checks for data quality, including null analysis and correlation detection",
-        "Contributed to data modeling and architecture discussions, enhancing overall project design"
+        "Enterprise Data Insight and Data Quality platform for steward workflows, issue tracking, and remediation status",
+        "Scalable analytics on Spark and Spark-SQL with Scala for profiling millions of rows across analytical datasets",
+        "Automated checks: null rates, distribution shifts, correlation anomalies, and cross-table consistency rules",
+        "Contributed to data modeling and architecture sessions, improving pipeline design and ownership boundaries",
+        "Dashboards for stewards showing trend lines, open issues, and SLA compliance per domain"
       ],
       "client": "KPMG",
       "technologies": [
@@ -320,20 +338,22 @@
         "PostgreSQL",
         "Airflow"
       ],
-      "period": "Mar 2020 \u2013 Jun 2020",
+      "period": "Mar 2020 – Jun 2020",
       "role": "Consultant",
       "employer": true,
       "briefType": "problem",
-      "brief": "Data quality issues surfaced only when downstream reports failed; stewards lacked automated profiling, null/correlation checks, and governance workflows at scale."
+      "brief": "Give KPMG data stewards automated profiling, null and correlation checks, and governance workflows at scale — surface quality issues before downstream reports fail."
     },
     {
       "id": "clinical-etl",
-      "title": "Clinical ETL \u2014 Crunch & Hadoop",
-      "domain": "Healthcare \u00b7 ETL \u00b7 Hadoop",
+      "title": "Clinical ETL — Crunch & Hadoop",
+      "domain": "Healthcare · ETL · Hadoop",
       "implementation": [
-        "Designed and implemented end-to-end ETL pipelines using Apache Crunch and Hadoop MapReduce",
-        "Built frameworks for cleansing, transforming, and normalizing clinical datasets ingested into HDFS",
-        "Developed REST services with Beadledom (RESTEasy) to expose processed data for downstream systems"
+        "End-to-end ETL pipelines with Apache Crunch and Hadoop MapReduce for high-volume clinical ingest",
+        "Frameworks for cleansing, transforming, and normalizing heterogeneous clinical datasets before analytics consumption",
+        "REST services with Beadledom (RESTEasy) exposing processed entities with pagination, filtering, and auth",
+        "Data quality checks at ingest with quarantine paths for records that fail validation rules",
+        "Hive tables and documentation so analytics teams understand lineage from raw feed to served API"
       ],
       "client": "Cerner Corporation",
       "technologies": [
@@ -345,20 +365,22 @@
         "RESTEasy",
         "Hive"
       ],
-      "period": "Aug 2017 \u2013 Feb 2020",
+      "period": "Aug 2017 – Feb 2020",
       "role": "Software Engineer",
       "employer": true,
       "briefType": "problem",
-      "brief": "Clinical feeds landed in HDFS without consistent cleansing, blocking analytics and forcing downstream teams to work from inconsistent raw copies."
+      "brief": "Build consistent clinical ETL for Cerner — cleanse and normalize messy inbound feeds in HDFS and expose governed REST access so downstream apps stop working from inconsistent raw copies."
     },
     {
       "id": "portfolio-accounting",
-      "title": "Portfolio accounting \u2014 cache & reconciliation",
-      "domain": "Finance \u00b7 Java \u00b7 Caching",
+      "title": "Portfolio accounting — cache & reconciliation",
+      "domain": "Finance · Java · Caching",
       "implementation": [
-        "Designed and implemented a distributed caching layer with Hazelcast, improving data access latency for portfolio calculations",
-        "Built frameworks for data reconciliation, ensuring consistency between cache and database systems",
-        "Implemented AppDynamics monitoring agents to proactively manage production system performance"
+        "Distributed caching layer with Hazelcast tuned for portfolio calculation hot paths and near-linear scale-out",
+        "Reconciliation frameworks comparing cache entries to authoritative database snapshots on a scheduled and on-demand basis",
+        "AppDynamics agents and custom metrics for cache hit rates, eviction patterns, and calculation latency under trading load",
+        "Spring services refactored for cache-aside patterns with clear fallback when nodes fail or partitions occur",
+        "Production support playbooks for market-open incidents, cache warm-up, and emergency bypass to direct DB reads"
       ],
       "client": "Accolite",
       "technologies": [
@@ -371,20 +393,22 @@
       ],
       "endClient": "Morgan Stanley",
       "endClientLogo": "morgan-stanley.svg",
-      "period": "2020 \u2013 2021",
+      "period": "2020 – 2021",
       "role": "Associate Technical Delivery Manager",
       "employer": true,
       "briefType": "problem",
-      "brief": "Portfolio reads lagged during market hours and cache layers drifted from authoritative database records, creating reconciliation risk under trading load."
+      "brief": "Improve portfolio read performance and cache consistency for Accolite's Morgan Stanley engagement — reduce latency during market hours and reconciliation risk between cache and authoritative database records."
     },
     {
       "id": "investment-bank-desktop",
       "title": "Investment bank desktop clients",
-      "domain": "Finance \u00b7 Java \u00b7 Desktop",
+      "domain": "Finance · Java · Desktop",
       "implementation": [
-        "Developed rich desktop clients using Eclipse RCP, SWT, and JFace for global investment bank workflows",
-        "Implemented XML marshalling and unmarshalling with JAXB to enhance data handling capabilities",
-        "Participated in requirement analysis, estimation, and production support for trading operations teams"
+        "Rich Eclipse RCP clients using SWT and JFace for complex trading and operations UI with responsive layouts",
+        "JAXB XML marshalling and unmarshalling with validation, error recovery, and logging for backend message exchange",
+        "Requirement analysis, estimation, and iterative delivery aligned with bank release calendars and change control",
+        "Linux deployment targets with packaging, installer scripts, and environment-specific configuration profiles",
+        "Production support rotation: incident triage, log analysis, and patch releases for critical desk workflows"
       ],
       "client": "HCLTech",
       "technologies": [
@@ -397,20 +421,22 @@
         "Linux"
       ],
       "endClient": "Global investment bank",
-      "period": "Nov 2014 \u2013 May 2017",
+      "period": "Nov 2014 – May 2017",
       "role": "Software Engineer",
       "employer": true,
       "briefType": "requirement",
-      "brief": "Deliver Eclipse RCP desktop clients for trading and operations workflows with reliable JAXB XML exchange to backend services and ongoing production support."
+      "brief": "Deliver Eclipse RCP desktop clients for HCLTech's global investment bank client — trading and operations workflows with reliable JAXB XML messaging to backend services and ongoing production support."
     },
     {
       "id": "rest-api-partners",
-      "title": "REST API \u2014 partner integrations",
-      "domain": "API \u00b7 Flask \u00b7 OpenAPI",
+      "title": "REST API — partner integrations",
+      "domain": "API · Spring Boot · OpenAPI",
       "implementation": [
-        "Flask API with OpenAPI 3 documentation and OAuth flows",
-        "Rate limits, idempotency keys, and structured error codes",
-        "Client SDK samples and partner onboarding runbooks"
+        "Spring Boot REST API with OpenAPI 3 specification, interactive Swagger docs, and OAuth 2.0 client-credentials flows for partner apps",
+        "Per-client rate limits, idempotency keys on write endpoints, and structured JSON error codes with actionable messages",
+        "PostgreSQL-backed token store, request audit logging, and role scopes so partners access only permitted resources",
+        "Sample SDK snippets, sandbox credentials, and step-by-step partner onboarding runbooks",
+        "Docker images and deployment configs for staging and production with health checks and rolling updates"
       ],
       "client": "AppLand Inc",
       "technologies": [
@@ -422,16 +448,18 @@
         "Docker"
       ],
       "briefType": "requirement",
-      "brief": "Expose a partner-facing REST API with OpenAPI documentation, OAuth authentication, rate limiting, consistent errors, and SDK examples for external integrators."
+      "brief": "Expose a partner-facing REST API for AppLand Inc with OpenAPI documentation, OAuth authentication, rate limiting, consistent error responses, and SDK examples so external integrators can onboard without engineering support."
     },
     {
       "id": "pipeline-dashboard",
-      "title": "Full-stack dashboard \u2014 pipeline health",
-      "domain": "Full-stack \u00b7 Flask \u00b7 Tailwind",
+      "title": "Full-stack dashboard — pipeline health",
+      "domain": "Full-stack · Flask · Tailwind",
       "implementation": [
-        "Flask backend aggregating run metadata and quality signals",
-        "Tailwind UI with status cards, filters, and detail panels",
-        "Alert hooks integrated with existing notification channels"
+        "Flask backend aggregating Airflow run metadata, task durations, and data quality check results into a unified API",
+        "React and TypeScript frontend with Tailwind: status cards, filters by pipeline and date, and drill-down detail panels",
+        "Alert hooks integrated with existing Slack and email notification channels when SLAs breach or checks fail",
+        "Role-based views so ops sees all pipelines while team leads see their owned workflows",
+        "Deployed on GCP with authenticated access and documented refresh intervals for each data source"
       ],
       "client": "Polina H.",
       "technologies": [
@@ -443,16 +471,18 @@
         "GCP"
       ],
       "briefType": "problem",
-      "brief": "Pipeline failures were discovered only after checking Airflow, logs, and email separately \u2014 ops lacked one view of SLA status, run history, and quality-check alerts."
+      "brief": "Give Polina H. one dashboard for pipeline health instead of checking Airflow, logs, and email separately — SLA status, run history, and quality-check alerts in a single view."
     },
     {
       "id": "elk-stack",
-      "title": "ELK stack \u2014 log search & alerts",
-      "domain": "DevOps \u00b7 Observability",
+      "title": "ELK stack — log search & alerts",
+      "domain": "DevOps · Observability",
       "implementation": [
-        "Logstash pipelines with parsing rules per service",
-        "Elasticsearch cluster sizing and index templates",
-        "Kibana dashboards and watcher-style alerts for incidents"
+        "Logstash pipelines with per-service parsing rules, grok patterns, and field normalization for consistent search",
+        "Elasticsearch cluster sizing, index lifecycle templates, and hot-warm tiering for cost-effective retention",
+        "Kibana dashboards for error rates, latency trends, and top failing endpoints by service",
+        "Watcher-style alerts to Slack when thresholds breach, with runbook links in alert payloads",
+        "Docker-based deployment on AWS with backup snapshots and documented restore procedures"
       ],
       "client": "ash n",
       "technologies": [
@@ -464,7 +494,7 @@
         "AWS"
       ],
       "briefType": "problem",
-      "brief": "Logs were trapped on individual servers; incident response depended on SSH and grep with no centralized search, retention policy, or error-rate alerting."
+      "brief": "Centralize logs for ash n's distributed services — replace SSH and grep with searchable Elasticsearch, retention policies, Kibana dashboards, and alerts when error rates spike."
     }
   ],
   "clientLogos": {
