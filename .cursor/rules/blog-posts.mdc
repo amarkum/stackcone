@@ -1,0 +1,64 @@
+---
+description: Create blog posts (guides, how-tos, comparisons) with HTML publish + md source
+globs: blog/**
+alwaysApply: false
+---
+
+# stackcone Blog posts
+
+When the user asks for a **blog post**, **guide**, or **how-to**, produce a published HTML article in `blog/posts/` and keep markdown source in `blog/md/`. Same visual system as `solutions/` (charts, Mermaid, tables, FAQ/HowTo JSON-LD). See `.cursor/rules/solution-posts.mdc` for shared HTML patterns (diagrams, pipeline, impl phases, chart.js).
+
+## Source vs published (required)
+
+| Path | Role |
+|------|------|
+| `blog/md/{slug}.md` | Authoring source — **not** a public URL |
+| `blog/posts/{slug}.html` | Published page — canonical, sitemap, internal links |
+
+- **Never** place `.md` files in `blog/posts/`.
+- **Never** link to `.md` from HTML, `posts.json`, sitemap, or nav.
+- `robots.txt` disallows `/blog/md/` — do not override with indexable links.
+
+## Deliverables (always)
+
+1. `blog/md/{slug}.md` — markdown source (mirror of content)
+2. `blog/posts/{slug}.html` — published page
+3. Update `blog/posts.json` — add entry with `"author": "Amar Kumar"`
+4. Update `sitemap.xml` — add `<url>` for the HTML page only
+
+**Slug:** lowercase, hyphenated (e.g. `how-sse-streaming-works-chatbots-llm-tokens`).
+
+## posts.json entry
+
+```json
+{
+  "id": "{slug}",
+  "title": "Short outcome-focused title (no parenthetical subtitles)",
+  "description": "Value + keywords in one sentence (under ~155 chars)",
+  "href": "./posts/{slug}.html",
+  "date": "YYYY-MM-DD",
+  "dateLabel": "Month YYYY",
+  "author": "Amar Kumar",
+  "category": "RAG | Data | API | Docs | Freelancing | Platform",
+  "tags": ["3–6 tags"]
+}
+```
+
+## Article structure
+
+- Opening hook — problem or misconception, then what the reader will learn
+- Table of contents with anchor links
+- H2 sections; code blocks and comparison tables where useful
+- FAQ section + `FAQPage` JSON-LD when appropriate
+- Related guides — link to other **`.html`** posts only
+- CTA block at bottom (contact / solutions)
+
+## SEO
+
+Follow `.cursor/rules/seo-google.mdc`. Unique title, meta description, canonical (`https://stackcone.com/blog/posts/{slug}.html`), OG/Twitter, `Article` + `BreadcrumbList` JSON-LD.
+
+## Tone
+
+- Practical how-to or explainer — not a sales pitch
+- Past tense OK for real experience; avoid fake metrics
+- Upwork/freelance topics: actionable advice, not job-board provenance labels
