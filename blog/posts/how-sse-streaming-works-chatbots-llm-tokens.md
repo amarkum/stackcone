@@ -1,4 +1,4 @@
-# How SSE Streaming Works in Chatbots (It's Not a Typing Effect)
+# How SSE Streaming Works in Chatbots
 
 **June 2026 · Published by Amar Kumar**
 

@@ -1,4 +1,4 @@
-# Best Economical LLM Models for RAG and Chat (OpenAI vs Gemini 3 vs Anthropic)
+# Best Economical LLM Models for RAG
 
 **June 2026 · Published by Amar Kumar**
 
