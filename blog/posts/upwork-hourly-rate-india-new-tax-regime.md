@@ -1,4 +1,4 @@
-# How Much Should Your Upwork Hourly Rate Be? (India · FY 2025-26 New Tax Regime)
+# How Much Should Your Upwork Hourly Rate Be in India?
 
 **June 2026 · Published by Amar Kumar**
 

@@ -1,4 +1,4 @@
-# How to Stop GST Deduction on Upwork (India) — GSTIN Guide + Registration Steps
+# Stop Upwork GST Deduction (India)
 
 **June 2026 · Published by Amar Kumar**
 

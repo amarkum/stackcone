@@ -1,7 +1,9 @@
 (function () {
+  var PAGE_SIZE = 3;
   var categoryFilter = "all";
   var yearFilter = "all";
   var searchQuery = "";
+  var currentPage = 1;
 
   function escapeHtml(s) {
     var d = document.createElement("div");
@@ -40,25 +42,80 @@
     );
   }
 
-  function applyFilters() {
-    var cards = document.querySelectorAll(".solution-card");
-    var visible = 0;
+  function cardMatchesFilter(card) {
+    var cat = card.getAttribute("data-category");
+    var year = card.getAttribute("data-year");
+    var searchText = card.getAttribute("data-search") || "";
     var query = searchQuery.trim().toLowerCase();
+    var catMatch = categoryFilter === "all" || cat === categoryFilter;
+    var yearMatch = yearFilter === "all" || year === yearFilter;
+    var searchMatch = !query || searchText.indexOf(query) >= 0;
+    return catMatch && yearMatch && searchMatch;
+  }
+
+  function renderPagination(totalItems, totalPages) {
+    var nav = document.getElementById("solutions-pagination");
+    if (!nav) return;
+
+    if (totalItems <= PAGE_SIZE) {
+      nav.classList.add("is-hidden");
+      nav.innerHTML = "";
+      return;
+    }
+
+    nav.classList.remove("is-hidden");
+    var parts = [];
+
+    parts.push(
+      "<button type=\"button\" class=\"list-pagination-btn\"" +
+        (currentPage <= 1 ? " disabled" : "") +
+        " data-page=\"" + (currentPage - 1) + "\" aria-label=\"Previous page\">" +
+        "← Prev</button>"
+    );
+
+    for (var page = 1; page <= totalPages; page += 1) {
+      var active = page === currentPage ? " is-active" : "";
+      parts.push(
+        "<button type=\"button\" class=\"list-pagination-btn" + active + "\"" +
+          " data-page=\"" + page + "\"" +
+          (page === currentPage ? " aria-current=\"page\"" : "") +
+          ">" + page + "</button>"
+      );
+    }
+
+    parts.push(
+      "<button type=\"button\" class=\"list-pagination-btn\"" +
+        (currentPage >= totalPages ? " disabled" : "") +
+        " data-page=\"" + (currentPage + 1) + "\" aria-label=\"Next page\">" +
+        "Next →</button>"
+    );
+
+    nav.innerHTML = parts.join("");
+  }
+
+  function applyFilters() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll(".solution-card"));
+    var matched = cards.filter(cardMatchesFilter);
+    var totalPages = Math.max(1, Math.ceil(matched.length / PAGE_SIZE));
+
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
 
     cards.forEach(function (card) {
-      var cat = card.getAttribute("data-category");
-      var year = card.getAttribute("data-year");
-      var searchText = card.getAttribute("data-search") || "";
-      var catMatch = categoryFilter === "all" || cat === categoryFilter;
-      var yearMatch = yearFilter === "all" || year === yearFilter;
-      var searchMatch = !query || searchText.indexOf(query) >= 0;
-      var show = catMatch && yearMatch && searchMatch;
-      card.classList.toggle("is-hidden", !show);
-      if (show) visible += 1;
+      card.classList.add("is-hidden");
+    });
+
+    matched.forEach(function (card, index) {
+      var page = Math.floor(index / PAGE_SIZE) + 1;
+      if (page === currentPage) {
+        card.classList.remove("is-hidden");
+      }
     });
 
     var empty = document.getElementById("solutions-empty");
-    if (empty) empty.classList.toggle("is-hidden", visible > 0);
+    if (empty) empty.classList.toggle("is-hidden", matched.length > 0);
+
+    renderPagination(matched.length, totalPages);
   }
 
   function buildCategoryFilter(items) {
@@ -111,10 +168,12 @@
     var searchEl = document.getElementById("solutions-search");
     var topicEl = document.getElementById("solutions-topic-select");
     var dateEl = document.getElementById("solutions-date-select");
+    var paginationEl = document.getElementById("solutions-pagination");
 
     if (searchEl) {
       searchEl.addEventListener("input", function () {
         searchQuery = searchEl.value;
+        currentPage = 1;
         applyFilters();
       });
     }
@@ -122,6 +181,7 @@
     if (topicEl) {
       topicEl.addEventListener("change", function () {
         categoryFilter = topicEl.value;
+        currentPage = 1;
         applyFilters();
       });
     }
@@ -129,7 +189,21 @@
     if (dateEl) {
       dateEl.addEventListener("change", function () {
         yearFilter = dateEl.value;
+        currentPage = 1;
         applyFilters();
+      });
+    }
+
+    if (paginationEl) {
+      paginationEl.addEventListener("click", function (event) {
+        var btn = event.target.closest("[data-page]");
+        if (!btn || btn.disabled) return;
+        var page = parseInt(btn.getAttribute("data-page"), 10);
+        if (!page || page === currentPage) return;
+        currentPage = page;
+        applyFilters();
+        var list = document.getElementById("solutions-list");
+        if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
   }
