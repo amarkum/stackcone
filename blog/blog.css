@@ -182,7 +182,7 @@
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
-.list-pagination-btn:hover:not(:disabled) {
+.list-pagination-btn:hover:not(:disabled):not(.is-active) {
   border-color: var(--accent);
   color: var(--text-bright);
 }
@@ -190,7 +190,15 @@
 .list-pagination-btn.is-active {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--bg-card);
+  color: #fff;
+  font-weight: 600;
+}
+
+.list-pagination-btn.is-active:hover:not(:disabled),
+.list-pagination-btn.is-active:focus-visible {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #fff;
 }
 
 .list-pagination-btn:disabled {

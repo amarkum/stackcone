@@ -1306,7 +1306,7 @@ body.landing-page main > section:not(.hero) {
   transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
-.testimonials-pagination button:hover:not(:disabled) {
+.testimonials-pagination button:hover:not(:disabled):not(.active) {
   border-color: var(--text-dim);
   color: var(--text-bright);
 }
@@ -1315,6 +1315,14 @@ body.landing-page main > section:not(.hero) {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
+  font-weight: 600;
+}
+
+.testimonials-pagination button.active:hover:not(:disabled),
+.testimonials-pagination button.active:focus-visible {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #fff;
 }
 
 .testimonials-pagination button:disabled {
