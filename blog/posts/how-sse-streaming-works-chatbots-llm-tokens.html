@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <title>How SSE Streaming Works in Chatbots (Not a Typing Effect) | stackcone</title>
+  <meta name="description" content="Chatbot text appears word-by-word because of real SSE token streaming — not a fake typing animation. Learn how to build an SSE stream API and pipe LLM tokens to the browser.">
+  <meta name="keywords" content="SSE streaming chatbot, Server-Sent Events API, LLM token streaming, EventSource chat, FastAPI streaming response, fake typing effect chatbot, RAG streaming">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/how-sse-streaming-works-chatbots-llm-tokens.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/how-sse-streaming-works-chatbots-llm-tokens.html">
+  <meta property="og:title" content="How SSE Streaming Works in Chatbots — It's Not a Typing Effect">
+  <meta property="og:description" content="Real token streaming over Server-Sent Events: build the API, wire OpenAI/Claude/Gemini, and show live updates on your site.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SSE Streaming in Chatbots — Not a Typing Effect">
+  <meta name="twitter:description" content="Why chat UIs stream real tokens over SSE, how to build the API, and how LLM providers emit chunks.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How SSE Streaming Works in Chatbots (It's Not a Typing Effect)",
+    "description": "Server-Sent Events explained for chatbots: real LLM token streaming vs fake typing animations, how to build an SSE API, and frontend patterns for live updates.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-18",
+    "dateModified": "2026-06-18",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-sse-streaming-works-chatbots-llm-tokens.html" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["SSE", "Server-Sent Events", "LLM streaming", "chatbot API", "token streaming", "EventSource"],
+    "articleSection": "AI Engineering",
+    "about": { "@type": "Thing", "name": "Server-Sent Events for LLM chat streaming" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is the ChatGPT typing effect fake?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In production streaming implementations, no. The UI appends text as the server receives token chunks from the LLM over HTTP streaming, often formatted as Server-Sent Events. Some demo UIs fake typing with timers, but real APIs stream tokens."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use SSE or WebSockets for a chatbot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SSE or chunked HTTP is enough for most chatbots because traffic is one-way during generation: client POSTs a message, server streams tokens back. WebSockets help when you need constant bidirectional events on one socket."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does my SSE stream not update live in the browser?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually reverse-proxy or framework buffering. Disable nginx buffering with X-Accel-Buffering: no, set Cache-Control: no-cache, and flush after each yielded chunk on the server."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to build an SSE streaming chat API",
+    "description": "Create a Server-Sent Events endpoint that forwards LLM token chunks to the browser.",
+    "step": [
+      { "@type": "HowToStep", "name": "Call the LLM with stream enabled", "text": "Use stream=True (OpenAI), messages.stream (Anthropic), or generate_content_stream (Gemini)." },
+      { "@type": "HowToStep", "name": "Return StreamingResponse", "text": "Set Content-Type to text/event-stream and yield data: lines for each token chunk." },
+      { "@type": "HowToStep", "name": "Read stream on the client", "text": "Use fetch with ReadableStream or EventSource for GET progress endpoints; append tokens to the UI without artificial delay." },
+      { "@type": "HowToStep", "name": "Disable proxy buffering", "text": "Add no-cache headers and X-Accel-Buffering: no so chunks reach the browser immediately." }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "SSE Streaming in Chatbots", "item": "https://stackcone.com/blog/posts/how-sse-streaming-works-chatbots-llm-tokens.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How SSE Streaming Works in Chatbots (It's Not a Typing Effect)</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>When ChatGPT-style UIs print text word by word, it <em>looks</em> like a typing animation. <strong>It is not.</strong> The browser is receiving <strong>real tokens</strong> from your server as the LLM generates them — usually over <strong>HTTP streaming</strong>, often formatted as <strong>Server-Sent Events (SSE)</strong>.</p>
+
+    <p>I used to assume the chatbot waited for the full answer, then faked a typewriter effect in JavaScript. Once you see a real stream implementation, that mental model breaks: the first word can appear in <strong>under a second</strong> while the model is still thinking ahead.</p>
+
+    <blockquote>
+      <p><strong>Who is this for?</strong> Developers building chat UIs, RAG bots, or any page that needs <strong>live server updates</strong> — and anyone who confused streaming with CSS typing effects.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#misconception">The typing effect misconception</a></li>
+        <li><a href="#what-is-sse">What SSE is</a></li>
+        <li><a href="#comparison">SSE vs WebSockets vs polling</a></li>
+        <li><a href="#e2e-flow">End-to-end chatbot flow</a></li>
+        <li><a href="#llm-streaming">How LLMs stream tokens</a></li>
+        <li><a href="#build-api">Build an SSE streaming API</a></li>
+        <li><a href="#frontend">Frontend: read the stream</a></li>
+        <li><a href="#rag-streaming">RAG + streaming</a></li>
+        <li><a href="#live-updates">Live site updates (non-chat)</a></li>
+        <li><a href="#checklist">Production checklist</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="misconception">The typing effect misconception</h2>
+    <p>There are two completely different UX patterns that look identical to users:</p>
+
+    <table>
+      <thead>
+        <tr><th></th><th>Fake typing</th><th>Real SSE / HTTP stream</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Server</strong></td><td>Returns full JSON answer in one shot</td><td>Keeps connection open; sends chunks as generated</td></tr>
+        <tr><td><strong>Browser</strong></td><td><code>setInterval</code> reveals characters</td><td>Appends each token from the network</td></tr>
+        <tr><td><strong>First visible text</strong></td><td>After entire LLM call finishes (e.g. 8s)</td><td>Often &lt;500ms after send (time-to-first-token)</td></tr>
+        <tr><td><strong>Cancel button</strong></td><td>Cosmetic — work already done</td><td>Aborts provider stream; saves cost</td></tr>
+        <tr><td><strong>User perception</strong></td><td>"Why is it thinking so long <em>then</em> typing?"</td><td>"It's answering while it thinks"</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="ttftChart" aria-label="Time to first visible text: fake typing vs SSE streaming"></canvas>
+      <p class="chart-caption">Illustrative timeline — 8s total generation. SSE shows text at ~0.4s; fake typing starts at ~8s.</p>
+    </div>
+
+    <p>If your chatbot feels sluggish until the "typing" begins, you are probably waiting for <strong>completion</strong> before animating. Fix the pipeline, not the animation.</p>
+
+    <h2 id="what-is-sse">What is Server-Sent Events (SSE)?</h2>
+    <p><strong>SSE</strong> is a web standard for <strong>server → client</strong> push over a single HTTP connection.</p>
+    <ul>
+      <li><strong>Content-Type:</strong> <code>text/event-stream</code></li>
+      <li><strong>Client API:</strong> <code>EventSource</code> (GET) or <code>fetch</code> + <code>ReadableStream</code> (POST)</li>
+      <li><strong>Direction:</strong> one-way — client sends the question via a separate POST</li>
+      <li><strong>Reconnect:</strong> browser auto-reconnects if the connection drops</li>
+      <li><strong>Format:</strong> lines starting with <code>data:</code> (optional <code>event:</code> and <code>id:</code>)</li>
+    </ul>
+
+    <pre><code><span class="cm">// Raw SSE over the wire</span>
+data: {"type":"token","content":"The"}
+
+data: {"type":"token","content":" answer"}
+
+data: {"type":"token","content":" is"}
+
+event: done
+data: {"finish_reason":"stop"}</code></pre>
+
+    <p>Each blank line separates events. The browser's stream parser fires as soon as a complete event arrives — no waiting for the full response body.</p>
+
+    <h2 id="comparison">SSE vs WebSockets vs polling</h2>
+    <table>
+      <thead>
+        <tr><th>Method</th><th>Direction</th><th>Protocol</th><th>Best for</th><th>Chat fit</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>SSE</strong></td><td>Server → client</td><td>HTTP</td><td>LLM tokens, progress bars, logs</td><td>Excellent</td></tr>
+        <tr><td><strong>WebSocket</strong></td><td>Bidirectional</td><td>WS upgrade</td><td>Games, collab editors, voice</td><td>Overkill for simple chat</td></tr>
+        <tr><td><strong>Long polling</strong></td><td>Simulated push</td><td>HTTP</td><td>Legacy browsers</td><td>Higher latency</td></tr>
+        <tr><td><strong>Short polling</strong></td><td>Client pulls</td><td>HTTP</td><td>Simple dashboards</td><td>Poor for token streams</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="methodChart" aria-label="Comparison of streaming methods for chat latency and complexity"></canvas>
+      <p class="chart-caption">Relative scores for chat use cases (higher is better for latency &amp; simplicity)</p>
+    </div>
+
+    <p>Most RAG chatbots use <strong>POST + streaming response</strong>. WebSockets shine when the same socket carries dozens of event types both ways — not required for "user asks → assistant streams answer."</p>
+
+    <h2 id="e2e-flow">End-to-end flow in a chatbot</h2>
+    <div class="pipeline">
+      <span class="pipeline-step">Browser POST /chat</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">API: RAG retrieve</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">LLM stream=True</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">SSE data: tokens</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">UI appends text</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Step</th><th>Who</th><th>What happens</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Browser</td><td>POST <code>{ message, history }</code> to <code>/api/chat/stream</code></td></tr>
+        <tr><td>2</td><td>Your API</td><td>Embed query, search vector DB, optional rerank (not streamed)</td></tr>
+        <tr><td>3</td><td>Your API → LLM</td><td><code>stream: true</code> completion with context + history</td></tr>
+        <tr><td>4</td><td>LLM → API</td><td>Token deltas arrive over provider's HTTP stream</td></tr>
+        <tr><td>5</td><td>API → Browser</td><td>Each delta forwarded as <code>data: {...}\n\n</code></td></tr>
+        <tr><td>6</td><td>Browser</td><td>Append to message bubble; on <code>done</code>, re-enable input</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="llm-streaming">How LLM providers stream tokens</h2>
+    <p>Providers send <strong>token deltas</strong> (subword pieces), not whole words. Your server normalizes them into one text stream for the UI.</p>
+
+    <h3>OpenAI / compatible APIs</h3>
+    <pre><code><span class="kw">stream</span> = client.chat.completions.create(
+    model=<span class="str">"gpt-4o-mini"</span>,
+    messages=messages,
+    stream=<span class="kw">True</span>,
+)
+<span class="kw">for</span> chunk <span class="kw">in</span> stream:
+    delta = chunk.choices[<span class="num">0</span>].delta.content
+    <span class="kw">if</span> delta:
+        <span class="kw">yield</span> delta  <span class="cm"># → wrap in SSE data: line</span></code></pre>
+    <p>Wire format: newline-delimited JSON lines, ends with <code>data: [DONE]</code>.</p>
+
+    <h3>Anthropic Claude</h3>
+    <pre><code><span class="kw">with</span> client.messages.stream(
+    model=<span class="str">"claude-haiku-4-5"</span>,
+    messages=messages,
+    max_tokens=<span class="num">1024</span>,
+) <span class="kw">as</span> s:
+    <span class="kw">for</span> text <span class="kw">in</span> s.text_stream:
+        <span class="kw">yield</span> text</code></pre>
+    <p>Events include <code>content_block_delta</code> with text fragments.</p>
+
+    <h3>Google Gemini</h3>
+    <pre><code><span class="kw">for</span> chunk <span class="kw">in</span> client.models.generate_content_stream(
+    model=<span class="str">"gemini-2.5-flash-lite"</span>,
+    contents=prompt,
+):
+    <span class="kw">if</span> chunk.text:
+        <span class="kw">yield</span> chunk.text</code></pre>
+
+    <p><strong>Your abstraction layer</strong> should emit uniform SSE JSON (<code>{"type":"token","content":"..."}</code>) so the frontend works with any provider.</p>
+
+    <h2 id="build-api">Build an SSE streaming API</h2>
+
+    <h3>FastAPI (Python)</h3>
+    <pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
+<span class="kw">import</span> json
+
+app = FastAPI()
+
+<span class="kw">async def</span> <span class="fn">token_generator</span>(user_message: str):
+    context = retrieve_chunks(user_message)  <span class="cm"># RAG — not streamed</span>
+
+    <span class="kw">for</span> token <span class="kw">in</span> stream_llm(user_message, context):
+        payload = json.dumps({<span class="str">"type"</span>: <span class="str">"token"</span>, <span class="str">"content"</span>: token})
+        <span class="kw">yield</span> <span class="str">f"data: {payload}\n\n"</span>
+
+    <span class="kw">yield</span> <span class="str">f"data: {json.dumps({'type': 'done'})}\n\n"</span>
+
+<span class="kw">@app.post</span>(<span class="str">"/api/chat/stream"</span>)
+<span class="kw">async def</span> <span class="fn">chat_stream</span>(body: ChatRequest):
+    <span class="kw">return</span> StreamingResponse(
+        token_generator(body.message),
+        media_type=<span class="str">"text/event-stream"</span>,
+        headers={
+            <span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>,
+            <span class="str">"Connection"</span>: <span class="str">"keep-alive"</span>,
+            <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>,
+        },
+    )</code></pre>
+
+    <h3>Node / Express</h3>
+    <pre><code>app.post(<span class="str">"/api/chat/stream"</span>, <span class="kw">async</span> (req, res) => {
+  res.setHeader(<span class="str">"Content-Type"</span>, <span class="str">"text/event-stream"</span>);
+  res.setHeader(<span class="str">"Cache-Control"</span>, <span class="str">"no-cache"</span>);
+  res.setHeader(<span class="str">"Connection"</span>, <span class="str">"keep-alive"</span>);
+  res.flushHeaders();
+
+  <span class="kw">const</span> stream = <span class="kw">await</span> openai.chat.completions.create({
+    model: <span class="str">"gpt-4o-mini"</span>,
+    messages: req.body.messages,
+    stream: <span class="kw">true</span>,
+  });
+
+  <span class="kw">for await</span> (<span class="kw">const</span> chunk <span class="kw">of</span> stream) {
+    <span class="kw">const</span> text = chunk.choices[<span class="num">0</span>]?.delta?.content ?? <span class="str">""</span>;
+    <span class="kw">if</span> (text) res.write(<span class="str">`data: ${JSON.stringify({ content: text })}\n\n`</span>);
+  }
+  res.write(<span class="str">`data: ${JSON.stringify({ done: true })}\n\n`</span>);
+  res.end();
+});</code></pre>
+
+    <p><strong>Headers that matter:</strong> <code>text/event-stream</code>, <code>Cache-Control: no-cache</code>, and <code>X-Accel-Buffering: no</code> on nginx. Without these, users see one big blob at the end — which feels like fake typing waiting to start.</p>
+
+    <h2 id="frontend">Frontend: read the stream</h2>
+
+    <h3>fetch + ReadableStream (POST chat — recommended)</h3>
+    <p><code>EventSource</code> only supports GET. Chat almost always POSTs the message body, so use <code>fetch</code>:</p>
+
+    <pre><code><span class="kw">async function</span> <span class="fn">streamChat</span>(message, onToken) {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"/api/chat/stream"</span>, {
+    method: <span class="str">"POST"</span>,
+    headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    body: JSON.stringify({ message }),
+  });
+
+  <span class="kw">const</span> reader = res.body.getReader();
+  <span class="kw">const</span> decoder = <span class="kw">new</span> TextDecoder();
+  <span class="kw">let</span> buffer = <span class="str">""</span>;
+
+  <span class="kw">while</span> (<span class="kw">true</span>) {
+    <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.read();
+    <span class="kw">if</span> (done) <span class="kw">break</span>;
+    buffer += decoder.decode(value, { stream: <span class="kw">true</span> });
+
+    <span class="kw">const</span> lines = buffer.split(<span class="str">"\n"</span>);
+    buffer = lines.pop() ?? <span class="str">""</span>;
+
+    <span class="kw">for</span> (<span class="kw">const</span> line <span class="kw">of</span> lines) {
+      <span class="kw">if</span> (!line.startsWith(<span class="str">"data: "</span>)) <span class="kw">continue</span>;
+      <span class="kw">const</span> data = JSON.parse(line.slice(<span class="num">6</span>));
+      <span class="kw">if</span> (data.type === <span class="str">"token"</span>) onToken(data.content);
+    }
+  }
+}</code></pre>
+
+    <p>Append tokens immediately — <strong>no <code>setTimeout</code> between characters</strong>:</p>
+
+    <pre><code><span class="kw">let</span> text = <span class="str">""</span>;
+streamChat(userMsg, (token) => {
+  text += token;
+  bubble.textContent = text;
+});</code></pre>
+
+    <h3>EventSource (GET progress / live site updates)</h3>
+    <pre><code><span class="kw">const</span> es = <span class="kw">new</span> EventSource(<span class="str">"/api/sync/progress"</span>);
+es.addEventListener(<span class="str">"progress"</span>, (e) => {
+  <span class="kw">const</span> { pct, stage } = JSON.parse(e.data);
+  updateBar(pct, stage);
+});
+es.addEventListener(<span class="str">"complete"</span>, () => es.close());</code></pre>
+
+    <h2 id="rag-streaming">RAG + streaming</h2>
+    <p>RAG adds a <strong>retrieval phase</strong> before generation. Only the LLM phase streams.</p>
+
+    <table>
+      <thead>
+        <tr><th>Phase</th><th>Streamed?</th><th>Typical duration</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Embed query</td><td>No</td><td>50–200ms</td></tr>
+        <tr><td>Vector search</td><td>No</td><td>50–300ms</td></tr>
+        <tr><td>Rerank (optional)</td><td>No</td><td>100–500ms</td></tr>
+        <tr><td><strong>LLM generation</strong></td><td><strong>Yes</strong></td><td>2–15s</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>UX pattern:</strong> show "Searching docs…" during retrieval, then switch to token stream. Optional multi-event SSE:</p>
+
+    <pre><code>event: status
+data: {"phase":"retrieval"}
+
+event: token
+data: {"content":"Based on"}
+
+event: citation
+data: {"source":"docs/api.md","chunk_id":"api_3"}</code></pre>
+
+    <p>See <a href="how-to-build-a-production-rag-chatbot.html">How to Build a RAG Chatbot</a> and <a href="best-economical-llm-models-rag-openai-gemini-anthropic.html">economical model picks for RAG</a>.</p>
+
+    <h2 id="live-updates">SSE for live site updates (not just chat)</h2>
+    <p>The same transport powers <strong>sync progress</strong>, deploy logs, and indexing status on a dashboard — not only chat tokens.</p>
+
+    <pre><code>event: progress
+data: {"stage":"embed","pct":60,"file":"page-b.md"}
+
+event: complete
+data: {"duration_s":94,"files_indexed":12}</code></pre>
+
+    <p>We document this pattern in <a href="publish-knowledge-base-github-pages-dropbox-sync.html">Publish a Knowledge Base to GitHub Pages</a> — <code>EventSource('/sync/stream')</code> driving a progress bar while embeddings run in the background.</p>
+
+    <div class="chart-wrap">
+      <canvas id="eventTypesChart" aria-label="SSE event types in chat vs sync jobs"></canvas>
+      <p class="chart-caption">Common SSE event types — chat streams tokens; sync jobs stream progress percentages</p>
+    </div>
+
+    <h2 id="checklist">Production checklist</h2>
+    <div class="checklist-grid">
+      <div class="checklist-col">
+        <h3>Server</h3>
+        <ul>
+          <li>Disable nginx / CDN buffering on stream routes</li>
+          <li>Flush after every <code>yield</code></li>
+          <li>Heartbeat comment lines (<code>:\n\n</code>) on long gaps</li>
+          <li>Abort provider stream when client disconnects</li>
+        </ul>
+      </div>
+      <div class="checklist-col">
+        <h3>Client</h3>
+        <ul>
+          <li><code>AbortController</code> for Stop button</li>
+          <li>Handle <code>event: error</code> gracefully</li>
+          <li>Don't fake typewriter delay</li>
+          <li>Debounce markdown re-parse if needed</li>
+        </ul>
+      </div>
+      <div class="checklist-col">
+        <h3>Observability</h3>
+        <ul>
+          <li>Log time-to-first-token (TTFT)</li>
+          <li>Track tokens/sec and stream duration</li>
+          <li>Alert on buffer-timeout errors</li>
+          <li>Rate-limit stream endpoints</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="faq">FAQ</h2>
+
+    <h3>Is ChatGPT's typing effect fake?</h3>
+    <p>In production streaming APIs, <strong>no</strong> — text arrives as the model generates. Some marketing demos and tutorial apps fake it with timers. Check whether your backend uses <code>stream: true</code>.</p>
+
+    <h3>SSE or WebSocket for my chatbot?</h3>
+    <p><strong>SSE</strong> (or chunked HTTP) for most chat + RAG bots. <strong>WebSocket</strong> when you need constant bidirectional traffic on one connection.</p>
+
+    <h3>Why does nothing appear until the full answer is ready?</h3>
+    <p>Almost always <strong>proxy or framework buffering</strong>. Add <code>X-Accel-Buffering: no</code>, disable response buffering in your WSGI/ASGI middleware, and verify with <code>curl -N</code>.</p>
+
+    <h3>Can I stream markdown safely?</h3>
+    <p>Append raw text live; run markdown rendering on a short debounce or after <code>done</code> to avoid broken partial syntax (unclosed <code>**</code> or code fences).</p>
+
+    <h3>Does streaming cost more?</h3>
+    <p>Same tokens billed. Streaming improves UX and lets you cancel early — which can <strong>reduce</strong> cost on aborted long answers.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SSE</strong></td><td>Server-Sent Events — HTTP stream of <code>data:</code> lines from server to browser</td></tr>
+        <tr><td><strong>TTFT</strong></td><td>Time to first token — latency until first visible character</td></tr>
+        <tr><td><strong>Token delta</strong></td><td>Incremental text chunk from the LLM's stream</td></tr>
+        <tr><td><strong>ReadableStream</strong></td><td>Browser API to read a fetch response body chunk by chunk</td></tr>
+        <tr><td><strong>EventSource</strong></td><td>Browser API for GET-based SSE subscriptions</td></tr>
+        <tr><td><strong>Buffering</strong></td><td>Proxy holding chunks until response completes — kills live UX</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="related">Related guides</h2>
+    <ul>
+      <li><a href="how-to-build-a-production-rag-chatbot.html">How to Build a RAG Chatbot</a></li>
+      <li><a href="best-economical-llm-models-rag-openai-gemini-anthropic.html">Best Economical LLM Models for RAG</a></li>
+      <li><a href="publish-knowledge-base-github-pages-dropbox-sync.html">Publish a Knowledge Base (SSE progress)</a></li>
+    </ul>
+
+    <p class="closing">Stream real tokens. Skip the fake typewriter.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Building a streaming chat or RAG UI?</strong></p>
+      <p>stackcone ships production chat APIs — SSE streaming, retrieval, eval loops, and cost-aware model routing.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js"></script>
+  <script src="/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+
+    new Chart(document.getElementById('ttftChart'), {
+      type: 'bar',
+      data: {
+        labels: ['SSE stream (first token)', 'Fake typing (start)', 'Full response ready'],
+        datasets: [{
+          label: 'Seconds from user send',
+          data: [0.4, 8.0, 8.0],
+          backgroundColor: ['#16a34a', '#ea580c', '#64748b'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Seconds' }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('methodChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Low latency', 'Simple setup', 'CDN friendly', 'One-way push', 'Chat fit'],
+        datasets: [
+          { label: 'SSE', data: [9, 9, 8, 10, 10], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.15)' },
+          { label: 'WebSocket', data: [8, 5, 6, 6, 7], borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.1)' },
+          { label: 'Polling', data: [3, 7, 9, 4, 2], borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,0.1)' }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { r: { beginAtZero: true, max: 10 } }
+      }
+    });
+
+    new Chart(document.getElementById('eventTypesChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['token', 'status', 'progress', 'citation', 'done / complete'],
+        datasets: [{
+          data: [70, 8, 12, 5, 5],
+          backgroundColor: ['#2563eb', '#64748b', '#16a34a', '#7c3aed', '#ea580c'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          title: { display: true, text: 'Typical SSE event mix (chat-heavy workload)' }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
