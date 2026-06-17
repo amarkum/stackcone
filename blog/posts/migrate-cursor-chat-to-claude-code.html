@@ -8,19 +8,19 @@
      crossorigin="anonymous"></script>
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
   <title>Migrate Cursor Chat to Claude Code | stackcone</title>
-  <meta name="description" content="Claude Code stores sessions in ~/.claude/projects/*.jsonl. Export Cursor state.vscdb chats, build a context pack, seed CLAUDE.md, and continue work without losing decisions.">
+  <meta name="description" content="Migrate Cursor agent transcripts (~/.cursor/projects/.../agent-transcripts/) into native Claude Code JSONL sessions. Dry-run, format conversion, and full Python script.">
   <meta name="keywords" content="migrate Cursor to Claude Code, Cursor chat export, CLAUDE.md, Claude Code context, Composer migration, AI IDE switch">
   <link rel="canonical" href="https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html">
   <meta property="og:title" content="Migrate Cursor Chat to Claude Code">
-  <meta property="og:description" content="Export Cursor threads, curate a context pack, and bootstrap Claude Code with CLAUDE.md and distilled transcripts.">
+  <meta property="og:description" content="Convert Cursor agent chat JSONL to Claude Code session format so migrated chats appear in Claude history.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="stackcone">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Migrate Cursor Chat to Claude Code">
-  <meta name="twitter:description" content="Practical workflow: Cursor state.vscdb export → context pack → Claude Code session.">
+  <meta name="twitter:description" content="Agent transcript JSONL → Claude Code ~/.claude/projects/ JSONL with dry-run and rollback.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
@@ -29,12 +29,17 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../styles.css">
   <link rel="stylesheet" href="../../blog/blog.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/base16/catppuccin-mocha.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/json.min.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Migrate Cursor Chat to Claude Code",
-    "description": "How to move knowledge from Cursor Composer threads into Claude Code using exports, context packs, and CLAUDE.md.",
+    "description": "Migrate Cursor agent transcripts into Claude Code native JSONL sessions so chat history carries over.",
     "author": { "@type": "Person", "name": "Amar Kumar" },
     "publisher": {
       "@type": "Organization",
@@ -43,10 +48,10 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-06-19",
-    "dateModified": "2026-06-20",
+    "dateModified": "2026-06-17",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
-    "keywords": ["Cursor", "Claude Code", "migration", "CLAUDE.md", "chat export", "Composer"],
+    "keywords": ["Cursor", "Claude Code", "migration", "agent-transcripts", "JSONL", "chat history"],
     "articleSection": "Platform",
     "about": { "@type": "Thing", "name": "Migrating AI IDE chat history" }
   }
@@ -56,12 +61,12 @@
     "@context": "https://schema.org",
     "@type": "HowTo",
     "name": "Migrate Cursor chat history to Claude Code",
-    "description": "Export Cursor Composer threads and seed Claude Code with project context.",
+    "description": "Convert Cursor agent transcripts to Claude Code JSONL and verify in session history.",
     "step": [
-      { "@type": "HowToStep", "name": "Export Cursor chats", "text": "Run cursor_export.py to dump state.vscdb threads to JSON and Markdown." },
-      { "@type": "HowToStep", "name": "Curate threads", "text": "Tag P0/P1 threads; strip tool noise; keep decisions and code snippets." },
-      { "@type": "HowToStep", "name": "Build context pack", "text": "Create CLAUDE-bootstrap.md and threads/*.md in a context-pack folder." },
-      { "@type": "HowToStep", "name": "Seed Claude Code", "text": "Merge bootstrap into CLAUDE.md; start claude in project root with a short preamble." }
+      { "@type": "HowToStep", "name": "Dry run", "text": "Run migrate_cursor_to_claude.py --project /path/to/repo --dry-run to preview chat count and sizes." },
+      { "@type": "HowToStep", "name": "Migrate", "text": "Run the script with --yes to write JSONL files into ~/.claude/projects/<path-hash>/." },
+      { "@type": "HowToStep", "name": "Verify", "text": "Open Claude Code in the project and confirm migrated sessions appear in chat history." },
+      { "@type": "HowToStep", "name": "Optional rollback", "text": "Remove migrated JSONL files from the Claude projects folder if you need to undo." }
     ]
   }
   </script>
@@ -80,18 +85,18 @@
       },
       {
         "@type": "Question",
-        "name": "Can Claude Code import Cursor Composer sessions directly?",
+        "name": "Will migrated chats appear in Claude Code history?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. You export Cursor chats from local state.vscdb files, then feed distilled markdown into CLAUDE.md and Claude Code sessions as project context."
+          "text": "Yes, when you convert Cursor agent transcripts into Claude Code JSONL format and save them under ~/.claude/projects/<path-hash>/. Each session gets new UUIDs and entrypoint cursor-migrated."
         }
       },
       {
         "@type": "Question",
-        "name": "Should I paste my entire Cursor export into Claude?",
+        "name": "Are original Cursor chats modified?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "No. Curate active threads (P0/P1), summarize the rest, and keep one canonical CLAUDE.md for conventions and open TODOs."
+          "text": "No. The migration is non-destructive. Cursor agent transcripts stay in ~/.cursor/projects/.../agent-transcripts/ unchanged."
         }
       }
     ]
@@ -128,192 +133,431 @@
   <article class="blog-article">
     <h1>Migrate Cursor Chat to Claude Code</h1>
     <p class="meta">June 2026 · Published by Amar Kumar</p>
-    <p>Moving from <strong>Cursor Composer</strong> to <strong>Claude Code</strong> does not carry your threads over. Cursor keeps chats in SQLite <code>state.vscdb</code>; Claude Code auto-saves <strong>new</strong> sessions as JSONL under <code>~/.claude/projects/</code>. This guide covers both: where Claude stores its own history, and how to import Cursor decisions via <code>CLAUDE.md</code> and curated markdown.</p>
+    <p>This guide shows how to migrate <strong>Cursor agent chat history</strong> into <strong>Claude Code's native session format</strong> so conversations appear in Claude's chat history — not just as pasted context. Source files live under <code>~/.cursor/projects/.../agent-transcripts/</code>; targets are JSONL session files in <code>~/.claude/projects/</code>.</p>
 
     <blockquote>
-      <p><strong>Start here:</strong> <a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a> — the Python script and schema reference.</p>
+      <p><strong>Different data?</strong> <a href="export-cursor-chat-history-vscdb.html">Composer chats in state.vscdb</a> use a separate SQLite export path. This article covers <strong>agent transcripts</strong> (JSONL on disk).</p>
     </blockquote>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
       <ol>
-        <li><a href="#claude-storage">Where Claude Code stores chats</a></li>
-        <li><a href="#limits">What migrates and what does not</a></li>
-        <li><a href="#workflow">Workflow overview</a></li>
-        <li><a href="#step1">Step 1 — Export and triage</a></li>
-        <li><a href="#step2">Step 2 — Build a context pack</a></li>
-        <li><a href="#step3">Step 3 — Seed Claude Code</a></li>
-        <li><a href="#step4">Step 4 — Ongoing hygiene</a></li>
-        <li><a href="#plans">Plans and agent logs</a></li>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#what-migrates">What gets migrated</a></li>
+        <li><a href="#storage">Where files live</a></li>
+        <li><a href="#format">Format differences</a></li>
+        <li><a href="#script">Migration script</a></li>
+        <li><a href="#run">How to run</a></li>
+        <li><a href="#verify">Verify in Claude Code</a></li>
+        <li><a href="#safety">Safety features</a></li>
+        <li><a href="#selective">Selective migration</a></li>
+        <li><a href="#rollback">Rollback</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ol>
     </nav>
 
-    <h2 id="claude-storage">Where Claude Code stores chats</h2>
-    <p>Claude Code <strong>auto-saves every CLI session</strong> to local JSONL as you work (<a href="https://code.claude.com/docs/en/sessions" rel="noopener noreferrer">official session docs</a>). There is no built-in cloud sync for transcript files. Default root: <code>~/.claude/</code> (override with <code>CLAUDE_CONFIG_DIR</code>).</p>
-
+    <h2 id="overview">Overview</h2>
     <table>
-      <thead><tr><th>Path</th><th>What it holds</th></tr></thead>
+      <thead><tr><th></th><th>Path</th></tr></thead>
       <tbody>
-        <tr><td><code>~/.claude/projects/&lt;path-hash&gt;/*.jsonl</code></td><td>Full session transcripts — prompts, replies, tool calls (one JSON object per line)</td></tr>
-        <tr><td><code>~/.claude/history.jsonl</code></td><td>Global index of prompts across all projects</td></tr>
-        <tr><td><code>~/.claude/plans/</code></td><td>Plan mode markdown outputs</td></tr>
-        <tr><td><code>~/.claude/file-history/</code></td><td>File snapshots for <code>/rewind</code> and undo</td></tr>
-        <tr><td><code>~/.claude/settings.json</code></td><td>Global settings — <code>cleanupPeriodDays</code> (default <strong>30</strong>: old JSONL deleted)</td></tr>
-        <tr><td><code>~/.claude/CLAUDE.md</code></td><td><strong>User-level</strong> instructions loaded in every session</td></tr>
-        <tr><td><code>CLAUDE.md</code> (repo root)</td><td><strong>Project-level</strong> instructions for that codebase</td></tr>
-        <tr><td><code>.claude/settings.json</code> (in repo)</td><td>Project permissions, hooks — safe to commit</td></tr>
-        <tr><td><code>~/.claude.json</code> (home root)</td><td>OAuth, MCP, runtime caches — do not edit manually</td></tr>
+        <tr><td><strong>Source</strong></td><td><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/</code></td></tr>
+        <tr><td><strong>Target</strong></td><td><code>~/.claude/projects/&lt;path-hash&gt;/</code></td></tr>
+        <tr><td><strong>Format</strong></td><td>JSONL → JSONL (schema conversion)</td></tr>
+        <tr><td><strong>Result</strong></td><td>Migrated chats show up in Claude Code session history</td></tr>
+      </tbody>
+    </table>
+    <p>The script reads each Cursor agent transcript, converts messages to Claude Code's richer JSON schema (UUIDs, timestamps, <code>queue-operation</code> envelopes), and writes one <code>.jsonl</code> file per chat into the Claude projects folder for your repo.</p>
+
+    <h2 id="what-migrates">What gets migrated</h2>
+    <ul>
+      <li>All user and assistant messages</li>
+      <li>Conversation structure (one Claude session per Cursor chat)</li>
+      <li>Metadata tags so you can identify imports (<code>entrypoint: cursor-migrated</code>)</li>
+    </ul>
+    <p><strong>Not included:</strong> subagent sidechain transcripts (only the main <code>&lt;chat-id&gt;/&lt;chat-id&gt;.jsonl</code> file per folder). Tool replay and live UI state are not restored — only message content.</p>
+
+    <h2 id="storage">Where files live</h2>
+    <p>Both tools store history locally. Folder names are derived from your project's <strong>absolute path</strong> — slashes, dots, and underscores become dashes.</p>
+    <table>
+      <thead><tr><th>Tool</th><th>Example path for <code>~/dev/my-app</code></th></tr></thead>
+      <tbody>
+        <tr><td>Cursor transcripts</td><td><code>~/.cursor/projects/Users-you-dev-my-app/agent-transcripts/</code></td></tr>
+        <tr><td>Claude sessions</td><td><code>~/.claude/projects/-Users-you-dev-my-app/</code></td></tr>
+      </tbody>
+    </table>
+    <p>Claude's folder has a <strong>leading dash</strong>; Cursor's slug does not. If auto-detection fails, list both roots and match manually:</p>
+    <pre><code class="language-bash">ls ~/.cursor/projects/*/agent-transcripts
+ls ~/.claude/projects/</code></pre>
+
+    <h3>Claude Code session storage (reference)</h3>
+    <table>
+      <thead><tr><th>Path</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>~/.claude/projects/&lt;path-hash&gt;/*.jsonl</code></td><td>Per-session transcripts</td></tr>
+        <tr><td><code>~/.claude/history.jsonl</code></td><td>Global prompt index</td></tr>
+        <tr><td><code>~/.claude/settings.json</code></td><td><code>cleanupPeriodDays</code> (default 30 — back up before migrating if needed)</td></tr>
+        <tr><td><code>CLAUDE.md</code> (repo root)</td><td>Project instructions — separate from chat history</td></tr>
       </tbody>
     </table>
 
-    <p>The <code>&lt;path-hash&gt;</code> folder is derived from your project's <strong>absolute path</strong>. Each repo gets its own directory.</p>
+    <h2 id="format">Format differences</h2>
+    <p>Cursor agent transcripts use a minimal schema. Claude Code expects richer per-line JSON with session metadata.</p>
 
-    <h3>Resume, name, and export native sessions</h3>
-    <table>
-      <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td><code>claude --continue</code></td><td>Resume the most recent session in the current directory</td></tr>
-        <tr><td><code>claude --resume</code></td><td>Open the interactive session picker</td></tr>
-        <tr><td><code>claude --resume &lt;name&gt;</code></td><td>Resume a named session</td></tr>
-        <tr><td><code>claude -n auth-refactor</code></td><td>Start with a session name</td></tr>
-        <tr><td><code>/export [file]</code></td><td>Save current conversation to clipboard or a text file</td></tr>
-        <tr><td><code>/rename &lt;name&gt;</code></td><td>Rename the active session</td></tr>
-      </tbody>
-    </table>
+    <p><strong>Cursor (source)</strong></p>
+    <pre><code class="language-json">{
+  "role": "user",
+  "message": {
+    "content": "..."
+  }
+}</code></pre>
 
-    <pre><code>ls ~/.claude/projects/*/
-find ~/.claude/projects -name "*.jsonl" | head</code></pre>
+    <p><strong>Claude Code (target)</strong></p>
+    <pre><code class="language-json">{
+  "type": "user",
+  "message": {
+    "role": "user",
+    "content": "..."
+  },
+  "uuid": "...",
+  "timestamp": "2026-06-17T12:00:00Z",
+  "sessionId": "...",
+  "entrypoint": "cursor-migrated",
+  "cwd": "/path/to/repo",
+  "version": "migrated-from-cursor"
+}</code></pre>
 
-    <h3>Retention — back up before you lose history</h3>
-    <p>Transcripts are deleted after <strong>30 days</strong> by default. Extend in <code>~/.claude/settings.json</code>:</p>
-    <pre><code>{ "cleanupPeriodDays": 365 }</code></pre>
+    <p>The script also wraps each session with <code>queue-operation</code> lines (<code>enqueue</code> / <code>dequeue</code>) that Claude Code uses internally for session management.</p>
 
-    <h3>Where migrated Cursor content goes</h3>
-    <p>Imported Cursor threads <strong>do not</strong> land in <code>~/.claude/projects/*.jsonl</code> automatically. Put them in:</p>
-    <ul>
-      <li>Repo <code>CLAUDE.md</code> — distilled conventions and open TODOs</li>
-      <li><code>context-pack/threads/*.md</code> — curated Cursor transcripts (gitignore if sensitive)</li>
-      <li>A <strong>new <code>claude</code> session</strong> — paste a preamble; Claude saves that work as a fresh JSONL file</li>
-    </ul>
+    <h2 id="script">Migration script</h2>
+    <p>Copy <code>migrate_cursor_to_claude.py</code> anywhere, install nothing beyond Python 3.10+. Pass your repo path with <code>--project</code> — the same folder you opened in Cursor.</p>
 
-    <h2 id="limits">What migrates and what does not</h2>
-    <table>
-      <thead><tr><th>Migrates well</th><th>Does not migrate</th></tr></thead>
-      <tbody>
-        <tr><td>User + assistant message text</td><td>Live Composer UI state</td></tr>
-        <tr><td>Plan markdown files</td><td>Cursor inline checkpoints / diffs</td></tr>
-        <tr><td>Architecture decisions in prose</td><td><code>@file</code> attachment binaries</td></tr>
-        <tr><td>Code blocks from threads</td><td>Tool-call replay inside Claude</td></tr>
-        <tr><td>Thread titles and dates</td><td>Exact ordering of draft/tool bubbles</td></tr>
-      </tbody>
-    </table>
+    <pre><code class="language-python">#!/usr/bin/env python3
+"""Migrate Cursor agent transcripts to Claude Code chat JSONL.
 
-    <h2 id="workflow">Workflow overview</h2>
-    <pre><code>state.vscdb  →  cursor_export.py  →  JSON + Markdown
-                                         ↓
-                    Curate P0/P1 threads  →  context-pack/
-                                         ↓
-                    CLAUDE.md + preamble  →  claude (terminal)</code></pre>
+Reads ~/.cursor/projects/&lt;slug>/agent-transcripts/ and writes native
+Claude Code session files under ~/.claude/projects/&lt;path-hash>/.
 
-    <h2 id="step1">Step 1 — Export and triage</h2>
-    <pre><code>python3 cursor_export.py --out ./cursor-export
-python3 cursor_export.py --list   # pick composer IDs</code></pre>
-    <p>Tag each thread:</p>
-    <ul>
-      <li><strong>P0</strong> — active feature or bug you are still shipping</li>
-      <li><strong>P1</strong> — architecture, conventions, or infra worth keeping</li>
-      <li><strong>P2</strong> — archive only (search if needed later)</li>
-    </ul>
-    <p>Do <strong>not</strong> paste 100+ full threads into Claude — context limits and noise will hurt you.</p>
+  python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run
+  python3 migrate_cursor_to_claude.py --project ~/dev/my-app
+"""
+from __future__ import annotations
 
-    <h2 id="step2">Step 2 — Build a context pack</h2>
-    <p>Create a folder (add to <code>.gitignore</code> if it contains client names):</p>
-    <pre><code>context-pack/
-  CLAUDE-bootstrap.md
-  threads/
-    auth-refactor.md
-    rag-pipeline.md
-  plans/
-    api-redesign.plan.md</code></pre>
+import argparse
+import json
+import os
+import sys
+import uuid
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from typing import Any
 
-    <h3>Thread file template</h3>
-    <pre><code># Thread: Auth refactor
-composerId: abc-123-def
-Exported: 2026-06-19
 
-## Summary
-- JWT + refresh rotation (no cookie sessions)
-- Deprecate `sessions` table in migration 20260619
+def path_slug(project: Path, *, leading_dash: bool = False) -> str:
+    """Derive Cursor/Claude project folder name from an absolute repo path."""
+    resolved = str(project.expanduser().resolve())
+    slug = resolved.replace(os.sep, "-").lstrip(os.sep)
+    slug = slug.replace(".", "-").replace("_", "-")
+    return f"-{slug}" if leading_dash else slug
 
-## Transcript
-### User
-We need to migrate off cookie sessions...
 
-### Assistant
-Recommend refresh tokens with rotation...</code></pre>
-    <p>Strip linter dumps, failed tool retries, and duplicate drafts. Keep <strong>decisions</strong>, <strong>file paths</strong>, and <strong>snippets that still compile</strong>.</p>
+def cursor_transcripts_dir(project: Path) -> Path:
+    slug = path_slug(project)
+    return Path.home() / ".cursor/projects" / slug / "agent-transcripts"
 
-    <h3>Distill CLAUDE-bootstrap.md</h3>
-    <p>One file Claude Code should treat as ground truth:</p>
-    <ul>
-      <li>Stack versions (Node, Python, DB)</li>
-      <li>Test / lint / deploy commands</li>
-      <li>Non-obvious repo conventions</li>
-      <li>Open TODOs with paths</li>
-      <li>Pointers to <code>threads/*.md</code> for deep history</li>
-    </ul>
 
-    <h2 id="step3">Step 3 — Seed Claude Code</h2>
+def claude_workspace_dir(project: Path) -> Path:
+    slug = path_slug(project, leading_dash=True)
+    return Path.home() / ".claude/projects" / slug
+
+
+def new_uuid() -> str:
+    return str(uuid.uuid4())
+
+
+def iso_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def queue_operation(session_id: str, operation: str = "enqueue") -> dict[str, Any]:
+    return {
+        "type": "queue-operation",
+        "operation": operation,
+        "timestamp": iso_now(),
+        "sessionId": session_id,
+    }
+
+
+def cursor_to_claude_message(
+    cursor_msg: dict[str, Any],
+    session_id: str,
+    msg_index: int,
+    cwd: str,
+) -> dict[str, Any]:
+    role = cursor_msg.get("role", "user")
+    content = cursor_msg.get("message", {}).get("content", "")
+
+    claude_msg: dict[str, Any] = {
+        "parentUuid": None,
+        "isSidechain": False,
+        "promptId": new_uuid(),
+        "type": role,
+        "message": {"role": role, "content": content},
+        "uuid": new_uuid(),
+        "timestamp": iso_now(),
+        "userType": "external",
+        "entrypoint": "cursor-migrated",
+        "cwd": cwd,
+        "sessionId": session_id,
+        "version": "migrated-from-cursor",
+        "gitBranch": "unknown",
+        "slug": f"migrated-chat-{msg_index}",
+    }
+    if role == "user":
+        claude_msg["isMeta"] = False
+    return claude_msg
+
+
+def find_cursor_chats(transcripts_root: Path) -> list[Path]:
+    """Main agent chats only — skip subagent sidechains."""
+    chats: list[Path] = []
+    if not transcripts_root.exists():
+        return chats
+    for chat_dir in transcripts_root.iterdir():
+        if not chat_dir.is_dir():
+            continue
+        main = chat_dir / f"{chat_dir.name}.jsonl"
+        if main.is_file():
+            chats.append(main)
+    chats.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return chats
+
+
+def migrate_chat(
+    cursor_chat_path: Path,
+    claude_workspace: Path,
+    project: Path,
+    *,
+    dry_run: bool = False,
+) -> bool:
+    try:
+        lines = [
+            json.loads(line)
+            for line in cursor_chat_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        if not lines:
+            print(f"  skip empty: {cursor_chat_path.name}")
+            return False
+
+        session_id = new_uuid()
+        claude_messages: list[dict[str, Any]] = [queue_operation(session_id, "enqueue")]
+
+        cwd = str(project.resolve())
+        for idx, cursor_msg in enumerate(lines):
+            try:
+                claude_messages.append(
+                    cursor_to_claude_message(cursor_msg, session_id, idx, cwd)
+                )
+            except Exception as exc:
+                print(f"    warn message {idx}: {exc}")
+
+        claude_messages.append(queue_operation(session_id, "dequeue"))
+        out_path = claude_workspace / f"{session_id}.jsonl"
+
+        size_kb = cursor_chat_path.stat().st_size / 1024
+        mod = datetime.fromtimestamp(cursor_chat_path.stat().st_mtime).strftime(
+            "%Y-%m-%d %H:%M"
+        )
+        print(
+            f"  ok {cursor_chat_path.parent.name} | "
+            f"{len(lines)} msgs | {size_kb:.1f} KB | {mod}"
+        )
+
+        if not dry_run:
+            claude_workspace.mkdir(parents=True, exist_ok=True)
+            with out_path.open("w", encoding="utf-8") as fh:
+                for msg in claude_messages:
+                    fh.write(json.dumps(msg) + "\n")
+            print(f"    -> {out_path.name}")
+
+        return True
+    except Exception as exc:
+        print(f"  fail {cursor_chat_path.name}: {exc}")
+        return False
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(
+        description="Migrate Cursor agent transcripts into Claude Code JSONL sessions"
+    )
+    ap.add_argument(
+        "--project",
+        type=Path,
+        required=True,
+        help="Absolute path to the repo you used in Cursor",
+    )
+    ap.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Preview migration without writing files",
+    )
+    ap.add_argument(
+        "--days",
+        type=int,
+        default=0,
+        help="Only migrate chats modified in the last N days (0 = all)",
+    )
+    ap.add_argument(
+        "--yes",
+        action="store_true",
+        help="Skip confirmation prompt",
+    )
+    args = ap.parse_args()
+
+    project = args.project.expanduser().resolve()
+    transcripts = cursor_transcripts_dir(project)
+    claude_ws = claude_workspace_dir(project)
+
+    print("Cursor -> Claude Code chat migration")
+    print(f"  project:    {project}")
+    print(f"  source:     {transcripts}")
+    print(f"  target:     {claude_ws}")
+
+    if not transcripts.exists():
+        sys.exit(
+            f"No agent transcripts at {transcripts}\n"
+            "Check --project matches the folder Cursor opened, or run:\n"
+            f"  ls ~/.cursor/projects/*/agent-transcripts"
+        )
+
+    chats = find_cursor_chats(transcripts)
+    if args.days > 0:
+        cutoff = datetime.now() - timedelta(days=args.days)
+        chats = [
+            c
+            for c in chats
+            if datetime.fromtimestamp(c.stat().st_mtime) >= cutoff
+        ]
+
+    print(f"  chats:      {len(chats)}")
+    if not chats:
+        sys.exit("No chats to migrate.")
+
+    if not args.dry_run and not args.yes:
+        answer = input("Continue? (yes/no/dry-run): ").strip().lower()
+        if answer in ("dry-run", "dry"):
+            args.dry_run = True
+        elif answer not in ("yes", "y"):
+            print("Cancelled.")
+            return
+
+    if args.dry_run:
+        print("\nDRY RUN — no files written\n")
+
+    ok = fail = 0
+    for chat_path in chats:
+        if migrate_chat(chat_path, claude_ws, project, dry_run=args.dry_run):
+            ok += 1
+        else:
+            fail += 1
+
+    print(f"\nDone: {ok} migrated, {fail} failed")
+    if not args.dry_run:
+        print(f"Open Claude Code in {project} and check session history.")
+        print("Migrated sessions are tagged entrypoint=cursor-migrated.")
+
+
+if __name__ == "__main__":
+    main()
+</code></pre>
+
+    <h2 id="run">How to run</h2>
+
+    <h3>1. Dry run (recommended)</h3>
+    <p>Preview counts and sizes without writing files:</p>
+    <pre><code class="language-bash">python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre>
+    <p>Output shows each chat's message count, file size, and last-modified date.</p>
+
+    <h3>2. Migrate</h3>
+    <pre><code class="language-bash">python3 migrate_cursor_to_claude.py --project ~/dev/my-app --yes</code></pre>
+    <p>Without <code>--yes</code>, the script prompts <code>Continue? (yes/no/dry-run)</code>. For each chat it:</p>
     <ol>
-      <li><strong>Project <code>CLAUDE.md</code></strong> — merge bootstrap into your <strong>repo root</strong> <code>CLAUDE.md</code>. Claude loads this when you run <code>claude</code> in that directory. Use <code>~/.claude/CLAUDE.md</code> only for personal rules across all projects.</li>
-      <li><strong>Start a named session</strong> — names make <code>/resume</code> usable later:
-        <pre><code>cd my-app && claude -n cursor-migration-auth</code></pre>
-      </li>
-      <li><strong>First message</strong> (example):
-        <pre><code>I migrated from Cursor. CLAUDE.md has current conventions.
-For auth background see context-pack/threads/auth-refactor.md.
-Continue from the open TODOs listed there.</code></pre>
-      </li>
-      <li><strong>Native storage</strong> — this session is now written to <code>~/.claude/projects/&lt;path-hash&gt;/&lt;session&gt;.jsonl</code> automatically. Use <code>/export</code> anytime for a plain-text backup.</li>
-      <li><strong>Large Cursor threads</strong> — import summary + last ~10 messages, not 200k tokens of tool noise.</li>
+      <li>Reads the Cursor <code>.jsonl</code> transcript</li>
+      <li>Converts each message to Claude format with new UUIDs</li>
+      <li>Writes <code>~/.claude/projects/&lt;path-hash&gt;/&lt;session-uuid&gt;.jsonl</code></li>
+      <li>Prints success or failure per chat (failures do not stop the batch)</li>
     </ol>
 
-    <h2 id="step4">Step 4 — Ongoing hygiene</h2>
+    <h3>3. Before / after counts</h3>
+    <pre><code class="language-bash"># Cursor agent chats (unchanged after migration)
+find ~/.cursor/projects -path '*/agent-transcripts/*/*.jsonl' | wc -l
+
+# Claude sessions for your repo
+ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
+    <p>After migration, Claude's count should increase by the number of successfully migrated chats. Original Cursor files are untouched.</p>
+
+    <h2 id="verify">Verify in Claude Code</h2>
+    <ol>
+      <li><code>cd ~/dev/my-app &amp;&amp; claude</code></li>
+      <li>Open session history (<code>claude --resume</code>)</li>
+      <li>Migrated sessions should appear — tagged with <code>entrypoint: cursor-migrated</code> in the JSONL</li>
+    </ol>
+    <p>Spot-check one file:</p>
+    <pre><code class="language-bash">head -1 ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | python3 -m json.tool</code></pre>
+    <p>If sessions do not appear, restart Claude Code and confirm the path hash matches your absolute project path.</p>
+
+    <h2 id="safety">Safety features</h2>
     <ul>
-      <li>Back up <code>~/.claude/projects/</code> if you need long history (or raise <code>cleanupPeriodDays</code>).</li>
-      <li>When a Cursor thread resolves, merge the decision into repo <code>CLAUDE.md</code> and delete the thread file.</li>
-      <li>Re-export from Cursor monthly if you still dual-run tools.</li>
-      <li>Keep <code>context-pack/</code> out of git if it has private URLs or customer names.</li>
+      <li><strong>Non-destructive</strong> — Cursor transcripts are read-only; originals stay in place</li>
+      <li><strong>Dry-run mode</strong> — preview before writing</li>
+      <li><strong>Per-chat error handling</strong> — one bad file does not abort the batch</li>
+      <li><strong>Fresh UUIDs</strong> — avoids collisions with existing Claude sessions</li>
     </ul>
 
-    <h2 id="plans">Plans and agent logs</h2>
+    <h2 id="selective">Selective migration</h2>
+    <p>Migrate only recent chats with <code>--days</code>:</p>
+    <pre><code class="language-bash">python3 migrate_cursor_to_claude.py --project ~/dev/my-app --days 30 --dry-run</code></pre>
+    <p>Or filter in the script by editing the chat loop — the <code>--days</code> flag compares file <code>mtime</code> against a cutoff.</p>
+
+    <h2 id="rollback">Rollback</h2>
+    <p>Remove migrated sessions by deleting JSONL files Claude created. Migrated files use random UUID filenames:</p>
+    <pre><code class="language-bash"># List first — confirm you are in the right workspace folder
+ls ~/.claude/projects/-Users-you-dev-my-app/
+
+# Remove only files you know are from migration (check entrypoint field)
+grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre>
+    <p><strong>Warning:</strong> deleting everything in the workspace folder also removes native Claude sessions for that repo.</p>
+
+    <h2 id="troubleshooting">Troubleshooting</h2>
     <table>
-      <thead><tr><th>Cursor source</th><th>Claude Code use</th></tr></thead>
+      <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
       <tbody>
-        <tr><td><code>~/.cursor/plans/*.plan.md</code></td><td>Copy to <code>docs/plans/</code>, <code>~/.claude/plans/</code>, or link from <code>CLAUDE.md</code></td></tr>
-        <tr><td>Agent JSONL transcripts</td><td>Convert to markdown for debugging; rarely needed day-to-day</td></tr>
-        <tr><td><code>conversation_summaries</code> in ai-tracking.db</td><td>Fast TL;DR when choosing which threads to migrate</td></tr>
+        <tr><td><code>No agent transcripts at ...</code></td><td><code>--project</code> must match the path Cursor used. Run <code>ls ~/.cursor/projects/*/agent-transcripts</code> and compare slugs.</td></tr>
+        <tr><td>Migration failed for one chat</td><td>Check if that <code>.jsonl</code> is corrupted: <code>python3 -m json.tool &lt; chat.jsonl</code></td></tr>
+        <tr><td>Claude Code does not show migrated chats</td><td>Restart Claude Code; verify files exist under <code>~/.claude/projects/&lt;path-hash&gt;/</code>; confirm path hash (leading dash).</td></tr>
+        <tr><td>Permission denied</td><td><code>chmod -R u+w ~/.claude/projects/</code></td></tr>
+        <tr><td>Wrong workspace folder</td><td>Compare slug algorithm output with existing folders — symlinked paths can differ from what Cursor recorded.</td></tr>
       </tbody>
     </table>
 
     <h2 id="faq">FAQ</h2>
-    <h3>Where does Claude Code store chat history?</h3>
-    <p>In <code>~/.claude/projects/&lt;path-hash&gt;/*.jsonl</code> — one JSONL file per session, saved continuously. Global prompt index: <code>~/.claude/history.jsonl</code>. Override root with <code>CLAUDE_CONFIG_DIR</code>.</p>
-    <h3>Will Claude Code read my Cursor composerId?</h3>
-    <p>No — IDs are for your filenames and traceability only.</p>
-    <h3>Should I automate context-pack generation?</h3>
-    <p>Yes — extend <code>cursor_export.py</code> to filter bubbles, emit summaries, and copy plans in one pass.</p>
-    <h3>What about Cursor Plan mode vs Claude planning?</h3>
-    <p>Both output markdown. Copy the plan file, then re-run planning in Claude Code against your current tree.</p>
+    <h3>Will migrated chats appear in Claude Code history?</h3>
+    <p>Yes — when converted JSONL files land in the correct <code>~/.claude/projects/&lt;path-hash&gt;/</code> directory for your repo.</p>
+    <h3>Are original Cursor chats modified?</h3>
+    <p>No. They remain in <code>agent-transcripts/</code>. You can re-run migration after fixing the script.</p>
+    <h3>What about Composer / state.vscdb chats?</h3>
+    <p>Those are stored separately in SQLite. Use the <a href="export-cursor-chat-history-vscdb.html">state.vscdb export guide</a> and seed <code>CLAUDE.md</code> for Composer-only history.</p>
+    <h3>Why new UUIDs instead of preserving Cursor IDs?</h3>
+    <p>Claude Code's schema requires its own session and message UUIDs. Collisions with existing sessions would break history.</p>
 
     <h2 id="related">Related guides</h2>
     <ul>
-      <li><a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a></li>
+      <li><a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a> — Composer threads in SQLite</li>
       <li><a href="best-economical-llm-models-rag-openai-gemini-anthropic.html">Best Economical LLM Models for RAG</a></li>
     </ul>
 
-    <p class="closing">Export once, curate hard, seed Claude with decisions — not dumps.</p>
+    <p class="closing">Dry-run first, verify path hashes, then migrate — your Cursor files stay safe.</p>
 
     <aside class="blog-cta">
       <p><strong>Building AI-assisted dev workflows?</strong></p>
@@ -341,6 +585,7 @@ Continue from the open TODOs listed there.</code></pre>
   </footer>
 
   <script src="/site-nav.js"></script>
+  <script src="../../blog/code-highlight.js"></script>
   <script src="/script.js"></script>
 </body>
 </html>
