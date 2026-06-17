@@ -8,7 +8,7 @@
      crossorigin="anonymous"></script>
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
   <title>Migrate Cursor Chat to Claude Code | stackcone</title>
-  <meta name="description" content="Switching from Cursor Composer to Claude Code? Export state.vscdb chats, build a context pack, seed CLAUDE.md, and preserve architecture decisions without losing thread history.">
+  <meta name="description" content="Claude Code stores sessions in ~/.claude/projects/*.jsonl. Export Cursor state.vscdb chats, build a context pack, seed CLAUDE.md, and continue work without losing decisions.">
   <meta name="keywords" content="migrate Cursor to Claude Code, Cursor chat export, CLAUDE.md, Claude Code context, Composer migration, AI IDE switch">
   <link rel="canonical" href="https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html">
   <meta property="og:type" content="article">
@@ -43,7 +43,7 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-06-19",
-    "dateModified": "2026-06-19",
+    "dateModified": "2026-06-20",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
     "keywords": ["Cursor", "Claude Code", "migration", "CLAUDE.md", "chat export", "Composer"],
@@ -70,6 +70,14 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Where does Claude Code store chat history?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Claude Code saves CLI sessions as JSONL files under ~/.claude/projects/<path-hash>/. A global prompt index lives in ~/.claude/history.jsonl. Override the root with CLAUDE_CONFIG_DIR. Transcripts are deleted after 30 days by default unless cleanupPeriodDays is raised in ~/.claude/settings.json."
+        }
+      },
       {
         "@type": "Question",
         "name": "Can Claude Code import Cursor Composer sessions directly?",
@@ -120,7 +128,7 @@
   <article class="blog-article">
     <h1>Migrate Cursor Chat to Claude Code</h1>
     <p class="meta">June 2026 · Published by Amar Kumar</p>
-    <p>Moving from <strong>Cursor Composer</strong> to <strong>Claude Code</strong> does not carry your threads over. Cursor keeps chats in <code>state.vscdb</code>; Claude Code reads <code>CLAUDE.md</code>, terminal sessions, and project memory. The gap is manual — but straightforward if you treat migration as <strong>knowledge transfer</strong>, not session replay.</p>
+    <p>Moving from <strong>Cursor Composer</strong> to <strong>Claude Code</strong> does not carry your threads over. Cursor keeps chats in SQLite <code>state.vscdb</code>; Claude Code auto-saves <strong>new</strong> sessions as JSONL under <code>~/.claude/projects/</code>. This guide covers both: where Claude stores its own history, and how to import Cursor decisions via <code>CLAUDE.md</code> and curated markdown.</p>
 
     <blockquote>
       <p><strong>Start here:</strong> <a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a> — the Python script and schema reference.</p>
@@ -129,6 +137,7 @@
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
       <ol>
+        <li><a href="#claude-storage">Where Claude Code stores chats</a></li>
         <li><a href="#limits">What migrates and what does not</a></li>
         <li><a href="#workflow">Workflow overview</a></li>
         <li><a href="#step1">Step 1 — Export and triage</a></li>
@@ -139,6 +148,54 @@
         <li><a href="#faq">FAQ</a></li>
       </ol>
     </nav>
+
+    <h2 id="claude-storage">Where Claude Code stores chats</h2>
+    <p>Claude Code <strong>auto-saves every CLI session</strong> to local JSONL as you work (<a href="https://code.claude.com/docs/en/sessions" rel="noopener noreferrer">official session docs</a>). There is no built-in cloud sync for transcript files. Default root: <code>~/.claude/</code> (override with <code>CLAUDE_CONFIG_DIR</code>).</p>
+
+    <table>
+      <thead><tr><th>Path</th><th>What it holds</th></tr></thead>
+      <tbody>
+        <tr><td><code>~/.claude/projects/&lt;path-hash&gt;/*.jsonl</code></td><td>Full session transcripts — prompts, replies, tool calls (one JSON object per line)</td></tr>
+        <tr><td><code>~/.claude/history.jsonl</code></td><td>Global index of prompts across all projects</td></tr>
+        <tr><td><code>~/.claude/plans/</code></td><td>Plan mode markdown outputs</td></tr>
+        <tr><td><code>~/.claude/file-history/</code></td><td>File snapshots for <code>/rewind</code> and undo</td></tr>
+        <tr><td><code>~/.claude/settings.json</code></td><td>Global settings — <code>cleanupPeriodDays</code> (default <strong>30</strong>: old JSONL deleted)</td></tr>
+        <tr><td><code>~/.claude/CLAUDE.md</code></td><td><strong>User-level</strong> instructions loaded in every session</td></tr>
+        <tr><td><code>CLAUDE.md</code> (repo root)</td><td><strong>Project-level</strong> instructions for that codebase</td></tr>
+        <tr><td><code>.claude/settings.json</code> (in repo)</td><td>Project permissions, hooks — safe to commit</td></tr>
+        <tr><td><code>~/.claude.json</code> (home root)</td><td>OAuth, MCP, runtime caches — do not edit manually</td></tr>
+      </tbody>
+    </table>
+
+    <p>The <code>&lt;path-hash&gt;</code> folder is derived from your project's <strong>absolute path</strong>. Each repo gets its own directory.</p>
+
+    <h3>Resume, name, and export native sessions</h3>
+    <table>
+      <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>claude --continue</code></td><td>Resume the most recent session in the current directory</td></tr>
+        <tr><td><code>claude --resume</code></td><td>Open the interactive session picker</td></tr>
+        <tr><td><code>claude --resume &lt;name&gt;</code></td><td>Resume a named session</td></tr>
+        <tr><td><code>claude -n auth-refactor</code></td><td>Start with a session name</td></tr>
+        <tr><td><code>/export [file]</code></td><td>Save current conversation to clipboard or a text file</td></tr>
+        <tr><td><code>/rename &lt;name&gt;</code></td><td>Rename the active session</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>ls ~/.claude/projects/*/
+find ~/.claude/projects -name "*.jsonl" | head</code></pre>
+
+    <h3>Retention — back up before you lose history</h3>
+    <p>Transcripts are deleted after <strong>30 days</strong> by default. Extend in <code>~/.claude/settings.json</code>:</p>
+    <pre><code>{ "cleanupPeriodDays": 365 }</code></pre>
+
+    <h3>Where migrated Cursor content goes</h3>
+    <p>Imported Cursor threads <strong>do not</strong> land in <code>~/.claude/projects/*.jsonl</code> automatically. Put them in:</p>
+    <ul>
+      <li>Repo <code>CLAUDE.md</code> — distilled conventions and open TODOs</li>
+      <li><code>context-pack/threads/*.md</code> — curated Cursor transcripts (gitignore if sensitive)</li>
+      <li>A <strong>new <code>claude</code> session</strong> — paste a preamble; Claude saves that work as a fresh JSONL file</li>
+    </ul>
 
     <h2 id="limits">What migrates and what does not</h2>
     <table>
@@ -209,24 +266,24 @@ Recommend refresh tokens with rotation...</code></pre>
 
     <h2 id="step3">Step 3 — Seed Claude Code</h2>
     <ol>
-      <li><strong>Merge into <code>CLAUDE.md</code></strong> — copy bootstrap content into your repo root (or merge with existing instructions).</li>
-      <li><strong>Start a session</strong> in the project:
-        <pre><code>cd my-app && claude</code></pre>
+      <li><strong>Project <code>CLAUDE.md</code></strong> — merge bootstrap into your <strong>repo root</strong> <code>CLAUDE.md</code>. Claude loads this when you run <code>claude</code> in that directory. Use <code>~/.claude/CLAUDE.md</code> only for personal rules across all projects.</li>
+      <li><strong>Start a named session</strong> — names make <code>/resume</code> usable later:
+        <pre><code>cd my-app && claude -n cursor-migration-auth</code></pre>
       </li>
       <li><strong>First message</strong> (example):
         <pre><code>I migrated from Cursor. CLAUDE.md has current conventions.
 For auth background see context-pack/threads/auth-refactor.md.
 Continue from the open TODOs listed there.</code></pre>
       </li>
-      <li><strong>Project memory</strong> — store stable facts (package manager, CI entrypoint). Never store API keys.</li>
-      <li><strong>Large threads</strong> — import summary + last ~10 messages, not 200k tokens of tool noise.</li>
+      <li><strong>Native storage</strong> — this session is now written to <code>~/.claude/projects/&lt;path-hash&gt;/&lt;session&gt;.jsonl</code> automatically. Use <code>/export</code> anytime for a plain-text backup.</li>
+      <li><strong>Large Cursor threads</strong> — import summary + last ~10 messages, not 200k tokens of tool noise.</li>
     </ol>
 
     <h2 id="step4">Step 4 — Ongoing hygiene</h2>
     <ul>
-      <li>When a Cursor thread resolves, merge the decision into <code>CLAUDE.md</code> and delete the thread file.</li>
-      <li>Re-export monthly if you still use both tools.</li>
-      <li>One canonical <code>CLAUDE.md</code> — avoid duplicating rules across files.</li>
+      <li>Back up <code>~/.claude/projects/</code> if you need long history (or raise <code>cleanupPeriodDays</code>).</li>
+      <li>When a Cursor thread resolves, merge the decision into repo <code>CLAUDE.md</code> and delete the thread file.</li>
+      <li>Re-export from Cursor monthly if you still dual-run tools.</li>
       <li>Keep <code>context-pack/</code> out of git if it has private URLs or customer names.</li>
     </ul>
 
@@ -234,13 +291,15 @@ Continue from the open TODOs listed there.</code></pre>
     <table>
       <thead><tr><th>Cursor source</th><th>Claude Code use</th></tr></thead>
       <tbody>
-        <tr><td><code>~/.cursor/plans/*.plan.md</code></td><td>Copy to <code>docs/plans/</code> or link from <code>CLAUDE.md</code></td></tr>
+        <tr><td><code>~/.cursor/plans/*.plan.md</code></td><td>Copy to <code>docs/plans/</code>, <code>~/.claude/plans/</code>, or link from <code>CLAUDE.md</code></td></tr>
         <tr><td>Agent JSONL transcripts</td><td>Convert to markdown for debugging; rarely needed day-to-day</td></tr>
         <tr><td><code>conversation_summaries</code> in ai-tracking.db</td><td>Fast TL;DR when choosing which threads to migrate</td></tr>
       </tbody>
     </table>
 
     <h2 id="faq">FAQ</h2>
+    <h3>Where does Claude Code store chat history?</h3>
+    <p>In <code>~/.claude/projects/&lt;path-hash&gt;/*.jsonl</code> — one JSONL file per session, saved continuously. Global prompt index: <code>~/.claude/history.jsonl</code>. Override root with <code>CLAUDE_CONFIG_DIR</code>.</p>
     <h3>Will Claude Code read my Cursor composerId?</h3>
     <p>No — IDs are for your filenames and traceability only.</p>
     <h3>Should I automate context-pack generation?</h3>
