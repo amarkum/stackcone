@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <title>Migrate Cursor Chat to Claude Code | stackcone</title>
+  <meta name="description" content="Switching from Cursor Composer to Claude Code? Export state.vscdb chats, build a context pack, seed CLAUDE.md, and preserve architecture decisions without losing thread history.">
+  <meta name="keywords" content="migrate Cursor to Claude Code, Cursor chat export, CLAUDE.md, Claude Code context, Composer migration, AI IDE switch">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html">
+  <meta property="og:title" content="Migrate Cursor Chat to Claude Code">
+  <meta property="og:description" content="Export Cursor threads, curate a context pack, and bootstrap Claude Code with CLAUDE.md and distilled transcripts.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Migrate Cursor Chat to Claude Code">
+  <meta name="twitter:description" content="Practical workflow: Cursor state.vscdb export → context pack → Claude Code session.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Migrate Cursor Chat to Claude Code",
+    "description": "How to move knowledge from Cursor Composer threads into Claude Code using exports, context packs, and CLAUDE.md.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-19",
+    "dateModified": "2026-06-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["Cursor", "Claude Code", "migration", "CLAUDE.md", "chat export", "Composer"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "Migrating AI IDE chat history" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Migrate Cursor chat history to Claude Code",
+    "description": "Export Cursor Composer threads and seed Claude Code with project context.",
+    "step": [
+      { "@type": "HowToStep", "name": "Export Cursor chats", "text": "Run cursor_export.py to dump state.vscdb threads to JSON and Markdown." },
+      { "@type": "HowToStep", "name": "Curate threads", "text": "Tag P0/P1 threads; strip tool noise; keep decisions and code snippets." },
+      { "@type": "HowToStep", "name": "Build context pack", "text": "Create CLAUDE-bootstrap.md and threads/*.md in a context-pack folder." },
+      { "@type": "HowToStep", "name": "Seed Claude Code", "text": "Merge bootstrap into CLAUDE.md; start claude in project root with a short preamble." }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can Claude Code import Cursor Composer sessions directly?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. You export Cursor chats from local state.vscdb files, then feed distilled markdown into CLAUDE.md and Claude Code sessions as project context."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I paste my entire Cursor export into Claude?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Curate active threads (P0/P1), summarize the rest, and keep one canonical CLAUDE.md for conventions and open TODOs."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Migrate Cursor to Claude Code", "item": "https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Migrate Cursor Chat to Claude Code</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>Moving from <strong>Cursor Composer</strong> to <strong>Claude Code</strong> does not carry your threads over. Cursor keeps chats in <code>state.vscdb</code>; Claude Code reads <code>CLAUDE.md</code>, terminal sessions, and project memory. The gap is manual — but straightforward if you treat migration as <strong>knowledge transfer</strong>, not session replay.</p>
+
+    <blockquote>
+      <p><strong>Start here:</strong> <a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a> — the Python script and schema reference.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#limits">What migrates and what does not</a></li>
+        <li><a href="#workflow">Workflow overview</a></li>
+        <li><a href="#step1">Step 1 — Export and triage</a></li>
+        <li><a href="#step2">Step 2 — Build a context pack</a></li>
+        <li><a href="#step3">Step 3 — Seed Claude Code</a></li>
+        <li><a href="#step4">Step 4 — Ongoing hygiene</a></li>
+        <li><a href="#plans">Plans and agent logs</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="limits">What migrates and what does not</h2>
+    <table>
+      <thead><tr><th>Migrates well</th><th>Does not migrate</th></tr></thead>
+      <tbody>
+        <tr><td>User + assistant message text</td><td>Live Composer UI state</td></tr>
+        <tr><td>Plan markdown files</td><td>Cursor inline checkpoints / diffs</td></tr>
+        <tr><td>Architecture decisions in prose</td><td><code>@file</code> attachment binaries</td></tr>
+        <tr><td>Code blocks from threads</td><td>Tool-call replay inside Claude</td></tr>
+        <tr><td>Thread titles and dates</td><td>Exact ordering of draft/tool bubbles</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="workflow">Workflow overview</h2>
+    <pre><code>state.vscdb  →  cursor_export.py  →  JSON + Markdown
+                                         ↓
+                    Curate P0/P1 threads  →  context-pack/
+                                         ↓
+                    CLAUDE.md + preamble  →  claude (terminal)</code></pre>
+
+    <h2 id="step1">Step 1 — Export and triage</h2>
+    <pre><code>python3 cursor_export.py --out ./cursor-export
+python3 cursor_export.py --list   # pick composer IDs</code></pre>
+    <p>Tag each thread:</p>
+    <ul>
+      <li><strong>P0</strong> — active feature or bug you are still shipping</li>
+      <li><strong>P1</strong> — architecture, conventions, or infra worth keeping</li>
+      <li><strong>P2</strong> — archive only (search if needed later)</li>
+    </ul>
+    <p>Do <strong>not</strong> paste 100+ full threads into Claude — context limits and noise will hurt you.</p>
+
+    <h2 id="step2">Step 2 — Build a context pack</h2>
+    <p>Create a folder (add to <code>.gitignore</code> if it contains client names):</p>
+    <pre><code>context-pack/
+  CLAUDE-bootstrap.md
+  threads/
+    auth-refactor.md
+    rag-pipeline.md
+  plans/
+    api-redesign.plan.md</code></pre>
+
+    <h3>Thread file template</h3>
+    <pre><code># Thread: Auth refactor
+composerId: abc-123-def
+Exported: 2026-06-19
+
+## Summary
+- JWT + refresh rotation (no cookie sessions)
+- Deprecate `sessions` table in migration 20260619
+
+## Transcript
+### User
+We need to migrate off cookie sessions...
+
+### Assistant
+Recommend refresh tokens with rotation...</code></pre>
+    <p>Strip linter dumps, failed tool retries, and duplicate drafts. Keep <strong>decisions</strong>, <strong>file paths</strong>, and <strong>snippets that still compile</strong>.</p>
+
+    <h3>Distill CLAUDE-bootstrap.md</h3>
+    <p>One file Claude Code should treat as ground truth:</p>
+    <ul>
+      <li>Stack versions (Node, Python, DB)</li>
+      <li>Test / lint / deploy commands</li>
+      <li>Non-obvious repo conventions</li>
+      <li>Open TODOs with paths</li>
+      <li>Pointers to <code>threads/*.md</code> for deep history</li>
+    </ul>
+
+    <h2 id="step3">Step 3 — Seed Claude Code</h2>
+    <ol>
+      <li><strong>Merge into <code>CLAUDE.md</code></strong> — copy bootstrap content into your repo root (or merge with existing instructions).</li>
+      <li><strong>Start a session</strong> in the project:
+        <pre><code>cd my-app && claude</code></pre>
+      </li>
+      <li><strong>First message</strong> (example):
+        <pre><code>I migrated from Cursor. CLAUDE.md has current conventions.
+For auth background see context-pack/threads/auth-refactor.md.
+Continue from the open TODOs listed there.</code></pre>
+      </li>
+      <li><strong>Project memory</strong> — store stable facts (package manager, CI entrypoint). Never store API keys.</li>
+      <li><strong>Large threads</strong> — import summary + last ~10 messages, not 200k tokens of tool noise.</li>
+    </ol>
+
+    <h2 id="step4">Step 4 — Ongoing hygiene</h2>
+    <ul>
+      <li>When a Cursor thread resolves, merge the decision into <code>CLAUDE.md</code> and delete the thread file.</li>
+      <li>Re-export monthly if you still use both tools.</li>
+      <li>One canonical <code>CLAUDE.md</code> — avoid duplicating rules across files.</li>
+      <li>Keep <code>context-pack/</code> out of git if it has private URLs or customer names.</li>
+    </ul>
+
+    <h2 id="plans">Plans and agent logs</h2>
+    <table>
+      <thead><tr><th>Cursor source</th><th>Claude Code use</th></tr></thead>
+      <tbody>
+        <tr><td><code>~/.cursor/plans/*.plan.md</code></td><td>Copy to <code>docs/plans/</code> or link from <code>CLAUDE.md</code></td></tr>
+        <tr><td>Agent JSONL transcripts</td><td>Convert to markdown for debugging; rarely needed day-to-day</td></tr>
+        <tr><td><code>conversation_summaries</code> in ai-tracking.db</td><td>Fast TL;DR when choosing which threads to migrate</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Will Claude Code read my Cursor composerId?</h3>
+    <p>No — IDs are for your filenames and traceability only.</p>
+    <h3>Should I automate context-pack generation?</h3>
+    <p>Yes — extend <code>cursor_export.py</code> to filter bubbles, emit summaries, and copy plans in one pass.</p>
+    <h3>What about Cursor Plan mode vs Claude planning?</h3>
+    <p>Both output markdown. Copy the plan file, then re-run planning in Claude Code against your current tree.</p>
+
+    <h2 id="related">Related guides</h2>
+    <ul>
+      <li><a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a></li>
+      <li><a href="best-economical-llm-models-rag-openai-gemini-anthropic.html">Best Economical LLM Models for RAG</a></li>
+    </ul>
+
+    <p class="closing">Export once, curate hard, seed Claude with decisions — not dumps.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Building AI-assisted dev workflows?</strong></p>
+      <p>stackcone ships export tooling, RAG pipelines, and agent workflows for engineering teams.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <title>Export Cursor Chat History from state.vscdb | stackcone</title>
+  <meta name="description" content="Cursor stores Composer chats in SQLite state.vscdb files. Learn the schema, key prefixes, and a read-only Python script to export every thread to JSON and Markdown.">
+  <meta name="keywords" content="export Cursor chat, state.vscdb, cursorDiskKV, Composer history, Cursor SQLite, chat backup, Cursor export script">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/export-cursor-chat-history-vscdb.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/export-cursor-chat-history-vscdb.html">
+  <meta property="og:title" content="Export Cursor Chat History from state.vscdb">
+  <meta property="og:description" content="Read-only export of Cursor Composer threads from local SQLite — JSON, Markdown, and plans.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Export Cursor Chat History from state.vscdb">
+  <meta name="twitter:description" content="Generic Python script to dump Cursor Composer chats from state.vscdb to JSON and Markdown.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Export Cursor Chat History from state.vscdb",
+    "description": "How Cursor stores Composer chats in SQLite and a read-only Python script to export threads to JSON and Markdown.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-19",
+    "dateModified": "2026-06-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/export-cursor-chat-history-vscdb.html" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["Cursor", "state.vscdb", "chat export", "Composer", "SQLite", "Python"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "Cursor IDE chat export" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Where does Cursor store chat history?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Composer threads live in ~/Library/Application Support/Cursor/User/globalStorage/state.vscdb on macOS, in cursorDiskKV rows keyed by composerData: and bubbleId: prefixes. Per-workspace prompt history is in workspaceStorage/<hash>/state.vscdb."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I export Cursor chats without the cloud API?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Open state.vscdb read-only with SQLite and parse JSON blobs locally. No JWT or api2.cursor.sh calls are required for export."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why are my exported messages out of order?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sort bubbles using fullConversationHeadersOnly from composer metadata, not createdAt. Cursor stores extra bubbleId rows for drafts and tool noise."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Export Cursor Chat History", "item": "https://stackcone.com/blog/posts/export-cursor-chat-history-vscdb.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Export Cursor Chat History from state.vscdb</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>Cursor has no built-in “export all chats” button. Every Composer thread, Agent run, and Plan file is already on disk — mostly inside <strong>SQLite</strong> files named <code>state.vscdb</code>. If you want backups, compliance archives, or a path off Cursor, you read those files locally.</p>
+    <p>This guide is a <strong>generic, read-only</strong> approach: list every composer, reconstruct message order correctly, redact secrets, and write <strong>JSON + Markdown</strong>. No cloud API, no auth token in your export bundle.</p>
+
+    <blockquote>
+      <p><strong>Next step:</strong> Once exported, see <a href="migrate-cursor-chat-to-claude-code.html">Migrate Cursor Chat to Claude Code</a> for turning transcripts into Claude project context.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#where-stored">Where Cursor stores chats</a></li>
+        <li><a href="#schema">SQLite schema</a></li>
+        <li><a href="#safety">Safety before you export</a></li>
+        <li><a href="#script">Export script</a></li>
+        <li><a href="#plans">Plans and agent transcripts</a></li>
+        <li><a href="#output">Output layout</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="where-stored">Where Cursor stores chats</h2>
+    <p>Paths below are for <strong>macOS</strong>. Linux uses <code>~/.config/Cursor/</code>; Windows uses <code>%APPDATA%\Cursor\</code>. The export script resolves these automatically.</p>
+
+    <table>
+      <thead><tr><th>Path</th><th>What it holds</th></tr></thead>
+      <tbody>
+        <tr><td><code>…/User/globalStorage/state.vscdb</code></td><td>Global composer index, chat bubbles, blobs</td></tr>
+        <tr><td><code>…/User/workspaceStorage/&lt;hash&gt;/state.vscdb</code></td><td>Per-workspace <code>aiService.prompts</code> history</td></tr>
+        <tr><td><code>~/.cursor/plans/*.plan.md</code></td><td>Plan mode markdown outputs</td></tr>
+        <tr><td><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/</code></td><td>Agent run JSONL logs</td></tr>
+        <tr><td><code>~/.cursor/ai-tracking/ai-code-tracking.db</code></td><td>Conversation summaries, AI authorship stats</td></tr>
+        <tr><td><code>…/anysphere.cursor-commits/checkpoints/</code></td><td>Before/after snapshots for AI edits</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="schema">SQLite schema</h2>
+    <p><code>state.vscdb</code> has two tables that matter for chat export:</p>
+    <ul>
+      <li><strong>ItemTable</strong> — <code>(key TEXT UNIQUE, value BLOB)</code> — settings, auth metadata, composer headers</li>
+      <li><strong>cursorDiskKV</strong> — <code>(key TEXT UNIQUE, value BLOB)</code> — chat payloads at scale</li>
+    </ul>
+
+    <h3>ItemTable keys (global)</h3>
+    <ul>
+      <li><code>composer.composerHeaders</code> → JSON with <code>allComposers[]</code> (id, name, dates, workspace)</li>
+      <li><code>cursorAuth/accessToken</code> → JWT — <strong>never</strong> copy into exports or logs</li>
+    </ul>
+
+    <h3>cursorDiskKV key prefixes</h3>
+    <table>
+      <thead><tr><th>Prefix</th><th>Contents</th></tr></thead>
+      <tbody>
+        <tr><td><code>composerData:&lt;composerId&gt;</code></td><td>Thread metadata + <code>fullConversationHeadersOnly</code> (true message order)</td></tr>
+        <tr><td><code>bubbleId:&lt;composerId&gt;:&lt;bubbleId&gt;</code></td><td>One user or assistant message</td></tr>
+        <tr><td><code>messageRequestContext:…</code></td><td>Request context per bubble</td></tr>
+        <tr><td><code>checkpointId:…</code></td><td>Checkpoint pointers</td></tr>
+        <tr><td><code>agentKv:blob:&lt;sha256&gt;</code></td><td>Content-addressed JSON blobs</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Ordering trap:</strong> Cursor stores many <code>bubbleId:*</code> rows (drafts, tool noise). The real thread order is <code>fullConversationHeadersOnly</code> inside <code>composerData</code> — not <code>createdAt</code> on each bubble.</p>
+
+    <h2 id="safety">Safety before you export</h2>
+    <ol>
+      <li><strong>Quit Cursor</strong> or expect occasional <code>database is locked</code> (WAL mode).</li>
+      <li>Open DBs <strong>read-only</strong> — <code>file:…?mode=ro</code> URI.</li>
+      <li><strong>Redact</strong> JWTs, <code>sk-…</code> keys, and tokens before sharing exports.</li>
+      <li>Do not wire <code>cursorAuth/accessToken</code> into scripts that send data off-machine.</li>
+    </ol>
+
+    <h2 id="script">Export script</h2>
+    <p>Save as <code>cursor_export.py</code>. Requires Python 3.10+ and no third-party packages.</p>
+
+    <pre><code>#!/usr/bin/env python3
+"""Export Cursor Composer chat history from local state.vscdb (read-only)."""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sqlite3
+import sys
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any, Iterator, Optional
+
+JWT_RE = re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{8,}\b")
+SECRET_RES = [re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"), re.compile(r"\bghp_[A-Za-z0-9]{20,}\b")]
+
+
+def cursor_paths() -> dict[str, Path]:
+    home = Path.home()
+    if sys.platform == "darwin":
+        base = home / "Library/Application Support/Cursor"
+    elif sys.platform == "win32":
+        base = home / "AppData/Roaming/Cursor"
+    else:
+        base = home / ".config/Cursor"
+    return {
+        "global_db": base / "User/globalStorage/state.vscdb",
+        "workspace_root": base / "User/workspaceStorage",
+        "plans": home / ".cursor/plans",
+    }
+
+
+def redact(text: str) -> str:
+    if not text:
+        return text
+    text = JWT_RE.sub("&lt;REDACTED_JWT&gt;", text)
+    for pat in SECRET_RES:
+        text = pat.sub("&lt;REDACTED_SECRET&gt;", text)
+    return text
+
+
+@contextmanager
+def ro_sqlite(path: Path) -> Iterator[sqlite3.Connection]:
+    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=5.0)
+    try:
+        yield con
+    finally:
+        con.close()
+
+
+def _parse_json(val: Any) -> Any:
+    if isinstance(val, (bytes, bytearray)):
+        val = val.decode("utf-8", errors="replace")
+    return json.loads(val)
+
+
+def list_composers(gdb: Path, ws_root: Path) -> list[dict]:
+    """Primary: composer.composerHeaders. Fallback: per-workspace composer.composerData."""
+    by_id: dict[str, dict] = {}
+    if gdb.exists():
+        with ro_sqlite(gdb) as con:
+            row = con.execute(
+                "SELECT value FROM ItemTable WHERE key = 'composer.composerHeaders'"
+            ).fetchone()
+            if row:
+                for c in _parse_json(row[0]).get("allComposers") or []:
+                    cid = c.get("composerId")
+                    if cid:
+                        by_id[cid] = {
+                            "composerId": cid,
+                            "name": redact(str(c.get("name") or ""))[:200],
+                            "lastUpdatedAt": c.get("lastUpdatedAt"),
+                        }
+    # Older builds: workspace ItemTable composer.composerData
+    if ws_root.exists():
+        for ws in ws_root.iterdir():
+            ws_db = ws / "state.vscdb"
+            if not ws_db.exists():
+                continue
+            try:
+                with ro_sqlite(ws_db) as con:
+                    row = con.execute(
+                        "SELECT value FROM ItemTable WHERE key = 'composer.composerData'"
+                    ).fetchone()
+                if not row:
+                    continue
+                for c in _parse_json(row[0]).get("allComposers") or []:
+                    cid = c.get("composerId")
+                    if cid and cid not in by_id:
+                        by_id[cid] = {
+                            "composerId": cid,
+                            "name": redact(str(c.get("name") or ""))[:200],
+                            "lastUpdatedAt": c.get("lastUpdatedAt"),
+                        }
+            except Exception:
+                continue
+    return sorted(by_id.values(), key=lambda x: x.get("lastUpdatedAt") or 0, reverse=True)
+
+
+def load_conversation(gdb: Path, composer_id: str, max_chars: int = 8000) -> dict:
+    with ro_sqlite(gdb) as con:
+        meta_row = con.execute(
+            "SELECT value FROM cursorDiskKV WHERE key = ?",
+            (f"composerData:{composer_id}",),
+        ).fetchone()
+        meta = _parse_json(meta_row[0]) if meta_row else {}
+        headers = meta.get("fullConversationHeadersOnly") or []
+        order = {h["bubbleId"]: i for i, h in enumerate(headers) if h.get("bubbleId")}
+        restrict = bool(order)
+        rows = con.execute(
+            "SELECT key, value FROM cursorDiskKV WHERE key LIKE ?",
+            (f"bubbleId:{composer_id}:%",),
+        ).fetchall()
+
+    bubbles = []
+    for idx, (key, val) in enumerate(rows):
+        d = _parse_json(val)
+        bid = key.rsplit(":", 1)[-1]
+        if restrict and bid not in order:
+            continue
+        role = "user" if d.get("type") == 1 else "assistant" if d.get("type") == 2 else "other"
+        text = d.get("text") or d.get("richText") or ""
+        if isinstance(text, list):
+            text = " ".join(str(x.get("text", "")) for x in text if isinstance(x, dict))
+        sort = (0, order[bid]) if restrict else (1, idx)
+        bubbles.append((sort, {"role": role, "text": redact(str(text))[:max_chars]}))
+    bubbles.sort(key=lambda t: t[0])
+    return {"composerId": composer_id, "name": meta.get("name"), "bubbles": [b for _, b in bubbles]}
+
+
+def to_markdown(conv: dict) -> str:
+    lines = [f"# {conv.get('name') or conv['composerId']}", ""]
+    for b in conv["bubbles"]:
+        label = "User" if b["role"] == "user" else "Assistant"
+        lines += [f"## {label}", "", b["text"], ""]
+    return "\n".join(lines)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", type=Path, default=Path("cursor-export"))
+    ap.add_argument("--list", action="store_true")
+    ap.add_argument("--composer-id")
+    ap.add_argument("--max-chars", type=int, default=8000)
+    args = ap.parse_args()
+    paths = cursor_paths()
+    gdb = paths["global_db"]
+    if not gdb.exists():
+        sys.exit(f"Not found: {gdb}")
+    composers = list_composers(gdb, paths["workspace_root"])
+    if args.list:
+        for c in composers:
+            print(c["composerId"], c.get("name"))
+        return
+    args.out.mkdir(parents=True, exist_ok=True)
+    (args.out / "chats").mkdir(exist_ok=True)
+    (args.out / "composers.json").write_text(json.dumps(composers, indent=2))
+    targets = [c for c in composers if c["composerId"] == args.composer_id] if args.composer_id else composers
+    for c in targets:
+        conv = load_conversation(gdb, c["composerId"], args.max_chars)
+        cid = c["composerId"]
+        (args.out / "chats" / f"{cid}.json").write_text(json.dumps(conv, indent=2))
+        (args.out / "chats" / f"{cid}.md").write_text(to_markdown(conv))
+    plans = paths["plans"]
+    if plans.exists():
+        dest = args.out / "plans"
+        dest.mkdir(exist_ok=True)
+        for p in plans.glob("*.plan.md"):
+            dest.joinpath(p.name).write_text(p.read_text(errors="replace"))
+    print(f"Done → {args.out.resolve()}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+
+    <h3>Usage</h3>
+    <pre><code>python3 cursor_export.py --list
+python3 cursor_export.py --out ./cursor-export
+python3 cursor_export.py --composer-id &lt;uuid&gt; --out ./one-chat
+python3 cursor_export.py --max-chars 4000 --out ./cursor-export</code></pre>
+
+    <h2 id="plans">Plans and agent transcripts</h2>
+    <ul>
+      <li><strong>Plans</strong> — plain markdown at <code>~/.cursor/plans/</code>; the script copies them to <code>plans/</code>.</li>
+      <li><strong>Agent transcripts</strong> — JSONL under <code>~/.cursor/projects/</code>; each line is a JSON event with <code>text</code> fields.</li>
+      <li><strong>Summaries</strong> — optional table <code>conversation_summaries</code> in <code>ai-code-tracking.db</code> (<code>title</code>, <code>tldr</code>, <code>overview</code>).</li>
+    </ul>
+
+    <h2 id="output">Output layout</h2>
+    <pre><code>cursor-export/
+  composers.json          # index of all threads
+  chats/
+    &lt;composerId&gt;.json     # structured bubbles
+    &lt;composerId&gt;.md       # human-readable transcript
+  plans/
+    *.plan.md</code></pre>
+
+    <h2 id="troubleshooting">Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Issue</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td><code>database is locked</code></td><td>Quit Cursor; retry read-only open</td></tr>
+        <tr><td>Shuffled messages</td><td>Filter bubbles via <code>fullConversationHeadersOnly</code></td></tr>
+        <tr><td>Empty composer list</td><td>Script falls back to workspace <code>composer.composerData</code></td></tr>
+        <tr><td>Export too large</td><td>Lower <code>--max-chars</code>; export one <code>--composer-id</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Is this official?</h3>
+    <p>No. It reads local files Cursor already writes. Schema can change between Cursor versions.</p>
+    <h3>Does it need my Cursor login?</h3>
+    <p>No cloud calls. Everything is parsed from disk.</p>
+    <h3>Can I export on Windows or Linux?</h3>
+    <p>Yes — <code>cursor_paths()</code> adjusts the base directory per OS.</p>
+
+    <h2 id="related">Related guides</h2>
+    <ul>
+      <li><a href="migrate-cursor-chat-to-claude-code.html">Migrate Cursor Chat to Claude Code</a></li>
+      <li><a href="how-to-build-a-production-rag-chatbot.html">How to Build a RAG Chatbot</a></li>
+    </ul>
+
+    <p class="closing">Your chats are already on disk — export them before you switch tools.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Need custom tooling around AI dev workflows?</strong></p>
+      <p>stackcone builds RAG pipelines, agent orchestration, and export tooling for engineering teams.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
