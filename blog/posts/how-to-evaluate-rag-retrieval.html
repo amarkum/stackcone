@@ -7,20 +7,20 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
-  <title>How to Evaluate RAG Retrieval (Before You Touch the Prompt) | stackcone</title>
-  <meta name="description" content="Build a golden eval set, measure hit@k and MRR, classify RAG failures, and run a weekly loop that improves retrieval — not just prompts.">
-  <meta name="keywords" content="RAG evaluation, hit@k, golden eval set, RAG metrics, retrieval quality, MRR, RAG debugging, production RAG, retrieval augmented generation">
+  <title>How to Evaluate RAG Retrieval (2026 Guide) | stackcone</title>
+  <meta name="description" content="How to evaluate RAG retrieval before tuning prompts — golden eval sets, hit@k, MRR, failure taxonomy, and a weekly loop for measurable search quality.">
+  <meta name="keywords" content="evaluate rag retrieval, rag evaluation metrics, rag hit at k, rag retrieval quality, golden eval set rag, rag mrr, rag debugging">
   <link rel="canonical" href="https://stackcone.com/blog/posts/how-to-evaluate-rag-retrieval.html">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/posts/how-to-evaluate-rag-retrieval.html">
-  <meta property="og:title" content="How to Evaluate RAG Retrieval (Before You Touch the Prompt)">
-  <meta property="og:description" content="Golden eval sets, hit@k, failure taxonomy, and a weekly loop for measurable RAG retrieval quality.">
+  <meta property="og:title" content="How to Evaluate RAG Retrieval (2026 Guide)">
+  <meta property="og:description" content="How to evaluate RAG retrieval before tuning prompts — golden eval sets, hit@k, MRR, failure taxonomy, and a weekly loop for measurable search quality.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="stackcone">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How to Evaluate RAG Retrieval (Before You Touch the Prompt)">
-  <meta name="twitter:description" content="Stop prompt-tuning blind. Measure hit@k, classify failures, fix retrieval first.">
+  <meta name="twitter:title" content="How to Evaluate RAG Retrieval (2026 Guide)">
+  <meta name="twitter:description" content="How to evaluate RAG retrieval before tuning prompts — golden eval sets, hit@k, MRR, failure taxonomy, and a weekly loop for measurable search quality.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
@@ -33,8 +33,8 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "How to Evaluate RAG Retrieval (Before You Touch the Prompt)",
-    "description": "Build a golden eval set, measure hit@k and MRR, classify RAG failures, and run a weekly eval loop for production retrieval quality.",
+    "headline": "How to Evaluate RAG Retrieval",
+    "description": "How to evaluate RAG retrieval before tuning prompts — golden eval sets, hit@k, MRR, failure taxonomy, and a weekly loop for measurable search quality.",
     "author": { "@type": "Person", "name": "Amar Kumar" },
     "publisher": {
       "@type": "Organization",
@@ -43,11 +43,11 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-06-13",
-    "dateModified": "2026-06-13",
+    "dateModified": "2026-06-18",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-to-evaluate-rag-retrieval.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
-    "keywords": ["RAG evaluation", "hit@k", "golden eval set", "MRR", "retrieval quality", "RAG debugging"],
-    "articleSection": "AI Engineering",
+    "keywords": ["evaluate rag retrieval", "rag evaluation metrics", "rag hit at k", "rag retrieval quality", "golden eval set rag", "rag mrr", "rag debugging"],
+    "articleSection": "RAG",
     "about": { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
   }
   </script>
@@ -87,7 +87,7 @@
   </header>
 
   <article class="blog-article">
-    <h1>How to Evaluate RAG Retrieval (Before You Touch the Prompt)</h1>
+    <h1>How to Evaluate RAG Retrieval</h1>
     <p class="meta">June 2026 · Published by Amar Kumar</p>
     <p>Most teams rewrite the system prompt when answers are wrong. In production RAG, the problem is usually retrieval — and no prompt fix helps if the right chunk never reached the model.</p>
 

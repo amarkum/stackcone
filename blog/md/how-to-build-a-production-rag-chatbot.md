@@ -1,14 +1,14 @@
-# How to Build a RAG Chatbot — Complete Guide
+# How to Build a Production RAG Chatbot — Complete Guide
 
 **June 2026 · Published by Amar Kumar**
 
-A practical guide to building a retrieval-augmented chatbot from scratch: concepts, stack, architecture, code, and launch.
+A practical guide to building a production RAG chatbot from scratch: concepts, stack, architecture, code, and launch.
 
 ---
 
-You want a chatbot that answers from **your** docs — not from the model's memory. That's RAG.
+You want a chatbot that answers from **your** docs — not from the model's memory. That's a RAG chatbot.
 
-This guide covers how to build one: ingest documents, store them in a vector database, retrieve relevant chunks on each question, and generate answers with an LLM.
+This guide shows how to build a production RAG chatbot: ingest documents, store them in a vector database, retrieve relevant chunks on each question, and generate answers with an LLM.
 
 > **Who is this for?** Developers with basic Python and an API key. No ML background required.
 
@@ -25,7 +25,7 @@ This guide covers how to build one: ingest documents, store them in a vector dat
 7. [Tools & stack](#tools--stack)
 8. [Which vector database?](#which-vector-database)
 9. [Architecture](#architecture)
-10. [Build step by step (code)](#build-step-by-step)
+10. [Build a production RAG chatbot step by step](#build-step-by-step)
 11. [Going to production](#going-to-production)
 12. [Launch checklist](#launch-checklist)
 13. [API reference](#api-reference)
@@ -205,7 +205,7 @@ Question → Embed query → Vector search (top-k) → [Rerank] → Build prompt
 
 ---
 
-## Build step by step
+## Build a Production RAG Chatbot Step by Step
 
 ### Step 1 — Environment
 
