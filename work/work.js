@@ -244,6 +244,6 @@
 
   fetch('projects.json')
     .then(function (r) { return r.json(); })
-    .catch(function () { return { clients: [], projects: [] }; })
+    .catch(function () { return { projects: [] }; })
     .then(init);
 })();
