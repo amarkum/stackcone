@@ -14,6 +14,7 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
 2. `solutions/md/{slug}.md` — markdown source for authoring (not linked, not in sitemap)
 3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page only
+5. Run `python3 blog/apply_highlights.py solutions/{slug}.html` if the page has code blocks
 
 **Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Published HTML: `solutions/{slug}.html`. Source markdown: `solutions/md/{slug}.md` — **never** put `.md` next to `.html` in `solutions/`.
 
@@ -64,7 +65,7 @@ Omit `client` if no company named. **Do not** add `source` fields (no `upwork`, 
 | `solutions/solutions.css` | Diagram cards, lightbox, `.impl-phase`, `.pipeline`, chart wrappers |
 | `solutions/diagrams.js` | Mermaid render, fullscreen lightbox, zoom/fit, drag-to-pan |
 | `solutions/icons/*.svg` | Lucide toolbar icons (loaded by `diagrams.js`) |
-| `blog/blog.css` | Article typography, tables, TOC, CTA |
+| `blog/blog.css` | Article typography, tables, TOC, CTA, **code token colors** |
 | `styles.css` | Site chrome |
 | `site-nav.js`, `script.js` | Nav + shared site JS |
 
@@ -303,6 +304,27 @@ Use `.chart-wrap--architecture` on the architecture/component map chart only. Ot
 - Use `class="mermaid"` on diagram source nodes
 - Root-absolute script paths (`/solutions/diagrams.js`) in `solutions/*.html`
 - Duplicate lightbox HTML/JS (handled by `diagrams.js`)
+- Add highlight.js, Prism, or client-side syntax highlighters
+
+## Syntax highlighting (code in solution posts)
+
+Solution pages use `.blog-article` and the same **span-based** code style as blog posts. Reference: `blog/posts/how-to-build-a-production-rag-chatbot.html`.
+
+| Class | Use |
+|-------|-----|
+| `kw` | Keywords |
+| `fn` | Functions, builtins, types |
+| `str` | Strings |
+| `num` | Numbers |
+| `cm` | Comments |
+
+**Workflow:** put plain code in `<pre><code>…</code></pre>`, then run:
+
+```bash
+python3 blog/apply_highlights.py solutions/{slug}.html
+```
+
+`blog/apply_highlights.py` accepts a file or directory path — use it for any `solutions/*.html` with new code blocks. Do not hand-highlight long scripts or use CDN highlighters. See `.cursor/rules/blog-posts.mdc` for full rules and `blog/highlight_code.py` / `blog/blog.css` details.
 
 ## Tone and framing
 

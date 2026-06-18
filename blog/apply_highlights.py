@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply span-based syntax highlighting to blog post HTML files."""
+"""Apply span-based syntax highlighting to blog/solution HTML files."""
 from __future__ import annotations
 
 import html
@@ -27,7 +27,7 @@ CODE_HIGHLIGHT_SCRIPT_RE = re.compile(
 
 
 def unescape_code(raw: str) -> str:
-  return html.unescape(raw)
+    return html.unescape(raw)
 
 
 def process_html(path: Path) -> bool:
@@ -55,13 +55,25 @@ def process_html(path: Path) -> bool:
     return False
 
 
+def html_targets(arg: Path) -> list[Path]:
+    if arg.is_file():
+        return [arg]
+    if arg.is_dir():
+        return sorted(arg.glob("*.html"))
+    return []
+
+
 def main(argv: list[str]) -> int:
     root = Path(__file__).resolve().parent
-    posts = Path(argv[1]) if len(argv) > 1 else root / "posts"
+    target = Path(argv[1]) if len(argv) > 1 else root / "posts"
+    paths = html_targets(target)
+    if not paths:
+        print(f"no HTML files at {target}", file=sys.stderr)
+        return 1
     changed = 0
-    for path in sorted(posts.glob("*.html")):
+    for path in paths:
         if process_html(path):
-            print(f"updated {path.name}")
+            print(f"updated {path}")
             changed += 1
     print(f"done — {changed} file(s) changed")
     return 0

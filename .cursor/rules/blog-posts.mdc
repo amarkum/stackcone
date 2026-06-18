@@ -25,6 +25,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 2. `blog/posts/{slug}.html` — published page
 3. Update `blog/posts.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the HTML page only
+5. Run `python3 blog/apply_highlights.py` on new/edited HTML (syntax highlighting)
 
 **Slug:** lowercase, hyphenated (e.g. `how-sse-streaming-works-chatbots-llm-tokens`).
 
@@ -62,3 +63,77 @@ Follow `.cursor/rules/seo-google.mdc`. Unique title, meta description, canonical
 - Practical how-to or explainer — not a sales pitch
 - Past tense OK for real experience; avoid fake metrics
 - Upwork/freelance topics: actionable advice, not job-board provenance labels
+
+## Syntax highlighting (required for code blocks)
+
+Blog code uses **static span classes** in published HTML — same style as `blog/posts/how-to-build-a-production-rag-chatbot.html`. **Do not** use highlight.js, Prism, hljs CDN, or client-side highlighters.
+
+### Token classes (`blog/blog.css`)
+
+| Class | Use |
+|-------|-----|
+| `kw` | Keywords (`import`, `def`, `if`, `return`, `async`, …) |
+| `fn` | Function names, builtins, types (`Path`, `len`, `str`, `embed`, …) |
+| `str` | String literals (`"..."`, `'...'`, `f"..."`) |
+| `num` | Numeric literals |
+| `cm` | Comments (`# …`, `// …`) |
+
+Pre blocks use dark background `#1e1e2e` (Catppuccin-style) — defined in `blog/blog.css`. No extra CSS or JS per post.
+
+### Authoring workflow
+
+1. **`blog/md/{slug}.md`** — write fenced code blocks normally (` ```python `, ` ```bash `, ` ```json `). Markdown source stays plain; no spans in `.md`.
+2. **`blog/posts/{slug}.html`** — paste code inside `<pre><code>…</code></pre>` as **plain text** (escape `<` as `&lt;`, `&` as `&amp;` only where needed).
+3. **Run the highlighter** before commit:
+
+```bash
+python3 blog/apply_highlights.py
+```
+
+This scans `blog/posts/*.html`, wraps tokens in spans, and strips any stray `language-*` / highlight.js artifacts. Blocks that **already** contain `<span class="` are left unchanged.
+
+4. Optional — highlight one file or re-run after edits:
+
+```bash
+python3 blog/apply_highlights.py blog/posts/{slug}.html
+```
+
+### HTML shape (after `apply_highlights.py`)
+
+```html
+<pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
+
+<span class="kw">def</span> <span class="fn">chunk_text</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    <span class="kw">return</span> []</code></pre>
+```
+
+### Language detection (automatic)
+
+`blog/highlight_code.py` infers language from content when no hint exists:
+
+| Detected | Heuristic |
+|----------|-----------|
+| Python | `import` / `def` / shebang |
+| Bash | `python3`, `curl`, `grep`, `ls`, `mkdocs`, `#` comments |
+| JSON | starts with `{` or `[` |
+| JavaScript | `function`, `const`, `async` |
+| Text | directory trees, `.env` samples — comments only |
+
+Optional hint (stripped after run): `<pre><code class="language-python">` — prefer plain `<pre><code>` + `apply_highlights.py`.
+
+### Do not
+
+- Hand-wrap every token manually in long scripts (use `apply_highlights.py`)
+- Add highlight.js / Prism CDN or `code-highlight.js` to post HTML
+- Use `class="hljs"` or `language-*` as the final published form (runner removes hints)
+- Put syntax-highlighted code only in `.md` and expect it on the live page without updating `.html`
+
+### Shared tooling (do not duplicate per post)
+
+| Path | Role |
+|------|------|
+| `blog/highlight_code.py` | Span highlighter (python, bash, json, js, text) |
+| `blog/apply_highlights.py` | Batch-apply to `blog/posts/*.html` |
+| `blog/blog.css` | `.blog-article .kw` / `.fn` / `.str` / `.num` / `.cm` colors |
+
+When adding or editing code in a blog post, **always run `apply_highlights.py`** on affected HTML before finishing.
