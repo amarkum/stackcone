@@ -56,7 +56,8 @@ Omit `client` if no company named. **Do not** add `source` fields (no `upwork`, 
 | Effort estimate | `#estimate` | Hours range, ongoing maintenance — indicative |
 | Charts | — | **At least 3** Chart.js charts in `.chart-wrap` |
 | Glossary | `#glossary` | Terms table |
-| CTA | `.blog-cta` | Contact primary; Upwork link optional secondary |
+
+Do **not** add a bottom-of-page CTA block (no “Contact us”, “Hire on Upwork”, or similar sales CTAs). Site nav and footer already link to contact.
 
 ## Shared assets (reuse — do not duplicate per post)
 
@@ -82,7 +83,6 @@ All paths below are **relative from** `solutions/`. Do not use root-absolute `/�
 | CSS | `../styles.css`, `../blog/blog.css`, `solutions.css` |
 | Favicon | `../favicon/dark-favicon.png`, `../favicon/white-favicon.png` |
 | Logo | `../logo/stackcone.png` |
-| Contact CTA | `../contact/` |
 | Mermaid + diagrams | `diagrams.js?v={N}` — bump `{N}` when `diagrams.js` changes |
 | Site JS | `../site-nav.js`, `../script.js` |
 | Diagram fullscreen icon | `icons/expand.svg` |
@@ -191,15 +191,6 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
 
     <!-- SECTIONS: scenario, problem, requirements, architecture, stack, agent-design, -->
     <!-- implementation, reporting, deliverables, estimate, glossary -->
-
-    <aside class="blog-cta">
-      <h2>Discuss this architecture</h2>
-      <p>{CTA paragraph}</p>
-      <div class="blog-cta-actions">
-        <a href="../contact/" class="cta cta--primary">Contact us</a>
-        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--secondary" rel="noopener noreferrer">Hire us on Upwork</a>
-      </div>
-    </aside>
   </article>
 
   <footer class="footer">
@@ -393,7 +384,6 @@ Keep listing metadata aligned with SEO (helps internal search + consistency):
 - Section H2s use secondary keywords where accurate (`#architecture`, `#recommended-stack`, etc.)
 - TOC links use descriptive anchor IDs (already in template)
 - Chart `aria-label` and captions describe the chart in plain language (indexable adjacent text)
-- CTA links: descriptive text (`Contact us`, not `click here`)
 
 ### Avoid
 
