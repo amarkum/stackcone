@@ -64,8 +64,8 @@ def html_targets(arg: Path) -> list[Path]:
 
 
 def main(argv: list[str]) -> int:
-    root = Path(__file__).resolve().parent
-    target = Path(argv[1]) if len(argv) > 1 else root / "posts"
+    root = Path(__file__).resolve().parent.parent
+    target = Path(argv[1]) if len(argv) > 1 else root / "blog" / "posts"
     paths = html_targets(target)
     if not paths:
         print(f"no HTML files at {target}", file=sys.stderr)

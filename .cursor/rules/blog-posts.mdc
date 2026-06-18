@@ -18,6 +18,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 - **Never** place `.md` files in `blog/posts/`.
 - **Never** link to `.md` from HTML, `posts.json`, sitemap, or nav.
 - `robots.txt` disallows `/blog/md/` — do not override with indexable links.
+- Markdown sources and `_dev/` scripts are **removed before GitHub Pages deploy** (see `.github/scripts/prepare-pages.sh`); only `.html` is public.
 
 ## Deliverables (always)
 
@@ -25,7 +26,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 2. `blog/posts/{slug}.html` — published page
 3. Update `blog/posts.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the HTML page only
-5. Run `python3 blog/apply_highlights.py` on new/edited HTML (syntax highlighting)
+5. Run `python3 _dev/apply_highlights.py` on new/edited HTML (syntax highlighting)
 
 **Slug:** lowercase, hyphenated (e.g. `how-sse-streaming-works-chatbots-llm-tokens`).
 
@@ -87,7 +88,7 @@ Pre blocks use dark background `#1e1e2e` (Catppuccin-style) — defined in `blog
 3. **Run the highlighter** before commit:
 
 ```bash
-python3 blog/apply_highlights.py
+python3 _dev/apply_highlights.py
 ```
 
 This scans `blog/posts/*.html`, wraps tokens in spans, and strips any stray `language-*` / highlight.js artifacts. Blocks that **already** contain `<span class="` are left unchanged.
@@ -95,7 +96,7 @@ This scans `blog/posts/*.html`, wraps tokens in spans, and strips any stray `lan
 4. Optional — highlight one file or re-run after edits:
 
 ```bash
-python3 blog/apply_highlights.py blog/posts/{slug}.html
+python3 _dev/apply_highlights.py blog/posts/{slug}.html
 ```
 
 ### HTML shape (after `apply_highlights.py`)
@@ -109,7 +110,7 @@ python3 blog/apply_highlights.py blog/posts/{slug}.html
 
 ### Language detection (automatic)
 
-`blog/highlight_code.py` infers language from content when no hint exists:
+`_dev/highlight_code.py` infers language from content when no hint exists:
 
 | Detected | Heuristic |
 |----------|-----------|
@@ -132,8 +133,8 @@ Optional hint (stripped after run): `<pre><code class="language-python">` — pr
 
 | Path | Role |
 |------|------|
-| `blog/highlight_code.py` | Span highlighter (python, bash, json, js, text) |
-| `blog/apply_highlights.py` | Batch-apply to `blog/posts/*.html` |
+| `_dev/highlight_code.py` | Span highlighter (python, bash, json, js, text) |
+| `_dev/apply_highlights.py` | Batch-apply to `blog/posts/*.html` |
 | `blog/blog.css` | `.blog-article .kw` / `.fn` / `.str` / `.num` / `.cm` colors |
 
 When adding or editing code in a blog post, **always run `apply_highlights.py`** on affected HTML before finishing.

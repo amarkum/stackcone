@@ -14,7 +14,7 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
 2. `solutions/md/{slug}.md` — markdown source for authoring (not linked, not in sitemap)
 3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page only
-5. Run `python3 blog/apply_highlights.py solutions/{slug}.html` if the page has code blocks
+5. Run `python3 _dev/apply_highlights.py solutions/{slug}.html` if the page has code blocks
 
 **Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Published HTML: `solutions/{slug}.html`. Source markdown: `solutions/md/{slug}.md` — **never** put `.md` next to `.html` in `solutions/`.
 
@@ -312,10 +312,10 @@ Solution pages use `.blog-article` and the same **span-based** code style as blo
 **Workflow:** put plain code in `<pre><code>…</code></pre>`, then run:
 
 ```bash
-python3 blog/apply_highlights.py solutions/{slug}.html
+python3 _dev/apply_highlights.py solutions/{slug}.html
 ```
 
-`blog/apply_highlights.py` accepts a file or directory path — use it for any `solutions/*.html` with new code blocks. Do not hand-highlight long scripts or use CDN highlighters. See `.cursor/rules/blog-posts.mdc` for full rules and `blog/highlight_code.py` / `blog/blog.css` details.
+`_dev/apply_highlights.py` accepts a file or directory path — use it for any `solutions/*.html` with new code blocks. Do not hand-highlight long scripts or use CDN highlighters. See `.cursor/rules/blog-posts.mdc` for full rules and `_dev/highlight_code.py` / `blog/blog.css` details.
 
 ## Tone and framing
 
