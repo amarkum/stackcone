@@ -188,186 +188,186 @@
     <h2 id="script">Export script</h2>
     <p>Save as <code>cursor_export.py</code>. Requires Python 3.10+ and no third-party packages.</p>
 
-    <pre><code>#!/usr/bin/env python3
-"""Export Cursor Composer chat history from local state.vscdb (read-only)."""
-from __future__ import annotations
+    <pre><code><span class="cm">#!/usr/bin/env python3</span>
+<span class="str">"""Export Cursor Composer chat history from local state.vscdb (read-only)."""</span>
+<span class="kw">from</span> __future__ <span class="kw">import</span> annotations
 
-import argparse
-import json
-import re
-import sqlite3
-import sys
-from contextlib import contextmanager
-from pathlib import Path
-from typing import Any, Iterator, Optional
+<span class="kw">import</span> argparse
+<span class="kw">import</span> <span class="fn">json</span>
+<span class="kw">import</span> re
+<span class="kw">import</span> sqlite3
+<span class="kw">import</span> sys
+<span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager
+<span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
+<span class="kw">from</span> typing <span class="kw">import</span> <span class="fn">Any</span>, Iterator, <span class="fn">Optional</span>
 
-JWT_RE = re.compile(r"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{8,}\b")
-SECRET_RES = [re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"), re.compile(r"\bghp_[A-Za-z0-9]{20,}\b")]
+JWT_RE = re.compile(r<span class="str">"\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{8,}\b"</span>)
+SECRET_RES = [re.compile(r<span class="str">"\bsk-[A-Za-z0-9_-]{20,}\b"</span>), re.compile(r<span class="str">"\bghp_[A-Za-z0-9]{20,}\b"</span>)]
 
 
-def cursor_paths() -> dict[str, Path]:
-    home = Path.home()
-    if sys.platform == "darwin":
-        base = home / "Library/Application Support/Cursor"
-    elif sys.platform == "win32":
-        base = home / "AppData/Roaming/Cursor"
-    else:
-        base = home / ".config/Cursor"
-    return {
-        "global_db": base / "User/globalStorage/state.vscdb",
-        "workspace_root": base / "User/workspaceStorage",
-        "plans": home / ".cursor/plans",
+<span class="kw">def</span> <span class="fn">cursor_paths</span>() -&gt; <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Path</span>]:
+    home = <span class="fn">Path</span>.home()
+    <span class="kw">if</span> sys.platform == <span class="str">"darwin"</span>:
+        base = home / <span class="str">"Library/Application Support/Cursor"</span>
+    <span class="kw">elif</span> sys.platform == <span class="str">"win32"</span>:
+        base = home / <span class="str">"AppData/Roaming/Cursor"</span>
+    <span class="kw">else</span>:
+        base = home / <span class="str">".config/Cursor"</span>
+    <span class="kw">return</span> {
+        <span class="str">"global_db"</span>: base / <span class="str">"User/globalStorage/state.vscdb"</span>,
+        <span class="str">"workspace_root"</span>: base / <span class="str">"User/workspaceStorage"</span>,
+        <span class="str">"plans"</span>: home / <span class="str">".cursor/plans"</span>,
     }
 
 
-def redact(text: str) -> str:
-    if not text:
-        return text
-    text = JWT_RE.sub("&lt;REDACTED_JWT&gt;", text)
-    for pat in SECRET_RES:
-        text = pat.sub("&lt;REDACTED_SECRET&gt;", text)
-    return text
+<span class="kw">def</span> <span class="fn">redact</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+    <span class="kw">if</span> <span class="kw">not</span> text:
+        <span class="kw">return</span> text
+    text = JWT_RE.sub(<span class="str">"&lt;REDACTED_JWT&gt;"</span>, text)
+    <span class="kw">for</span> pat <span class="kw">in</span> SECRET_RES:
+        text = pat.sub(<span class="str">"&lt;REDACTED_SECRET&gt;"</span>, text)
+    <span class="kw">return</span> text
 
 
 @contextmanager
-def ro_sqlite(path: Path) -> Iterator[sqlite3.Connection]:
-    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=5.0)
-    try:
-        yield con
-    finally:
+<span class="kw">def</span> <span class="fn">ro_sqlite</span>(path: <span class="fn">Path</span>) -&gt; Iterator[sqlite3.Connection]:
+    con = sqlite3.connect(f<span class="str">"file:{path}?mode=ro"</span>, uri=<span class="kw">True</span>, timeout=<span class="num">5.0</span>)
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> con
+    <span class="kw">finally</span>:
         con.close()
 
 
-def _parse_json(val: Any) -> Any:
-    if isinstance(val, (bytes, bytearray)):
-        val = val.decode("utf-8", errors="replace")
-    return json.loads(val)
+<span class="kw">def</span> <span class="fn">_parse_json</span>(val: <span class="fn">Any</span>) -&gt; <span class="fn">Any</span>:
+    <span class="kw">if</span> isinstance(val, (bytes, bytearray)):
+        val = val.decode(<span class="str">"utf-8"</span>, errors=<span class="str">"replace"</span>)
+    <span class="kw">return</span> <span class="fn">json</span>.loads(val)
 
 
-def list_composers(gdb: Path, ws_root: Path) -> list[dict]:
-    """Primary: composer.composerHeaders. Fallback: per-workspace composer.composerData."""
-    by_id: dict[str, dict] = {}
-    if gdb.exists():
-        with ro_sqlite(gdb) as con:
+<span class="kw">def</span> <span class="fn">list_composers</span>(gdb: <span class="fn">Path</span>, ws_root: <span class="fn">Path</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    <span class="str">"""Primary: composer.composerHeaders. Fallback: per-workspace composer.composerData."""</span>
+    by_id: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">dict</span>] = {}
+    <span class="kw">if</span> gdb.exists():
+        <span class="kw">with</span> ro_sqlite(gdb) <span class="kw">as</span> con:
             row = con.execute(
-                "SELECT value FROM ItemTable WHERE key = 'composer.composerHeaders'"
+                <span class="str">"SELECT value FROM ItemTable WHERE key = 'composer.composerHeaders'"</span>
             ).fetchone()
-            if row:
-                for c in _parse_json(row[0]).get("allComposers") or []:
-                    cid = c.get("composerId")
-                    if cid:
+            <span class="kw">if</span> row:
+                <span class="kw">for</span> c <span class="kw">in</span> _parse_json(row[<span class="num">0</span>]).get(<span class="str">"allComposers"</span>) <span class="kw">or</span> []:
+                    cid = c.get(<span class="str">"composerId"</span>)
+                    <span class="kw">if</span> cid:
                         by_id[cid] = {
-                            "composerId": cid,
-                            "name": redact(str(c.get("name") or ""))[:200],
-                            "lastUpdatedAt": c.get("lastUpdatedAt"),
+                            <span class="str">"composerId"</span>: cid,
+                            <span class="str">"name"</span>: redact(<span class="fn">str</span>(c.get(<span class="str">"name"</span>) <span class="kw">or</span> <span class="str">""</span>))[:<span class="num">200</span>],
+                            <span class="str">"lastUpdatedAt"</span>: c.get(<span class="str">"lastUpdatedAt"</span>),
                         }
-    # Older builds: workspace ItemTable composer.composerData
-    if ws_root.exists():
-        for ws in ws_root.iterdir():
-            ws_db = ws / "state.vscdb"
-            if not ws_db.exists():
-                continue
-            try:
-                with ro_sqlite(ws_db) as con:
+    <span class="cm"># Older builds: workspace ItemTable composer.composerData</span>
+    <span class="kw">if</span> ws_root.exists():
+        <span class="kw">for</span> ws <span class="kw">in</span> ws_root.iterdir():
+            ws_db = ws / <span class="str">"state.vscdb"</span>
+            <span class="kw">if</span> <span class="kw">not</span> ws_db.exists():
+                <span class="kw">continue</span>
+            <span class="kw">try</span>:
+                <span class="kw">with</span> ro_sqlite(ws_db) <span class="kw">as</span> con:
                     row = con.execute(
-                        "SELECT value FROM ItemTable WHERE key = 'composer.composerData'"
+                        <span class="str">"SELECT value FROM ItemTable WHERE key = 'composer.composerData'"</span>
                     ).fetchone()
-                if not row:
-                    continue
-                for c in _parse_json(row[0]).get("allComposers") or []:
-                    cid = c.get("composerId")
-                    if cid and cid not in by_id:
+                <span class="kw">if</span> <span class="kw">not</span> row:
+                    <span class="kw">continue</span>
+                <span class="kw">for</span> c <span class="kw">in</span> _parse_json(row[<span class="num">0</span>]).get(<span class="str">"allComposers"</span>) <span class="kw">or</span> []:
+                    cid = c.get(<span class="str">"composerId"</span>)
+                    <span class="kw">if</span> cid <span class="kw">and</span> cid <span class="kw">not</span> <span class="kw">in</span> by_id:
                         by_id[cid] = {
-                            "composerId": cid,
-                            "name": redact(str(c.get("name") or ""))[:200],
-                            "lastUpdatedAt": c.get("lastUpdatedAt"),
+                            <span class="str">"composerId"</span>: cid,
+                            <span class="str">"name"</span>: redact(<span class="fn">str</span>(c.get(<span class="str">"name"</span>) <span class="kw">or</span> <span class="str">""</span>))[:<span class="num">200</span>],
+                            <span class="str">"lastUpdatedAt"</span>: c.get(<span class="str">"lastUpdatedAt"</span>),
                         }
-            except Exception:
-                continue
-    return sorted(by_id.values(), key=lambda x: x.get("lastUpdatedAt") or 0, reverse=True)
+            <span class="kw">except</span> <span class="fn">Exception</span>:
+                <span class="kw">continue</span>
+    <span class="kw">return</span> sorted(by_id.values(), key=<span class="kw">lambda</span> x: x.get(<span class="str">"lastUpdatedAt"</span>) <span class="kw">or</span> <span class="num">0</span>, reverse=<span class="kw">True</span>)
 
 
-def load_conversation(gdb: Path, composer_id: str, max_chars: int = 8000) -> dict:
-    with ro_sqlite(gdb) as con:
+<span class="kw">def</span> <span class="fn">load_conversation</span>(gdb: <span class="fn">Path</span>, composer_id: <span class="fn">str</span>, max_chars: <span class="fn">int</span> = <span class="num">8000</span>) -&gt; <span class="fn">dict</span>:
+    <span class="kw">with</span> ro_sqlite(gdb) <span class="kw">as</span> con:
         meta_row = con.execute(
-            "SELECT value FROM cursorDiskKV WHERE key = ?",
-            (f"composerData:{composer_id}",),
+            <span class="str">"SELECT value FROM cursorDiskKV WHERE key = ?"</span>,
+            (f<span class="str">"composerData:{composer_id}"</span>,),
         ).fetchone()
-        meta = _parse_json(meta_row[0]) if meta_row else {}
-        headers = meta.get("fullConversationHeadersOnly") or []
-        order = {h["bubbleId"]: i for i, h in enumerate(headers) if h.get("bubbleId")}
-        restrict = bool(order)
+        meta = _parse_json(meta_row[<span class="num">0</span>]) <span class="kw">if</span> meta_row <span class="kw">else</span> {}
+        headers = meta.get(<span class="str">"fullConversationHeadersOnly"</span>) <span class="kw">or</span> []
+        order = {h[<span class="str">"bubbleId"</span>]: i <span class="kw">for</span> i, h <span class="kw">in</span> <span class="fn">enumerate</span>(headers) <span class="kw">if</span> h.get(<span class="str">"bubbleId"</span>)}
+        restrict = <span class="fn">bool</span>(order)
         rows = con.execute(
-            "SELECT key, value FROM cursorDiskKV WHERE key LIKE ?",
-            (f"bubbleId:{composer_id}:%",),
+            <span class="str">"SELECT key, value FROM cursorDiskKV WHERE key LIKE ?"</span>,
+            (f<span class="str">"bubbleId:{composer_id}:%"</span>,),
         ).fetchall()
 
     bubbles = []
-    for idx, (key, val) in enumerate(rows):
+    <span class="kw">for</span> idx, (key, val) <span class="kw">in</span> <span class="fn">enumerate</span>(rows):
         d = _parse_json(val)
-        bid = key.rsplit(":", 1)[-1]
-        if restrict and bid not in order:
-            continue
-        role = "user" if d.get("type") == 1 else "assistant" if d.get("type") == 2 else "other"
-        text = d.get("text") or d.get("richText") or ""
-        if isinstance(text, list):
-            text = " ".join(str(x.get("text", "")) for x in text if isinstance(x, dict))
-        sort = (0, order[bid]) if restrict else (1, idx)
-        bubbles.append((sort, {"role": role, "text": redact(str(text))[:max_chars]}))
-    bubbles.sort(key=lambda t: t[0])
-    return {"composerId": composer_id, "name": meta.get("name"), "bubbles": [b for _, b in bubbles]}
+        bid = key.rsplit(<span class="str">":"</span>, <span class="num">1</span>)[-<span class="num">1</span>]
+        <span class="kw">if</span> restrict <span class="kw">and</span> bid <span class="kw">not</span> <span class="kw">in</span> order:
+            <span class="kw">continue</span>
+        role = <span class="str">"user"</span> <span class="kw">if</span> d.get(<span class="str">"type"</span>) == <span class="num">1</span> <span class="kw">else</span> <span class="str">"assistant"</span> <span class="kw">if</span> d.get(<span class="str">"type"</span>) == <span class="num">2</span> <span class="kw">else</span> <span class="str">"other"</span>
+        text = d.get(<span class="str">"text"</span>) <span class="kw">or</span> d.get(<span class="str">"richText"</span>) <span class="kw">or</span> <span class="str">""</span>
+        <span class="kw">if</span> isinstance(text, <span class="fn">list</span>):
+            text = <span class="str">" "</span>.join(<span class="fn">str</span>(x.get(<span class="str">"text"</span>, <span class="str">""</span>)) <span class="kw">for</span> x <span class="kw">in</span> text <span class="kw">if</span> isinstance(x, <span class="fn">dict</span>))
+        sort = (<span class="num">0</span>, order[bid]) <span class="kw">if</span> restrict <span class="kw">else</span> (<span class="num">1</span>, idx)
+        bubbles.append((sort, {<span class="str">"role"</span>: role, <span class="str">"text"</span>: redact(<span class="fn">str</span>(text))[:max_chars]}))
+    bubbles.sort(key=<span class="kw">lambda</span> t: t[<span class="num">0</span>])
+    <span class="kw">return</span> {<span class="str">"composerId"</span>: composer_id, <span class="str">"name"</span>: meta.get(<span class="str">"name"</span>), <span class="str">"bubbles"</span>: [b <span class="kw">for</span> _, b <span class="kw">in</span> bubbles]}
 
 
-def to_markdown(conv: dict) -> str:
-    lines = [f"# {conv.get('name') or conv['composerId']}", ""]
-    for b in conv["bubbles"]:
-        label = "User" if b["role"] == "user" else "Assistant"
-        lines += [f"## {label}", "", b["text"], ""]
-    return "\n".join(lines)
+<span class="kw">def</span> <span class="fn">to_markdown</span>(conv: <span class="fn">dict</span>) -&gt; <span class="fn">str</span>:
+    lines = [f<span class="str">"# {conv.get('name') or conv['composerId']}"</span>, <span class="str">""</span>]
+    <span class="kw">for</span> b <span class="kw">in</span> conv[<span class="str">"bubbles"</span>]:
+        label = <span class="str">"User"</span> <span class="kw">if</span> b[<span class="str">"role"</span>] == <span class="str">"user"</span> <span class="kw">else</span> <span class="str">"Assistant"</span>
+        lines += [f<span class="str">"## {label}"</span>, <span class="str">""</span>, b[<span class="str">"text"</span>], <span class="str">""</span>]
+    <span class="kw">return</span> <span class="str">"\n"</span>.join(lines)
 
 
-def main() -> None:
+<span class="kw">def</span> <span class="fn">main</span>() -&gt; <span class="kw">None</span>:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", type=Path, default=Path("cursor-export"))
-    ap.add_argument("--list", action="store_true")
-    ap.add_argument("--composer-id")
-    ap.add_argument("--max-chars", type=int, default=8000)
+    ap.add_argument(<span class="str">"--out"</span>, <span class="fn">type</span>=<span class="fn">Path</span>, default=<span class="fn">Path</span>(<span class="str">"cursor-export"</span>))
+    ap.add_argument(<span class="str">"--list"</span>, action=<span class="str">"store_true"</span>)
+    ap.add_argument(<span class="str">"--composer-id"</span>)
+    ap.add_argument(<span class="str">"--max-chars"</span>, <span class="fn">type</span>=<span class="fn">int</span>, default=<span class="num">8000</span>)
     args = ap.parse_args()
     paths = cursor_paths()
-    gdb = paths["global_db"]
-    if not gdb.exists():
-        sys.exit(f"Not found: {gdb}")
-    composers = list_composers(gdb, paths["workspace_root"])
-    if args.list:
-        for c in composers:
-            print(c["composerId"], c.get("name"))
-        return
-    args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / "chats").mkdir(exist_ok=True)
-    (args.out / "composers.json").write_text(json.dumps(composers, indent=2))
-    targets = [c for c in composers if c["composerId"] == args.composer_id] if args.composer_id else composers
-    for c in targets:
-        conv = load_conversation(gdb, c["composerId"], args.max_chars)
-        cid = c["composerId"]
-        (args.out / "chats" / f"{cid}.json").write_text(json.dumps(conv, indent=2))
-        (args.out / "chats" / f"{cid}.md").write_text(to_markdown(conv))
-    plans = paths["plans"]
-    if plans.exists():
-        dest = args.out / "plans"
-        dest.mkdir(exist_ok=True)
-        for p in plans.glob("*.plan.md"):
-            dest.joinpath(p.name).write_text(p.read_text(errors="replace"))
-    print(f"Done → {args.out.resolve()}")
+    gdb = paths[<span class="str">"global_db"</span>]
+    <span class="kw">if</span> <span class="kw">not</span> gdb.exists():
+        sys.exit(f<span class="str">"Not found: {gdb}"</span>)
+    composers = list_composers(gdb, paths[<span class="str">"workspace_root"</span>])
+    <span class="kw">if</span> args.<span class="fn">list</span>:
+        <span class="kw">for</span> c <span class="kw">in</span> composers:
+            <span class="fn">print</span>(c[<span class="str">"composerId"</span>], c.get(<span class="str">"name"</span>))
+        <span class="kw">return</span>
+    args.out.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+    (args.out / <span class="str">"chats"</span>).mkdir(exist_ok=<span class="kw">True</span>)
+    (args.out / <span class="str">"composers.json"</span>).write_text(<span class="fn">json</span>.dumps(composers, indent=<span class="num">2</span>))
+    targets = [c <span class="kw">for</span> c <span class="kw">in</span> composers <span class="kw">if</span> c[<span class="str">"composerId"</span>] == args.composer_id] <span class="kw">if</span> args.composer_id <span class="kw">else</span> composers
+    <span class="kw">for</span> c <span class="kw">in</span> targets:
+        conv = load_conversation(gdb, c[<span class="str">"composerId"</span>], args.max_chars)
+        cid = c[<span class="str">"composerId"</span>]
+        (args.out / <span class="str">"chats"</span> / f<span class="str">"{cid}.json"</span>).write_text(<span class="fn">json</span>.dumps(conv, indent=<span class="num">2</span>))
+        (args.out / <span class="str">"chats"</span> / f<span class="str">"{cid}.md"</span>).write_text(to_markdown(conv))
+    plans = paths[<span class="str">"plans"</span>]
+    <span class="kw">if</span> plans.exists():
+        dest = args.out / <span class="str">"plans"</span>
+        dest.mkdir(exist_ok=<span class="kw">True</span>)
+        <span class="kw">for</span> p <span class="kw">in</span> plans.glob(<span class="str">"*.plan.md"</span>):
+            dest.joinpath(p.name).write_text(p.read_text(errors=<span class="str">"replace"</span>))
+    <span class="fn">print</span>(f<span class="str">"Done → {args.out.resolve()}"</span>)
 
 
-if __name__ == "__main__":
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
     main()</code></pre>
 
     <h3>Usage</h3>
-    <pre><code>python3 cursor_export.py --list
-python3 cursor_export.py --out ./cursor-export
-python3 cursor_export.py --composer-id &lt;uuid&gt; --out ./one-chat
-python3 cursor_export.py --max-chars 4000 --out ./cursor-export</code></pre>
+    <pre><code><span class="fn">python3</span> cursor_export.py --list
+<span class="fn">python3</span> cursor_export.py --out ./cursor-export
+<span class="fn">python3</span> cursor_export.py --composer-id &lt;uuid&gt; --out ./one-chat
+<span class="fn">python3</span> cursor_export.py --max-chars 4000 --out ./cursor-export</code></pre>
 
     <h2 id="plans">Plans and agent transcripts</h2>
     <ul>
@@ -378,10 +378,10 @@ python3 cursor_export.py --max-chars 4000 --out ./cursor-export</code></pre>
 
     <h2 id="output">Output layout</h2>
     <pre><code>cursor-export/
-  composers.json          # index of all threads
+  composers.json          <span class="cm"># index of all threads</span>
   chats/
-    &lt;composerId&gt;.json     # structured bubbles
-    &lt;composerId&gt;.md       # human-readable transcript
+    &lt;composerId&gt;.json     <span class="cm"># structured bubbles</span>
+    &lt;composerId&gt;.md       <span class="cm"># human-readable transcript</span>
   plans/
     *.plan.md</code></pre>
 

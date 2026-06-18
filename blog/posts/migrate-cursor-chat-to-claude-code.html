@@ -8,7 +8,7 @@
      crossorigin="anonymous"></script>
   <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
   <title>Migrate Cursor Chat to Claude Code | stackcone</title>
-  <meta name="description" content="Migrate Cursor agent transcripts (~/.cursor/projects/.../agent-transcripts/) into native Claude Code JSONL sessions. Dry-run, format conversion, and full Python script.">
+  <meta name="description" content="Migrate Cursor agent transcripts and plans into Claude Code JSONL sessions. Stable session IDs, workspace cwd resolution, manifest for idempotent re-runs.">
   <meta name="keywords" content="migrate Cursor to Claude Code, Cursor chat export, CLAUDE.md, Claude Code context, Composer migration, AI IDE switch">
   <link rel="canonical" href="https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html">
   <meta property="og:type" content="article">
@@ -29,11 +29,6 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../styles.css">
   <link rel="stylesheet" href="../../blog/blog.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/base16/catppuccin-mocha.min.css">
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/bash.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/json.min.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -48,7 +43,7 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-06-19",
-    "dateModified": "2026-06-17",
+    "dateModified": "2026-06-20",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/migrate-cursor-chat-to-claude-code.html" },
     "image": "https://stackcone.com/logo/stackcone.png",
     "keywords": ["Cursor", "Claude Code", "migration", "agent-transcripts", "JSONL", "chat history"],
@@ -63,7 +58,7 @@
     "name": "Migrate Cursor chat history to Claude Code",
     "description": "Convert Cursor agent transcripts to Claude Code JSONL and verify in session history.",
     "step": [
-      { "@type": "HowToStep", "name": "Dry run", "text": "Run migrate_cursor_to_claude.py --project /path/to/repo --dry-run to preview chat count and sizes." },
+      { "@type": "HowToStep", "name": "Dry run", "text": "Run migrate_cursor_to_claude.py --dry-run to preview all pending agent chats and plans." },
       { "@type": "HowToStep", "name": "Migrate", "text": "Run the script with --yes to write JSONL files into ~/.claude/projects/<path-hash>/." },
       { "@type": "HowToStep", "name": "Verify", "text": "Open Claude Code in the project and confirm migrated sessions appear in chat history." },
       { "@type": "HowToStep", "name": "Optional rollback", "text": "Remove migrated JSONL files from the Claude projects folder if you need to undo." }
@@ -88,7 +83,7 @@
         "name": "Will migrated chats appear in Claude Code history?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, when you convert Cursor agent transcripts into Claude Code JSONL format and save them under ~/.claude/projects/<path-hash>/. Each session gets new UUIDs and entrypoint cursor-migrated."
+          "text": "Yes. Convert agent-transcript JSONL into Claude Code session files under ~/.claude/projects/-<slug>/. Sessions use stable IDs from the source path and entrypoint cursor-migrated."
         }
       },
       {
@@ -133,24 +128,26 @@
   <article class="blog-article">
     <h1>Migrate Cursor Chat to Claude Code</h1>
     <p class="meta">June 2026 · Published by Amar Kumar</p>
-    <p>This guide shows how to migrate <strong>Cursor agent chat history</strong> into <strong>Claude Code's native session format</strong> so conversations appear in Claude's chat history — not just as pasted context. Source files live under <code>~/.cursor/projects/.../agent-transcripts/</code>; targets are JSONL session files in <code>~/.claude/projects/</code>.</p>
+    <p>This guide documents how to migrate <strong>Cursor agent chat history</strong> into <strong>Claude Code's native JSONL sessions</strong> so conversations appear in Claude's session picker — the same approach used in production migration tooling. It also covers <strong>plan files</strong> and where Cursor stores related data on disk.</p>
 
     <blockquote>
-      <p><strong>Different data?</strong> <a href="export-cursor-chat-history-vscdb.html">Composer chats in state.vscdb</a> use a separate SQLite export path. This article covers <strong>agent transcripts</strong> (JSONL on disk).</p>
+      <p><strong>Composer vs agent chats:</strong> <a href="export-cursor-chat-history-vscdb.html">Composer threads live in state.vscdb</a> (SQLite). <strong>Agent transcripts</strong> are JSONL under <code>~/.cursor/projects/.../agent-transcripts/</code> — this article migrates those.</p>
     </blockquote>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
       <ol>
         <li><a href="#overview">Overview</a></li>
+        <li><a href="#cursor-storage">Cursor local data map</a></li>
         <li><a href="#what-migrates">What gets migrated</a></li>
-        <li><a href="#storage">Where files live</a></li>
+        <li><a href="#slug-mapping">Slug mapping (Cursor → Claude)</a></li>
         <li><a href="#format">Format differences</a></li>
         <li><a href="#script">Migration script</a></li>
         <li><a href="#run">How to run</a></li>
         <li><a href="#verify">Verify in Claude Code</a></li>
-        <li><a href="#safety">Safety features</a></li>
-        <li><a href="#selective">Selective migration</a></li>
+        <li><a href="#manifest">Manifest and re-runs</a></li>
+        <li><a href="#plans">Plans migration</a></li>
+        <li><a href="#safety">Safety</a></li>
         <li><a href="#rollback">Rollback</a></li>
         <li><a href="#troubleshooting">Troubleshooting</a></li>
         <li><a href="#faq">FAQ</a></li>
@@ -161,403 +158,550 @@
     <table>
       <thead><tr><th></th><th>Path</th></tr></thead>
       <tbody>
-        <tr><td><strong>Source</strong></td><td><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/</code></td></tr>
-        <tr><td><strong>Target</strong></td><td><code>~/.claude/projects/&lt;path-hash&gt;/</code></td></tr>
-        <tr><td><strong>Format</strong></td><td>JSONL → JSONL (schema conversion)</td></tr>
-        <tr><td><strong>Result</strong></td><td>Migrated chats show up in Claude Code session history</td></tr>
+        <tr><td><strong>Source (chats)</strong></td><td><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/&lt;runId&gt;/&lt;runId&gt;.jsonl</code></td></tr>
+        <tr><td><strong>Target (chats)</strong></td><td><code>~/.claude/projects/-&lt;slug&gt;/&lt;session-uuid&gt;.jsonl</code></td></tr>
+        <tr><td><strong>Source (plans)</strong></td><td><code>~/.cursor/plans/*.plan.md</code></td></tr>
+        <tr><td><strong>Target (plans)</strong></td><td><code>~/.claude/plans/*.md</code></td></tr>
+        <tr><td><strong>Manifest</strong></td><td><code>~/.claude/.cursor-migration-manifest.json</code></td></tr>
       </tbody>
     </table>
-    <p>The script reads each Cursor agent transcript, converts messages to Claude Code's richer JSON schema (UUIDs, timestamps, <code>queue-operation</code> envelopes), and writes one <code>.jsonl</code> file per chat into the Claude projects folder for your repo.</p>
+    <p>The migration is <strong>non-destructive</strong>: Cursor files stay untouched. Each agent chat becomes one Claude session file with <code>queue-operation</code> wrappers, per-message UUIDs, and <code>entrypoint: cursor-migrated</code>. Session file names are <strong>stable</strong> (derived from the source path hash) so re-running skips unchanged chats.</p>
 
-    <h2 id="what-migrates">What gets migrated</h2>
+    <h2 id="cursor-storage">Cursor local data map</h2>
+    <p>On macOS, Cursor keeps most state under <code>~/Library/Application Support/Cursor/</code>. Linux and Windows use analogous paths under <code>~/.config/Cursor</code> or <code>%APPDATA%/Cursor</code>.</p>
+
+    <h3>state.vscdb (Composer + blobs)</h3>
+    <p><code>User/globalStorage/state.vscdb</code> — read-only SQLite with two tables:</p>
     <ul>
-      <li>All user and assistant messages</li>
-      <li>Conversation structure (one Claude session per Cursor chat)</li>
-      <li>Metadata tags so you can identify imports (<code>entrypoint: cursor-migrated</code>)</li>
+      <li><code>ItemTable</code> — settings, auth metadata, <code>composer.composerHeaders</code> (allComposers index)</li>
+      <li><code>cursorDiskKV</code> — chat payloads and blobs</li>
     </ul>
-    <p><strong>Not included:</strong> subagent sidechain transcripts (only the main <code>&lt;chat-id&gt;/&lt;chat-id&gt;.jsonl</code> file per folder). Tool replay and live UI state are not restored — only message content.</p>
+    <p>Notable <code>cursorDiskKV</code> key prefixes:</p>
+    <ul>
+      <li><code>composerData:&lt;composerId&gt;</code> — composer metadata</li>
+      <li><code>bubbleId:&lt;composerId&gt;:&lt;bubbleId&gt;</code> — chat bubble body</li>
+      <li><code>messageRequestContext:&lt;composerId&gt;:&lt;bubbleId&gt;</code> — request context</li>
+      <li><code>checkpointId:&lt;composerId&gt;:&lt;uuid&gt;</code> — checkpoint pointers</li>
+      <li><code>agentKv:blob:&lt;sha256&gt;</code> — content-addressed JSON blobs</li>
+    </ul>
+    <p>Per-workspace copies: <code>User/workspaceStorage/&lt;hash&gt;/state.vscdb</code> — includes <code>aiService.prompts</code> (verbatim prompt history).</p>
 
-    <h2 id="storage">Where files live</h2>
-    <p>Both tools store history locally. Folder names are derived from your project's <strong>absolute path</strong> — slashes, dots, and underscores become dashes.</p>
+    <h3>Agent transcripts (what this migrator reads)</h3>
+    <pre><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/&lt;runId&gt;/&lt;runId&gt;.jsonl</code></pre>
+    <p>One folder per agent run. The migrator reads the main <code>&lt;runId&gt;.jsonl</code> only — not subagent sidechains.</p>
+
+    <h3>Other useful paths</h3>
     <table>
-      <thead><tr><th>Tool</th><th>Example path for <code>~/dev/my-app</code></th></tr></thead>
+      <thead><tr><th>Path</th><th>Contents</th></tr></thead>
       <tbody>
-        <tr><td>Cursor transcripts</td><td><code>~/.cursor/projects/Users-you-dev-my-app/agent-transcripts/</code></td></tr>
-        <tr><td>Claude sessions</td><td><code>~/.claude/projects/-Users-you-dev-my-app/</code></td></tr>
+        <tr><td><code>~/.cursor/ai-tracking/ai-code-tracking.db</code></td><td><code>scored_commits</code>, <code>conversation_summaries</code> (TL;DR for picking threads)</td></tr>
+        <tr><td><code>.../anysphere.cursor-commits/checkpoints/</code></td><td>AI-edit before/after snapshots (<code>metadata.json</code>, <code>files/</code>, <code>diffs/</code>)</td></tr>
+        <tr><td><code>~/.cursor/plans/*.plan.md</code></td><td>Plan mode markdown (also migrated by the script)</td></tr>
       </tbody>
     </table>
-    <p>Claude's folder has a <strong>leading dash</strong>; Cursor's slug does not. If auto-detection fails, list both roots and match manually:</p>
-    <pre><code class="language-bash">ls ~/.cursor/projects/*/agent-transcripts
-ls ~/.claude/projects/</code></pre>
+    <p><strong>Security:</strong> never copy <code>cursorAuth/accessToken</code> from ItemTable into scripts that send data off-machine. This migrator is local-filesystem only.</p>
 
-    <h3>Claude Code session storage (reference)</h3>
+    <h3>Claude Code targets</h3>
     <table>
       <thead><tr><th>Path</th><th>Purpose</th></tr></thead>
       <tbody>
-        <tr><td><code>~/.claude/projects/&lt;path-hash&gt;/*.jsonl</code></td><td>Per-session transcripts</td></tr>
+        <tr><td><code>~/.claude/projects/-&lt;slug&gt;/*.jsonl</code></td><td>Session transcripts (migrated chats land here)</td></tr>
+        <tr><td><code>~/.claude/plans/*.md</code></td><td>Plan mode outputs</td></tr>
         <tr><td><code>~/.claude/history.jsonl</code></td><td>Global prompt index</td></tr>
-        <tr><td><code>~/.claude/settings.json</code></td><td><code>cleanupPeriodDays</code> (default 30 — back up before migrating if needed)</td></tr>
-        <tr><td><code>CLAUDE.md</code> (repo root)</td><td>Project instructions — separate from chat history</td></tr>
+        <tr><td><code>~/.claude/settings.json</code></td><td><code>cleanupPeriodDays</code> (default 30)</td></tr>
       </tbody>
     </table>
 
+    <h2 id="what-migrates">What gets migrated</h2>
+    <ul>
+      <li>All user and assistant messages from agent-transcript JSONL</li>
+      <li>One Claude session per Cursor agent run</li>
+      <li>Correct <code>cwd</code> resolved from <code>workspaceStorage/.../workspace.json</code></li>
+      <li>Plan markdown from <code>~/.cursor/plans/</code> → <code>~/.claude/plans/</code> (YAML front matter stripped)</li>
+    </ul>
+    <p><strong>Not migrated:</strong> subagent sidechains, Composer bubbles in state.vscdb, checkpoints, tool replay, or live UI state.</p>
+
+    <h2 id="slug-mapping">Slug mapping (Cursor → Claude)</h2>
+    <p>Cursor names project folders under <code>~/.cursor/projects/</code> by encoding the absolute repo path (slashes, dots, underscores → dashes). Claude uses the <strong>same slug with a leading dash</strong>:</p>
+    <table>
+      <thead><tr><th>Repo</th><th>Cursor</th><th>Claude</th></tr></thead>
+      <tbody>
+        <tr><td><code>~/dev/my-app</code></td><td><code>Users-you-dev-my-app</code></td><td><code>-Users-you-dev-my-app</code></td></tr>
+      </tbody>
+    </table>
+    <p>The script builds a <code>slug → real path</code> map from <code>workspaceStorage/*/workspace.json</code> so each migrated message gets the correct <code>cwd</code> field — not the slug string.</p>
+
     <h2 id="format">Format differences</h2>
-    <p>Cursor agent transcripts use a minimal schema. Claude Code expects richer per-line JSON with session metadata.</p>
-
-    <p><strong>Cursor (source)</strong></p>
-    <pre><code class="language-json">{
-  "role": "user",
-  "message": {
-    "content": "..."
-  }
+    <p><strong>Cursor agent transcript (per line)</strong></p>
+    <pre><code>{<span class="str">"role"</span>: <span class="str">"user"</span>,
+  <span class="str">"message"</span>: { <span class="str">"content"</span>: <span class="str">"..."</span> }
 }</code></pre>
 
-    <p><strong>Claude Code (target)</strong></p>
-    <pre><code class="language-json">{
-  "type": "user",
-  "message": {
-    "role": "user",
-    "content": "..."
-  },
-  "uuid": "...",
-  "timestamp": "2026-06-17T12:00:00Z",
-  "sessionId": "...",
-  "entrypoint": "cursor-migrated",
-  "cwd": "/path/to/repo",
-  "version": "migrated-from-cursor"
+    <p><strong>Claude Code session (per line)</strong></p>
+    <pre><code>{<span class="str">"type"</span>: <span class="str">"user"</span>,
+  <span class="str">"message"</span>: { <span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"..."</span> },
+  <span class="str">"uuid"</span>: <span class="str">"..."</span>,
+  <span class="str">"timestamp"</span>: <span class="str">"2026-06-17T12:00:00Z"</span>,
+  <span class="str">"sessionId"</span>: <span class="str">"..."</span>,
+  <span class="str">"entrypoint"</span>: <span class="str">"cursor-migrated"</span>,
+  <span class="str">"cwd"</span>: <span class="str">"/Users/you/dev/my-app"</span>,
+  <span class="str">"version"</span>: <span class="str">"migrated-from-cursor"</span>
 }</code></pre>
 
-    <p>The script also wraps each session with <code>queue-operation</code> lines (<code>enqueue</code> / <code>dequeue</code>) that Claude Code uses internally for session management.</p>
+    <p>Each session file starts and ends with <code>queue-operation</code> lines (<code>enqueue</code> / <code>dequeue</code>).</p>
 
     <h2 id="script">Migration script</h2>
-    <p>Copy <code>migrate_cursor_to_claude.py</code> anywhere, install nothing beyond Python 3.10+. Pass your repo path with <code>--project</code> — the same folder you opened in Cursor.</p>
+    <p>Save as <code>migrate_cursor_to_claude.py</code>. Python 3.10+, stdlib only.</p>
+    <pre><code><span class="cm">#!/usr/bin/env python3</span>
+<span class="str">"""Migrate Cursor agent transcripts and plans into Claude Code storage.
 
-    <pre><code class="language-python">#!/usr/bin/env python3
-"""Migrate Cursor agent transcripts to Claude Code chat JSONL.
+Scans ~/.cursor/projects/*/agent-transcripts/, converts JSONL to Claude Code
+session format, and optionally copies ~/.cursor/plans/ to ~/.claude/plans/.
 
-Reads ~/.cursor/projects/&lt;slug>/agent-transcripts/ and writes native
-Claude Code session files under ~/.claude/projects/&lt;path-hash>/.
+  python3 migrate_cursor_to_claude.py --dry-run
+  python3 migrate_cursor_to_claude.py --yes
+  python3 migrate_cursor_to_claude.py --project ~/dev/my-app --yes
+"""</span>
+<span class="kw">from</span> __future__ <span class="kw">import</span> annotations
 
-  python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run
-  python3 migrate_cursor_to_claude.py --project ~/dev/my-app
-"""
-from __future__ import annotations
+<span class="kw">import</span> argparse
+<span class="kw">import</span> hashlib
+<span class="kw">import</span> <span class="fn">json</span>
+<span class="kw">import</span> os
+<span class="kw">import</span> re
+<span class="kw">import</span> sqlite3
+<span class="kw">import</span> sys
+<span class="kw">import</span> uuid
+<span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime, timezone
+<span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
+<span class="kw">from</span> typing <span class="kw">import</span> <span class="fn">Any</span>, Iterator, <span class="fn">Optional</span>
+<span class="kw">from</span> urllib.parse <span class="kw">import</span> unquote, urlparse
 
-import argparse
-import json
-import os
-import sys
-import uuid
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Any
-
-
-def path_slug(project: Path, *, leading_dash: bool = False) -> str:
-    """Derive Cursor/Claude project folder name from an absolute repo path."""
-    resolved = str(project.expanduser().resolve())
-    slug = resolved.replace(os.sep, "-").lstrip(os.sep)
-    slug = slug.replace(".", "-").replace("_", "-")
-    return f"-{slug}" if leading_dash else slug
-
-
-def cursor_transcripts_dir(project: Path) -> Path:
-    slug = path_slug(project)
-    return Path.home() / ".cursor/projects" / slug / "agent-transcripts"
-
-
-def claude_workspace_dir(project: Path) -> Path:
-    slug = path_slug(project, leading_dash=True)
-    return Path.home() / ".claude/projects" / slug
-
-
-def new_uuid() -> str:
-    return str(uuid.uuid4())
+HOME = <span class="fn">Path</span>.home()
+CURSOR_APP_SUPPORT = (
+    HOME / <span class="str">"Library/Application Support/Cursor"</span>
+    <span class="kw">if</span> sys.platform == <span class="str">"darwin"</span>
+    <span class="kw">else</span> HOME / <span class="str">"AppData/Roaming/Cursor"</span>
+    <span class="kw">if</span> sys.platform == <span class="str">"win32"</span>
+    <span class="kw">else</span> HOME / <span class="str">".config/Cursor"</span>
+)
+WORKSPACE_ROOT = CURSOR_APP_SUPPORT / <span class="str">"User/workspaceStorage"</span>
+PROJECTS_ROOT = HOME / <span class="str">".cursor/projects"</span>
+PLANS_ROOT = HOME / <span class="str">".cursor/plans"</span>
+CLAUDE_PROJECTS = HOME / <span class="str">".claude/projects"</span>
+CLAUDE_PLANS = HOME / <span class="str">".claude/plans"</span>
+MANIFEST = HOME / <span class="str">".claude/.cursor-migration-manifest.json"</span>
 
 
-def iso_now() -> str:
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+@contextmanager
+<span class="kw">def</span> <span class="fn">ro_sqlite</span>(path: <span class="fn">Path</span>) -&gt; Iterator[sqlite3.Connection]:
+    <span class="kw">if</span> <span class="kw">not</span> path.exists():
+        <span class="kw">raise</span> FileNotFoundError(path)
+    con = sqlite3.connect(f<span class="str">"file:{path}?mode=ro"</span>, uri=<span class="kw">True</span>, timeout=<span class="num">5.0</span>)
+    <span class="kw">try</span>:
+        <span class="kw">yield</span> con
+    <span class="kw">finally</span>:
+        con.close()
 
 
-def queue_operation(session_id: str, operation: str = "enqueue") -> dict[str, Any]:
-    return {
-        "type": "queue-operation",
-        "operation": operation,
-        "timestamp": iso_now(),
-        "sessionId": session_id,
+<span class="kw">def</span> <span class="fn">workspace_folders</span>() -&gt; <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Optional</span>[<span class="fn">str</span>]]:
+    <span class="str">"""Map workspaceStorage hash -&gt; folder URI from workspace.json."""</span>
+    out: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Optional</span>[<span class="fn">str</span>]] = {}
+    <span class="kw">if</span> <span class="kw">not</span> WORKSPACE_ROOT.exists():
+        <span class="kw">return</span> out
+    <span class="kw">for</span> ws <span class="kw">in</span> WORKSPACE_ROOT.iterdir():
+        <span class="kw">if</span> <span class="kw">not</span> ws.is_dir():
+            <span class="kw">continue</span>
+        wj = ws / <span class="str">"workspace.json"</span>
+        <span class="kw">if</span> wj.exists():
+            <span class="kw">try</span>:
+                out[ws.name] = <span class="fn">json</span>.loads(wj.read_text()).get(<span class="str">"folder"</span>)
+            <span class="kw">except</span> <span class="fn">Exception</span>:
+                <span class="kw">pass</span>
+    <span class="kw">return</span> out
+
+
+<span class="kw">def</span> <span class="fn">uri_to_path</span>(folder_uri: <span class="fn">Optional</span>[<span class="fn">str</span>]) -&gt; <span class="fn">Optional</span>[<span class="fn">str</span>]:
+    <span class="kw">if</span> <span class="kw">not</span> folder_uri:
+        <span class="kw">return</span> <span class="kw">None</span>
+    <span class="kw">if</span> folder_uri.startswith(<span class="str">"file://"</span>):
+        <span class="kw">return</span> unquote(urlparse(folder_uri).path)
+    <span class="kw">return</span> folder_uri
+
+
+<span class="kw">def</span> <span class="fn">path_to_cursor_slug</span>(abs_path: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+    encoded = abs_path
+    <span class="kw">for</span> ch <span class="kw">in</span> (<span class="str">"/"</span>, <span class="str">"\\"</span>, <span class="str">":"</span>, <span class="str">"."</span>, <span class="str">"_"</span>, <span class="str">" "</span>):
+        encoded = encoded.replace(ch, <span class="str">"-"</span>)
+    <span class="kw">return</span> encoded.lstrip(<span class="str">"-"</span>)
+
+
+<span class="kw">def</span> <span class="fn">build_slug_cwd_map</span>() -&gt; <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">str</span>]:
+    <span class="str">"""Cursor project slug -&gt; real repo path (from workspaceStorage index)."""</span>
+    mapping: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">str</span>] = {path_to_cursor_slug(<span class="fn">str</span>(HOME)): <span class="fn">str</span>(HOME)}
+    <span class="kw">for</span> ws_hash, folder_uri <span class="kw">in</span> workspace_folders().items():
+        path = uri_to_path(folder_uri)
+        <span class="kw">if</span> path <span class="kw">and</span> os.path.isdir(path):
+            mapping[path_to_cursor_slug(path)] = path
+    <span class="kw">return</span> mapping
+
+
+<span class="kw">def</span> <span class="fn">cursor_slug_to_claude_slug</span>(cursor_slug: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+    <span class="kw">return</span> cursor_slug <span class="kw">if</span> cursor_slug.startswith(<span class="str">"-"</span>) <span class="kw">else</span> f<span class="str">"-{cursor_slug}"</span>
+
+
+<span class="kw">def</span> <span class="fn">stable_session_id</span>(source_path: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+    <span class="str">"""Same Cursor chat always maps to the same Claude session file."""</span>
+    digest = hashlib.sha256(source_path.encode()).hexdigest()
+    <span class="kw">return</span> f<span class="str">"{digest[:8]}-{digest[8:12]}-{digest[12:16]}-{digest[16:20]}-{digest[20:32]}"</span>
+
+
+<span class="kw">def</span> <span class="fn">load_manifest</span>() -&gt; <span class="fn">dict</span>:
+    default = {<span class="str">"chats"</span>: {}, <span class="str">"plans"</span>: {}}
+    <span class="kw">if</span> <span class="kw">not</span> MANIFEST.exists():
+        <span class="kw">return</span> default
+    <span class="kw">try</span>:
+        data = <span class="fn">json</span>.loads(MANIFEST.read_text(encoding=<span class="str">"utf-8"</span>))
+        <span class="kw">return</span> {<span class="str">"chats"</span>: data.get(<span class="str">"chats"</span>) <span class="kw">or</span> {}, <span class="str">"plans"</span>: data.get(<span class="str">"plans"</span>) <span class="kw">or</span> {}}
+    <span class="kw">except</span> <span class="fn">Exception</span>:
+        <span class="kw">return</span> default
+
+
+<span class="kw">def</span> <span class="fn">save_manifest</span>(manifest: <span class="fn">dict</span>) -&gt; <span class="kw">None</span>:
+    MANIFEST.parent.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+    MANIFEST.write_text(<span class="fn">json</span>.dumps(manifest, indent=<span class="num">2</span>), encoding=<span class="str">"utf-8"</span>)
+
+
+<span class="kw">def</span> <span class="fn">list_agent_chats</span>(project_filter: <span class="fn">Optional</span>[<span class="fn">str</span>] = <span class="kw">None</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    out: <span class="fn">list</span>[<span class="fn">dict</span>] = []
+    <span class="kw">if</span> <span class="kw">not</span> PROJECTS_ROOT.exists():
+        <span class="kw">return</span> out
+    slug_map = build_slug_cwd_map()
+    <span class="kw">for</span> proj_dir <span class="kw">in</span> sorted(PROJECTS_ROOT.iterdir()):
+        <span class="kw">if</span> <span class="kw">not</span> proj_dir.is_dir():
+            <span class="kw">continue</span>
+        transcripts = proj_dir / <span class="str">"agent-transcripts"</span>
+        <span class="kw">if</span> <span class="kw">not</span> transcripts.exists():
+            <span class="kw">continue</span>
+        <span class="kw">if</span> project_filter:
+            cwd = slug_map.get(proj_dir.name, <span class="str">""</span>)
+            <span class="kw">if</span> cwd <span class="kw">and</span> <span class="fn">Path</span>(cwd).resolve() != <span class="fn">Path</span>(project_filter).expanduser().resolve():
+                <span class="kw">continue</span>
+        <span class="kw">for</span> run_dir <span class="kw">in</span> transcripts.iterdir():
+            <span class="kw">if</span> <span class="kw">not</span> run_dir.is_dir():
+                <span class="kw">continue</span>
+            chat_file = run_dir / f<span class="str">"{run_dir.name}.jsonl"</span>
+            <span class="kw">if</span> chat_file.is_file():
+                out.append({
+                    <span class="str">"project_slug"</span>: proj_dir.name,
+                    <span class="str">"run_id"</span>: run_dir.name,
+                    <span class="str">"path"</span>: <span class="fn">str</span>(chat_file),
+                    <span class="str">"mtime"</span>: chat_file.stat().st_mtime,
+                    <span class="str">"size"</span>: chat_file.stat().st_size,
+                })
+    out.sort(key=<span class="kw">lambda</span> x: x[<span class="str">"mtime"</span>], reverse=<span class="kw">True</span>)
+    <span class="kw">return</span> out
+
+
+<span class="kw">def</span> <span class="fn">list_cursor_plans</span>() -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    <span class="kw">if</span> <span class="kw">not</span> PLANS_ROOT.exists():
+        <span class="kw">return</span> []
+    <span class="kw">return</span> [
+        {
+            <span class="str">"file"</span>: p.name,
+            <span class="str">"path"</span>: <span class="fn">str</span>(p),
+            <span class="str">"mtime"</span>: p.stat().st_mtime,
+            <span class="str">"size"</span>: p.stat().st_size,
+        }
+        <span class="kw">for</span> p <span class="kw">in</span> sorted(PLANS_ROOT.glob(<span class="str">"*.plan.md"</span>), key=<span class="kw">lambda</span> x: x.stat().st_mtime, reverse=<span class="kw">True</span>)
+    ]
+
+
+<span class="kw">def</span> <span class="fn">project_slug_to_cwd</span>(slug: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+    <span class="kw">return</span> build_slug_cwd_map().get(slug, <span class="fn">str</span>(HOME))
+
+
+<span class="kw">def</span> <span class="fn">chat_dest</span>(chat: <span class="fn">dict</span>) -&gt; <span class="fn">Path</span>:
+    claude_slug = cursor_slug_to_claude_slug(chat[<span class="str">"project_slug"</span>])
+    session_id = stable_session_id(chat[<span class="str">"path"</span>])
+    <span class="kw">return</span> CLAUDE_PROJECTS / claude_slug / f<span class="str">"{session_id}.jsonl"</span>
+
+
+<span class="kw">def</span> <span class="fn">plan_dest_name</span>(cursor_plan: <span class="fn">Path</span>) -&gt; <span class="fn">str</span>:
+    stem = cursor_plan.stem
+    <span class="kw">if</span> stem.endswith(<span class="str">".plan"</span>):
+        stem = stem[:-<span class="num">5</span>]
+    stem = re.sub(r<span class="str">"_[0-9a-f]{8}$"</span>, <span class="str">""</span>, stem)
+    <span class="kw">return</span> f<span class="str">"{stem}.md"</span>
+
+
+<span class="kw">def</span> <span class="fn">plan_dest</span>(plan: <span class="fn">dict</span>) -&gt; <span class="fn">Path</span>:
+    <span class="kw">return</span> CLAUDE_PLANS / plan_dest_name(<span class="fn">Path</span>(plan[<span class="str">"path"</span>]))
+
+
+<span class="kw">def</span> <span class="fn">should_migrate_chat</span>(chat: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>) -&gt; <span class="fn">bool</span>:
+    dest = chat_dest(chat)
+    entry = manifest.get(<span class="str">"chats"</span>, {}).get(chat[<span class="str">"path"</span>])
+    <span class="kw">if</span> dest.exists() <span class="kw">and</span> entry <span class="kw">and</span> chat[<span class="str">"mtime"</span>] &lt;= <span class="fn">float</span>(entry.get(<span class="str">"mtime"</span>) <span class="kw">or</span> <span class="num">0</span>):
+        <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">return</span> <span class="kw">True</span>
+
+
+<span class="kw">def</span> <span class="fn">should_migrate_plan</span>(plan: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>) -&gt; <span class="fn">bool</span>:
+    dest = plan_dest(plan)
+    entry = manifest.get(<span class="str">"plans"</span>, {}).get(plan[<span class="str">"path"</span>])
+    <span class="kw">if</span> dest.exists() <span class="kw">and</span> entry <span class="kw">and</span> plan[<span class="str">"mtime"</span>] &lt;= <span class="fn">float</span>(entry.get(<span class="str">"mtime"</span>) <span class="kw">or</span> <span class="num">0</span>):
+        <span class="kw">return</span> <span class="kw">False</span>
+    <span class="kw">return</span> <span class="kw">True</span>
+
+
+<span class="kw">def</span> <span class="fn">cursor_to_claude_message</span>(
+    cursor_msg: <span class="fn">dict</span>, session_id: <span class="fn">str</span>, idx: <span class="fn">int</span>, cwd: <span class="fn">str</span>
+) -&gt; <span class="fn">dict</span>:
+    role = cursor_msg.get(<span class="str">"role"</span>, <span class="str">"user"</span>)
+    content = cursor_msg.get(<span class="str">"message"</span>, {}).get(<span class="str">"content"</span>, <span class="str">""</span>)
+    msg: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Any</span>] = {
+        <span class="str">"parentUuid"</span>: <span class="kw">None</span>,
+        <span class="str">"isSidechain"</span>: <span class="kw">False</span>,
+        <span class="str">"promptId"</span>: <span class="fn">str</span>(uuid.uuid4()),
+        <span class="str">"type"</span>: role,
+        <span class="str">"message"</span>: {<span class="str">"role"</span>: role, <span class="str">"content"</span>: content},
+        <span class="str">"uuid"</span>: <span class="fn">str</span>(uuid.uuid4()),
+        <span class="str">"timestamp"</span>: datetime.now(timezone.utc).isoformat().replace(<span class="str">"+00:00"</span>, <span class="str">"Z"</span>),
+        <span class="str">"userType"</span>: <span class="str">"external"</span>,
+        <span class="str">"entrypoint"</span>: <span class="str">"cursor-migrated"</span>,
+        <span class="str">"cwd"</span>: cwd,
+        <span class="str">"sessionId"</span>: session_id,
+        <span class="str">"version"</span>: <span class="str">"migrated-from-cursor"</span>,
+        <span class="str">"gitBranch"</span>: <span class="str">"unknown"</span>,
+        <span class="str">"slug"</span>: f<span class="str">"migrated-chat-{idx}"</span>,
+    }
+    <span class="kw">if</span> role == <span class="str">"user"</span>:
+        msg[<span class="str">"isMeta"</span>] = <span class="kw">False</span>
+    <span class="kw">return</span> msg
+
+
+<span class="kw">def</span> <span class="fn">queue_operation</span>(session_id: <span class="fn">str</span>, operation: <span class="fn">str</span> = <span class="str">"enqueue"</span>) -&gt; <span class="fn">dict</span>:
+    <span class="kw">return</span> {
+        <span class="str">"type"</span>: <span class="str">"queue-operation"</span>,
+        <span class="str">"operation"</span>: operation,
+        <span class="str">"timestamp"</span>: datetime.now(timezone.utc).isoformat().replace(<span class="str">"+00:00"</span>, <span class="str">"Z"</span>),
+        <span class="str">"sessionId"</span>: session_id,
     }
 
 
-def cursor_to_claude_message(
-    cursor_msg: dict[str, Any],
-    session_id: str,
-    msg_index: int,
-    cwd: str,
-) -> dict[str, Any]:
-    role = cursor_msg.get("role", "user")
-    content = cursor_msg.get("message", {}).get("content", "")
+<span class="kw">def</span> <span class="fn">migrate_chat</span>(chat: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>, *, dry_run: <span class="fn">bool</span>) -&gt; <span class="fn">str</span>:
+    <span class="kw">if</span> <span class="kw">not</span> should_migrate_chat(chat, manifest):
+        <span class="kw">return</span> <span class="str">"skipped"</span>
+    chat_path = <span class="fn">Path</span>(chat[<span class="str">"path"</span>])
+    <span class="kw">try</span>:
+        lines = [<span class="fn">json</span>.loads(ln) <span class="kw">for</span> ln <span class="kw">in</span> chat_path.read_text().splitlines() <span class="kw">if</span> ln.strip()]
+    <span class="kw">except</span> <span class="fn">Exception</span>:
+        <span class="kw">return</span> <span class="str">"failed"</span>
+    <span class="kw">if</span> <span class="kw">not</span> lines:
+        <span class="kw">return</span> <span class="str">"failed"</span>
 
-    claude_msg: dict[str, Any] = {
-        "parentUuid": None,
-        "isSidechain": False,
-        "promptId": new_uuid(),
-        "type": role,
-        "message": {"role": role, "content": content},
-        "uuid": new_uuid(),
-        "timestamp": iso_now(),
-        "userType": "external",
-        "entrypoint": "cursor-migrated",
-        "cwd": cwd,
-        "sessionId": session_id,
-        "version": "migrated-from-cursor",
-        "gitBranch": "unknown",
-        "slug": f"migrated-chat-{msg_index}",
-    }
-    if role == "user":
-        claude_msg["isMeta"] = False
-    return claude_msg
+    session_id = stable_session_id(chat[<span class="str">"path"</span>])
+    cwd = project_slug_to_cwd(chat[<span class="str">"project_slug"</span>])
+    dest = chat_dest(chat)
+    messages = [queue_operation(session_id, <span class="str">"enqueue"</span>)]
+    <span class="kw">for</span> idx, row <span class="kw">in</span> <span class="fn">enumerate</span>(lines):
+        <span class="kw">try</span>:
+            messages.append(cursor_to_claude_message(row, session_id, idx, cwd))
+        <span class="kw">except</span> <span class="fn">Exception</span>:
+            <span class="kw">continue</span>
+    messages.append(queue_operation(session_id, <span class="str">"dequeue"</span>))
 
-
-def find_cursor_chats(transcripts_root: Path) -> list[Path]:
-    """Main agent chats only — skip subagent sidechains."""
-    chats: list[Path] = []
-    if not transcripts_root.exists():
-        return chats
-    for chat_dir in transcripts_root.iterdir():
-        if not chat_dir.is_dir():
-            continue
-        main = chat_dir / f"{chat_dir.name}.jsonl"
-        if main.is_file():
-            chats.append(main)
-    chats.sort(key=lambda p: p.stat().st_mtime, reverse=True)
-    return chats
+    <span class="kw">if</span> <span class="kw">not</span> dry_run:
+        dest.parent.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+        <span class="kw">with</span> dest.<span class="fn">open</span>(<span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> fh:
+            <span class="kw">for</span> m <span class="kw">in</span> messages:
+                fh.write(<span class="fn">json</span>.dumps(m) + <span class="str">"\n"</span>)
+        manifest.setdefault(<span class="str">"chats"</span>, {})[chat[<span class="str">"path"</span>]] = {
+            <span class="str">"dest"</span>: <span class="fn">str</span>(dest),
+            <span class="str">"mtime"</span>: chat[<span class="str">"mtime"</span>],
+            <span class="str">"session_id"</span>: session_id,
+            <span class="str">"cwd"</span>: cwd,
+        }
+    <span class="kw">return</span> <span class="str">"migrated"</span>
 
 
-def migrate_chat(
-    cursor_chat_path: Path,
-    claude_workspace: Path,
-    project: Path,
-    *,
-    dry_run: bool = False,
-) -> bool:
-    try:
-        lines = [
-            json.loads(line)
-            for line in cursor_chat_path.read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        ]
-        if not lines:
-            print(f"  skip empty: {cursor_chat_path.name}")
-            return False
-
-        session_id = new_uuid()
-        claude_messages: list[dict[str, Any]] = [queue_operation(session_id, "enqueue")]
-
-        cwd = str(project.resolve())
-        for idx, cursor_msg in enumerate(lines):
-            try:
-                claude_messages.append(
-                    cursor_to_claude_message(cursor_msg, session_id, idx, cwd)
-                )
-            except Exception as exc:
-                print(f"    warn message {idx}: {exc}")
-
-        claude_messages.append(queue_operation(session_id, "dequeue"))
-        out_path = claude_workspace / f"{session_id}.jsonl"
-
-        size_kb = cursor_chat_path.stat().st_size / 1024
-        mod = datetime.fromtimestamp(cursor_chat_path.stat().st_mtime).strftime(
-            "%Y-%m-%d %H:%M"
-        )
-        print(
-            f"  ok {cursor_chat_path.parent.name} | "
-            f"{len(lines)} msgs | {size_kb:.1f} KB | {mod}"
-        )
-
-        if not dry_run:
-            claude_workspace.mkdir(parents=True, exist_ok=True)
-            with out_path.open("w", encoding="utf-8") as fh:
-                for msg in claude_messages:
-                    fh.write(json.dumps(msg) + "\n")
-            print(f"    -> {out_path.name}")
-
-        return True
-    except Exception as exc:
-        print(f"  fail {cursor_chat_path.name}: {exc}")
-        return False
+<span class="kw">def</span> <span class="fn">strip_yaml_front_matter</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+    <span class="kw">if</span> <span class="kw">not</span> text.startswith(<span class="str">"---"</span>):
+        <span class="kw">return</span> text
+    end = text.find(<span class="str">"\n---"</span>, <span class="num">3</span>)
+    <span class="kw">if</span> end == -<span class="num">1</span>:
+        <span class="kw">return</span> text
+    <span class="kw">return</span> text[end + <span class="num">4</span> :].lstrip(<span class="str">"\n"</span>)
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(
-        description="Migrate Cursor agent transcripts into Claude Code JSONL sessions"
-    )
-    ap.add_argument(
-        "--project",
-        type=Path,
-        required=True,
-        help="Absolute path to the repo you used in Cursor",
-    )
-    ap.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Preview migration without writing files",
-    )
-    ap.add_argument(
-        "--days",
-        type=int,
-        default=0,
-        help="Only migrate chats modified in the last N days (0 = all)",
-    )
-    ap.add_argument(
-        "--yes",
-        action="store_true",
-        help="Skip confirmation prompt",
-    )
+<span class="kw">def</span> <span class="fn">migrate_plan</span>(plan: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>, *, dry_run: <span class="fn">bool</span>) -&gt; <span class="fn">str</span>:
+    <span class="kw">if</span> <span class="kw">not</span> should_migrate_plan(plan, manifest):
+        <span class="kw">return</span> <span class="str">"skipped"</span>
+    src = <span class="fn">Path</span>(plan[<span class="str">"path"</span>])
+    dest = plan_dest(plan)
+    <span class="kw">try</span>:
+        content = strip_yaml_front_matter(src.read_text(encoding=<span class="str">"utf-8"</span>))
+        <span class="kw">if</span> <span class="kw">not</span> dry_run:
+            CLAUDE_PLANS.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
+            dest.write_text(content, encoding=<span class="str">"utf-8"</span>)
+            manifest.setdefault(<span class="str">"plans"</span>, {})[plan[<span class="str">"path"</span>]] = {
+                <span class="str">"dest"</span>: <span class="fn">str</span>(dest),
+                <span class="str">"mtime"</span>: plan[<span class="str">"mtime"</span>],
+            }
+        <span class="kw">return</span> <span class="str">"migrated"</span>
+    <span class="kw">except</span> <span class="fn">Exception</span>:
+        <span class="kw">return</span> <span class="str">"failed"</span>
+
+
+<span class="kw">def</span> <span class="fn">main</span>() -&gt; <span class="kw">None</span>:
+    ap = argparse.ArgumentParser(description=<span class="str">"Migrate Cursor chats and plans to Claude Code"</span>)
+    ap.add_argument(<span class="str">"--project"</span>, <span class="fn">type</span>=<span class="fn">Path</span>, help=<span class="str">"Only migrate chats for this repo path"</span>)
+    ap.add_argument(<span class="str">"--dry-run"</span>, action=<span class="str">"store_true"</span>, help=<span class="str">"Preview without writing"</span>)
+    ap.add_argument(<span class="str">"--yes"</span>, action=<span class="str">"store_true"</span>, help=<span class="str">"Skip confirmation"</span>)
+    ap.add_argument(<span class="str">"--chats-only"</span>, action=<span class="str">"store_true"</span>)
+    ap.add_argument(<span class="str">"--plans-only"</span>, action=<span class="str">"store_true"</span>)
     args = ap.parse_args()
 
-    project = args.project.expanduser().resolve()
-    transcripts = cursor_transcripts_dir(project)
-    claude_ws = claude_workspace_dir(project)
+    project = <span class="fn">str</span>(args.project.expanduser().resolve()) <span class="kw">if</span> args.project <span class="kw">else</span> <span class="kw">None</span>
+    chats = list_agent_chats(project)
+    plans = [] <span class="kw">if</span> args.chats_only <span class="kw">else</span> list_cursor_plans()
+    <span class="kw">if</span> args.plans_only:
+        chats = []
 
-    print("Cursor -> Claude Code chat migration")
-    print(f"  project:    {project}")
-    print(f"  source:     {transcripts}")
-    print(f"  target:     {claude_ws}")
+    <span class="fn">print</span>(f<span class="str">"Found {len(chats)} agent chat(s), {len(plans)} plan(s)"</span>)
+    <span class="kw">if</span> <span class="kw">not</span> chats <span class="kw">and</span> <span class="kw">not</span> plans:
+        sys.exit(<span class="str">"Nothing to migrate."</span>)
 
-    if not transcripts.exists():
-        sys.exit(
-            f"No agent transcripts at {transcripts}\n"
-            "Check --project matches the folder Cursor opened, or run:\n"
-            f"  ls ~/.cursor/projects/*/agent-transcripts"
-        )
+    manifest = load_manifest()
+    pending_chats = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> c <span class="kw">in</span> chats <span class="kw">if</span> should_migrate_chat(c, manifest))
+    pending_plans = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> p <span class="kw">in</span> plans <span class="kw">if</span> should_migrate_plan(p, manifest))
+    <span class="fn">print</span>(f<span class="str">"Pending: {pending_chats} chat(s), {pending_plans} plan(s)"</span>)
 
-    chats = find_cursor_chats(transcripts)
-    if args.days > 0:
-        cutoff = datetime.now() - timedelta(days=args.days)
-        chats = [
-            c
-            for c in chats
-            if datetime.fromtimestamp(c.stat().st_mtime) >= cutoff
-        ]
+    <span class="kw">if</span> args.dry_run:
+        <span class="kw">for</span> c <span class="kw">in</span> chats:
+            <span class="kw">if</span> should_migrate_chat(c, manifest):
+                kb = c[<span class="str">"size"</span>] / <span class="num">1024</span>
+                <span class="fn">print</span>(f<span class="str">"  chat  {c['run_id'][:12]}  {kb:.1f} KB  -&gt; {chat_dest(c).parent.name}/"</span>)
+        <span class="kw">for</span> p <span class="kw">in</span> plans:
+            <span class="kw">if</span> should_migrate_plan(p, manifest):
+                <span class="fn">print</span>(f<span class="str">"  plan  {p['file']}  -&gt; {plan_dest(p).name}"</span>)
+        <span class="fn">print</span>(<span class="str">"DRY RUN — no files written"</span>)
+        <span class="kw">return</span>
 
-    print(f"  chats:      {len(chats)}")
-    if not chats:
-        sys.exit("No chats to migrate.")
+    <span class="kw">if</span> <span class="kw">not</span> args.yes:
+        ans = input(<span class="str">"Continue? (yes/no): "</span>).strip().lower()
+        <span class="kw">if</span> ans <span class="kw">not</span> <span class="kw">in</span> (<span class="str">"yes"</span>, <span class="str">"y"</span>):
+            <span class="fn">print</span>(<span class="str">"Cancelled."</span>)
+            <span class="kw">return</span>
 
-    if not args.dry_run and not args.yes:
-        answer = input("Continue? (yes/no/dry-run): ").strip().lower()
-        if answer in ("dry-run", "dry"):
-            args.dry_run = True
-        elif answer not in ("yes", "y"):
-            print("Cancelled.")
-            return
+    stats = {<span class="str">"migrated"</span>: <span class="num">0</span>, <span class="str">"skipped"</span>: <span class="num">0</span>, <span class="str">"failed"</span>: <span class="num">0</span>}
+    <span class="kw">for</span> chat <span class="kw">in</span> chats:
+        result = migrate_chat(chat, manifest, dry_run=<span class="kw">False</span>)
+        stats[result <span class="kw">if</span> result <span class="kw">in</span> stats <span class="kw">else</span> <span class="str">"failed"</span>] += <span class="num">1</span>
+        sym = {<span class="str">"migrated"</span>: <span class="str">"ok"</span>, <span class="str">"skipped"</span>: <span class="str">"skip"</span>, <span class="str">"failed"</span>: <span class="str">"fail"</span>}.get(result, <span class="str">"fail"</span>)
+        <span class="fn">print</span>(f<span class="str">"  {sym} chat {chat['run_id'][:12]}"</span>)
 
-    if args.dry_run:
-        print("\nDRY RUN — no files written\n")
+    <span class="kw">for</span> plan <span class="kw">in</span> plans:
+        result = migrate_plan(plan, manifest, dry_run=<span class="kw">False</span>)
+        stats[result <span class="kw">if</span> result <span class="kw">in</span> stats <span class="kw">else</span> <span class="str">"failed"</span>] += <span class="num">1</span>
+        sym = {<span class="str">"migrated"</span>: <span class="str">"ok"</span>, <span class="str">"skipped"</span>: <span class="str">"skip"</span>, <span class="str">"failed"</span>: <span class="str">"fail"</span>}.get(result, <span class="str">"fail"</span>)
+        <span class="fn">print</span>(f<span class="str">"  {sym} plan {plan['file']}"</span>)
 
-    ok = fail = 0
-    for chat_path in chats:
-        if migrate_chat(chat_path, claude_ws, project, dry_run=args.dry_run):
-            ok += 1
-        else:
-            fail += 1
+    <span class="kw">if</span> <span class="kw">not</span> args.dry_run:
+        save_manifest(manifest)
 
-    print(f"\nDone: {ok} migrated, {fail} failed")
-    if not args.dry_run:
-        print(f"Open Claude Code in {project} and check session history.")
-        print("Migrated sessions are tagged entrypoint=cursor-migrated.")
+    <span class="fn">print</span>(
+        f<span class="str">"Done: {stats['migrated']} migrated, {stats['skipped']} skipped, "</span>
+        f<span class="str">"{stats['failed']} failed"</span>
+    )
+    <span class="fn">print</span>(<span class="str">"Open Claude Code and check session history (entrypoint=cursor-migrated)."</span>)
 
 
-if __name__ == "__main__":
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
     main()
 </code></pre>
 
     <h2 id="run">How to run</h2>
 
     <h3>1. Dry run (recommended)</h3>
-    <p>Preview counts and sizes without writing files:</p>
-    <pre><code class="language-bash">python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre>
-    <p>Output shows each chat's message count, file size, and last-modified date.</p>
+    <pre><code><span class="fn">python3</span> migrate_cursor_to_claude.py --dry-run
 
-    <h3>2. Migrate</h3>
-    <pre><code class="language-bash">python3 migrate_cursor_to_claude.py --project ~/dev/my-app --yes</code></pre>
-    <p>Without <code>--yes</code>, the script prompts <code>Continue? (yes/no/dry-run)</code>. For each chat it:</p>
-    <ol>
-      <li>Reads the Cursor <code>.jsonl</code> transcript</li>
-      <li>Converts each message to Claude format with new UUIDs</li>
-      <li>Writes <code>~/.claude/projects/&lt;path-hash&gt;/&lt;session-uuid&gt;.jsonl</code></li>
-      <li>Prints success or failure per chat (failures do not stop the batch)</li>
-    </ol>
+<span class="cm"># Only one repo</span>
+<span class="fn">python3</span> migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre>
+    <p>Lists pending chats with sizes and target Claude project folders. Skips already-migrated files unless the source <code>mtime</code> changed.</p>
 
-    <h3>3. Before / after counts</h3>
-    <pre><code class="language-bash"># Cursor agent chats (unchanged after migration)
-find ~/.cursor/projects -path '*/agent-transcripts/*/*.jsonl' | wc -l
+    <h3>2. Migrate everything</h3>
+    <pre><code><span class="fn">python3</span> migrate_cursor_to_claude.py --yes</code></pre>
+    <p>Migrates <strong>chats first</strong>, then <strong>plans</strong>. Per-item status: <code>ok</code>, <code>skip</code>, or <code>fail</code>.</p>
 
-# Claude sessions for your repo
-ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
-    <p>After migration, Claude's count should increase by the number of successfully migrated chats. Original Cursor files are untouched.</p>
+    <h3>3. Chats or plans only</h3>
+    <pre><code><span class="fn">python3</span> migrate_cursor_to_claude.py --chats-only --yes
+<span class="fn">python3</span> migrate_cursor_to_claude.py --plans-only --yes</code></pre>
+
+    <h3>Before / after</h3>
+    <pre><code><span class="cm"># Cursor agent runs (unchanged)</span>
+<span class="fn">find</span> ~/.cursor/projects -path '*/agent-transcripts/*/*.jsonl' | wc -l
+
+<span class="cm"># Claude sessions for one repo</span>
+<span class="fn">ls</span> ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
 
     <h2 id="verify">Verify in Claude Code</h2>
     <ol>
       <li><code>cd ~/dev/my-app &amp;&amp; claude</code></li>
-      <li>Open session history (<code>claude --resume</code>)</li>
-      <li>Migrated sessions should appear — tagged with <code>entrypoint: cursor-migrated</code> in the JSONL</li>
+      <li><code>claude --resume</code> — migrated sessions should appear</li>
+      <li>Confirm tag: <code>grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></li>
     </ol>
-    <p>Spot-check one file:</p>
-    <pre><code class="language-bash">head -1 ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | python3 -m json.tool</code></pre>
-    <p>If sessions do not appear, restart Claude Code and confirm the path hash matches your absolute project path.</p>
+    <p>Restart Claude Code if sessions do not show immediately.</p>
 
-    <h2 id="safety">Safety features</h2>
+    <h2 id="manifest">Manifest and re-runs</h2>
+    <p>The script writes <code>~/.claude/.cursor-migration-manifest.json</code> mapping each source path to its destination, <code>mtime</code>, and <code>session_id</code>. Re-running skips files where the destination exists and the source has not changed — safe to run after every Cursor session during a transition period.</p>
+    <p>Session filenames use <strong>stable UUIDs</strong> (SHA-256 of the source path), so the same Cursor chat always maps to the same Claude file.</p>
+
+    <h2 id="plans">Plans migration</h2>
+    <p>Cursor plan files like <code>api-redesign_387ebee5.plan.md</code> are copied to <code>~/.claude/plans/api-redesign.md</code> with YAML front matter removed. Plans already up to date are skipped via the manifest.</p>
+
+    <h2 id="safety">Safety</h2>
     <ul>
-      <li><strong>Non-destructive</strong> — Cursor transcripts are read-only; originals stay in place</li>
-      <li><strong>Dry-run mode</strong> — preview before writing</li>
-      <li><strong>Per-chat error handling</strong> — one bad file does not abort the batch</li>
-      <li><strong>Fresh UUIDs</strong> — avoids collisions with existing Claude sessions</li>
+      <li>Cursor source files are read-only — never modified</li>
+      <li>Dry-run previews all pending work</li>
+      <li>Per-chat/plan errors do not abort the batch</li>
+      <li>No network calls; no JWT or token handling</li>
     </ul>
 
-    <h2 id="selective">Selective migration</h2>
-    <p>Migrate only recent chats with <code>--days</code>:</p>
-    <pre><code class="language-bash">python3 migrate_cursor_to_claude.py --project ~/dev/my-app --days 30 --dry-run</code></pre>
-    <p>Or filter in the script by editing the chat loop — the <code>--days</code> flag compares file <code>mtime</code> against a cutoff.</p>
-
     <h2 id="rollback">Rollback</h2>
-    <p>Remove migrated sessions by deleting JSONL files Claude created. Migrated files use random UUID filenames:</p>
-    <pre><code class="language-bash"># List first — confirm you are in the right workspace folder
-ls ~/.claude/projects/-Users-you-dev-my-app/
-
-# Remove only files you know are from migration (check entrypoint field)
-grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre>
-    <p><strong>Warning:</strong> deleting everything in the workspace folder also removes native Claude sessions for that repo.</p>
+    <pre><code><span class="fn">grep</span> -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre>
+    <p>Delete those JSONL files to remove migrated sessions. Deleting the entire project folder also removes native Claude sessions for that repo. Remove <code>~/.claude/.cursor-migration-manifest.json</code> to force a full re-migration.</p>
 
     <h2 id="troubleshooting">Troubleshooting</h2>
     <table>
       <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
       <tbody>
-        <tr><td><code>No agent transcripts at ...</code></td><td><code>--project</code> must match the path Cursor used. Run <code>ls ~/.cursor/projects/*/agent-transcripts</code> and compare slugs.</td></tr>
-        <tr><td>Migration failed for one chat</td><td>Check if that <code>.jsonl</code> is corrupted: <code>python3 -m json.tool &lt; chat.jsonl</code></td></tr>
-        <tr><td>Claude Code does not show migrated chats</td><td>Restart Claude Code; verify files exist under <code>~/.claude/projects/&lt;path-hash&gt;/</code>; confirm path hash (leading dash).</td></tr>
-        <tr><td>Permission denied</td><td><code>chmod -R u+w ~/.claude/projects/</code></td></tr>
-        <tr><td>Wrong workspace folder</td><td>Compare slug algorithm output with existing folders — symlinked paths can differ from what Cursor recorded.</td></tr>
+        <tr><td>Nothing to migrate</td><td>Confirm <code>~/.cursor/projects/*/agent-transcripts/</code> exists. Open the repo in Cursor first so the slug is created.</td></tr>
+        <tr><td>Wrong <code>cwd</code> in migrated chats</td><td>Check <code>workspaceStorage/*/workspace.json</code> maps the slug to your path. Re-delete manifest entry and re-migrate.</td></tr>
+        <tr><td>Sessions not in Claude UI</td><td>Verify Claude folder has leading dash. Restart Claude Code.</td></tr>
+        <tr><td>Chat fails to parse</td><td><code>python3 -m json.tool &lt; chat.jsonl</code> — file may be corrupted.</td></tr>
+        <tr><td>Need Composer history too</td><td>Use the <a href="export-cursor-chat-history-vscdb.html">state.vscdb export guide</a> separately.</td></tr>
       </tbody>
     </table>
 
     <h2 id="faq">FAQ</h2>
     <h3>Will migrated chats appear in Claude Code history?</h3>
-    <p>Yes — when converted JSONL files land in the correct <code>~/.claude/projects/&lt;path-hash&gt;/</code> directory for your repo.</p>
-    <h3>Are original Cursor chats modified?</h3>
-    <p>No. They remain in <code>agent-transcripts/</code>. You can re-run migration after fixing the script.</p>
-    <h3>What about Composer / state.vscdb chats?</h3>
-    <p>Those are stored separately in SQLite. Use the <a href="export-cursor-chat-history-vscdb.html">state.vscdb export guide</a> and seed <code>CLAUDE.md</code> for Composer-only history.</p>
-    <h3>Why new UUIDs instead of preserving Cursor IDs?</h3>
-    <p>Claude Code's schema requires its own session and message UUIDs. Collisions with existing sessions would break history.</p>
+    <p>Yes — when JSONL files land in <code>~/.claude/projects/-&lt;slug&gt;/</code> with valid Claude schema.</p>
+    <h3>Why stable session IDs instead of random UUIDs?</h3>
+    <p>So re-running the migrator updates the same file instead of duplicating sessions. Random per-message UUIDs inside the session are still generated fresh each run.</p>
+    <h3>Are Cursor files modified?</h3>
+    <p>No.</p>
+    <h3>What about api2.cursor.sh / usage APIs?</h3>
+    <p>Out of scope — this migrator is local disk only. Cloud usage requires your Cursor JWT and is unrelated to chat history migration.</p>
 
-    <h2 id="related">Related guides</h2>
+    <h2 id="related">Related</h2>
     <ul>
-      <li><a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a> — Composer threads in SQLite</li>
-      <li><a href="best-economical-llm-models-rag-openai-gemini-anthropic.html">Best Economical LLM Models for RAG</a></li>
+      <li><a href="export-cursor-chat-history-vscdb.html">Export Cursor Chat History from state.vscdb</a></li>
     </ul>
 
-    <p class="closing">Dry-run first, verify path hashes, then migrate — your Cursor files stay safe.</p>
+    <p class="closing">Dry-run, migrate chats then plans, verify in <code>claude --resume</code>.</p>
 
     <aside class="blog-cta">
       <p><strong>Building AI-assisted dev workflows?</strong></p>
@@ -585,7 +729,6 @@ grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-a
   </footer>
 
   <script src="/site-nav.js"></script>
-  <script src="../../blog/code-highlight.js"></script>
   <script src="/script.js"></script>
 </body>
 </html>
