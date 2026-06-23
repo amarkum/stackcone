@@ -40,6 +40,66 @@ SQL_FUNCTIONS = frozenset({
     "lag", "extract", "date_trunc", "safe_cast", "array_agg", "string_agg",
 })
 
+DART_KEYWORDS = frozenset({
+    "abstract", "as", "assert", "async", "await", "break", "case", "catch",
+    "class", "const", "continue", "default", "do", "else", "enum", "extends",
+    "factory", "false", "final", "finally", "for", "if", "import", "in", "is",
+    "late", "library", "new", "null", "part", "rethrow", "return", "static",
+    "super", "switch", "sync", "this", "throw", "true", "try", "var", "void",
+    "while", "with", "yield",
+})
+
+DART_TYPES = frozenset({
+    "Future", "Stream", "Provider", "String", "int", "bool", "double", "num",
+    "List", "Map", "Set", "dynamic", "Object", "DateTime", "Widget", "State",
+    "DocumentSnapshot", "FirebaseAuth", "FirebaseFirestore", "GoRouter",
+    "GoogleSignIn", "FirebaseAuthException", "OAuthProvider", "WidgetRef",
+    "StreamProvider", "GoRoute", "UserProfile", "SetOptions", "Timestamp",
+})
+
+KOTLIN_KEYWORDS = frozenset({
+    "plugins", "android", "namespace", "defaultConfig", "applicationId",
+    "version", "apply", "false", "true", "id", "kotlin",
+})
+
+RUBY_KEYWORDS = frozenset({
+    "target", "do", "end", "use_frameworks", "linkage", "static", "def",
+})
+
+RULES_KEYWORDS = frozenset({
+    "rules_version", "service", "cloud", "firestore", "match", "allow",
+    "read", "write", "if", "request", "auth", "null", "true", "false",
+})
+
+
+def _highlight_quoted(
+    src: str,
+    keywords: frozenset[str],
+    builtins: frozenset[str],
+    string_pattern: str,
+    line_comments: tuple[str, ...] = ("//", "#"),
+) -> str:
+    chunks: list[str] = []
+    pos = 0
+    for m in re.finditer(string_pattern, src):
+        chunks.append(
+            _highlight_identifiers(
+                src[pos : m.start()], keywords, builtins, fn_after_def=False
+            )
+        )
+        token = m.group(0)
+        if any(token.startswith(prefix) for prefix in line_comments):
+            chunks.append(_span("cm", token))
+        else:
+            chunks.append(_span("str", token))
+        pos = m.end()
+    chunks.append(
+        _highlight_identifiers(
+            src[pos:], keywords, builtins, fn_after_def=False
+        )
+    )
+    return "".join(chunks)
+
 
 def _span(cls: str, text: str) -> str:
     return f'<span class="{cls}">{html.escape(text, quote=False)}</span>'
@@ -119,6 +179,7 @@ def highlight_bash(src: str) -> str:
                 cmds = {
                     "python3", "pip", "npm", "curl", "grep", "find", "ls", "head",
                     "chmod", "cd", "mkdocs", "source", "rm", "wc", "cat",
+                    "flutter", "dart", "keytool",
                 }
                 if m and m.group(1) in cmds:
                     parts.append(_span("fn", m.group(1)))
@@ -186,6 +247,59 @@ def highlight_javascript(src: str) -> str:
         r"\b(function|async)\s+([a-zA-Z_$][\w$]*)",
         lambda m: f'{_span("kw", m.group(1))} {_span("fn", m.group(2))}',
         "".join(chunks),
+    )
+
+
+def highlight_dart(src: str) -> str:
+    return _highlight_quoted(
+        src,
+        DART_KEYWORDS,
+        DART_TYPES,
+        r'("""[\s\S]*?"""|\'\'\'[\s\S]*?\'\'\'|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\n]*)',
+    )
+
+
+def highlight_kotlin(src: str) -> str:
+    return _highlight_quoted(
+        src,
+        KOTLIN_KEYWORDS,
+        frozenset(),
+        r'"(?:\\.|[^"\\])*"|//[^\n]*',
+    )
+
+
+def highlight_ruby(src: str) -> str:
+    return _highlight_quoted(
+        src,
+        RUBY_KEYWORDS,
+        frozenset({"File"}),
+        r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|#[^\n]*',
+    )
+
+
+def highlight_xml(src: str) -> str:
+    parts: list[str] = []
+    pos = 0
+    for m in re.finditer(r"(<\!--[\s\S]*?-->|<\/?[\w:-]+>|[^<]+)", src):
+        token = m.group(0)
+        if token.startswith("<!--"):
+            parts.append(_span("cm", token))
+        elif token.startswith("<"):
+            parts.append(_span("kw", token))
+        else:
+            parts.append(html.escape(token, quote=False))
+        pos = m.end()
+    parts.append(html.escape(src[pos:], quote=False))
+    return "".join(parts)
+
+
+def highlight_rules(src: str) -> str:
+    return _highlight_quoted(
+        src,
+        RULES_KEYWORDS,
+        frozenset(),
+        r'"(?:\\.|[^"\\])*"|//[^\n]*',
+        line_comments=("//",),
     )
 
 
@@ -368,6 +482,16 @@ def highlight(src: str, lang: str) -> str:
         return highlight_markdown(src)
     if lang in ("sql",):
         return highlight_sql(src)
+    if lang in ("dart",):
+        return highlight_dart(src)
+    if lang in ("kotlin", "gradle", "kts"):
+        return highlight_kotlin(src)
+    if lang in ("ruby", "rb", "podfile"):
+        return highlight_ruby(src)
+    if lang in ("xml", "plist"):
+        return highlight_xml(src)
+    if lang in ("rules", "firestore-rules"):
+        return highlight_rules(src)
     return highlight_text(src)
 
 
@@ -381,17 +505,33 @@ def detect_lang(code: str, hinted: str | None) -> str:
         if hint not in ("text",):
             return hint
     s = code.lstrip()
-    if s.startswith("#!/usr/bin/env python") or re.search(r"^(import |from |def )", s, re.M):
+    if s.startswith("#!/usr/bin/env python") or re.search(r"^def ", s, re.M):
         return "python"
+    if s.startswith("<") and re.search(r"<\/?[\w:-]+", s):
+        return "xml"
+    if s.startswith("rules_version") or "service cloud.firestore" in s:
+        return "rules"
+    if re.search(r"^import '(?:dart|package):", s, re.M) or re.match(
+        r"^(class |Future<|final |const |bool get |await )", s
+    ):
+        return "dart"
+    if re.search(r"^plugins\s*\{", s) or re.search(r"^android\s*\{", s):
+        return "kotlin"
+    if re.match(r"^target ['\"]", s) or "use_frameworks!" in s:
+        return "ruby"
     if s.startswith("{") or s.startswith("["):
         return "json"
-    if re.match(r"^(python3|pip |curl |grep |ls |find |chmod |cd |mkdocs )", s):
+    if re.match(r"^(flutter |dart pub|keytool |python3|pip |curl |grep |ls |find |chmod |cd |mkdocs )", s):
         return "bash"
     if re.search(r"^\s*SELECT\b", s, re.I) or re.search(
         r"\b(SELECT|FROM|JOIN|WHERE|GROUP BY|ORDER BY)\b", s, re.I
     ):
         return "sql"
-    if re.search(r"\b(function|const|let|async)\b", s):
+    if s.startswith("dependencies:") or re.search(
+        r"^[a-z_]+:\s*[\^~]?\d", s, re.M
+    ):
+        return "yaml"
+    if re.search(r"\bfunction\b", s):
         return "javascript"
     if re.match(r"^name:\s", s) or re.match(r"^on:\s", s) or re.search(r"^jobs:\s*$", s, re.M):
         return "yaml"
