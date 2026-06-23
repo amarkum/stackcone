@@ -1,8 +1,8 @@
-# Automate Data Engineering Fixes with Cursor MCP
+# Automate Data Engineering Fixes with AI Agents and MCP
 
-A typical data-engineering Jira ticket is not “change three lines and merge.” You read the ticket and linked Confluence spec, find the DAG and config files, fix Python until **flake8**, **pylint**, and **SonarQube** pass in GitHub CI, trigger **Airflow**, read task logs when something fails, run a **MongoDB** or Snowflake validation query, and repeat until the pipeline is green. That loop used to mean six browser tabs and a lot of copy-paste.
+A typical data-engineering Jira ticket is not "change three lines and merge." You read the ticket and linked Confluence spec, find the DAG and config files, fix Python until **flake8**, **pylint**, and **SonarQube** pass in GitHub CI, trigger **Airflow**, read task logs when something fails, run a **MongoDB** or Snowflake validation query, and repeat until the pipeline is green. That loop used to mean six browser tabs and a lot of copy-paste.
 
-This guide documents how I automated that loop end to end with **Cursor**, the **CodeBench app** that stores API keys and exposes integrations via **MCP**, plus an **`ai-engineer.md`** playbook that tells the agent which tools to call and when to retry.
+This guide documents how I automated that loop end to end with an **AI coding agent**, the **CodeBench app** that stores API keys and exposes integrations via **MCP**, plus an **`ai-engineer.md`** playbook that tells the agent which tools to call and when to retry.
 
 ## Table of contents
 
@@ -11,9 +11,9 @@ This guide documents how I automated that loop end to end with **Cursor**, the *
 3. [Centralize API keys](#centralize-api-keys)
 4. [Expose integrations as MCP tools](#expose-integrations-as-mcp-tools)
 5. [GitHub CI gates](#github-ci-gates)
-6. [Cursor rules for Jira and Confluence](#cursor-rules-for-jira-and-confluence)
+6. [Agent rules for Jira and Confluence](#agent-rules-for-jira-and-confluence)
 7. [The ai-engineer.md playbook](#the-ai-engineermd-playbook)
-8. [Wire MCP in Cursor](#wire-mcp-in-cursor)
+8. [Connect your agent via MCP](#connect-your-agent-via-mcp)
 9. [End-to-end agent loop](#end-to-end-agent-loop)
 10. [What to automate first](#what-to-automate-first)
 11. [FAQ](#faq)
@@ -27,17 +27,17 @@ This guide documents how I automated that loop end to end with **Cursor**, the *
 | Quality gates | GitHub Actions (flake8, pylint, Sonar) | Failures discovered only after push |
 | Run pipeline | Airflow (MWAA) | Trigger, poll, dig through task logs manually |
 | Validate data | MongoDB / warehouse | Ad-hoc queries in a separate client |
-| Retry | All of the above | No single “done” condition |
+| Retry | All of the above | No single "done" condition |
 
 The goal is one agent session that can **read the ticket**, **edit code**, **check CI**, **trigger and debug Airflow**, **run validation queries**, and **loop until every gate passes**.
 
 ## Architecture
 
 ```
-Jira / Confluence ──► Cursor rules (context)
+Jira / Confluence ──► Agent rules (context)
                            │
                            ▼
-                    Cursor Agent
+                    AI coding agent
                            │
               MCP (streamable-http) ──► CodeBench app
                            │              │
@@ -55,13 +55,13 @@ Jira / Confluence ──► Cursor rules (context)
 |-------|------|
 | **CodeBench app** | Local Flask (or similar) app; stores encrypted API keys; REST + MCP surface |
 | **MCP server** | Exposes typed tools: `airflow_trigger_dag`, `sonar_list_issues`, `mongodb_find`, etc. |
-| **Cursor rules** | Pull Jira issue + Confluence page into agent context at session start |
+| **Agent rules** | Pull Jira issue + Confluence page into agent context at session start |
 | **`ai-engineer.md`** | Operational playbook: tool order, success criteria, retry policy |
-| **GitHub CI** | flake8, pylint, SonarQube — objective “build green” signal |
+| **GitHub CI** | flake8, pylint, SonarQube — objective "build green" signal |
 
 ## Centralize API keys
 
-Scattering tokens across `.env`, shell exports, and Cursor config breaks quickly. I added a **settings panel in the CodeBench app** where a data engineer stores credentials once:
+Scattering tokens across `.env`, shell exports, and per-agent config files breaks quickly. I added a **settings panel in the CodeBench app** where a data engineer stores credentials once:
 
 | Integration | Keys / config |
 |-------------|----------------|
@@ -71,11 +71,11 @@ Scattering tokens across `.env`, shell exports, and Cursor config breaks quickly
 | MongoDB | connection URI or Atlas API |
 | Jira / Confluence | base URL, email, API token |
 
-The MCP server reads from the same secure store the UI uses — no duplicate secrets in the repo. Cursor only needs the MCP endpoint (`http://127.0.0.1:9193/mcp` or similar), not raw tokens in `mcp.json`.
+The MCP server reads from the same secure store the UI uses — no duplicate secrets in the repo. The agent only needs the MCP endpoint (`http://127.0.0.1:9193/mcp` or similar), not raw tokens scattered across client configs.
 
 ## Expose integrations as MCP tools
 
-Instead of one giant “do everything” tool, split by domain so the agent can plan:
+Instead of one giant "do everything" tool, split by domain so the agent can plan:
 
 | Domain | Example MCP tools |
 |--------|-------------------|
@@ -107,7 +107,7 @@ def sonar_list_issues(project_key: str, severities: list[str] | None = None) -> 
 
 ## GitHub CI gates
 
-CI is the objective signal for “code is acceptable.” My pipeline runs on every push and PR:
+CI is the objective signal for "code is acceptable." My pipeline runs on every push and PR:
 
 ```yaml
 name: data-pipeline-ci
@@ -139,9 +139,9 @@ jobs:
 
 The agent calls `github_get_check_runs` (or polls the Checks API via MCP) after push. **Do not mark the task done** until `conclusion == "success"` for lint and Sonar jobs.
 
-## Cursor rules for Jira and Confluence
+## Agent rules for Jira and Confluence
 
-A project rule (`.cursor/rules/jira-context.mdc`) tells the agent to load ticket context before coding:
+Project rules tell the agent to load ticket context before coding. In Cursor that is a `.mdc` file under `.cursor/rules/`; in Claude Code or other agents, use `AGENTS.md` or equivalent instructions — the pattern is the same:
 
 ```markdown
 ---
@@ -162,11 +162,11 @@ When the user gives a Jira key (e.g. DATA-1234):
 Follow `ai-engineer.md` for the full fix-and-verify loop.
 ```
 
-Trigger with: *“Implement DATA-1234”* — the agent fetches spec first instead of guessing from filenames.
+Trigger with: *"Implement DATA-1234"* — the agent fetches spec first instead of guessing from filenames.
 
 ## The ai-engineer.md playbook
 
-`ai-engineer.md` lives at the repo root (or `.cursor/`). It is the **retry contract** — what “done” means and which MCP tools to use in order.
+`ai-engineer.md` lives at the repo root (or alongside your agent rules). It is the **retry contract** — what "done" means and which MCP tools to use in order.
 
 ```markdown
 # AI Engineer — data pipeline fix loop
@@ -198,11 +198,11 @@ Trigger with: *“Implement DATA-1234”* — the agent fetches spec first inste
 - Prefer small commits per fix attempt so CI history is readable.
 ```
 
-This file is referenced from Cursor rules so every agent session shares the same definition of finished.
+Reference this file from your agent rules so every session shares the same definition of finished.
 
-## Wire MCP in Cursor
+## Connect your agent via MCP
 
-Add the CodeBench MCP server to `.cursor/mcp.json`:
+MCP is client-agnostic — the same CodeBench server works with Cursor, Claude Desktop, Claude Code, and other MCP-capable agents. Point your client at the server:
 
 ```json
 {
@@ -215,11 +215,11 @@ Add the CodeBench MCP server to `.cursor/mcp.json`:
 }
 ```
 
-Start the CodeBench app (and MCP listener) before opening Cursor. Confirm tools appear in **Settings → MCP** — you should see domains like Airflow, Sonar, MongoDB, GitHub.
+In Cursor, add this to `.cursor/mcp.json`. In Claude Desktop, use `claude_desktop_config.json`. Start the CodeBench app (and MCP listener) before opening your agent client, then confirm tools appear in the MCP settings — you should see domains like Airflow, Sonar, MongoDB, and GitHub.
 
 ## End-to-end agent loop
 
-Typical session for *“Fix DATA-1234 — vendor file schema drift”*:
+Typical session for *"Fix DATA-1234 — vendor file schema drift"*:
 
 1. **Ingest** — Jira issue + Confluence validation table via MCP.
 2. **Locate** — agent searches repo for DAG id and parser referenced in ticket.
@@ -251,9 +251,9 @@ Add write tools (S3 upload, MongoDB insert) only after read paths are stable.
 
 ## FAQ
 
-### Why MCP instead of custom Cursor tools only?
+### Why MCP instead of custom agent tools only?
 
-MCP gives a **standard tool schema** reusable across Cursor, Claude Desktop, and other agents. One CodeBench server serves every client.
+MCP gives a **standard tool schema** reusable across Cursor, Claude Desktop, Claude Code, and other agents. One CodeBench server serves every client.
 
 ### Is it safe to give an agent Airflow and MongoDB access?
 
@@ -267,7 +267,7 @@ That is expected — `ai-engineer.md` requires both. Logs + validation queries b
 
 No. A minimal Flask app with MCP + encrypted key store is enough. The pattern matters more than the UI.
 
-### How is this different from Lazie / generic AI assistants?
+### How is this different from a generic AI assistant?
 
 Generic chat cannot **poll CI**, **trigger DAGs**, or **query MongoDB** without wired tools. MCP turns the assistant into an operator with APIs.
 

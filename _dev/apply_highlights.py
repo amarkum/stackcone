@@ -14,6 +14,12 @@ BLOCK_RE = re.compile(
     re.MULTILINE,
 )
 
+SPAN_RE = re.compile(r'<span class="[^"]+">([^<]*)</span>')
+
+
+def strip_spans(raw: str) -> str:
+    return SPAN_RE.sub(r"\1", raw)
+
 HLJS_HEAD_RE = re.compile(
     r"\n?\s*<link rel=\"stylesheet\" href=\"https://cdn\.jsdelivr\.net/gh/highlightjs[^>]+>\n?"
     r"(?:\s*<script src=\"https://cdn\.jsdelivr\.net/gh/highlightjs[^>]+></script>\n?)*",
@@ -37,12 +43,9 @@ def process_html(path: Path) -> bool:
     def repl(m: re.Match[str]) -> str:
         hinted = m.group(1)
         raw = m.group(2)
-        if already_highlighted(raw):
-            inner = raw
-        else:
-            code = unescape_code(raw)
-            lang = detect_lang(code, hinted)
-            inner = highlight(code, lang)
+        code = unescape_code(strip_spans(raw) if already_highlighted(raw) else raw)
+        lang = detect_lang(code, hinted)
+        inner = highlight(code, lang)
         return f"<pre><code>{inner}</code></pre>"
 
     text = BLOCK_RE.sub(repl, text)

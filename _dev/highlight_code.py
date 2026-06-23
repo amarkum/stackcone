@@ -192,6 +192,97 @@ def highlight_text(src: str) -> str:
     return "\n".join(lines_out)
 
 
+def _highlight_yaml_tail(tail: str) -> str:
+    if not tail:
+        return ""
+    chunks: list[str] = []
+    pos = 0
+    for m in re.finditer(
+        r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|(?<![A-Za-z0-9_.@])-?\d+(?:\.\d+)?(?![A-Za-z0-9_])|\b(true|false|null)\b',
+        tail,
+    ):
+        chunks.append(html.escape(tail[pos : m.start()], quote=False))
+        token = m.group(0)
+        if token[0] in "\"'":
+            chunks.append(_span("str", token))
+        elif token in ("true", "false", "null"):
+            chunks.append(_span("kw", token))
+        else:
+            chunks.append(_span("num", token))
+        pos = m.end()
+    chunks.append(html.escape(tail[pos:], quote=False))
+    return "".join(chunks)
+
+
+def _highlight_yaml_kv_line(line: str) -> str:
+    stripped = line.lstrip()
+    indent = line[: len(line) - len(stripped)]
+    if stripped.startswith("#"):
+        return html.escape(indent, quote=False) + _span("cm", stripped)
+    bullet_m = re.match(r"^(-\s+)(.*)$", stripped)
+    if bullet_m:
+        bullet, rest = bullet_m.groups()
+        inner = _highlight_yaml_kv_line(rest) if ":" in rest else html.escape(rest, quote=False)
+        return html.escape(indent, quote=False) + html.escape(bullet, quote=False) + inner
+    m = re.match(r"^([\w@./$-]+)(\s*:\s*)(.*)$", stripped)
+    if m:
+        key, colon_space, rest = m.groups()
+        return (
+            html.escape(indent, quote=False)
+            + _span("fn", key)
+            + html.escape(colon_space, quote=False)
+            + _highlight_yaml_tail(rest)
+        )
+    return html.escape(line, quote=False)
+
+
+def highlight_yaml(src: str) -> str:
+    return "\n".join(_highlight_yaml_kv_line(line) for line in src.split("\n"))
+
+
+def _highlight_markdown_inline(text: str) -> str:
+    chunks: list[str] = []
+    pos = 0
+    for m in re.finditer(r"`([^`]+)`", text):
+        chunks.append(html.escape(text[pos : m.start()], quote=False))
+        chunks.append(_span("str", f"`{m.group(1)}`"))
+        pos = m.end()
+    chunks.append(html.escape(text[pos:], quote=False))
+    return "".join(chunks)
+
+
+def highlight_markdown(src: str) -> str:
+    lines_out: list[str] = []
+    in_frontmatter = False
+    frontmatter_started = False
+    for line in src.split("\n"):
+        stripped = line.strip()
+        if stripped == "---":
+            lines_out.append(_span("kw", "---"))
+            if not frontmatter_started:
+                frontmatter_started = True
+                in_frontmatter = True
+            elif in_frontmatter:
+                in_frontmatter = False
+            continue
+        if in_frontmatter:
+            lines_out.append(_highlight_yaml_kv_line(line))
+            continue
+        header = re.match(r"^(#{1,6})\s+(.*)$", line)
+        if header:
+            hashes, title = header.groups()
+            indent = line[: len(line) - len(line.lstrip())]
+            lines_out.append(
+                html.escape(indent, quote=False)
+                + _span("kw", hashes)
+                + " "
+                + _highlight_markdown_inline(title)
+            )
+            continue
+        lines_out.append(_highlight_markdown_inline(line))
+    return "\n".join(lines_out)
+
+
 def highlight(src: str, lang: str) -> str:
     lang = lang.lower()
     if lang in ("python", "py"):
@@ -202,12 +293,22 @@ def highlight(src: str, lang: str) -> str:
         return highlight_json(src)
     if lang in ("javascript", "js", "typescript", "ts"):
         return highlight_javascript(src)
+    if lang in ("yaml", "yml"):
+        return highlight_yaml(src)
+    if lang in ("markdown", "md"):
+        return highlight_markdown(src)
     return highlight_text(src)
 
 
 def detect_lang(code: str, hinted: str | None) -> str:
-    if hinted and hinted not in ("text", "markdown", "md"):
-        return hinted
+    if hinted:
+        hint = hinted.lower()
+        if hint in ("yaml", "yml"):
+            return "yaml"
+        if hint in ("markdown", "md"):
+            return "markdown"
+        if hint not in ("text",):
+            return hint
     s = code.lstrip()
     if s.startswith("#!/usr/bin/env python") or re.search(r"^(import |from |def )", s, re.M):
         return "python"
@@ -217,6 +318,10 @@ def detect_lang(code: str, hinted: str | None) -> str:
         return "bash"
     if re.search(r"\b(function|const|let|async)\b", s):
         return "javascript"
+    if re.match(r"^name:\s", s) or re.match(r"^on:\s", s) or re.search(r"^jobs:\s*$", s, re.M):
+        return "yaml"
+    if s.startswith("---") or re.match(r"^#{1,6}\s", s) or re.search(r"^#{1,6}\s", s, re.M):
+        return "markdown"
     return "text"
 
 
