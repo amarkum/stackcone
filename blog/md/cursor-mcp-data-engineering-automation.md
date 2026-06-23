@@ -2,7 +2,7 @@
 
 A typical data-engineering Jira ticket is not “change three lines and merge.” You read the ticket and linked Confluence spec, find the DAG and config files, fix Python until **flake8**, **pylint**, and **SonarQube** pass in GitHub CI, trigger **Airflow**, read task logs when something fails, run a **MongoDB** or Snowflake validation query, and repeat until the pipeline is green. That loop used to mean six browser tabs and a lot of copy-paste.
 
-This guide documents how I automated that loop end to end with **Cursor**, a **local workbench app** that stores API keys and exposes integrations via **MCP**, plus an **`ai-engineer.md`** playbook that tells the agent which tools to call and when to retry.
+This guide documents how I automated that loop end to end with **Cursor**, the **CodeBench app** that stores API keys and exposes integrations via **MCP**, plus an **`ai-engineer.md`** playbook that tells the agent which tools to call and when to retry.
 
 ## Table of contents
 
@@ -39,7 +39,7 @@ Jira / Confluence ──► Cursor rules (context)
                            ▼
                     Cursor Agent
                            │
-              MCP (streamable-http) ──► Workbench app
+              MCP (streamable-http) ──► CodeBench app
                            │              │
                            │    ┌─────────┼─────────┐
                            │    ▼         ▼         ▼
@@ -53,7 +53,7 @@ Jira / Confluence ──► Cursor rules (context)
 
 | Piece | Role |
 |-------|------|
-| **Workbench app** | Local Flask (or similar) app; stores encrypted API keys; REST + MCP surface |
+| **CodeBench app** | Local Flask (or similar) app; stores encrypted API keys; REST + MCP surface |
 | **MCP server** | Exposes typed tools: `airflow_trigger_dag`, `sonar_list_issues`, `mongodb_find`, etc. |
 | **Cursor rules** | Pull Jira issue + Confluence page into agent context at session start |
 | **`ai-engineer.md`** | Operational playbook: tool order, success criteria, retry policy |
@@ -61,7 +61,7 @@ Jira / Confluence ──► Cursor rules (context)
 
 ## Centralize API keys
 
-Scattering tokens across `.env`, shell exports, and Cursor config breaks quickly. I added a **settings panel in the workbench app** where a data engineer stores credentials once:
+Scattering tokens across `.env`, shell exports, and Cursor config breaks quickly. I added a **settings panel in the CodeBench app** where a data engineer stores credentials once:
 
 | Integration | Keys / config |
 |-------------|----------------|
@@ -202,12 +202,12 @@ This file is referenced from Cursor rules so every agent session shares the same
 
 ## Wire MCP in Cursor
 
-Add the workbench MCP server to `.cursor/mcp.json`:
+Add the CodeBench MCP server to `.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "workbench": {
+    "codebench": {
       "url": "http://127.0.0.1:9193/mcp",
       "transport": "streamable-http"
     }
@@ -215,7 +215,7 @@ Add the workbench MCP server to `.cursor/mcp.json`:
 }
 ```
 
-Start the workbench app (and MCP listener) before opening Cursor. Confirm tools appear in **Settings → MCP** — you should see domains like Airflow, Sonar, MongoDB, GitHub.
+Start the CodeBench app (and MCP listener) before opening Cursor. Confirm tools appear in **Settings → MCP** — you should see domains like Airflow, Sonar, MongoDB, GitHub.
 
 ## End-to-end agent loop
 
@@ -253,7 +253,7 @@ Add write tools (S3 upload, MongoDB insert) only after read paths are stable.
 
 ### Why MCP instead of custom Cursor tools only?
 
-MCP gives a **standard tool schema** reusable across Cursor, Claude Desktop, and other agents. One workbench server serves every client.
+MCP gives a **standard tool schema** reusable across Cursor, Claude Desktop, and other agents. One CodeBench server serves every client.
 
 ### Is it safe to give an agent Airflow and MongoDB access?
 
@@ -263,7 +263,7 @@ Use **read-only** MongoDB credentials for validation, **scoped** GitHub tokens, 
 
 That is expected — `ai-engineer.md` requires both. Logs + validation queries bridge code correctness and runtime behavior.
 
-### Do I need a full workbench app?
+### Do I need a full CodeBench app?
 
 No. A minimal Flask app with MCP + encrypted key store is enough. The pattern matters more than the UI.
 

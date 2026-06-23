@@ -58,11 +58,11 @@
     "name": "Automate data engineering fixes with Cursor MCP",
     "description": "Connect Jira, CI, Airflow, and validation tools to Cursor via MCP and an ai-engineer.md retry playbook.",
     "step": [
-      { "@type": "HowToStep", "name": "Centralize API keys", "text": "Store GitHub, SonarQube, Airflow, MongoDB, Jira, and Confluence credentials in a local workbench app." },
+      { "@type": "HowToStep", "name": "Centralize API keys", "text": "Store GitHub, SonarQube, Airflow, MongoDB, Jira, and Confluence credentials in the CodeBench app." },
       { "@type": "HowToStep", "name": "Expose MCP tools", "text": "Register domain-specific tools for CI checks, DAG triggers, log reads, and data validation." },
       { "@type": "HowToStep", "name": "Add Cursor rules", "text": "Create rules that load Jira and Confluence context before code edits." },
       { "@type": "HowToStep", "name": "Write ai-engineer.md", "text": "Define done criteria and a retry loop until CI, Airflow, and validation queries pass." },
-      { "@type": "HowToStep", "name": "Wire MCP in Cursor", "text": "Point .cursor/mcp.json at the workbench MCP server and verify tools in Settings." }
+      { "@type": "HowToStep", "name": "Wire MCP in Cursor", "text": "Point .cursor/mcp.json at the CodeBench MCP server and verify tools in Settings." }
     ]
   }
   </script>
@@ -76,7 +76,7 @@
         "name": "Why MCP instead of custom Cursor tools only?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "MCP provides a standard tool schema reusable across Cursor, Claude Desktop, and other agents. One workbench server can serve every client without duplicating integrations."
+          "text": "MCP provides a standard tool schema reusable across Cursor, Claude Desktop, and other agents. One CodeBench server can serve every client without duplicating integrations."
         }
       },
       {
@@ -130,7 +130,7 @@
     <h1>Automate Data Engineering Fixes with Cursor MCP</h1>
     <p class="meta">June 2026 · Published by Amar Kumar</p>
     <p>A typical data-engineering Jira ticket is not “change three lines and merge.” You read the ticket and linked Confluence spec, fix Python until <strong>flake8</strong>, <strong>pylint</strong>, and <strong>SonarQube</strong> pass in GitHub CI, trigger <strong>Airflow</strong>, read task logs when something fails, run a <strong>MongoDB</strong> validation query, and repeat until the pipeline is green. That loop used to mean six browser tabs and a lot of copy-paste.</p>
-    <p>This guide documents how I automated that loop end to end with <strong>Cursor</strong>, a <strong>local workbench app</strong> that stores API keys and exposes integrations via <strong>MCP</strong>, plus an <code>ai-engineer.md</code> playbook that tells the agent which tools to call and when to retry.</p>
+    <p>This guide documents how I automated that loop end to end with <strong>Cursor</strong>, the <strong>CodeBench app</strong> that stores API keys and exposes integrations via <strong>MCP</strong>, plus an <code>ai-engineer.md</code> playbook that tells the agent which tools to call and when to retry.</p>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
@@ -164,22 +164,22 @@
     <p>The goal is one agent session that can <strong>read the ticket</strong>, <strong>edit code</strong>, <strong>check CI</strong>, <strong>trigger and debug Airflow</strong>, <strong>run validation queries</strong>, and <strong>loop until every gate passes</strong>.</p>
 
     <h2 id="architecture">Architecture</h2>
-    <div class="pipeline" role="img" aria-label="Architecture: Jira and Confluence feed Cursor rules; Cursor agent calls MCP workbench; workbench connects to GitHub, Airflow, MongoDB; ai-engineer.md defines retry loop">
+    <div class="pipeline" role="img" aria-label="Architecture: Jira and Confluence feed Cursor rules; Cursor agent calls CodeBench MCP; CodeBench app connects to GitHub, Airflow, MongoDB; ai-engineer.md defines retry loop">
       <span class="pipeline-step">Jira / Confluence</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Cursor rules</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">Cursor Agent</span>
       <span class="pipeline-arrow">→</span>
-      <span class="pipeline-step">MCP workbench</span>
+      <span class="pipeline-step">CodeBench MCP</span>
       <span class="pipeline-arrow">→</span>
       <span class="pipeline-step">GitHub · Airflow · MongoDB</span>
     </div>
-    <p class="diagram-caption">The workbench app holds API keys once; MCP exposes typed tools; <code>ai-engineer.md</code> defines when the loop is done.</p>
+    <p class="diagram-caption">The CodeBench app holds API keys once; MCP exposes typed tools; <code>ai-engineer.md</code> defines when the loop is done.</p>
     <table>
       <thead><tr><th>Piece</th><th>Role</th></tr></thead>
       <tbody>
-        <tr><td><strong>Workbench app</strong></td><td>Local Flask app; stores encrypted API keys; REST + MCP surface</td></tr>
+        <tr><td><strong>CodeBench app</strong></td><td>Local Flask app; stores encrypted API keys; REST + MCP surface</td></tr>
         <tr><td><strong>MCP server</strong></td><td>Typed tools: <code>airflow_trigger_dag</code>, <code>sonar_list_issues</code>, <code>mongodb_find</code>, etc.</td></tr>
         <tr><td><strong>Cursor rules</strong></td><td>Pull Jira issue + Confluence page into agent context at session start</td></tr>
         <tr><td><strong>ai-engineer.md</strong></td><td>Operational playbook: tool order, success criteria, retry policy</td></tr>
@@ -188,7 +188,7 @@
     </table>
 
     <h2 id="api-keys">Centralize API keys</h2>
-    <p>Scattering tokens across <code>.env</code>, shell exports, and Cursor config breaks quickly. I added a <strong>settings panel in the workbench app</strong> where a data engineer stores credentials once:</p>
+    <p>Scattering tokens across <code>.env</code>, shell exports, and Cursor config breaks quickly. I added a <strong>settings panel in the CodeBench app</strong> where a data engineer stores credentials once:</p>
     <table>
       <thead><tr><th>Integration</th><th>Keys / config</th></tr></thead>
       <tbody>
@@ -310,16 +310,16 @@ Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
     <p>This file is referenced from Cursor rules so every agent session shares the same definition of finished.</p>
 
     <h2 id="wire-mcp">Wire MCP in Cursor</h2>
-    <p>Add the workbench MCP server to <code>.cursor/mcp.json</code>:</p>
+    <p>Add the CodeBench MCP server to <code>.cursor/mcp.json</code>:</p>
     <pre><code>{
   <span class="str">"mcpServers"</span>: {
-    <span class="str">"workbench"</span>: {
+    <span class="str">"codebench"</span>: {
       <span class="str">"url"</span>: <span class="str">"http://127.0.0.1:9193/mcp"</span>,
       <span class="str">"transport"</span>: <span class="str">"streamable-http"</span>
     }
   }
 }</code></pre>
-    <p>Start the workbench app (and MCP listener) before opening Cursor. Confirm tools appear in <strong>Settings → MCP</strong> — you should see domains like Airflow, Sonar, MongoDB, GitHub.</p>
+    <p>Start the CodeBench app (and MCP listener) before opening Cursor. Confirm tools appear in <strong>Settings → MCP</strong> — you should see domains like Airflow, Sonar, MongoDB, GitHub.</p>
 
     <h2 id="agent-loop">End-to-end agent loop</h2>
     <p>Typical session for <em>“Fix DATA-1234 — vendor file schema drift”</em>:</p>
@@ -364,12 +364,12 @@ Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
 
     <h2 id="faq">FAQ</h2>
     <h3>Why MCP instead of custom Cursor tools only?</h3>
-    <p>MCP gives a <strong>standard tool schema</strong> reusable across Cursor, Claude Desktop, and other agents. One workbench server serves every client.</p>
+    <p>MCP gives a <strong>standard tool schema</strong> reusable across Cursor, Claude Desktop, and other agents. One CodeBench server serves every client.</p>
     <h3>Is it safe to give an agent Airflow and MongoDB access?</h3>
     <p>Use <strong>read-only</strong> MongoDB credentials for validation, <strong>scoped</strong> GitHub tokens, and <strong>dev/stage</strong> Airflow environments for agent-triggered runs. Keep production triggers human-gated.</p>
     <h3>What if CI passes but the DAG still fails?</h3>
     <p>That is expected — <code>ai-engineer.md</code> requires both. Logs + validation queries bridge code correctness and runtime behavior.</p>
-    <h3>Do I need a full workbench app?</h3>
+    <h3>Do I need a full CodeBench app?</h3>
     <p>No. A minimal Flask app with MCP + encrypted key store is enough. The pattern matters more than the UI.</p>
     <h3>How is this different from a generic AI assistant?</h3>
     <p>Generic chat cannot <strong>poll CI</strong>, <strong>trigger DAGs</strong>, or <strong>query MongoDB</strong> without wired tools. MCP turns the assistant into an operator with APIs.</p>
