@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <title>Automate Data Engineering Fixes with Cursor MCP | stackcone</title>
+  <meta name="description" content="Wire Jira, Confluence, GitHub CI, SonarQube, Airflow, and MongoDB into Cursor MCP — rules and ai-engineer.md retry loop until DAG and build are green.">
+  <meta name="keywords" content="cursor mcp data engineering, airflow mcp automation, sonarqube cursor agent, github ci flake8 pylint, jira confluence cursor rules, ai engineer playbook">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/cursor-mcp-data-engineering-automation.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/cursor-mcp-data-engineering-automation.html">
+  <meta property="og:title" content="Automate Data Engineering Fixes with Cursor MCP">
+  <meta property="og:description" content="Wire Jira, Confluence, GitHub CI, SonarQube, Airflow, and MongoDB into Cursor MCP — rules and ai-engineer.md retry loop until DAG and build are green.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Automate Data Engineering Fixes with Cursor MCP">
+  <meta name="twitter:description" content="Wire Jira, Confluence, GitHub CI, SonarQube, Airflow, and MongoDB into Cursor MCP — rules and ai-engineer.md retry loop until DAG and build are green.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Automate Data Engineering Fixes with Cursor MCP",
+    "description": "Wire Jira, Confluence, GitHub CI, SonarQube, Airflow, and MongoDB into Cursor MCP — rules and ai-engineer.md retry loop until DAG and build are green.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-19",
+    "dateModified": "2026-06-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/cursor-mcp-data-engineering-automation.html" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["cursor mcp data engineering", "airflow mcp automation", "sonarqube cursor agent", "github ci flake8 pylint", "jira confluence cursor rules", "ai engineer playbook"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "End-to-end data pipeline automation with AI agents" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Automate data engineering fixes with Cursor MCP",
+    "description": "Connect Jira, CI, Airflow, and validation tools to Cursor via MCP and an ai-engineer.md retry playbook.",
+    "step": [
+      { "@type": "HowToStep", "name": "Centralize API keys", "text": "Store GitHub, SonarQube, Airflow, MongoDB, Jira, and Confluence credentials in a local workbench app." },
+      { "@type": "HowToStep", "name": "Expose MCP tools", "text": "Register domain-specific tools for CI checks, DAG triggers, log reads, and data validation." },
+      { "@type": "HowToStep", "name": "Add Cursor rules", "text": "Create rules that load Jira and Confluence context before code edits." },
+      { "@type": "HowToStep", "name": "Write ai-engineer.md", "text": "Define done criteria and a retry loop until CI, Airflow, and validation queries pass." },
+      { "@type": "HowToStep", "name": "Wire MCP in Cursor", "text": "Point .cursor/mcp.json at the workbench MCP server and verify tools in Settings." }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why MCP instead of custom Cursor tools only?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MCP provides a standard tool schema reusable across Cursor, Claude Desktop, and other agents. One workbench server can serve every client without duplicating integrations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is it safe to give an agent Airflow and MongoDB access?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use read-only MongoDB credentials for validation, scoped GitHub tokens, and dev or stage Airflow environments for agent-triggered runs. Keep production triggers human-gated."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if CI passes but the DAG still fails?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "That is expected. The ai-engineer.md playbook requires both CI green and a successful DAG run. Task logs and validation queries bridge code correctness and runtime behavior."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Cursor MCP Data Engineering Automation", "item": "https://stackcone.com/blog/posts/cursor-mcp-data-engineering-automation.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Automate Data Engineering Fixes with Cursor MCP</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>A typical data-engineering Jira ticket is not “change three lines and merge.” You read the ticket and linked Confluence spec, fix Python until <strong>flake8</strong>, <strong>pylint</strong>, and <strong>SonarQube</strong> pass in GitHub CI, trigger <strong>Airflow</strong>, read task logs when something fails, run a <strong>MongoDB</strong> validation query, and repeat until the pipeline is green. That loop used to mean six browser tabs and a lot of copy-paste.</p>
+    <p>This guide documents how I automated that loop end to end with <strong>Cursor</strong>, a <strong>local workbench app</strong> that stores API keys and exposes integrations via <strong>MCP</strong>, plus an <code>ai-engineer.md</code> playbook that tells the agent which tools to call and when to retry.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#manual-loop">The manual loop</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#api-keys">Centralize API keys</a></li>
+        <li><a href="#mcp-tools">Expose integrations as MCP tools</a></li>
+        <li><a href="#github-ci">GitHub CI gates</a></li>
+        <li><a href="#cursor-rules">Cursor rules for Jira and Confluence</a></li>
+        <li><a href="#ai-engineer">The ai-engineer.md playbook</a></li>
+        <li><a href="#wire-mcp">Wire MCP in Cursor</a></li>
+        <li><a href="#agent-loop">End-to-end agent loop</a></li>
+        <li><a href="#automate-first">What to automate first</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="manual-loop">The manual loop</h2>
+    <table>
+      <thead><tr><th>Step</th><th>Tool</th><th>Pain</th></tr></thead>
+      <tbody>
+        <tr><td>Understand work</td><td>Jira + Confluence</td><td>Context scattered across comments and wiki pages</td></tr>
+        <tr><td>Implement</td><td>IDE + git</td><td>Agent has no live CI or pipeline feedback</td></tr>
+        <tr><td>Quality gates</td><td>GitHub Actions (flake8, pylint, Sonar)</td><td>Failures discovered only after push</td></tr>
+        <tr><td>Run pipeline</td><td>Airflow (MWAA)</td><td>Trigger, poll, dig through task logs manually</td></tr>
+        <tr><td>Validate data</td><td>MongoDB / warehouse</td><td>Ad-hoc queries in a separate client</td></tr>
+        <tr><td>Retry</td><td>All of the above</td><td>No single “done” condition</td></tr>
+      </tbody>
+    </table>
+    <p>The goal is one agent session that can <strong>read the ticket</strong>, <strong>edit code</strong>, <strong>check CI</strong>, <strong>trigger and debug Airflow</strong>, <strong>run validation queries</strong>, and <strong>loop until every gate passes</strong>.</p>
+
+    <h2 id="architecture">Architecture</h2>
+    <div class="pipeline" role="img" aria-label="Architecture: Jira and Confluence feed Cursor rules; Cursor agent calls MCP workbench; workbench connects to GitHub, Airflow, MongoDB; ai-engineer.md defines retry loop">
+      <span class="pipeline-step">Jira / Confluence</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Cursor rules</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Cursor Agent</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">MCP workbench</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">GitHub · Airflow · MongoDB</span>
+    </div>
+    <p class="diagram-caption">The workbench app holds API keys once; MCP exposes typed tools; <code>ai-engineer.md</code> defines when the loop is done.</p>
+    <table>
+      <thead><tr><th>Piece</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Workbench app</strong></td><td>Local Flask app; stores encrypted API keys; REST + MCP surface</td></tr>
+        <tr><td><strong>MCP server</strong></td><td>Typed tools: <code>airflow_trigger_dag</code>, <code>sonar_list_issues</code>, <code>mongodb_find</code>, etc.</td></tr>
+        <tr><td><strong>Cursor rules</strong></td><td>Pull Jira issue + Confluence page into agent context at session start</td></tr>
+        <tr><td><strong>ai-engineer.md</strong></td><td>Operational playbook: tool order, success criteria, retry policy</td></tr>
+        <tr><td><strong>GitHub CI</strong></td><td>flake8, pylint, SonarQube — objective “build green” signal</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="api-keys">Centralize API keys</h2>
+    <p>Scattering tokens across <code>.env</code>, shell exports, and Cursor config breaks quickly. I added a <strong>settings panel in the workbench app</strong> where a data engineer stores credentials once:</p>
+    <table>
+      <thead><tr><th>Integration</th><th>Keys / config</th></tr></thead>
+      <tbody>
+        <tr><td>GitHub</td><td>PAT or app token, repo allowlist</td></tr>
+        <tr><td>SonarQube</td><td>host URL, project key, token</td></tr>
+        <tr><td>Airflow (MWAA)</td><td>environment, DAG prefix, AWS SSO profile</td></tr>
+        <tr><td>MongoDB</td><td>connection URI or Atlas API</td></tr>
+        <tr><td>Jira / Confluence</td><td>base URL, email, API token</td></tr>
+      </tbody>
+    </table>
+    <p>The MCP server reads from the same secure store the UI uses — no duplicate secrets in the repo. Cursor only needs the MCP endpoint (<code>http://127.0.0.1:9193/mcp</code> or similar), not raw tokens in <code>mcp.json</code>.</p>
+
+    <h2 id="mcp-tools">Expose integrations as MCP tools</h2>
+    <p>Instead of one giant “do everything” tool, split by domain so the agent can plan:</p>
+    <table>
+      <thead><tr><th>Domain</th><th>Example MCP tools</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Jira</strong></td><td><code>jira_get_issue</code>, <code>jira_search</code>, <code>jira_add_comment</code></td></tr>
+        <tr><td><strong>Confluence</strong></td><td><code>confluence_get_page</code>, <code>confluence_search</code></td></tr>
+        <tr><td><strong>GitHub</strong></td><td><code>github_list_prs</code>, <code>github_get_check_runs</code>, <code>github_get_file</code></td></tr>
+        <tr><td><strong>SonarQube</strong></td><td><code>sonar_list_issues</code>, <code>sonar_get_hotspots</code></td></tr>
+        <tr><td><strong>Airflow</strong></td><td><code>airflow_trigger_dag</code>, <code>airflow_get_run_status</code>, <code>airflow_get_task_logs</code></td></tr>
+        <tr><td><strong>MongoDB</strong></td><td><code>mongodb_list_databases</code>, <code>mongodb_list_collections</code>, <code>mongodb_find</code>, <code>mongodb_aggregate</code></td></tr>
+        <tr><td><strong>CloudWatch</strong></td><td><code>cloudwatch_search_logs</code> (when MWAA logs land in CW)</td></tr>
+      </tbody>
+    </table>
+    <p>Each tool returns <strong>structured JSON</strong> (status, error message, log excerpt) so the model can branch without parsing HTML consoles.</p>
+    <p>Minimal MCP tool registration pattern (Python):</p>
+    <pre><code>@mcp.tool()
+<span class="kw">def</span> <span class="fn">airflow_trigger_dag</span>(dag_id: <span class="fn">str</span>, conf: <span class="fn">dict</span> | <span class="kw">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">dict</span>:
+    <span class="str">"""Trigger an Airflow DAG run and return run_id."""</span>
+    run_id = mwaa_client.trigger(dag_id, conf=conf <span class="kw">or</span> {})
+    <span class="kw">return</span> {<span class="str">"dag_id"</span>: dag_id, <span class="str">"run_id"</span>: run_id, <span class="str">"state"</span>: <span class="str">"queued"</span>}
+
+@mcp.tool()
+<span class="kw">def</span> <span class="fn">sonar_list_issues</span>(project_key: <span class="fn">str</span>, severities: <span class="fn">list</span>[<span class="fn">str</span>] | <span class="kw">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">dict</span>:
+    <span class="str">"""List open SonarQube issues for a project."""</span>
+    issues = sonar_client.issues_search(project_key, severities=severities <span class="kw">or</span> [<span class="str">"BLOCKER"</span>, <span class="str">"CRITICAL"</span>])
+    <span class="kw">return</span> {<span class="str">"count"</span>: <span class="fn">len</span>(issues), <span class="str">"issues"</span>: issues[:<span class="num">50</span>]}</code></pre>
+
+    <h2 id="github-ci">GitHub CI gates</h2>
+    <p>CI is the objective signal for “code is acceptable.” My pipeline runs on every push and PR:</p>
+    <pre><code>name: data-pipeline-ci
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install flake8 pylint
+      - run: flake8 cdm_dags/ ads_dags/ --max-line-length=120
+      - run: pylint cdm_dags/ ads_dags/ --fail-under=8.0
+
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}</code></pre>
+    <p>The agent calls <code>github_get_check_runs</code> (or polls the Checks API via MCP) after push. <strong>Do not mark the task done</strong> until <code>conclusion == "success"</code> for lint and Sonar jobs.</p>
+
+    <h2 id="cursor-rules">Cursor rules for Jira and Confluence</h2>
+    <p>A project rule (<code>.cursor/rules/jira-context.mdc</code>) tells the agent to load ticket context before coding:</p>
+    <pre><code>---
+description: Load Jira and Confluence context for data engineering tasks
+globs: cdm_dags/**,ads_dags/**,**/*.py
+alwaysApply: false
+---
+
+<span class="cm"># Jira + Confluence context</span>
+
+When the user gives a Jira key (e.g. DATA-1234):
+
+1. Call MCP `jira_get_issue` with the key.
+2. If the description links a Confluence page, call `confluence_get_page`.
+3. Summarize: acceptance criteria, affected DAGs, tables, and validation steps.
+4. Do not start edits until context is loaded.
+
+Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
+    <p>Trigger with: <em>“Implement DATA-1234”</em> — the agent fetches spec first instead of guessing from filenames.</p>
+
+    <h2 id="ai-engineer">The ai-engineer.md playbook</h2>
+    <p><code>ai-engineer.md</code> lives at the repo root (or <code>.cursor/</code>). It is the <strong>retry contract</strong> — what “done” means and which MCP tools to use in order.</p>
+    <pre><code><span class="cm"># AI Engineer — data pipeline fix loop</span>
+
+<span class="cm">## Done criteria (ALL required)</span>
+
+1. GitHub CI: flake8, pylint, and SonarQube checks green on the PR branch.
+2. Airflow: target DAG run `success` for the environment under test.
+3. Data: validation query returns expected row counts or schema per Jira/Confluence.
+4. No new Sonar BLOCKER/CRITICAL issues on touched files.
+
+<span class="cm">## Tool order</span>
+
+1. `jira_get_issue` + `confluence_get_page` — requirements
+2. Edit code locally
+3. `github_get_check_runs` after push — if failed, read logs, fix, recommit
+4. `sonar_list_issues` — fix or justify each BLOCKER/CRITICAL
+5. `airflow_trigger_dag` — note `run_id`
+6. Poll `airflow_get_run_status` until `success` or `failed`
+7. On failure: `airflow_get_task_logs` → locate file/line → fix → back to step 3
+8. `mongodb_find` or warehouse query tool — run validation from ticket
+9. `jira_add_comment` with run_id, PR link, validation summary
+
+<span class="cm">## Retry policy</span>
+
+- NEVER stop after a single failed DAG run — read logs and fix root cause.
+- NEVER stop while CI is red — iterate until green unless blocked on secrets/access.
+- Max 5 full loops per session; then summarize blockers for the human.
+- Prefer small commits per fix attempt so CI history is readable.</code></pre>
+    <p>This file is referenced from Cursor rules so every agent session shares the same definition of finished.</p>
+
+    <h2 id="wire-mcp">Wire MCP in Cursor</h2>
+    <p>Add the workbench MCP server to <code>.cursor/mcp.json</code>:</p>
+    <pre><code>{
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"workbench"</span>: {
+      <span class="str">"url"</span>: <span class="str">"http://127.0.0.1:9193/mcp"</span>,
+      <span class="str">"transport"</span>: <span class="str">"streamable-http"</span>
+    }
+  }
+}</code></pre>
+    <p>Start the workbench app (and MCP listener) before opening Cursor. Confirm tools appear in <strong>Settings → MCP</strong> — you should see domains like Airflow, Sonar, MongoDB, GitHub.</p>
+
+    <h2 id="agent-loop">End-to-end agent loop</h2>
+    <p>Typical session for <em>“Fix DATA-1234 — vendor file schema drift”</em>:</p>
+    <ol>
+      <li><strong>Ingest</strong> — Jira issue + Confluence validation table via MCP.</li>
+      <li><strong>Locate</strong> — agent searches repo for DAG id and parser referenced in ticket.</li>
+      <li><strong>Fix</strong> — edit Python/SQL; run local flake8 if available.</li>
+      <li><strong>Push</strong> — user or agent pushes branch; MCP polls GitHub checks.</li>
+      <li><strong>Sonar</strong> — list new issues on changed files; fix smell/blockers.</li>
+      <li><strong>Airflow</strong> — trigger DAG with <code>conf</code> from ticket; poll to completion.</li>
+      <li><strong>Logs</strong> — on task failure, pull last 200 lines, map stack trace to file.</li>
+      <li><strong>Validate</strong> — MongoDB count query for the day under test.</li>
+      <li><strong>Close loop</strong> — comment on Jira with evidence; ask human to merge if policy requires.</li>
+    </ol>
+    <div class="pipeline" role="img" aria-label="Retry loop: Jira ticket to code fix to push to CI green to trigger DAG to logs OK to query OK to Jira comment, retry on any failure">
+      <span class="pipeline-step">Jira ticket</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">code fix</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">CI green</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">DAG success</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">query OK</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Jira comment</span>
+    </div>
+    <p class="diagram-caption">On any failure, <code>ai-engineer.md</code> sends the agent back to fix code, re-push, or re-trigger — not stop at the first red check.</p>
+
+    <h2 id="automate-first">What to automate first</h2>
+    <table>
+      <thead><tr><th>Priority</th><th>Integration</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>GitHub check runs</td><td>Cheapest feedback loop</td></tr>
+        <tr><td>2</td><td>Airflow trigger + logs</td><td>Highest time savings vs MWAA UI</td></tr>
+        <tr><td>3</td><td>Sonar issues</td><td>Catches quality before review</td></tr>
+        <tr><td>4</td><td>Jira read + comment</td><td>Closes the ticket loop</td></tr>
+        <tr><td>5</td><td>MongoDB read-only queries</td><td>Safe validation without write risk</td></tr>
+      </tbody>
+    </table>
+    <p>Add write tools (S3 upload, MongoDB insert) only after read paths are stable.</p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Why MCP instead of custom Cursor tools only?</h3>
+    <p>MCP gives a <strong>standard tool schema</strong> reusable across Cursor, Claude Desktop, and other agents. One workbench server serves every client.</p>
+    <h3>Is it safe to give an agent Airflow and MongoDB access?</h3>
+    <p>Use <strong>read-only</strong> MongoDB credentials for validation, <strong>scoped</strong> GitHub tokens, and <strong>dev/stage</strong> Airflow environments for agent-triggered runs. Keep production triggers human-gated.</p>
+    <h3>What if CI passes but the DAG still fails?</h3>
+    <p>That is expected — <code>ai-engineer.md</code> requires both. Logs + validation queries bridge code correctness and runtime behavior.</p>
+    <h3>Do I need a full workbench app?</h3>
+    <p>No. A minimal Flask app with MCP + encrypted key store is enough. The pattern matters more than the UI.</p>
+    <h3>How is this different from a generic AI assistant?</h3>
+    <p>Generic chat cannot <strong>poll CI</strong>, <strong>trigger DAGs</strong>, or <strong>query MongoDB</strong> without wired tools. MCP turns the assistant into an operator with APIs.</p>
+
+    <h2 id="related">Related</h2>
+    <ul>
+      <li><a href="migrate-cursor-chat-to-claude-code.html">How to Migrate Cursor Chat to Claude Code</a></li>
+      <li><a href="sse-websocket-rest-api-compared.html">SSE vs WebSocket vs REST API for Live AI</a></li>
+    </ul>
+
+    <p class="closing">Centralize keys, expose MCP tools, write the retry playbook — then let the agent loop until CI, Airflow, and validation are all green.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Building agent-driven data pipelines?</strong></p>
+      <p>stackcone ships MCP integrations, RAG pipelines, and Cursor automation for engineering teams.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
