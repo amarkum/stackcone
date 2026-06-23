@@ -25,6 +25,21 @@ JS_KEYWORDS = frozenset({
     "new", "of", "return", "throw", "try", "var", "while", "yield",
 })
 
+SQL_KEYWORDS = frozenset({
+    "select", "from", "where", "join", "left", "right", "inner", "outer", "full",
+    "cross", "on", "as", "case", "when", "then", "else", "end", "and", "or",
+    "not", "null", "is", "in", "group", "by", "order", "having", "limit",
+    "offset", "union", "all", "distinct", "insert", "into", "update", "set",
+    "delete", "create", "table", "view", "index", "with", "over", "partition",
+    "between", "like", "exists", "using", "natural", "merge",
+})
+
+SQL_FUNCTIONS = frozenset({
+    "coalesce", "count", "sum", "avg", "min", "max", "cast", "concat", "date",
+    "timestamp", "ifnull", "nvl", "row_number", "rank", "dense_rank", "lead",
+    "lag", "extract", "date_trunc", "safe_cast", "array_agg", "string_agg",
+})
+
 
 def _span(cls: str, text: str) -> str:
     return f'<span class="{cls}">{html.escape(text, quote=False)}</span>'
@@ -251,6 +266,60 @@ def _highlight_markdown_inline(text: str) -> str:
     return "".join(chunks)
 
 
+def _highlight_sql_identifiers(text: str) -> str:
+    parts: list[str] = []
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == "@" and i + 1 < n and (text[i + 1].isalpha() or text[i + 1] == "_"):
+            j = i + 1
+            while j < n and (text[j].isalnum() or text[j] == "_"):
+                j += 1
+            parts.append(_span("fn", text[i:j]))
+            i = j
+            continue
+        if ch.isdigit() or (ch == "." and i + 1 < n and text[i + 1].isdigit()):
+            j = i
+            while j < n and (text[j].isdigit() or text[j] == "."):
+                j += 1
+            parts.append(_span("num", text[i:j]))
+            i = j
+            continue
+        if ch.isalpha() or ch == "_":
+            j = i
+            while j < n and (text[j].isalnum() or text[j] == "_"):
+                j += 1
+            word = text[i:j]
+            lower = word.lower()
+            if lower in SQL_KEYWORDS:
+                parts.append(_span("kw", word))
+            elif lower in SQL_FUNCTIONS:
+                parts.append(_span("fn", word))
+            else:
+                parts.append(html.escape(word, quote=False))
+            i = j
+            continue
+        parts.append(html.escape(ch, quote=False))
+        i += 1
+    return "".join(parts)
+
+
+def highlight_sql(src: str) -> str:
+    chunks: list[str] = []
+    pos = 0
+    for m in re.finditer(r"(--[^\n]*|'(?:''|[^'])*')", src):
+        chunks.append(_highlight_sql_identifiers(src[pos : m.start()]))
+        token = m.group(0)
+        if token.startswith("--"):
+            chunks.append(_span("cm", token))
+        else:
+            chunks.append(_span("str", token))
+        pos = m.end()
+    chunks.append(_highlight_sql_identifiers(src[pos:]))
+    return "".join(chunks)
+
+
 def highlight_markdown(src: str) -> str:
     lines_out: list[str] = []
     in_frontmatter = False
@@ -297,6 +366,8 @@ def highlight(src: str, lang: str) -> str:
         return highlight_yaml(src)
     if lang in ("markdown", "md"):
         return highlight_markdown(src)
+    if lang in ("sql",):
+        return highlight_sql(src)
     return highlight_text(src)
 
 
@@ -316,6 +387,10 @@ def detect_lang(code: str, hinted: str | None) -> str:
         return "json"
     if re.match(r"^(python3|pip |curl |grep |ls |find |chmod |cd |mkdocs )", s):
         return "bash"
+    if re.search(r"^\s*SELECT\b", s, re.I) or re.search(
+        r"\b(SELECT|FROM|JOIN|WHERE|GROUP BY|ORDER BY)\b", s, re.I
+    ):
+        return "sql"
     if re.search(r"\b(function|const|let|async)\b", s):
         return "javascript"
     if re.match(r"^name:\s", s) or re.match(r"^on:\s", s) or re.search(r"^jobs:\s*$", s, re.M):

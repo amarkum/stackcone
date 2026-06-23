@@ -285,23 +285,23 @@
     <p><strong>Why pre-aggregated marts?</strong> Looker Studio blends on wide raw tables are slow and error-prone. <code>mart_campaign_daily</code> at the correct grain gives sub-second dashboard loads and prevents accidental many-to-many spend inflation.</p>
 
     <p>Attribution matching logic (simplified SQL pattern for <code>fact_lead_attribution</code>):</p>
-    <pre><code>SELECT
+    <pre><code><span class="kw">SELECT</span>
   l.lead_id,
   l.created_at,
-  COALESCE(g.campaign_id, u.campaign_id, s.campaign_id) AS campaign_id,
-  CASE
-    WHEN g.campaign_id IS NOT NULL THEN 'gclid'
-    WHEN u.campaign_id IS NOT NULL THEN 'utm_source_map'
-    WHEN s.campaign_id IS NOT NULL THEN 'source_fallback'
-    ELSE 'unmatched'
-  END AS match_method
-FROM fact_leads l
-LEFT JOIN dim_gclid_campaign g ON l.gclid = g.gclid
-LEFT JOIN dim_source_campaign_map u
-  ON l.utm_source = u.source AND l.utm_campaign = u.utm_campaign
-LEFT JOIN dim_source_campaign_map s
-  ON l.utm_source = s.source AND s.utm_campaign IS NULL
-WHERE l.client_id = @client_id</code></pre>
+  <span class="fn">COALESCE</span>(g.campaign_id, u.campaign_id, s.campaign_id) <span class="kw">AS</span> campaign_id,
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> g.campaign_id <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">THEN</span> <span class="str">'gclid'</span>
+    <span class="kw">WHEN</span> u.campaign_id <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">THEN</span> <span class="str">'utm_source_map'</span>
+    <span class="kw">WHEN</span> s.campaign_id <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span> <span class="kw">THEN</span> <span class="str">'source_fallback'</span>
+    <span class="kw">ELSE</span> <span class="str">'unmatched'</span>
+  <span class="kw">END</span> <span class="kw">AS</span> match_method
+<span class="kw">FROM</span> fact_leads l
+<span class="kw">LEFT</span> <span class="kw">JOIN</span> dim_gclid_campaign g <span class="kw">ON</span> l.gclid = g.gclid
+<span class="kw">LEFT</span> <span class="kw">JOIN</span> dim_source_campaign_map u
+  <span class="kw">ON</span> l.utm_source = u.source <span class="kw">AND</span> l.utm_campaign = u.utm_campaign
+<span class="kw">LEFT</span> <span class="kw">JOIN</span> dim_source_campaign_map s
+  <span class="kw">ON</span> l.utm_source = s.source <span class="kw">AND</span> s.utm_campaign <span class="kw">IS</span> <span class="kw">NULL</span>
+<span class="kw">WHERE</span> l.client_id = <span class="fn">@client_id</span></code></pre>
 
     <h2 id="agent-design">Component design</h2>
 
