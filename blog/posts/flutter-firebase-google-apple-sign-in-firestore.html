@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <title>Flutter Firebase Auth &amp; Firestore Guide (2026) | stackcone</title>
+  <meta name="description" content="Build a Flutter app with Google Sign-In, Apple Sign-In, and Cloud Firestore — FlutterFire setup, Riverpod auth, GoRouter redirects, and repository patterns.">
+  <meta name="keywords" content="flutter firebase tutorial, google sign in flutter, apple sign in flutter, cloud firestore flutter, flutterfire configure, flutter riverpod go_router, firebase auth mobile app">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/flutter-firebase-google-apple-sign-in-firestore.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/flutter-firebase-google-apple-sign-in-firestore.html">
+  <meta property="og:title" content="How to Build a Flutter App with Firebase Auth and Firestore">
+  <meta property="og:description" content="Deep-dive Flutter mobile setup: Google and Apple sign-in, Firestore data layer, Riverpod providers, and auth-gated GoRouter routing.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Build a Flutter App with Firebase Auth and Firestore">
+  <meta name="twitter:description" content="Flutter + Firebase from scratch: auth providers, Firestore repositories, security rules, and platform config for iOS and Android.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Build a Flutter App with Firebase Auth and Firestore",
+    "description": "Build a Flutter app with Google Sign-In, Apple Sign-In, and Cloud Firestore — FlutterFire setup, Riverpod auth, GoRouter redirects, and repository patterns.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-23",
+    "dateModified": "2026-06-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/flutter-firebase-google-apple-sign-in-firestore.html" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["flutter firebase tutorial", "google sign in flutter", "apple sign in flutter", "cloud firestore flutter", "flutterfire configure", "flutter riverpod go_router", "firebase auth mobile app"],
+    "articleSection": "Mobile"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Flutter Firebase Auth and Firestore", "item": "https://stackcone.com/blog/posts/flutter-firebase-google-apple-sign-in-firestore.html" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Build a Flutter app with Firebase Auth and Firestore",
+    "description": "Set up Flutter with Firebase Authentication (Google, Apple, email) and Cloud Firestore for a production mobile app skeleton.",
+    "step": [
+      { "@type": "HowToStep", "name": "Create Flutter project", "text": "Run flutter create and organize lib/ by feature with core, data, and features folders." },
+      { "@type": "HowToStep", "name": "Configure Firebase", "text": "Create a Firebase project, enable auth providers, and run flutterfire configure." },
+      { "@type": "HowToStep", "name": "Platform setup", "text": "Add Android SHA-1 fingerprint, iOS URL schemes, and Apple Sign-In entitlements." },
+      { "@type": "HowToStep", "name": "Implement auth", "text": "Build AuthRepository with Google, Apple, and email sign-in methods." },
+      { "@type": "HowToStep", "name": "Wire Firestore", "text": "Add user-scoped collections, security rules, repositories, and Riverpod stream providers." },
+      { "@type": "HowToStep", "name": "Auth-gated routing", "text": "Use GoRouter redirect driven by authStateChanges and profile streams." }
+    ],
+    "tool": [
+      { "@type": "HowToTool", "name": "Flutter SDK" },
+      { "@type": "HowToTool", "name": "Firebase Console" },
+      { "@type": "HowToTool", "name": "FlutterFire CLI" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I need a backend server with Firebase?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not for auth and CRUD. Firestore security rules enforce access. Add Cloud Functions when you need server secrets, webhooks, or trusted batch jobs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does Google Sign-In fail with ApiException 10 on Android?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The SHA-1 fingerprint of your signing certificate is missing from Firebase Console. Add debug and release SHA-1 values, re-download google-services.json, and reinstall the app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Apple Sign-In work on Android?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not natively. Sign in with Apple is supported on iOS and macOS. Offer Google or email sign-in on Android and web."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How to Build a Flutter App with Firebase Auth and Firestore</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>Most mobile apps need the same foundation: sign in with Google or Apple, persist user data in the cloud, and react to auth state across screens. <strong>Flutter</strong> plus <strong>Firebase</strong> covers all three without maintaining separate native auth SDKs for iOS and Android.</p>
+    <p>This is a deep-dive setup guide — from <code>flutter create</code> through Google Sign-In, Sign in with Apple, Cloud Firestore, Riverpod state, and GoRouter auth redirects. Just the engineering path to a working mobile app skeleton you can extend.</p>
+
+    <blockquote>
+      <p><strong>Who is this for?</strong> Developers who know basic Dart and want a production-shaped mobile stack — auth, cloud database, routing, and state — without boilerplate guesswork.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#why-flutter-firebase">Why Flutter + Firebase</a></li>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#create-project">Create the Flutter project</a></li>
+        <li><a href="#firebase-console">Firebase Console setup</a></li>
+        <li><a href="#flutterfire">Wire Firebase with FlutterFire CLI</a></li>
+        <li><a href="#dependencies">Dependencies</a></li>
+        <li><a href="#main-dart">Initialize Firebase in main.dart</a></li>
+        <li><a href="#android-config">Android platform config</a></li>
+        <li><a href="#ios-config">iOS platform config</a></li>
+        <li><a href="#google-sign-in">Google Sign-In implementation</a></li>
+        <li><a href="#apple-sign-in">Apple Sign-In implementation</a></li>
+        <li><a href="#email-auth">Email/password auth</a></li>
+        <li><a href="#auth-errors">Auth repository and error handling</a></li>
+        <li><a href="#riverpod">Riverpod providers for Firebase</a></li>
+        <li><a href="#gorouter">GoRouter auth-gated routing</a></li>
+        <li><a href="#firestore-model">Firestore data model</a></li>
+        <li><a href="#security-rules">Security rules</a></li>
+        <li><a href="#models">Models: fromFirestore and toFirestore</a></li>
+        <li><a href="#repositories">Repository pattern with real-time streams</a></li>
+        <li><a href="#batch-writes">Batch writes and atomic updates</a></li>
+        <li><a href="#profile-stub">Post-auth profile stub</a></li>
+        <li><a href="#sign-out">Sign out</a></li>
+        <li><a href="#platform-diff">Platform differences</a></li>
+        <li><a href="#common-errors">Common errors and fixes</a></li>
+        <li><a href="#production-checklist">Production checklist</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="why-flutter-firebase">Why Flutter + Firebase</h2>
+    <table>
+      <thead><tr><th>Layer</th><th>Flutter</th><th>Firebase</th></tr></thead>
+      <tbody>
+        <tr><td>UI</td><td>Single Dart codebase for iOS, Android, web</td><td>—</td></tr>
+        <tr><td>Auth</td><td><code>firebase_auth</code> + platform sign-in packages</td><td>Google, Apple, email providers</td></tr>
+        <tr><td>Database</td><td><code>cloud_firestore</code> streams into widgets</td><td>Real-time NoSQL, offline cache</td></tr>
+        <tr><td>Files</td><td><code>firebase_storage</code></td><td>Object storage for avatars, uploads</td></tr>
+        <tr><td>Config</td><td><code>flutterfire configure</code> generates per-platform keys</td><td>One project, many apps</td></tr>
+      </tbody>
+    </table>
+    <p>Flutter removes duplicate Swift/Kotlin UI work. Firebase removes running your own auth server and sync layer. Together they get you to a signed-in user with live cloud data in days, not weeks.</p>
+
+    <h2 id="prerequisites">Prerequisites</h2>
+    <ul>
+      <li>Flutter SDK 3.11+ (<code>flutter doctor</code> clean on iOS and Android toolchains)</li>
+      <li>Xcode (for iOS simulator and Apple Sign-In capability)</li>
+      <li>Android Studio or command-line Android SDK</li>
+      <li>A Firebase project (free Spark tier is enough to start)</li>
+      <li>Apple Developer account (required for Sign in with Apple on real devices)</li>
+      <li>FlutterFire CLI: <code>dart pub global activate flutterfire_cli</code></li>
+    </ul>
+
+    <h2 id="create-project">Create the Flutter project</h2>
+    <pre><code>flutter create my_app
+cd my_app
+flutter pub get</code></pre>
+    <p>Use a reverse-DNS bundle ID from day one — you will register the same ID in Firebase, Apple Developer, and Google Cloud (e.g. <code>com.example.myapp</code>).</p>
+    <p>Organize <code>lib/</code> by feature early:</p>
+    <pre><code>lib/
+├── main.dart
+├── app.dart
+├── firebase_options.dart      <span class="cm"># generated; gitignore in prod</span>
+├── core/
+│   ├── router/app_router.dart
+│   └── constants/google_auth_config.dart
+├── data/
+│   ├── models/
+│   ├── repositories/
+│   └── providers/
+└── features/
+    └── auth/
+        ├── auth_repository.dart
+        └── presentation/</code></pre>
+
+    <h2 id="firebase-console">Firebase Console setup</h2>
+    <ol>
+      <li>Go to <a href="https://console.firebase.google.com/">Firebase Console</a> → <strong>Add project</strong>.</li>
+      <li>Register apps for <strong>iOS</strong>, <strong>Android</strong>, and optionally <strong>Web</strong> with your bundle ID / package name.</li>
+      <li>Open <strong>Build → Authentication → Sign-in method</strong> and enable <strong>Email/Password</strong>, <strong>Google</strong>, and <strong>Apple</strong>.</li>
+      <li>Open <strong>Build → Firestore Database</strong> → create database in production mode (add rules immediately).</li>
+      <li>Note your <strong>Project ID</strong> for FlutterFire CLI.</li>
+    </ol>
+
+    <h2 id="flutterfire">Wire Firebase with FlutterFire CLI</h2>
+    <pre><code>dart pub global activate flutterfire_cli
+flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
+    <p>Select the platforms you target. The CLI generates:</p>
+    <table>
+      <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>lib/firebase_options.dart</code></td><td><code>FirebaseOptions</code> per platform</td></tr>
+        <tr><td><code>android/app/google-services.json</code></td><td>Android Firebase config</td></tr>
+        <tr><td><code>ios/Runner/GoogleService-Info.plist</code></td><td>iOS Firebase config</td></tr>
+        <tr><td><code>firebase.json</code></td><td>Maps Flutter apps to Firebase</td></tr>
+      </tbody>
+    </table>
+    <p>Gitignore generated secrets in team repos. Commit a <code>firebase_options.dart.example</code> with placeholder keys. New clones run <code>flutterfire configure</code> locally.</p>
+
+    <h2 id="dependencies">Dependencies</h2>
+    <pre><code>dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.3
+  cloud_firestore: ^5.6.7
+  firebase_storage: ^12.4.4
+  google_sign_in: ^6.3.0
+  sign_in_with_apple: ^8.0.0
+  crypto: ^3.0.7
+  flutter_riverpod: ^2.6.1
+  go_router: ^15.1.2
+  shared_preferences: ^2.5.3</code></pre>
+    <table>
+      <thead><tr><th>Package</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><code>firebase_core</code></td><td>Bootstrap all Firebase SDKs</td></tr>
+        <tr><td><code>firebase_auth</code></td><td>Auth state, credentials, sign-out</td></tr>
+        <tr><td><code>cloud_firestore</code></td><td>Real-time document database</td></tr>
+        <tr><td><code>google_sign_in</code></td><td>Native Google account picker → Firebase credential</td></tr>
+        <tr><td><code>sign_in_with_apple</code></td><td>Apple ID credential → Firebase OAuth</td></tr>
+        <tr><td><code>crypto</code></td><td>SHA-256 nonce for Apple Sign-In</td></tr>
+        <tr><td><code>flutter_riverpod</code></td><td>DI + reactive auth/data providers</td></tr>
+        <tr><td><code>go_router</code></td><td>Declarative routing with auth redirects</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="main-dart">Initialize Firebase in main.dart</h2>
+    <p>Firebase must initialize <strong>before</strong> <code>runApp</code>. Wrap the app in <code>ProviderScope</code> for Riverpod:</p>
+    <pre><code><span class="kw">import</span> <span class="str">'package:firebase_core/firebase_core.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:flutter_riverpod/flutter_riverpod.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:my_app/app.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:my_app/firebase_options.dart'</span>;
+
+Future&lt;void&gt; main() <span class="kw">async</span> {
+  WidgetsFlutterBinding.ensureInitialized();
+  <span class="kw">await</span> Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}</code></pre>
+    <p><code>DefaultFirebaseOptions.currentPlatform</code> picks web, Android, iOS, or macOS options automatically.</p>
+
+    <h2 id="android-config">Android platform config</h2>
+    <h3>google-services plugin</h3>
+    <p>In <code>android/settings.gradle.kts</code>:</p>
+    <pre><code>plugins {
+    id("com.google.gms.google-services") version "4.3.15" apply false
+}</code></pre>
+    <p>In <code>android/app/build.gradle.kts</code>:</p>
+    <pre><code>plugins {
+    id("com.android.application")
+    id("com.google.gms.google-services")
+}
+
+android {
+    namespace = "com.example.myapp"
+    defaultConfig {
+        applicationId = "com.example.myapp"
+    }
+}</code></pre>
+    <h3>SHA-1 fingerprint (critical for Google Sign-In)</h3>
+    <p>Google Sign-In on Android fails with <code>ApiException: 10</code> / <code>DEVELOPER_ERROR</code> if Firebase does not know your signing certificate.</p>
+    <pre><code>keytool -list -v -keystore ~/.android/debug.keystore \
+  -alias androiddebugkey -storepass android -keypass android</code></pre>
+    <p>Copy the <strong>SHA-1</strong> into Firebase Console → Project settings → Your Android app → <strong>Add fingerprint</strong>. Add release keystore SHA-1 before shipping. Re-download <code>google-services.json</code> after adding fingerprints.</p>
+
+    <h2 id="ios-config">iOS platform config</h2>
+    <h3>Google Sign-In URL scheme</h3>
+    <p>Add the <strong>reversed client ID</strong> from <code>GoogleService-Info.plist</code> to <code>ios/Runner/Info.plist</code>:</p>
+    <pre><code>&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
+&lt;array&gt;
+  &lt;dict&gt;
+    &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
+    &lt;array&gt;
+      &lt;string&gt;com.googleusercontent.apps.YOUR_IOS_CLIENT_NUM&lt;/string&gt;
+    &lt;/array&gt;
+  &lt;/dict&gt;
+&lt;/array&gt;
+&lt;key&gt;GIDClientID&lt;/key&gt;
+&lt;string&gt;YOUR_IOS_CLIENT_ID.apps.googleusercontent.com&lt;/string&gt;</code></pre>
+    <h3>Sign in with Apple entitlement</h3>
+    <p>In Xcode: <strong>Runner target → Signing &amp; Capabilities → + Capability → Sign in with Apple</strong>. This updates <code>ios/Runner/Runner.entitlements</code>:</p>
+    <pre><code>&lt;key&gt;com.apple.developer.applesignin&lt;/key&gt;
+&lt;array&gt;
+  &lt;string&gt;Default&lt;/string&gt;
+&lt;/array&gt;</code></pre>
+    <p>Configure the Apple provider in Firebase Console with your Apple Services ID, team ID, and key.</p>
+    <h3>Podfile</h3>
+    <pre><code>target 'Runner' do
+  use_frameworks! :linkage =&gt; :static
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end</code></pre>
+
+    <h2 id="google-sign-in">Google Sign-In implementation</h2>
+    <p>Centralize OAuth client IDs (extract from plist and json):</p>
+    <pre><code>class GoogleAuthConfig {
+  static <span class="kw">const</span> iosClientId =
+      <span class="str">'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com'</span>;
+  static <span class="kw">const</span> webClientId =
+      <span class="str">'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com'</span>;
+}</code></pre>
+    <p>The <strong>web client ID</strong> is <code>serverClientId</code> on mobile — Firebase verifies the ID token server-side. Find it as <code>client_type: 3</code> in <code>google-services.json</code>.</p>
+    <pre><code>Future&lt;void&gt; signInWithGoogle() <span class="kw">async</span> {
+  <span class="kw">if</span> (kIsWeb) {
+    <span class="kw">await</span> _auth.signInWithPopup(GoogleAuthProvider());
+    <span class="kw">return</span>;
+  }
+
+  final googleSignIn = GoogleSignIn(
+    scopes: <span class="kw">const</span> [<span class="str">'email'</span>, <span class="str">'profile'</span>],
+    clientId: defaultTargetPlatform == TargetPlatform.iOS
+        ? GoogleAuthConfig.iosClientId
+        : null,
+    serverClientId: GoogleAuthConfig.webClientId,
+  );
+
+  <span class="kw">try</span> {
+    <span class="kw">await</span> googleSignIn.signOut();
+  } catch (_) {}
+
+  final account = <span class="kw">await</span> googleSignIn.signIn();
+  <span class="kw">if</span> (account == null) {
+    <span class="kw">throw</span> FirebaseAuthException(code: <span class="str">'popup-closed-by-user'</span>);
+  }
+
+  final auth = <span class="kw">await</span> account.authentication;
+  final credential = GoogleAuthProvider.credential(
+    accessToken: auth.accessToken,
+    idToken: auth.idToken,
+  );
+  <span class="kw">await</span> _auth.signInWithCredential(credential);
+}</code></pre>
+    <ul>
+      <li><strong>iOS</strong> needs explicit <code>clientId</code>.</li>
+      <li><strong>Android</strong> uses <code>serverClientId</code> plus SHA-1 in Console.</li>
+      <li><strong>Web</strong> uses <code>signInWithPopup</code> — no <code>google_sign_in</code> flow.</li>
+      <li>Sign out of Google before sign-in avoids stuck account picker states.</li>
+    </ul>
+
+    <h2 id="apple-sign-in">Apple Sign-In implementation</h2>
+    <p>Apple Sign-In is <strong>iOS/macOS only</strong>. Firebase requires a <strong>nonce</strong>: SHA-256 goes to Apple, raw nonce goes to Firebase.</p>
+    <pre><code><span class="kw">import</span> <span class="str">'dart:convert'</span>;
+<span class="kw">import</span> <span class="str">'dart:math'</span>;
+<span class="kw">import</span> <span class="str">'package:crypto/crypto.dart'</span>;
+<span class="kw">import</span> <span class="str">'package:sign_in_with_apple/sign_in_with_apple.dart'</span>;
+
+Future&lt;void&gt; signInWithApple() <span class="kw">async</span> {
+  <span class="kw">if</span> (kIsWeb || defaultTargetPlatform == TargetPlatform.android) {
+    throw FirebaseAuthException(
+      code: <span class="str">'operation-not-allowed'</span>,
+      message: <span class="str">'Apple sign-in is only supported on iOS and macOS.'</span>,
+    );
+  }
+
+  final rawNonce = _generateNonce();
+  final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
+
+  final appleCredential = <span class="kw">await</span> SignInWithApple.getAppleIDCredential(
+    scopes: [
+      AppleIDAuthorizationScopes.email,
+      AppleIDAuthorizationScopes.fullName,
+    ],
+    nonce: nonce,
+  );
+
+  final idToken = appleCredential.identityToken;
+  <span class="kw">if</span> (idToken == null) {
+    throw FirebaseAuthException(code: <span class="str">'invalid-credential'</span>);
+  }
+
+  final oauthCredential = OAuthProvider(<span class="str">'apple.com'</span>).credential(
+    idToken: idToken,
+    rawNonce: rawNonce,
+  );
+  <span class="kw">await</span> _auth.signInWithCredential(oauthCredential);
+}</code></pre>
+    <p>Show the Apple button only where supported:</p>
+    <pre><code>bool get showAppleSignIn =&gt;
+    !kIsWeb &amp;&amp; (Platform.isIOS || Platform.isMacOS);</code></pre>
+    <p>Apple sends the user's name <strong>once</strong> — capture it on first sign-in and write to Firestore immediately if you need display names.</p>
+
+    <h2 id="email-auth">Email/password auth</h2>
+    <pre><code>Future&lt;void&gt; signInWithEmail(String email, String password) <span class="kw">async</span> {
+  <span class="kw">await</span> _auth.signInWithEmailAndPassword(email: email, password: password);
+}
+
+Future&lt;void&gt; signUpWithEmail(String email, String password) <span class="kw">async</span> {
+  <span class="kw">await</span> _auth.createUserWithEmailAndPassword(email: email, password: password);
+}
+
+<span class="cm">// Password reset</span>
+<span class="kw">await</span> FirebaseAuth.instance.sendPasswordResetEmail(email: email);</code></pre>
+
+    <h2 id="auth-errors">Auth repository and error handling</h2>
+    <table>
+      <thead><tr><th>Code / symptom</th><th>User message</th></tr></thead>
+      <tbody>
+        <tr><td><code>ApiException: 10</code> / <code>developer_error</code></td><td>Add Android SHA-1 in Firebase Console</td></tr>
+        <tr><td><code>popup-closed-by-user</code></td><td>Sign-in was cancelled</td></tr>
+        <tr><td><code>email-already-in-use</code></td><td>Try signing in instead</td></tr>
+        <tr><td><code>account-exists-with-different-credential</code></td><td>Email linked to another provider</td></tr>
+        <tr><td>Apple <code>AuthorizationErrorCode.canceled</code></td><td>Sign-in was cancelled</td></tr>
+        <tr><td><code>configuration-not-found</code></td><td>Enable provider in Firebase Console</td></tr>
+      </tbody>
+    </table>
+    <p>A dedicated <code>authErrorMessage(Object error)</code> function keeps UI widgets thin — buttons catch errors and show SnackBars.</p>
+
+    <h2 id="riverpod">Riverpod providers for Firebase</h2>
+    <pre><code>final firebaseAuthProvider = Provider&lt;FirebaseAuth&gt;(
+  (ref) =&gt; FirebaseAuth.instance,
+);
+
+final firestoreProvider = Provider&lt;FirebaseFirestore&gt;(
+  (ref) =&gt; FirebaseFirestore.instance,
+);
+
+final authRepositoryProvider = Provider&lt;AuthRepository&gt;((ref) {
+  return AuthRepository(ref.watch(firebaseAuthProvider));
+});
+
+final authUidProvider = StreamProvider&lt;String?&gt;((ref) {
+  return ref
+      .watch(firebaseAuthProvider)
+      .authStateChanges()
+      .map((user) =&gt; user?.uid);
+});
+
+final currentUserIdProvider = Provider&lt;String?&gt;((ref) {
+  return ref.watch(authUidProvider).valueOrNull;
+});</code></pre>
+    <p><code>authStateChanges()</code> is the single source of truth. Every Firestore provider gates on <code>currentUserIdProvider</code> — if UID is null, return <code>Stream.empty()</code>.</p>
+
+    <h2 id="gorouter">GoRouter auth-gated routing</h2>
+    <p>Do not call <code>context.go('/')</code> manually after sign-in. Let <strong>GoRouter redirect</strong> react to auth stream changes.</p>
+    <pre><code><span class="kw">const</span> _publicAuthPaths = [<span class="str">'/welcome'</span>, <span class="str">'/sign-in'</span>, <span class="str">'/sign-up'</span>];
+
+final routerProvider = Provider&lt;GoRouter&gt;((ref) {
+  final authState = ref.watch(authUidProvider);
+  final profileState = ref.watch(userProfileProvider);
+
+  <span class="kw">return</span> GoRouter(
+    initialLocation: <span class="str">'/welcome'</span>,
+    redirect: (context, state) {
+      final uid = authState.valueOrNull;
+      final path = state.matchedLocation;
+
+      <span class="kw">if</span> (authState.isLoading) <span class="kw">return</span> null;
+
+      <span class="kw">if</span> (uid == null) {
+        <span class="kw">return</span> _isPublicAuthPath(path) ? null : <span class="str">'/welcome'</span>;
+      }
+
+      final profile = profileState.valueOrNull;
+      <span class="kw">if</span> (profileState.isLoading) <span class="kw">return</span> null;
+
+      final target = routeAfterAuth(profile);
+
+      <span class="kw">if</span> (_isPublicAuthPath(path)) {
+        <span class="kw">return</span> path == target ? null : target;
+      }
+
+      <span class="kw">if</span> (target != <span class="str">'/'</span>) {
+        final onSetup = path == target || path.startsWith(<span class="str">'$target/'</span>);
+        <span class="kw">if</span> (!onSetup) <span class="kw">return</span> target;
+      }
+
+      <span class="kw">return</span> null;
+    },
+    routes: [
+      GoRoute(path: <span class="str">'/welcome'</span>, builder: (_, __) =&gt; <span class="kw">const</span> WelcomeScreen()),
+      GoRoute(path: <span class="str">'/sign-in'</span>, builder: (_, __) =&gt; <span class="kw">const</span> SignInScreen()),
+    ],
+  );
+});</code></pre>
+    <p>Pattern: <strong>auth stream + profile stream → redirect function</strong>. UI only triggers sign-in; routing follows state.</p>
+
+    <h2 id="firestore-model">Firestore data model</h2>
+    <p>Use a <strong>user-scoped hierarchy</strong> — every document lives under the authenticated UID:</p>
+    <pre><code>users/{uid}/profile/settings     ← single profile doc
+users/{uid}/items/{itemId}       ← user-owned collection</code></pre>
+    <pre><code>class FirestorePaths {
+  static String userRoot(String uid) =&gt; 'users/$uid';
+  static String profile(String uid) =&gt; '${userRoot(uid)}/profile/settings';
+  static String items(String uid) =&gt; '${userRoot(uid)}/items';
+}</code></pre>
+    <p>Subcollections under <code>users/{uid}</code> give one-line security rules, scoped deletes, and no accidental cross-user queries.</p>
+
+    <h2 id="security-rules">Security rules</h2>
+    <pre><code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
+    }
+  }
+}</code></pre>
+    <p>Test in Firebase Console <strong>Rules playground</strong>. Never ship with <code>allow read, write: if true</code> except local emulators.</p>
+
+    <h2 id="models">Models: fromFirestore and toFirestore</h2>
+    <pre><code>class UserProfile {
+  <span class="kw">const</span> UserProfile({
+    required this.displayName,
+    this.createdAt,
+    this.onboardingComplete = false,
+  });
+
+  final String displayName;
+  final DateTime? createdAt;
+  final bool onboardingComplete;
+
+  factory UserProfile.fromFirestore(
+    DocumentSnapshot&lt;Map&lt;String, dynamic&gt;&gt; doc,
+  ) {
+    final data = doc.data() ?? {};
+    <span class="kw">return</span> UserProfile(
+      displayName: data[<span class="str">'displayName'</span>] as String? ?? <span class="str">''</span>,
+      createdAt: (data[<span class="str">'createdAt'</span>] as Timestamp?)?.toDate(),
+      onboardingComplete: data[<span class="str">'onboardingComplete'</span>] as bool? ?? false,
+    );
+  }
+
+  Map&lt;String, dynamic&gt; toFirestore() {
+    <span class="kw">return</span> {
+      <span class="str">'displayName'</span>: displayName,
+      <span class="str">'onboardingComplete'</span>: onboardingComplete,
+      <span class="kw">if</span> (createdAt != null)
+        <span class="str">'createdAt'</span>: Timestamp.fromDate(createdAt!),
+    };
+  }
+}</code></pre>
+    <p>Use <code>Timestamp</code> for dates — not ISO strings — so queries and indexes work natively.</p>
+
+    <h2 id="repositories">Repository pattern with real-time streams</h2>
+    <pre><code>class ProfileRepository {
+  ProfileRepository(this._firestore);
+  final FirebaseFirestore _firestore;
+
+  DocumentReference&lt;Map&lt;String, dynamic&gt;&gt; _ref(String uid) =&gt;
+      _firestore.doc(FirestorePaths.profile(uid));
+
+  Stream&lt;UserProfile?&gt; watch(String uid) {
+    <span class="kw">return</span> _ref(uid).snapshots().map((snap) {
+      <span class="kw">if</span> (!snap.exists) <span class="kw">return</span> null;
+      <span class="kw">return</span> UserProfile.fromFirestore(snap);
+    });
+  }
+
+  Future&lt;void&gt; save(String uid, UserProfile profile) <span class="kw">async</span> {
+    <span class="kw">await</span> _ref(uid).set(profile.toFirestore(), SetOptions(merge: true));
+  }
+}</code></pre>
+    <pre><code>final userProfileProvider = StreamProvider&lt;UserProfile?&gt;((ref) {
+  final uid = ref.watch(currentUserIdProvider);
+  <span class="kw">if</span> (uid == null) <span class="kw">return</span> <span class="kw">const</span> Stream.empty();
+  <span class="kw">return</span> ref.watch(profileRepositoryProvider).watch(uid);
+});</code></pre>
+    <p>Widgets use <code>ref.watch(userProfileProvider)</code> — they rebuild when Firestore pushes changes. No manual refresh for sync.</p>
+
+    <h2 id="batch-writes">Batch writes and atomic updates</h2>
+    <pre><code>final batch = _firestore.batch();
+batch.set(itemRef, item.toFirestore());
+batch.update(summaryRef, {'count': FieldValue.increment(1)});
+await batch.commit();</code></pre>
+    <p><code>FieldValue.increment</code> is atomic — safe under concurrent writes. Firestore batches cap at <strong>500 operations</strong>; paginate bulk deletes at ~400 per batch.</p>
+
+    <h2 id="profile-stub">Post-auth profile stub</h2>
+    <p>After any sign-in, ensure a Firestore profile document exists before routing home:</p>
+    <pre><code>Future&lt;void&gt; ensureAuthProfileStub(WidgetRef ref) <span class="kw">async</span> {
+  final uid = ref.read(firebaseAuthProvider).currentUser?.uid;
+  <span class="kw">if</span> (uid == null) <span class="kw">return</span>;
+
+  final repo = ref.read(profileRepositoryProvider);
+  final existing = <span class="kw">await</span> repo.get(uid);
+  <span class="kw">if</span> (existing != null) <span class="kw">return</span>;
+
+  final user = ref.read(firebaseAuthProvider).currentUser;
+  <span class="kw">await</span> repo.save(
+    uid,
+    UserProfile(
+      displayName: user?.displayName ?? <span class="str">''</span>,
+      createdAt: DateTime.now(),
+    ),
+  );
+  ref.invalidate(userProfileProvider);
+}</code></pre>
+    <p>Call after <code>signInWithGoogle()</code> succeeds. Do not navigate manually — GoRouter redirect picks up the new profile stream.</p>
+
+    <h2 id="sign-out">Sign out</h2>
+    <pre><code>Future&lt;void&gt; signOut() <span class="kw">async</span> {
+  <span class="kw">if</span> (!kIsWeb) {
+    <span class="kw">await</span> GoogleSignIn().signOut();
+  }
+  <span class="kw">await</span> _auth.signOut();
+}</code></pre>
+    <p>Missing Google sign-out causes the next sign-in to reuse the old Google account silently.</p>
+
+    <h2 id="platform-diff">Platform differences</h2>
+    <table>
+      <thead><tr><th>Feature</th><th>Web</th><th>Android</th><th>iOS</th></tr></thead>
+      <tbody>
+        <tr><td>Google Sign-In</td><td><code>signInWithPopup</code></td><td><code>google_sign_in</code> + SHA-1</td><td><code>google_sign_in</code> + URL scheme</td></tr>
+        <tr><td>Apple Sign-In</td><td>Not supported</td><td>Not supported</td><td>Native + entitlements</td></tr>
+        <tr><td>Email/password</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+        <tr><td>Firestore offline</td><td>Limited</td><td>Yes</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+    <p>Test all enabled providers on <strong>real devices</strong> — simulators miss Keychain, Google Play Services, and Apple ID edge cases.</p>
+
+    <h2 id="common-errors">Common errors and fixes</h2>
+    <h3><code>ApiException: 10</code> (Google on Android)</h3>
+    <p><strong>Cause:</strong> SHA-1 not registered or wrong <code>google-services.json</code>. <strong>Fix:</strong> Add debug and release SHA-1. Re-download json. Uninstall and reinstall.</p>
+    <h3><code>invalid-credential</code> after Google Sign-In on iOS</h3>
+    <p><strong>Cause:</strong> Missing <code>GIDClientID</code> or URL scheme in Info.plist. <strong>Fix:</strong> Copy values from <code>GoogleService-Info.plist</code>.</p>
+    <h3>Apple Sign-In <code>notHandled</code></h3>
+    <p><strong>Cause:</strong> Sign in with Apple capability not enabled. <strong>Fix:</strong> Add capability in Xcode, rebuild.</p>
+    <h3>Firestore <code>permission-denied</code></h3>
+    <p><strong>Cause:</strong> User not authenticated, wrong UID path, or rules not deployed. <strong>Fix:</strong> Confirm <code>request.auth.uid</code> matches path. Deploy rules.</p>
+    <h3>GoRouter redirect loop</h3>
+    <p><strong>Cause:</strong> Redirect fires while profile stream still loading. <strong>Fix:</strong> Return <code>null</code> while <code>authState.isLoading</code> or <code>profileState.isLoading</code>.</p>
+
+    <h2 id="production-checklist">Production checklist</h2>
+    <ul>
+      <li>Release keystore SHA-1 added to Firebase (Android)</li>
+      <li><code>GoogleService-Info.plist</code> and <code>google-services.json</code> from production Firebase apps</li>
+      <li>Firestore rules deployed — no open reads</li>
+      <li>Apple Sign-In enabled in Firebase + Apple Developer portal</li>
+      <li>Auth error messages user-tested on device</li>
+      <li>Profile stub creates doc on first sign-in</li>
+      <li>Sign-out clears Google session</li>
+      <li><code>firebase_options.dart</code> gitignored; example file committed</li>
+      <li>Firestore indexes created for compound queries</li>
+    </ul>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Do I need a backend server?</h3>
+    <p>Not for auth and CRUD. Firestore security rules enforce access. Add Cloud Functions when you need server secrets, webhooks, or trusted batch jobs.</p>
+    <h3>Riverpod vs Bloc vs Provider?</h3>
+    <p>Any works. Riverpod pairs cleanly with <code>StreamProvider</code> for Firestore and auth streams. Keep Firebase access in repositories — not in widgets.</p>
+    <h3>Can I use Supabase instead of Firestore?</h3>
+    <p>Yes — auth and sync patterns differ. This guide targets Firebase because Google/Apple sign-in integration is first-class and offline cache is built in.</p>
+    <h3>How do I test without real Google/Apple accounts?</h3>
+    <p>Use email/password auth in debug builds. Firebase Auth emulator suite supports local testing without hitting production.</p>
+    <h3>Should I put Firebase keys in <code>.env</code>?</h3>
+    <p>FlutterFire embeds keys in <code>firebase_options.dart</code> — they are not secret on mobile. Security comes from <strong>Firestore rules</strong> and <strong>App Check</strong>, not hidden API keys.</p>
+
+    <h2 id="related">Related</h2>
+    <ul>
+      <li><a href="sse-websocket-rest-api-compared.html">SSE vs WebSocket vs REST API for Live AI</a></li>
+      <li><a href="how-to-build-a-production-rag-chatbot.html">How to Build a Production RAG Chatbot</a></li>
+    </ul>
+
+    <p class="closing">Flutter plus Firebase is the fastest path from zero to signed-in users with live cloud data. Nail auth and Firestore patterns first — everything else is features on top.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Building a Flutter mobile app?</strong></p>
+      <p>stackcone ships Flutter + Firebase apps, API backends, and AI features for product teams.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
