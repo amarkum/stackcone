@@ -208,34 +208,59 @@
     }
   }
 
-  function init(items) {
-    var list = document.getElementById("solutions-list");
+  function itemsFromDom() {
+    var cards = document.querySelectorAll("#solutions-list .solution-card");
+    return Array.prototype.map.call(cards, function (card) {
+      var year = card.getAttribute("data-year") || "2026";
+      var clientEl = card.querySelector(".solution-client");
+      return {
+        title: card.querySelector("h2") ? card.querySelector("h2").textContent : "",
+        description: card.querySelector("p") ? card.querySelector("p").textContent : "",
+        href: card.getAttribute("href") || "",
+        category: card.getAttribute("data-category") || "",
+        date: year + "-01-01",
+        author: "Amar Kumar",
+        client: clientEl ? clientEl.textContent : "",
+        tags: (card.getAttribute("data-tags") || "").split(",").filter(Boolean)
+      };
+    });
+  }
+
+  function init(items, list) {
     if (!list) return;
 
-    if (!items.length) {
-      list.innerHTML = "<p class=\"blog-empty\">No solution briefs yet. Paste a problem statement in Cursor to generate one.</p>";
-      return;
+    var hasStaticCards = list.querySelectorAll(".solution-card").length > 0;
+    if (!hasStaticCards) {
+      if (!items.length) {
+        list.innerHTML = "<p class=\"blog-empty\">No solution briefs yet. Paste a problem statement in Cursor to generate one.</p>";
+        return;
+      }
+      list.innerHTML = items.map(renderSolution).join("");
     }
 
-    list.innerHTML = items.map(renderSolution).join("");
-    buildCategoryFilter(items);
-    buildDateFilter(items);
+    var source = hasStaticCards ? itemsFromDom() : items;
+    buildCategoryFilter(source);
+    buildDateFilter(source);
     bindFilters();
     applyFilters();
   }
 
-  fetch("./solutions.json")
-    .then(function (res) {
-      if (!res.ok) throw new Error("Failed to load solutions");
-      return res.json();
-    })
-    .then(function (data) {
-      init(data.solutions || []);
-    })
-    .catch(function () {
-      var list = document.getElementById("solutions-list");
-      if (list) {
-        list.innerHTML = "<p class=\"blog-error\">Could not load solutions. Please refresh the page.</p>";
-      }
-    });
+  var list = document.getElementById("solutions-list");
+  if (list && list.querySelectorAll(".solution-card").length > 0) {
+    init([], list);
+  } else {
+    fetch("./solutions.json")
+      .then(function (res) {
+        if (!res.ok) throw new Error("Failed to load solutions");
+        return res.json();
+      })
+      .then(function (data) {
+        init(data.solutions || [], list);
+      })
+      .catch(function () {
+        if (list) {
+          list.innerHTML = "<p class=\"blog-error\">Could not load solutions. Please refresh the page.</p>";
+        }
+      });
+  }
 })();

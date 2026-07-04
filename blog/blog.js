@@ -202,29 +202,57 @@
     }
   }
 
-  function init(posts) {
-    var list = document.getElementById("blog-posts");
+  function postsFromDom() {
+    var cards = document.querySelectorAll("#blog-posts .post-card");
+    return Array.prototype.map.call(cards, function (card) {
+      var year = card.getAttribute("data-year") || "2026";
+      return {
+        title: card.querySelector("h2") ? card.querySelector("h2").textContent : "",
+        description: card.querySelector("p") ? card.querySelector("p").textContent : "",
+        href: card.getAttribute("href") || "",
+        category: card.getAttribute("data-category") || "",
+        date: year + "-01-01",
+        author: "Amar Kumar",
+        tags: (card.getAttribute("data-tags") || "").split(",").filter(Boolean)
+      };
+    });
+  }
+
+  function init(posts, list) {
     if (!list) return;
 
-    list.innerHTML = posts.map(renderPost).join("");
-    buildCategoryFilter(posts);
-    buildDateFilter(posts);
+    var hasStaticCards = list.querySelectorAll(".post-card").length > 0;
+    if (!hasStaticCards) {
+      if (!posts.length) {
+        list.innerHTML = "<p class=\"blog-empty\">No blog posts yet.</p>";
+        return;
+      }
+      list.innerHTML = posts.map(renderPost).join("");
+    }
+
+    var source = hasStaticCards ? postsFromDom() : posts;
+    buildCategoryFilter(source);
+    buildDateFilter(source);
     bindFilters();
     applyFilters();
   }
 
-  fetch("./posts.json")
-    .then(function (res) {
-      if (!res.ok) throw new Error("Failed to load posts");
-      return res.json();
-    })
-    .then(function (data) {
-      init(data.posts || []);
-    })
-    .catch(function () {
-      var list = document.getElementById("blog-posts");
-      if (list) {
-        list.innerHTML = "<p class=\"blog-error\">Could not load blog posts. Please refresh the page.</p>";
-      }
-    });
+  var list = document.getElementById("blog-posts");
+  if (list && list.querySelectorAll(".post-card").length > 0) {
+    init([], list);
+  } else {
+    fetch("./posts.json")
+      .then(function (res) {
+        if (!res.ok) throw new Error("Failed to load posts");
+        return res.json();
+      })
+      .then(function (data) {
+        init(data.posts || [], list);
+      })
+      .catch(function () {
+        if (list) {
+          list.innerHTML = "<p class=\"blog-error\">Could not load blog posts. Please refresh the page.</p>";
+        }
+      });
+  }
 })();
