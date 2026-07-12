@@ -1,6 +1,6 @@
 # stackcone
 
-**Hire AI developers & Python full stack** — agentic AI, AI automation for business, production RAG, FastAPI / Django web apps, Flutter mobile, data engineering, and cloud DevOps. Remote-first for US, UK, and EU teams with fixed scope, handover, and GDPR-aware delivery.
+**Hire AI developers & Python full stack** — agentic AI, AI automation for business, production RAG, FastAPI / Django web apps, Flutter mobile, data engineering, and cloud DevOps. Remote-first worldwide with fixed scope, handover, and privacy-aware delivery.
 
 **Live site:** [stackcone.com](https://stackcone.com/) · **Contact:** [hello@stackcone.com](mailto:hello@stackcone.com)
 
