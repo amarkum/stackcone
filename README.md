@@ -1,6 +1,6 @@
 # stackcone
 
-**Custom software and AI development** — RAG chatbots, LLM integration, AI agents, full-stack web apps, Flutter mobile, data pipelines, and cloud DevOps. Remote-first delivery for startups and enterprise teams worldwide.
+**Hire AI developers & Python full stack** — agentic AI, AI automation for business, production RAG, FastAPI / Django web apps, Flutter mobile, data engineering, and cloud DevOps. Remote-first for US, UK, and EU teams with fixed scope, handover, and GDPR-aware delivery.
 
 **Live site:** [stackcone.com](https://stackcone.com/) · **Contact:** [hello@stackcone.com](mailto:hello@stackcone.com)
 
