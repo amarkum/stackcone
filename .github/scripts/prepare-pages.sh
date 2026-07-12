@@ -1,28 +1,35 @@
 #!/usr/bin/env bash
-# Strip dev-only paths before GitHub Pages upload. Keep in sync with robots.txt Disallow rules.
+# Build a clean public artifact for GitHub Pages (Actions deploy).
+# Keep exclusions in sync with robots.txt Disallow rules.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-PATHS=(
-  _dev
-  .cursor
-  .github
-  blog/md
-  solutions/md
-  scripts
-  README.md
-)
+OUT="_site"
+rm -rf "$OUT"
+mkdir -p "$OUT"
 
-for path in "${PATHS[@]}"; do
-  if [[ -e "$path" ]]; then
-    rm -rf "$path"
-    echo "removed $path"
-  fi
-done
+# Copy published site files only (exclude sources, tooling, and repo docs).
+rsync -a \
+  --exclude '.git/' \
+  --exclude '.github/' \
+  --exclude '.cursor/' \
+  --exclude '_dev/' \
+  --exclude '_site/' \
+  --exclude 'blog/md/' \
+  --exclude 'solutions/md/' \
+  --exclude 'scripts/' \
+  --exclude 'README.md' \
+  --exclude '.gitignore' \
+  --exclude '.DS_Store' \
+  --exclude '__pycache__/' \
+  --exclude '*.pyc' \
+  --exclude '*.pyo' \
+  ./ "$OUT/"
 
-find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete 2>/dev/null || true
+# Ensure GitHub Pages serves files as-is (no Jekyll processing).
+touch "$OUT/.nojekyll"
 
-echo "public site artifact ready"
+echo "public site artifact ready in $OUT/"
+find "$OUT" -maxdepth 2 -type d | sort | head -40

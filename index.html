@@ -6,7 +6,15 @@
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>
-  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <script>
+    (function () {
+      var https = location.protocol === "http:" ? "https://" + location.host : location.origin;
+      var path = location.pathname === "/index.html" ? "/" : location.pathname;
+      if (location.protocol === "http:" || location.pathname === "/index.html") {
+        location.replace(https + path + location.search + location.hash);
+      }
+    })();
+  </script>
   <title>stackcone — Hire AI Agents, RAG &amp; Python Full Stack</title>
   <meta name="description" content="Hire AI developers at stackcone — AI agents, agentic RAG, Python full-stack (FastAPI), and AI automation for business. Remote-first worldwide. Fixed scope and handover.">
   <meta name="keywords" content="hire AI developers, AI agent development company, AI automation for business, agentic AI, agentic RAG, Python full stack, FastAPI development, custom software development, MCP LangGraph, LLMOps evaluation, support copilots">
