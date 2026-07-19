@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+  <script>if (location.protocol === "http:") location.replace("https://" + location.host + location.pathname + location.search);</script>
+  <title>Skills vs MCP vs Subagents: When to Use Each | stackcone</title>
+  <meta name="description" content="Skills vs MCP vs subagents explained — what each is, when to use them in Cursor and Claude Code, and how to compose all three without over-engineering.">
+  <meta name="keywords" content="skills vs MCP vs subagents, Model Context Protocol, Cursor skills, SKILL.md, AI subagents, MCP vs skills, Claude Code agents">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/skills-vs-mcp-vs-subagents.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/skills-vs-mcp-vs-subagents.html">
+  <meta property="og:title" content="Skills vs MCP vs Subagents: When to Use Each">
+  <meta property="og:description" content="Clear split: MCP adds capability, skills change behavior, subagents protect context — with examples for Cursor and Claude Code.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Skills vs MCP vs Subagents: When to Use Each">
+  <meta name="twitter:description" content="Clear split: MCP adds capability, skills change behavior, subagents protect context.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Skills vs MCP vs Subagents: When to Use Each",
+    "description": "Skills vs MCP vs subagents explained — what each is, when to use them in Cursor and Claude Code, and how to compose all three without over-engineering.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-07-19",
+    "dateModified": "2026-07-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/skills-vs-mcp-vs-subagents.html" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["MCP", "Agent Skills", "Subagents", "Cursor", "Claude Code"],
+    "articleSection": "Platform"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is MCP a replacement for skills?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. MCP exposes tools. Skills teach when and how to use tools and local workflows that need no MCP at all."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can a skill call an MCP tool?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The skill instructs the agent; the agent invokes MCP tools available in the session."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do subagents see my full chat?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually not — that is the point. Pass a detailed prompt with the context they need."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Skills vs MCP vs Subagents", "item": "https://stackcone.com/blog/posts/skills-vs-mcp-vs-subagents.html" }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Skills vs MCP vs Subagents: When to Use Each</h1>
+    <p class="meta">July 2026 · Published by Amar Kumar</p>
+
+    <p>If you’ve spent the last month hearing “just add an MCP” and “write a skill” and “spin up a subagent” as if they mean the same thing — they don’t.</p>
+    <p>In 2026, coding agents (Claude Code, Cursor, Codex, Gemini CLI) share a common vocabulary. Mixing these up is the #1 reason setups get over-engineered or break. Here’s the clear split.</p>
+    <p><strong>Related:</strong> <a href="./ai-agent-mcp-data-engineering-automation.html">AI agents + MCP for data engineering</a> · <a href="./migrate-cursor-chat-to-claude-code.html">Migrate Cursor chat to Claude Code</a> · <a href="./gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3.html">GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3</a></p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#definitions">One-line definitions</a></li>
+        <li><a href="#what-each-does">What each one actually does</a></li>
+        <li><a href="#comparison">Side-by-side comparison</a></li>
+        <li><a href="#when">When to use each</a></li>
+        <li><a href="#compose">How they compose</a></li>
+        <li><a href="#mistakes">Common mistakes</a></li>
+        <li><a href="#flowchart">Decision flowchart</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="definitions">One-line definitions</h2>
+    <table>
+      <thead><tr><th>Building block</th><th>What it is</th><th>Analogy</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MCP</strong></td><td>A connection to an external system</td><td>USB-C port</td></tr>
+        <tr><td><strong>Skill</strong></td><td>Packaged how-to knowledge (<code>SKILL.md</code>)</td><td>Team playbook</td></tr>
+        <tr><td><strong>Subagent</strong></td><td>A delegated specialist with its own context</td><td>Teammate on a side quest</td></tr>
+      </tbody>
+    </table>
+    <p><strong>MCP adds capability. Skills change behavior. Subagents protect context.</strong></p>
+
+    <h2 id="what-each-does">What each one actually does</h2>
+
+    <h3>MCP (Model Context Protocol)</h3>
+    <p>An MCP server is <strong>plumbing</strong>. It does not reason. It exposes:</p>
+    <ul>
+      <li><strong>Tools</strong> — create a PR, query Postgres, post to Slack, call Figma</li>
+      <li><strong>Resources</strong> — files, tickets, live state the model can read</li>
+      <li><strong>Prompts</strong> — optional reusable prompt templates</li>
+    </ul>
+    <p>Supported across Claude, ChatGPT, Cursor, Copilot, and more. Write once, use everywhere.</p>
+    <p><strong>Use MCP when</strong> you need live access to a system the model cannot reach with shell alone — or when you want a stable, typed tool surface instead of ad-hoc curl scripts.</p>
+    <p><strong>Do not use MCP when</strong> you only need to teach the agent <em>how</em> your team works. That is a skill.</p>
+
+    <h3>Skills (<code>SKILL.md</code>)</h3>
+    <p>A skill is a <strong>markdown playbook</strong> the agent loads when the task matches its description. It typically includes:</p>
+    <ul>
+      <li>When to trigger (YAML <code>description</code>)</li>
+      <li>Step-by-step procedure</li>
+      <li>Repo conventions, templates, checklists</li>
+      <li>Optional scripts the agent should run</li>
+    </ul>
+    <p>In Cursor, skills live under <code>.cursor/skills/</code> (project) or <code>~/.cursor/skills/</code> (personal). They are instructions — not network ports.</p>
+    <p><strong>Use a skill when</strong> you want repeatable behavior: “how we write PRs,” “how we run migrations,” “how we ship blog posts.”</p>
+    <p><strong>Do not use a skill when</strong> you need a live API. Wire MCP (or a CLI) for that; the skill can <em>tell</em> the agent which MCP tools to call.</p>
+
+    <h3>Subagents</h3>
+    <p>A subagent is a <strong>separate agent run</strong> with its own context window, tools, and (often) model. The parent delegates a scoped job — explore a codebase, run shell, review a PR — then receives a summary.</p>
+    <p>Examples in Cursor: <code>explore</code>, <code>shell</code>, <code>ci-investigator</code>, <code>best-of-n-runner</code>, custom Task agents.</p>
+    <p><strong>Use a subagent when</strong> the work would pollute the main chat (huge search dumps, long test logs) or needs isolation (parallel experiments, dangerous shell).</p>
+    <p><strong>Do not use a subagent when</strong> a short instruction or skill is enough. Extra agents add latency and cost.</p>
+
+    <h2 id="comparison">Side-by-side comparison</h2>
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>MCP</th><th>Skill</th><th>Subagent</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Primary job</strong></td><td>Connect to systems</td><td>Encode how-to</td><td>Isolate work</td></tr>
+        <tr><td><strong>Ships as</strong></td><td>Server process + schema</td><td><code>SKILL.md</code> (+ files)</td><td>Agent type / Task prompt</td></tr>
+        <tr><td><strong>Has its own context?</strong></td><td>No</td><td>No (loads into main)</td><td><strong>Yes</strong></td></tr>
+        <tr><td><strong>Reasons by itself?</strong></td><td>No</td><td>Guides the model</td><td><strong>Yes</strong></td></tr>
+        <tr><td><strong>Best for</strong></td><td>Tools &amp; live data</td><td>Conventions &amp; workflows</td><td>Exploration, parallelism</td></tr>
+        <tr><td><strong>Failure mode</strong></td><td>Auth / schema drift</td><td>Ignored if poorly described</td><td>Over-delegation, cost</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="when">When to use each</h2>
+
+    <h3>Reach for MCP</h3>
+    <ul>
+      <li>GitHub / Linear / Slack / Datadog / Figma integrations</li>
+      <li>Database or internal API access with auth</li>
+      <li>Anything you would otherwise wrap in a one-off script every session</li>
+    </ul>
+
+    <h3>Reach for a skill</h3>
+    <ul>
+      <li>“Always run highlights before commit”</li>
+      <li>“PR title format and test plan checklist”</li>
+      <li>Domain playbooks (RAG eval, Flutter release, Upwork invoice flow)</li>
+    </ul>
+
+    <h3>Reach for a subagent</h3>
+    <ul>
+      <li>Broad codebase search that would flood the transcript</li>
+      <li>Parallel “try 3 approaches” experiments</li>
+      <li>Long-running CI diagnosis while you keep chatting</li>
+      <li>Scoped reviews (security, Bugbot-style) that should not inherit your whole chat</li>
+    </ul>
+
+    <h2 id="compose">How they compose</h2>
+    <p>The winning pattern in 2026 is <strong>composition</strong>, not picking one:</p>
+    <pre><code>Skill: "Ship a blog post"
+  → tells agent the checklist
+  → calls MCP: GitHub (open PR) + Figma (optional)
+  → may spawn Subagent: explore (find related posts)
+  → main agent writes files and summarizes</code></pre>
+    <p>Another pattern:</p>
+    <pre><code>User: "Fix failing CI on this PR"
+  → Subagent: ci-investigator (isolated logs)
+  → Skill: "how we fix flaky tests"
+  → MCP: GitHub (re-run checks, comment)</code></pre>
+    <p><strong>Rule of thumb:</strong> MCP = <em>can</em>, Skill = <em>should</em>, Subagent = <em>elsewhere</em>.</p>
+
+    <h2 id="mistakes">Common mistakes</h2>
+    <ol>
+      <li><strong>Putting procedures in MCP prompts</strong> — keep playbooks in skills; keep MCP thin.</li>
+      <li><strong>One giant skill for everything</strong> — split by trigger; agents skip walls of text.</li>
+      <li><strong>Subagent for every file edit</strong> — main agent is faster for small diffs.</li>
+      <li><strong>MCP without auth story</strong> — broken tokens look like “the model is dumb.”</li>
+      <li><strong>No <code>AGENTS.md</code> / skill description</strong> — if the trigger is vague, the skill never loads.</li>
+    </ol>
+
+    <h2 id="flowchart">Decision flowchart</h2>
+    <pre><code>Need live external system access?
+  YES → MCP (plus a thin skill for how to use it)
+  NO  → Need reusable team procedure?
+          YES → Skill
+          NO  → Will this flood context or need isolation/parallelism?
+                  YES → Subagent
+                  NO  → Just prompt the main agent</code></pre>
+
+    <h2>Bottom line</h2>
+    <ul>
+      <li><strong>MCP</strong> — ports to the outside world</li>
+      <li><strong>Skills</strong> — your team’s operating manual</li>
+      <li><strong>Subagents</strong> — specialists that keep the main thread clean</li>
+    </ul>
+    <p>Stop asking “MCP or skill?” Ask: <em>capability, behavior, or context isolation?</em> Then pick the matching layer — or stack all three.</p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Is MCP a replacement for skills?</h3>
+    <p>No. MCP exposes tools. Skills teach <em>when and how</em> to use tools (and local workflows that need no MCP at all).</p>
+
+    <h3>Can a skill call an MCP tool?</h3>
+    <p>Yes. The skill instructs the agent; the agent invokes MCP tools available in the session.</p>
+
+    <h3>Do subagents see my full chat?</h3>
+    <p>Usually not — that is the point. Pass a detailed prompt with the context they need.</p>
+
+    <h3>Where should beginners start?</h3>
+    <ol>
+      <li>One <strong>skill</strong> for your most repeated workflow</li>
+      <li>One <strong>MCP</strong> for the system you touch daily (GitHub is common)</li>
+      <li>Use a <strong>subagent</strong> only when the main chat gets noisy</li>
+    </ol>
+
+    <h3>How does this relate to Claude Code / Cursor / Codex?</h3>
+    <p>Names differ slightly, but the split is the same: connectors (MCP), playbooks (skills / custom instructions), and delegated agents (subagents / Task / swarm).</p>
+
+    <aside class="blog-related">
+      <h2>Related guides</h2>
+      <ul>
+        <li><a href="./gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3.html">GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3</a></li>
+        <li><a href="./ai-agent-mcp-data-engineering-automation.html">AI Agents + MCP for Data Engineering Automation</a></li>
+        <li><a href="./migrate-cursor-chat-to-claude-code.html">How to Migrate Cursor Chat to Claude Code</a></li>
+        <li><a href="./auto-model-routing-without-llm-classifier.html">Auto Model Routing Without an LLM Classifier</a></li>
+      </ul>
+    </aside>
+
+    <aside class="blog-cta">
+      <h2>Building agent workflows for your team?</h2>
+      <p>stackcone designs MCP integrations, agent skills, and production RAG systems that stay maintainable.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
