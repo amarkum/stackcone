@@ -673,8 +673,32 @@
 .blog-article figure.blog-figure img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
   margin: 0;
+}
+
+/* Brand marks / logos — keep compact, never full-bleed */
+.blog-article figure.blog-figure--logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.25rem 1.5rem 0;
+}
+
+.blog-article figure.blog-figure--logo img {
+  width: auto;
+  max-width: 220px;
+  max-height: 96px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.blog-article figure.blog-figure--logo figcaption {
+  width: 100%;
 }
 
 .blog-article figure.blog-figure figcaption {
@@ -692,7 +716,7 @@
   justify-content: center;
   gap: 1.5rem 2.5rem;
   margin: 1.75rem 0 2rem;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--bg-soft);
@@ -702,13 +726,16 @@
   margin: 0;
   text-align: center;
   flex: 0 1 auto;
+  max-width: 140px;
 }
 
 .blog-article .model-logo-row img {
   display: block;
   margin: 0 auto 0.5rem;
-  max-height: 72px;
+  max-height: 56px;
+  max-width: 120px;
   width: auto;
+  height: auto;
   object-fit: contain;
 }
 
@@ -719,7 +746,8 @@
 }
 
 .blog-article .model-logo-row figure:nth-child(3) img {
-  max-height: 56px;
+  max-height: 40px;
+  max-width: 140px;
 }
 
 .blog-article .agent-stack-row {
