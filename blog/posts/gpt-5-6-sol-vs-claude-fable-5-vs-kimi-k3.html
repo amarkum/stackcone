@@ -15,13 +15,13 @@
   <meta property="og:url" content="https://stackcone.com/blog/posts/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3.html">
   <meta property="og:title" content="GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3">
   <meta property="og:description" content="Compare GPT-5.6 Sol, Claude Fable 5, and Kimi K3 — coding agents, reasoning, pricing, and which to use in 2026.">
-  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:image" content="https://stackcone.com/blog/images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/kimi.png">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="stackcone">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3">
   <meta name="twitter:description" content="Compare GPT-5.6 Sol, Claude Fable 5, and Kimi K3 — coding agents, reasoning, pricing, and which to use in 2026.">
-  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/kimi.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,9 +43,9 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-07-19",
-    "dateModified": "2026-07-19",
+    "dateModified": "2026-07-20",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3.html" },
-    "image": "https://stackcone.com/logo/stackcone.png",
+    "image": "https://stackcone.com/blog/images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/kimi.png",
     "keywords": ["GPT-5.6 Sol", "Claude Fable 5", "Kimi K3", "AI model comparison 2026"],
     "articleSection": "Platform"
   }
@@ -118,12 +118,30 @@
     <p>In July 2026, OpenAI shipped <strong>GPT-5.6 Sol</strong>, Anthropic’s <strong>Claude Fable 5</strong> stayed the professional-reasoning benchmark to beat, and Moonshot released <strong>Kimi K3</strong>, a ~2.8T sparse MoE model with a path to open weights. This guide is a practical routing cheat sheet — not another leaderboard screenshot.</p>
     <p><strong>Related:</strong> <a href="./best-economical-llm-models-rag-openai-gemini-anthropic.html">Best economical LLM models for RAG</a> · <a href="./auto-model-routing-without-llm-classifier.html">Auto model routing without an LLM classifier</a> · <a href="./skills-vs-mcp-vs-subagents.html">Skills vs MCP vs Subagents</a></p>
 
+    <div class="model-logo-row" role="img" aria-label="OpenAI, Anthropic Claude, and Kimi brand logos">
+      <figure>
+        <img src="../images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/openai.png" alt="OpenAI logo" width="80" height="80" loading="lazy">
+        <figcaption>GPT-5.6 Sol</figcaption>
+      </figure>
+      <figure>
+        <img src="../images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/claude-symbol.svg" alt="Claude logo" width="80" height="80" loading="lazy">
+        <figcaption>Claude Fable 5</figcaption>
+      </figure>
+      <figure>
+        <img src="../images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/kimi.png" alt="Kimi logo" width="200" height="68" loading="lazy">
+        <figcaption>Kimi K3</figcaption>
+      </figure>
+    </div>
+
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
       <ol>
         <li><a href="#quick-verdict">Quick verdict</a></li>
+        <li><a href="#family">GPT-5.6 family tiers</a></li>
         <li><a href="#contenders">The contenders</a></li>
+        <li><a href="#benchmarks">Benchmark snapshot</a></li>
         <li><a href="#compare">How they compare</a></li>
+        <li><a href="#products">Where each model lives</a></li>
         <li><a href="#pricing">Pricing snapshot</a></li>
         <li><a href="#which">Which should you use?</a></li>
         <li><a href="#decision">A simple decision rule</a></li>
@@ -142,6 +160,19 @@
       </tbody>
     </table>
 
+    <h2 id="family">GPT-5.6 family tiers</h2>
+    <p>OpenAI did not ship one model — it shipped a <strong>tiered family</strong>. Sol is the agent flagship; Terra and Luna are the volume tiers most teams should default to for routine work.</p>
+    <table>
+      <thead><tr><th>Tier</th><th>Role</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sol</strong></td><td>Frontier coding + agents</td><td>Hard SWE, multi-file refactors, computer use, agent loops</td></tr>
+        <tr><td><strong>Ultra</strong></td><td>Parallel multi-agent Sol</td><td>One-shot hard problems where you can afford extra compute</td></tr>
+        <tr><td><strong>Terra</strong></td><td>Mid-tier ChatGPT default</td><td>Daily chat, drafts, summaries, light edits</td></tr>
+        <tr><td><strong>Luna</strong></td><td>Budget tier</td><td>High-volume simple tasks, routing fallback</td></tr>
+      </tbody>
+    </table>
+    <p>If you only remember one rule: <strong>do not route every Cursor message to Sol</strong>. Burn Sol on agent jobs; keep Terra/Luna (or a heuristic router) on everything else. See <a href="./auto-model-routing-without-llm-classifier.html">auto model routing</a>.</p>
+
     <h2 id="contenders">The contenders</h2>
 
     <h3>GPT-5.6 Sol (OpenAI)</h3>
@@ -152,6 +183,24 @@
 
     <h3>Kimi K3 (Moonshot AI)</h3>
     <p><strong>2.8T</strong>-parameter sparse MoE (~16 of 896 experts active), <strong>1M</strong> context, native vision. Open weights announced around <strong>July 27, 2026</strong>. Competitive with closed frontier models on coding, terminal agents, frontend, and browsing — with aggressive API pricing and a path to self-host later. Moonshot themselves note K3 still trails Sol and Fable 5 overall, while winning several agentic niches.</p>
+    <figure class="blog-figure">
+      <img src="../images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/kimi.png" alt="Kimi wordmark and icon from Moonshot AI brand assets" width="1024" height="348" loading="lazy">
+      <figcaption>Kimi brand assets from the <a href="https://moonshotai.github.io/Branding-Guide/" rel="noopener noreferrer">official Moonshot KIMI brand guide</a>.</figcaption>
+    </figure>
+
+    <h2 id="benchmarks">Benchmark snapshot</h2>
+    <p>Benchmarks disagree by vendor and task mix. Treat this table as orientation — then run your own three-task eval on your repo.</p>
+    <table>
+      <thead><tr><th>Benchmark / signal</th><th>GPT-5.6 Sol</th><th>Claude Fable 5</th><th>Kimi K3</th></tr></thead>
+      <tbody>
+        <tr><td>Coding agents (Terminal-Bench, DeepSWE)</td><td>Strong / often leads</td><td>Strong on hard repair</td><td>Strong on marathon / terminal</td></tr>
+        <tr><td>Professional reasoning (GDPval-style)</td><td>Competitive</td><td>Often leads</td><td>Behind top closed models</td></tr>
+        <tr><td>Browse-heavy research</td><td>Very high</td><td>Careful deliverables</td><td>Very high + 1M context</td></tr>
+        <tr><td>Frontend / UI generation</td><td>Polished output</td><td>Reliable structure</td><td>Competitive on screenshots</td></tr>
+        <tr><td>Open weights / self-host</td><td>No</td><td>No</td><td>Yes (announced)</td></tr>
+        <tr><td>Typical API list price</td><td>Mid</td><td>Highest</td><td>Lowest of the three</td></tr>
+      </tbody>
+    </table>
 
     <h2 id="compare">How they compare</h2>
 
@@ -182,6 +231,19 @@
       <li><strong>K3</strong> launch evaluations also reported a higher hallucination rate than prior Moonshot generations — verify facts on knowledge work.</li>
     </ul>
 
+    <h2 id="products">Where each model lives</h2>
+    <p>Model choice is not only API price — it is also <strong>product surface</strong> (IDE plugins, agent runners, caching, and team controls).</p>
+    <table>
+      <thead><tr><th>Surface</th><th>OpenAI (Sol family)</th><th>Anthropic (Fable 5)</th><th>Moonshot (Kimi K3)</th></tr></thead>
+      <tbody>
+        <tr><td>Chat product</td><td>ChatGPT (Sol / Terra / Luna)</td><td>Claude.ai</td><td>Kimi chat + API</td></tr>
+        <tr><td>Coding agent</td><td>Codex, Cursor (multi-model)</td><td>Claude Code</td><td>API + third-party IDEs</td></tr>
+        <tr><td>Agent parallelism</td><td>Sol Ultra multi-agent</td><td>Tool use + subagents in Claude Code</td><td>Long-horizon terminal agents</td></tr>
+        <tr><td>Vision in the loop</td><td>Computer use, design polish</td><td>Strong document + UI reasoning</td><td>1M context + native vision</td></tr>
+        <tr><td>Weights / deploy</td><td>Closed API</td><td>Closed API</td><td>Open-weight path + self-host option</td></tr>
+      </tbody>
+    </table>
+
     <h2 id="pricing">Pricing snapshot</h2>
     <p>List prices move often; treat this as orientation (per 1M tokens, mid-July 2026 reporting):</p>
     <table>
@@ -193,6 +255,11 @@
       </tbody>
     </table>
     <p>For RAG unit economics, also see our <a href="./best-economical-llm-models-rag-openai-gemini-anthropic.html">economical LLM guide</a>.</p>
+
+    <div class="chart-wrap">
+      <canvas id="frontierPriceChart" aria-label="Approximate API input and output price per million tokens for Kimi K3, GPT-5.6 Sol, and Claude Fable 5"></canvas>
+      <p class="chart-caption">List API price per 1M tokens (input vs output) — mid-July 2026 orientation</p>
+    </div>
 
     <h2 id="which">Which should you use?</h2>
 
@@ -284,5 +351,25 @@
 
   <script src="/site-nav.js"></script>
   <script src="/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    new Chart(document.getElementById('frontierPriceChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Kimi K3', 'GPT-5.6 Sol', 'Claude Fable 5'],
+        datasets: [
+          { label: 'Input / 1M tokens ($)', data: [3, 5, 10], backgroundColor: '#2563eb' },
+          { label: 'Output / 1M tokens ($)', data: [15, 30, 50], backgroundColor: '#7c3aed' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'USD per 1M tokens' } } }
+      }
+    });
+  </script>
 </body>
 </html>

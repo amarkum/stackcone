@@ -4,17 +4,22 @@ Three frontier models landed in the same window — and the “best AI” answer
 
 In July 2026, OpenAI shipped **GPT-5.6 Sol**, Anthropic’s **Claude Fable 5** stayed the professional-reasoning benchmark to beat, and Moonshot released **Kimi K3**, a ~2.8T sparse MoE model with a path to open weights. This guide is a practical routing cheat sheet — not another leaderboard screenshot.
 
-**Related:** [Best economical LLM models for RAG](./best-economical-llm-models-rag-openai-gemini-anthropic.html) · [Auto model routing without an LLM classifier](./auto-model-routing-without-llm-classifier.html)
+![OpenAI, Claude, and Kimi logos](../images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/openai.png)
+
+**Related:** [Best economical LLM models for RAG](./best-economical-llm-models-rag-openai-gemini-anthropic.html) · [Auto model routing without an LLM classifier](./auto-model-routing-without-llm-classifier.html) · [Skills vs MCP vs Subagents](./skills-vs-mcp-vs-subagents.html)
 
 ## Table of contents
 
 1. [Quick verdict](#quick-verdict)
-2. [The contenders](#the-contenders)
-3. [How they compare](#how-they-compare)
-4. [Pricing snapshot](#pricing-snapshot)
-5. [Which should you use?](#which-should-you-use)
-6. [A simple decision rule](#a-simple-decision-rule)
-7. [FAQ](#faq)
+2. [GPT-5.6 family tiers](#family)
+3. [The contenders](#the-contenders)
+4. [Benchmark snapshot](#benchmarks)
+5. [How they compare](#how-they-compare)
+6. [Where each model lives](#products)
+7. [Pricing snapshot](#pricing-snapshot)
+8. [Which should you use?](#which-should-you-use)
+9. [A simple decision rule](#a-simple-decision-rule)
+10. [FAQ](#faq)
 
 ## Quick verdict
 
@@ -24,6 +29,19 @@ In July 2026, OpenAI shipped **GPT-5.6 Sol**, Anthropic’s **Claude Fable 5** s
 | Professional reasoning, careful knowledge work, visual agents | **Claude Fable 5** |
 | Open weights, long-horizon coding, browse-heavy research, lower API cost | **Kimi K3** |
 | Everyday ChatGPT work on a budget | **GPT-5.6 Terra / Luna** (not Sol) |
+
+## GPT-5.6 family tiers
+
+OpenAI shipped a **tiered family**, not a single model:
+
+| Tier | Role | When to use |
+| --- | --- | --- |
+| **Sol** | Frontier coding + agents | Hard SWE, multi-file refactors, computer use |
+| **Ultra** | Parallel multi-agent Sol | One-shot hard problems with extra compute |
+| **Terra** | Mid-tier ChatGPT default | Daily chat, drafts, summaries |
+| **Luna** | Budget tier | High-volume simple tasks, routing fallback |
+
+Do not route every Cursor message to Sol. Burn Sol on agent jobs; keep Terra/Luna on everything else.
 
 ## The contenders
 
@@ -37,15 +55,27 @@ Still leads many professional and economically weighted agent evals (for example
 
 ### Kimi K3 (Moonshot AI)
 
-**2.8T**-parameter sparse MoE (~16 of 896 experts active), **1M** context, native vision (and video in Moonshot’s launch stack). Open weights announced around **July 27, 2026**. Competitive with closed frontier models on coding, terminal agents, frontend, and browsing — with aggressive API pricing and a path to self-host later. Moonshot themselves note K3 still trails Sol and Fable 5 overall, while winning several agentic niches.
+**2.8T**-parameter sparse MoE (~16 of 896 experts active), **1M** context, native vision. Open weights announced around **July 27, 2026**. Competitive with closed frontier models on coding, terminal agents, frontend, and browsing — with aggressive API pricing and a path to self-host later.
+
+![Kimi wordmark from Moonshot brand guide](../images/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/kimi.png)
+
+## Benchmark snapshot
+
+| Benchmark / signal | GPT-5.6 Sol | Claude Fable 5 | Kimi K3 |
+| --- | --- | --- | --- |
+| Coding agents | Strong / often leads | Strong on hard repair | Strong on marathon / terminal |
+| Professional reasoning | Competitive | Often leads | Behind top closed models |
+| Browse-heavy research | Very high | Careful deliverables | Very high + 1M context |
+| Open weights | No | No | Yes (announced) |
+| Typical API list price | Mid | Highest | Lowest of the three |
 
 ## How they compare
 
 ### Coding and agents
 
-- **Sol** often wins coding-agent indexes and efficiency (stronger results with fewer tokens/time). DeepSWE and Terminal-Bench are typical Sol strengths; Ultra pushes Terminal-Bench further.
+- **Sol** often wins coding-agent indexes and efficiency (stronger results with fewer tokens/time).
 - **Fable 5** frequently wins hard SWE / professional repair tasks and broader agent Elo suites.
-- **Kimi K3** shines on long sessions, terminal-native work, SWE Marathon-style endurance, Program Bench, and frontend generation. Independent indexes place it near Opus 4.8 / GPT-5.5 overall, behind Sol and Fable 5.
+- **Kimi K3** shines on long sessions, terminal-native work, SWE Marathon-style endurance, Program Bench, and frontend generation.
 
 ### Browsing and research
 
@@ -61,8 +91,17 @@ Still leads many professional and economically weighted agent evals (for example
 
 - **K3** can be too proactive on ambiguous tasks — constrain it with clear system prompts / `AGENTS.md`.
 - **Sol** is tiered: don’t burn Sol (or Ultra) on simple work; use Terra / Luna for daily volume.
-- **Fable 5** may refuse some high-risk science domains more aggressively — good for safety, annoying for some research workflows.
-- **K3** launch evaluations also reported a higher hallucination rate than prior Moonshot generations — verify facts on knowledge work.
+- **Fable 5** may refuse some high-risk science domains more aggressively.
+- **K3** launch evaluations reported a higher hallucination rate than prior Moonshot generations — verify facts on knowledge work.
+
+## Where each model lives
+
+| Surface | OpenAI (Sol family) | Anthropic (Fable 5) | Moonshot (Kimi K3) |
+| --- | --- | --- | --- |
+| Chat product | ChatGPT | Claude.ai | Kimi chat + API |
+| Coding agent | Codex, Cursor | Claude Code | API + third-party IDEs |
+| Agent parallelism | Sol Ultra multi-agent | Tool use + subagents | Long-horizon terminal agents |
+| Weights / deploy | Closed API | Closed API | Open-weight path |
 
 ## Pricing snapshot
 
@@ -101,7 +140,7 @@ For RAG unit economics, also see our [economical LLM guide](./best-economical-ll
 1. **One-off hard coding task** in a commercial IDE → start with Sol or Fable 5; A/B on *your* repo.
 2. **Team production agents with cost constraints** → Terra daily, Sol for hard jobs; or Kimi K3 if open/cost matters.
 3. **Self-host / customize / own the weights** → Kimi K3 (when weights ship).
-4. **Don’t trust a single leaderboard** → run the same 3 tasks on all three this week. Benchmarks disagree; your workload doesn’t.
+4. **Don’t trust a single leaderboard** → run the same 3 tasks on all three this week.
 
 ## Bottom line
 
@@ -117,15 +156,15 @@ The teams winning in 2026 aren’t loyal to one model. They route the right mode
 
 ### Is Kimi K3 better than GPT-5.6 Sol overall?
 
-No. Moonshot and independent indexes still place **Sol** and **Fable 5** ahead on broad intelligence. K3 wins or ties several agentic niches (terminal, marathon SWE, some browse/automation scores) at lower price.
+No. Moonshot and independent indexes still place **Sol** and **Fable 5** ahead on broad intelligence. K3 wins or ties several agentic niches at lower price.
 
 ### Should I use Sol for every Cursor chat?
 
-No. Use **Terra / Luna** (or a mid-tier router) for routine edits and Sol / Ultra for hard agent jobs. See [auto model routing](./auto-model-routing-without-llm-classifier.html).
+No. Use **Terra / Luna** (or a mid-tier router) for routine edits and Sol / Ultra for hard agent jobs.
 
 ### When do open weights matter?
 
-When you need air-gapped deploy, custom fine-tunes, predictable unit cost at huge volume, or vendor independence. Until then, closed APIs are often simpler.
+When you need air-gapped deploy, custom fine-tunes, predictable unit cost at huge volume, or vendor independence.
 
 ### How should I evaluate for my team?
 

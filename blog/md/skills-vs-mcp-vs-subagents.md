@@ -4,18 +4,21 @@ If you’ve spent the last month hearing “just add an MCP” and “write a sk
 
 In 2026, coding agents (Claude Code, Cursor, Codex, Gemini CLI) share a common vocabulary. Mixing these up is the #1 reason setups get over-engineered or break. Here’s the clear split.
 
-**Related:** [AI agents + MCP for data engineering](./ai-agent-mcp-data-engineering-automation.html) · [Migrate Cursor chat to Claude Code](./migrate-cursor-chat-to-claude-code.html)
+**Related:** [AI agents + MCP for data engineering](./ai-agent-mcp-data-engineering-automation.html) · [Migrate Cursor chat to Claude Code](./migrate-cursor-chat-to-claude-code.html) · [GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3](./gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3.html)
 
 ## Table of contents
 
 1. [One-line definitions](#one-line-definitions)
 2. [What each one actually does](#what-each-one-actually-does)
-3. [Side-by-side comparison](#side-by-side-comparison)
-4. [When to use each](#when-to-use-each)
-5. [How they compose](#how-they-compose)
-6. [Common mistakes](#common-mistakes)
-7. [Decision flowchart](#decision-flowchart)
-8. [FAQ](#faq)
+3. [MCP architecture](#mcp-architecture)
+4. [Skill example](#skill-example)
+5. [Subagent types](#subagent-types)
+6. [Side-by-side comparison](#side-by-side-comparison)
+7. [When to use each](#when-to-use-each)
+8. [How they compose](#how-they-compose)
+9. [Common mistakes](#common-mistakes)
+10. [Decision flowchart](#decision-flowchart)
+11. [FAQ](#faq)
 
 ## One-line definitions
 
@@ -26,6 +29,8 @@ In 2026, coding agents (Claude Code, Cursor, Codex, Gemini CLI) share a common v
 | **Subagent** | A delegated specialist with its own context | Teammate on a side quest |
 
 **MCP adds capability. Skills change behavior. Subagents protect context.**
+
+![MCP logo](../images/skills-vs-mcp-vs-subagents/mcp-logo.png)
 
 ## What each one actually does
 
@@ -39,34 +44,57 @@ An MCP server is **plumbing**. It does not reason. It exposes:
 
 Supported across Claude, ChatGPT, Cursor, Copilot, and more. Write once, use everywhere.
 
-**Use MCP when** you need live access to a system the model cannot reach with shell alone — or when you want a stable, typed tool surface instead of ad-hoc curl scripts.
+**Use MCP when** you need live access to a system the model cannot reach with shell alone.
 
 **Do not use MCP when** you only need to teach the agent *how* your team works. That is a skill.
 
+## MCP architecture
+
+MCP uses a **host → client → server** pattern. The host (Cursor, Claude Desktop, ChatGPT) runs one MCP client per connected server.
+
+| Layer | Role | Example |
+| --- | --- | --- |
+| **Host** | AI app the user talks to | Cursor, Claude Code |
+| **MCP client** | One connection per server | Cursor’s GitHub MCP client |
+| **MCP server** | Exposes tools / resources / prompts | `@modelcontextprotocol/server-github` |
+| **Transport** | stdio (local) or HTTP+SSE (remote) | Local Node process or hosted MCP |
+
+Official reference: [MCP architecture overview](https://modelcontextprotocol.io/docs/learn/architecture)
+
 ### Skills (`SKILL.md`)
 
-A skill is a **markdown playbook** the agent loads when the task matches its description. It typically includes:
-
-- When to trigger (YAML `description`)
-- Step-by-step procedure
-- Repo conventions, templates, checklists
-- Optional scripts the agent should run
-
-In Cursor, skills live under `.cursor/skills/` (project) or `~/.cursor/skills/` (personal). They are instructions — not network ports.
+A skill is a **markdown playbook** the agent loads when the task matches its description. In Cursor, skills live under `.cursor/skills/` (project) or `~/.cursor/skills/` (personal).
 
 **Use a skill when** you want repeatable behavior: “how we write PRs,” “how we run migrations,” “how we ship blog posts.”
 
-**Do not use a skill when** you need a live API. Wire MCP (or a CLI) for that; the skill can *tell* the agent which MCP tools to call.
+## Skill example
+
+```markdown
+---
+description: Ship a stackcone blog post — md source, HTML publish, posts.json, sitemap, highlights.
+---
+
+# Ship a blog post
+
+1. Write `blog/md/{slug}.md` and `blog/posts/{slug}.html`.
+2. Download any hero images to `blog/images/{slug}/` (no hotlinks).
+3. Update `blog/posts.json` and `sitemap.xml`.
+4. Run `python3 _dev/apply_highlights.py blog/posts/{slug}.html`.
+```
 
 ### Subagents
 
-A subagent is a **separate agent run** with its own context window, tools, and (often) model. The parent delegates a scoped job — explore a codebase, run shell, review a PR — then receives a summary.
+A subagent is a **separate agent run** with its own context window, tools, and (often) model. Examples in Cursor: `explore`, `shell`, `ci-investigator`, `best-of-n-runner`.
 
-Examples in Cursor: `explore`, `shell`, `ci-investigator`, `best-of-n-runner`, custom Task agents.
+## Subagent types in Cursor
 
-**Use a subagent when** the work would pollute the main chat (huge search dumps, long test logs) or needs isolation (parallel experiments, dangerous shell).
-
-**Do not use a subagent when** a short instruction or skill is enough. Extra agents add latency and cost.
+| Subagent | Best for | Why isolate? |
+| --- | --- | --- |
+| `explore` | Broad codebase search | Search hits would flood the main transcript |
+| `shell` | Git, build, deploy commands | Long command output stays out of your chat |
+| `ci-investigator` | One failing PR check | Focused log analysis + root-cause summary |
+| `best-of-n-runner` | Parallel experiments | Try N approaches in isolated worktrees |
+| Custom Task agent | Scoped reviews (security, SEO) | Does not inherit irrelevant chat context |
 
 ## Side-by-side comparison
 
@@ -85,24 +113,20 @@ Examples in Cursor: `explore`, `shell`, `ci-investigator`, `best-of-n-runner`, c
 
 - GitHub / Linear / Slack / Datadog / Figma integrations
 - Database or internal API access with auth
-- Anything you would otherwise wrap in a one-off script every session
 
 ### Reach for a skill
 
 - “Always run highlights before commit”
 - “PR title format and test plan checklist”
-- Domain playbooks (RAG eval, Flutter release, Upwork invoice flow)
+- Domain playbooks (RAG eval, Flutter release)
 
 ### Reach for a subagent
 
 - Broad codebase search that would flood the transcript
 - Parallel “try 3 approaches” experiments
 - Long-running CI diagnosis while you keep chatting
-- Scoped reviews (security, Bugbot-style) that should not inherit your whole chat
 
 ## How they compose
-
-The winning pattern in 2026 is **composition**, not picking one:
 
 ```text
 Skill: "Ship a blog post"
@@ -110,15 +134,6 @@ Skill: "Ship a blog post"
   → calls MCP: GitHub (open PR) + Figma (optional)
   → may spawn Subagent: explore (find related posts)
   → main agent writes files and summarizes
-```
-
-Another pattern:
-
-```text
-User: "Fix failing CI on this PR"
-  → Subagent: ci-investigator (isolated logs)
-  → Skill: "how we fix flaky tests"
-  → MCP: GitHub (re-run checks, comment)
 ```
 
 **Rule of thumb:** MCP = *can*, Skill = *should*, Subagent = *elsewhere*.
@@ -145,9 +160,9 @@ Need live external system access?
 
 ## Bottom line
 
-- **MCP** — ports to the outside world  
-- **Skills** — your team’s operating manual  
-- **Subagents** — specialists that keep the main thread clean  
+- **MCP** — ports to the outside world
+- **Skills** — your team’s operating manual
+- **Subagents** — specialists that keep the main thread clean
 
 Stop asking “MCP or skill?” Ask: *capability, behavior, or context isolation?* Then pick the matching layer — or stack all three.
 
@@ -155,7 +170,7 @@ Stop asking “MCP or skill?” Ask: *capability, behavior, or context isolation
 
 ### Is MCP a replacement for skills?
 
-No. MCP exposes tools. Skills teach *when and how* to use tools (and local workflows that need no MCP at all).
+No. MCP exposes tools. Skills teach *when and how* to use tools.
 
 ### Can a skill call an MCP tool?
 
@@ -167,10 +182,6 @@ Usually not — that is the point. Pass a detailed prompt with the context they 
 
 ### Where should beginners start?
 
-1. One **skill** for your most repeated workflow  
-2. One **MCP** for the system you touch daily (GitHub is common)  
-3. Use a **subagent** only when the main chat gets noisy  
-
-### How does this relate to Claude Code / Cursor / Codex?
-
-Names differ slightly, but the split is the same: connectors (MCP), playbooks (skills / custom instructions), and delegated agents (subagents / Task / swarm).
+1. One **skill** for your most repeated workflow
+2. One **MCP** for the system you touch daily (GitHub is common)
+3. Use a **subagent** only when the main chat gets noisy

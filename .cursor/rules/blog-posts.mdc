@@ -51,9 +51,44 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 - Opening hook — problem or misconception, then what the reader will learn
 - Table of contents with anchor links
 - H2 sections; code blocks and comparison tables where useful
+- **Hero or section images** when they clarify the topic (see Images below)
 - FAQ section + `FAQPage` JSON-LD when appropriate
 - Related guides — link to other **`.html`** posts only
 - CTA block at bottom (contact / solutions)
+
+## Images (required when relevant)
+
+**Do not generate images with AI.** Search the web for relevant official or freely usable assets, **download them into the repo**, and reference the local file from HTML.
+
+| Path | Role |
+|------|------|
+| `blog/images/{slug}/` | Per-post image assets (PNG/SVG/WebP) |
+| `blog/posts/{slug}.html` | Published page references `../images/{slug}/…` |
+
+### Workflow
+
+1. Search for relevant images: official brand kits, Wikimedia Commons, vendor press kits, protocol logos, architecture diagrams from docs.
+2. Save files under `blog/images/{slug}/` with descriptive names (e.g. `mcp-logo.png`, `openai.png`, `kimi-with-icon-light.png`).
+3. Prefer **official colored brand assets** (press kits, Wikimedia Commons, vendor brand guides). Do **not** use monochrome/grey icon CDN packs (e.g. LobeHub `light/` PNGs) when a full-color logo exists.
+4. Add images in the article with semantic HTML:
+
+```html
+<figure class="blog-figure">
+  <img src="../images/{slug}/example.png" alt="Descriptive alt text" width="800" height="450" loading="lazy">
+  <figcaption>Short caption with source credit when needed.</figcaption>
+</figure>
+```
+
+5. For multi-logo comparisons, use `.model-logo-row` or `.agent-stack-row` (defined in `blog/blog.css`).
+6. Set meaningful `alt` on every image. Use `loading="lazy"` for below-the-fold images.
+7. Optionally set `og:image` / `twitter:image` and JSON-LD `image` to a local hero asset: `https://stackcone.com/blog/images/{slug}/hero.png`.
+8. In `blog/md/{slug}.md`, mirror images as `![alt](../images/{slug}/file.png)` for authoring parity.
+
+### Do not
+
+- Hotlink external image URLs in published HTML (links break, bad for SEO).
+- Generate synthetic hero art when a real logo, diagram, or screenshot exists.
+- Omit `alt` text or use filename-only captions.
 
 ## SEO
 
