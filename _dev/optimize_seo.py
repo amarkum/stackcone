@@ -12,10 +12,22 @@ POSTS_JSON = ROOT / "blog" / "posts.json"
 POSTS_DIR = ROOT / "blog" / "posts"
 SITEMAP = ROOT / "sitemap.xml"
 BLOG_INDEX = ROOT / "blog" / "index.html"
-DATE_MODIFIED = "2026-06-18"
+DATE_MODIFIED = "2026-07-28"
 
 # Per-post SEO: title (page title without " | stackcone"), h1, description, keywords
 SEO: dict[str, dict[str, str | list[str]]] = {
+    "gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3": {
+        "title": "GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3: Which Should You Use?",
+        "h1": "GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3: Which Should You Use?",
+        "description": "Compare GPT-5.6 Sol, Claude Fable 5, and Kimi K3 — coding agents, reasoning, pricing, open weights, and which model to use for each job in 2026.",
+        "keywords": ["GPT-5.6 Sol", "Claude Fable 5", "Kimi K3", "AI model comparison 2026"],
+    },
+    "skills-vs-mcp-vs-subagents": {
+        "title": "Skills vs MCP vs Subagents: When to Use Each",
+        "h1": "Skills vs MCP vs Subagents: When to Use Each",
+        "description": "Skills vs MCP vs subagents explained — what each is, when to use them in Cursor and Claude Code, and how to compose all three without over-engineering.",
+        "keywords": ["MCP", "Agent Skills", "Subagents", "Cursor", "Claude Code", "AI agents"],
+    },
     "sse-websocket-rest-api-compared": {
         "title": "SSE vs WebSocket vs REST API for Live AI (2026)",
         "h1": "SSE vs WebSocket vs REST API for Live AI",
@@ -212,7 +224,7 @@ def replace_prop(html: str, prop: str, content: str) -> str:
 
 
 def replace_title(html: str, title: str) -> str:
-    full = f"{title} | stackcone"
+    full = title
     return re.sub(r"<title>[^<]*</title>", f"<title>{esc_attr(full)}</title>", html, count=1)
 
 
