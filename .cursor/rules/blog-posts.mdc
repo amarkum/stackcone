@@ -13,7 +13,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 | Path | Role |
 |------|------|
 | `blog/md/{slug}.md` | Authoring source — **not** a public URL |
-| `blog/posts/{slug}.html` | Published page — canonical, sitemap, internal links |
+| `blog/posts/{slug}/index.html` | Published page — canonical, sitemap, internal links |
 
 - **Never** place `.md` files in `blog/posts/`.
 - **Never** link to `.md` from HTML, `posts.json`, sitemap, or nav.
@@ -23,7 +23,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 ## Deliverables (always)
 
 1. `blog/md/{slug}.md` — markdown source (mirror of content)
-2. `blog/posts/{slug}.html` — published page
+2. `blog/posts/{slug}/index.html` — published page
 3. Update `blog/posts.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the HTML page only
 5. Run `python3 _dev/apply_highlights.py` on new/edited HTML (syntax highlighting)
@@ -37,7 +37,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
   "id": "{slug}",
   "title": "Short outcome-focused title (no parenthetical subtitles)",
   "description": "Value + keywords in one sentence (under ~155 chars)",
-  "href": "./posts/{slug}.html",
+  "href": "./posts/{slug}/",
   "date": "YYYY-MM-DD",
   "dateLabel": "Month YYYY",
   "author": "Amar Kumar",
@@ -63,7 +63,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 | Path | Role |
 |------|------|
 | `blog/images/{slug}/` | Per-post image assets (PNG/SVG/WebP) |
-| `blog/posts/{slug}.html` | Published page references `../images/{slug}/…` |
+| `blog/posts/{slug}/index.html` | Published page references `../../images/{slug}/…` |
 
 ### Workflow
 
@@ -92,7 +92,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 
 ## SEO
 
-Follow `.cursor/rules/seo-google.mdc`. Unique title, meta description, canonical (`https://stackcone.com/blog/posts/{slug}.html`), OG/Twitter, `Article` + `BreadcrumbList` JSON-LD.
+Follow `.cursor/rules/seo-google.mdc`. Unique title, meta description, canonical (`https://stackcone.com/blog/posts/{slug}/`), OG/Twitter, `Article` + `BreadcrumbList` JSON-LD.
 
 ## Tone
 

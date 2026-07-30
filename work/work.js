@@ -99,7 +99,7 @@
     if (p.endClientLogo) {
       logos =
         '<div class="case-client-logos">' +
-          '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.endClientLogo)) + '" alt="" width="80" height="28">' +
+          '<img class="case-client-logo" src="' + escapeHtml(logoPath(p.endClientLogo)) + '" alt="' + escapeHtml(p.endClient || p.client || 'Client logo') + '" width="80" height="28">' +
         '</div>';
     }
 

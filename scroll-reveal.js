@@ -8,7 +8,11 @@
   var staggerSelectors = [
     ".section-title",
     ".section-intro",
-    ".stack-tabs",
+    ".service-grid",
+    ".service-card",
+    ".why-stackcone-lead",
+    ".why-stackcone-item",
+    ".why-stackcone-footer",
     ".about-lead",
     ".about-body",
     ".about-services",

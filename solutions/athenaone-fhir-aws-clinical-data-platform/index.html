@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>AthenaOne FHIR Integration on AWS</title>
+  <meta name="description" content="Proposed AthenaOne FHIR integration: HIPAA AWS clinical data lake, daily incremental sync via FHIR and Data View, searchable charts, and AI clinical analysis.">
+  <meta name="keywords" content="AthenaOne FHIR integration, HIPAA AWS clinical data lake, Athena Data View API, FHIR R4 EHR sync, OpenSearch clinical search, clinical RAG, incremental EHR extraction, specialty practice data platform">
+  <link rel="canonical" href="https://stackcone.com/solutions/athenaone-fhir-aws-clinical-data-platform/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/athenaone-fhir-aws-clinical-data-platform/">
+  <meta property="og:title" content="AthenaOne FHIR Integration — HIPAA AWS Clinical Data Platform">
+  <meta property="og:description" content="Proposed build: daily AthenaOne FHIR and Data View ingestion into a HIPAA AWS lake, normalized clinical warehouse, full-text chart search, and AI summarization layer.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AthenaOne FHIR Integration — HIPAA AWS Clinical Data Platform">
+  <meta name="twitter:description" content="Proposed AthenaOne FHIR integration on AWS: incremental clinical sync, searchable database, and AI chart analysis for specialty practices.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <link rel="stylesheet" href="../solutions.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "AthenaOne FHIR Integration — HIPAA AWS Clinical Data Platform",
+    "description": "Proposed AthenaOne FHIR integration: HIPAA AWS clinical data lake, daily incremental sync via FHIR and Data View, searchable charts, and AI clinical analysis.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-07-06",
+    "dateModified": "2026-07-06",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/athenaone-fhir-aws-clinical-data-platform/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "articleSection": "Data",
+    "keywords": [
+      "AthenaOne FHIR integration",
+      "HIPAA AWS clinical data lake",
+      "Athena Data View API",
+      "FHIR R4 EHR sync",
+      "OpenSearch clinical search",
+      "clinical RAG",
+      "incremental EHR extraction",
+      "specialty practice data platform",
+      "clinical data normalization",
+      "patient chart AI summarization"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "AthenaOne FHIR Integration", "item": "https://stackcone.com/solutions/athenaone-fhir-aws-clinical-data-platform/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>AthenaOne FHIR Integration — HIPAA AWS Clinical Data Platform</h1>
+    <p class="meta">By Amar Kumar</p>
+    <p>A proposed <strong>AthenaOne FHIR integration</strong> for a U.S. medical specialty practice that would extract clinical data on a daily incremental schedule, land raw FHIR and Data View payloads in a <strong>HIPAA-compliant AWS</strong> environment, normalize records into a searchable clinical warehouse, and lay groundwork for AI-powered chart search, summarization, and cohort analysis. The plan spans three phases — secure ingestion, normalized search, and a governed clinical AI layer — with audit logging and monitoring at every tier.</p>
+
+    <blockquote>
+      <p><strong>Proposed outcome:</strong> A specialty practice would run a daily AthenaOne sync into AWS, query full patient charts in seconds, retain versioned clinical history, and use AI tools for chart summaries and research cohorts — all within HIPAA guardrails and with a complete audit trail.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#scenario">Scenario</a></li>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#agent-design">Component design</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#reporting">Reporting &amp; ops</a></li>
+        <li><a href="#deliverables">Proposed deliverables</a></li>
+        <li><a href="#estimate">Effort estimate</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="scenario">Scenario</h2>
+    <p>This brief describes a <strong>proposed solution</strong> — not a delivered engagement. It maps a recurring pattern among specialty practices on AthenaOne: rich clinical data locked in the EHR, with growing demand for analytics, research, and AI-assisted review outside the native Athena UI.</p>
+    <ul>
+      <li><strong>Organization:</strong> U.S. medical specialty practice (single or multi-site) on AthenaOne; clinical leadership wants cloud analytics without replacing the EHR</li>
+      <li><strong>Source systems:</strong> AthenaOne REST APIs, FHIR R4 endpoints, and Athena Data View for bulk/tabular extracts where FHIR coverage is thin</li>
+      <li><strong>Scope:</strong> Phase 1 daily incremental sync of demographics, encounters, notes, diagnoses, medications, allergies, labs, imaging reports, procedures, orders, and documents; Phases 2–3 normalize, index, and enable AI workflows</li>
+      <li><strong>Owner profile:</strong> Healthcare integration engineer or small data platform team; compliance officer involved in BAA and access reviews</li>
+      <li><strong>Regulatory context:</strong> HIPAA Security and Privacy Rules; PHI never leaves the BAA-covered AWS account; minimum-necessary access enforced via IAM and application roles</li>
+      <li><strong>Downstream consumers:</strong> Clinical operations, quality improvement, and research staff — not patient-facing apps in the initial build</li>
+    </ul>
+
+    <h2 id="problem">Problem</h2>
+    <p>AthenaOne holds the practice's clinical truth, but native reporting and ad-hoc exports do not scale to cross-chart search, longitudinal analysis, or AI-assisted review. Manual CSV pulls are slow, unaudited, and miss incremental changes.</p>
+    <ul>
+      <li><strong>Data trapped in the EHR</strong> — answering "all patients on drug X with lab Y abnormal in the last 90 days" requires chart-by-chart review or brittle report builder queries</li>
+      <li><strong>No incremental sync</strong> — full exports nightly are expensive, rate-limited, and duplicate unchanged records</li>
+      <li><strong>API surface fragmentation</strong> — FHIR covers many resources well; provider notes, documents, and some imaging metadata may need Athena Data View or proprietary endpoints</li>
+      <li><strong>HIPAA complexity</strong> — spinning up cloud storage without encryption, access logging, and BAA coverage creates compliance exposure</li>
+      <li><strong>No version history</strong> — medication changes, diagnosis updates, and amended notes need SCD2-style history for research and quality metrics</li>
+      <li><strong>AI without governance</strong> — dropping PHI into consumer LLM tools violates policy; a clinical AI layer needs de-identification options, audit logs, and prompt guardrails</li>
+      <li><strong>Operational blind spots</strong> — failed sync jobs, partial resource loads, and API throttling must surface before clinicians discover stale data</li>
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <h3>Functional</h3>
+    <ul>
+      <li><strong>AthenaOne connectivity</strong> — OAuth2 client credentials against Athena API; FHIR R4 read scopes; Data View subscription where licensed</li>
+      <li><strong>Daily incremental sync</strong> — watermark on <code>_lastUpdated</code> / change tokens; upsert new and modified records only; full backfill path for initial load</li>
+      <li><strong>Resource coverage</strong> — Patient, Encounter, Condition, MedicationRequest, AllergyIntolerance, Observation (labs), DiagnosticReport (imaging), Procedure, ServiceRequest (orders), DocumentReference, and linked Binary attachments</li>
+      <li><strong>Raw landing zone</strong> — immutable JSON payloads in S3 with partition keys by resource type and sync date</li>
+      <li><strong>Normalization</strong> — canonical relational model with patient-centric foreign keys; FHIR-to-internal mapping tables for codes (ICD-10, LOINC, RxNorm)</li>
+      <li><strong>Full-text search</strong> — index provider notes, report narratives, and document text across all patients with role-scoped queries</li>
+      <li><strong>Version history</strong> — track record versions with effective dates; soft-delete when Athena marks resources inactive</li>
+      <li><strong>AI capabilities (Phase 3)</strong> — chart summarization, longitudinal timelines, natural-language search, cohort builder, outcome analysis, research query templates</li>
+      <li><strong>Audit logging</strong> — who queried what patient data, when, and from which application role</li>
+    </ul>
+    <h3>Non-functional</h3>
+    <ul>
+      <li><strong>HIPAA</strong> — AWS BAA in place; encryption at rest (KMS CMK) and in transit (TLS 1.2+); no PHI in application logs</li>
+      <li><strong>Availability</strong> — daily sync completes within a defined window (e.g. 02:00–06:00 local); search API p95 under 2 seconds for typical queries</li>
+      <li><strong>Idempotency</strong> — re-running a sync date partition does not duplicate warehouse rows</li>
+      <li><strong>Observability</strong> — row counts per resource, API error rates, lag vs Athena <code>_lastUpdated</code>, SNS/PagerDuty on failure</li>
+      <li><strong>Least privilege</strong> — separate IAM roles for extract, transform, search, and AI inference; break-glass admin documented</li>
+      <li><strong>Cost control</strong> — S3 lifecycle to Glacier for raw archives; OpenSearch instance sizing tied to chart volume; Bedrock token budgets per role</li>
+    </ul>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>Four tiers: <strong>extraction</strong> (AthenaOne APIs → S3 raw), <strong>transformation</strong> (normalize → RDS/Aurora + document index), <strong>search &amp; API</strong> (OpenSearch + internal REST), and <strong>clinical AI</strong> (RAG over indexed charts with Bedrock).</p>
+
+    <div class="diagram-wrap" data-diagram-title="AthenaOne clinical data platform architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef ehr fill:#fef3c7,stroke:#d97706,color:#92400e
+  classDef ingest fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef store fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef search fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  classDef ai fill:#fce7f3,stroke:#db2777,color:#9d174d
+
+  ATH["AthenaOne EHR\nFHIR R4 · REST API\nData View"]:::ehr
+
+  EB["EventBridge\nnightly schedule"]:::ingest
+  LAMBDA["Lambda extractors\nper resource type"]:::ingest
+  SQS["SQS dead-letter\nfailed pages"]:::ingest
+
+  S3["S3 raw zone\nJSON · attachments\nKMS encrypted"]:::store
+  GLUE["Glue / dbt\nnormalize · SCD2"]:::store
+  AURORA["Aurora PostgreSQL\nclinical warehouse"]:::store
+  OS["OpenSearch\nfull-text index"]:::search
+
+  API["Internal API\nFastAPI on ECS"]:::search
+  CW["CloudWatch\naudit · metrics"]:::ingest
+
+  BEDROCK["Amazon Bedrock\nClaude · embeddings"]:::ai
+  RAG["RAG orchestrator\nLangGraph"]:::ai
+  UI["Clinical search UI\nSSO · role scopes"]:::search
+
+  ATH --> LAMBDA
+  EB --> LAMBDA
+  LAMBDA --> S3
+  LAMBDA --> SQS
+  S3 --> GLUE
+  GLUE --> AURORA
+  GLUE --> OS
+  API --> AURORA
+  API --> OS
+  RAG --> OS
+  RAG --> AURORA
+  RAG --> BEDROCK
+  UI --> API
+  UI --> RAG
+  LAMBDA --> CW
+  API --> CW</div>
+      </div>
+      <p class="diagram-caption">Platform architecture — nightly AthenaOne extraction lands in S3, normalizes into Aurora and OpenSearch, and serves search plus governed AI workflows through an internal API</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Daily incremental sync sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant Sched as EventBridge
+  participant Ext as Extract Lambda
+  participant Ath as AthenaOne FHIR
+  participant S3 as S3 raw
+  participant ETL as dbt transform
+  participant WH as Aurora warehouse
+  participant Idx as OpenSearch
+
+  Sched->>Ext: trigger nightly sync
+  Ext->>Ath: GET /Patient?_lastUpdated=gt{watermark}
+  Ath-->>Ext: Bundle page + next link
+  Ext->>S3: write partition sync_date/resource/
+  loop each resource type
+    Ext->>Ath: incremental search per type
+    Ath-->>Ext: changed resources
+    Ext->>S3: append raw JSON
+  end
+  Ext->>ETL: notify completion event
+  ETL->>WH: MERGE upsert + SCD2 history
+  ETL->>Idx: bulk index note text + reports
+  ETL-->>Sched: update watermark checkpoint</div>
+      </div>
+      <p class="diagram-caption">Incremental sync — watermark-driven FHIR searches per resource type, raw landing in S3, then MERGE into the warehouse and bulk re-index of changed documents</p>
+    </div>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="platformComponentChart" aria-label="Clinical data platform component map by tier"></canvas>
+      <p class="chart-caption">Component map by platform tier (major services per layer)</p>
+    </div>
+
+    <p class="solution-section-label">End-to-end flow</p>
+    <div class="pipeline" role="img" aria-label="From AthenaOne nightly extract through normalization and search to clinical AI queries">
+      <span class="pipeline-step">Extract FHIR</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Land in S3</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Normalize</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Index &amp; search</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">AI analysis</span>
+    </div>
+    <p class="diagram-caption">Three-phase lifecycle — secure ingestion first, searchable warehouse second, governed AI layer third</p>
+
+    <div class="chart-wrap">
+      <canvas id="resourceVolumeChart" aria-label="Typical daily incremental sync volume by FHIR resource type"></canvas>
+      <p class="chart-caption">Indicative daily incremental record volume by resource type for a mid-size specialty practice (illustrative)</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="syncLatencyChart" aria-label="Nightly pipeline stage duration by step"></canvas>
+      <p class="chart-caption">Typical nightly pipeline duration by stage — median vs p95 (illustrative)</p>
+    </div>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <p><strong>Recommendation:</strong> run the entire platform in a dedicated <strong>HIPAA AWS account</strong> with a signed BAA; use <strong>Lambda + EventBridge</strong> for AthenaOne extraction, <strong>S3</strong> as the immutable raw zone, <strong>dbt on Glue/ECS</strong> for normalization, <strong>Aurora PostgreSQL</strong> for relational clinical data, <strong>OpenSearch</strong> for full-text chart search, and <strong>Amazon Bedrock</strong> with a <strong>LangGraph</strong> orchestrator for Phase 3 AI workflows.</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>EHR source</td><td>AthenaOne FHIR R4 + REST + Data View</td><td>Official APIs; FHIR for structured resources, Data View for bulk tabular gaps</td></tr>
+        <tr><td>Auth</td><td>OAuth 2.0 client credentials (Athena developer portal)</td><td>Standard Athena API auth; tokens rotated via Secrets Manager</td></tr>
+        <tr><td>Extraction</td><td>AWS Lambda + EventBridge</td><td>Serverless, per-resource-type parallelism, automatic retry with SQS DLQ</td></tr>
+        <tr><td>Raw storage</td><td>S3 (SSE-KMS, bucket policy deny unencrypted)</td><td>Low-cost immutable archive; replay transforms without re-hitting Athena</td></tr>
+        <tr><td>Transform</td><td>dbt + AWS Glue or ECS task</td><td>Version-controlled SQL models; SCD2 macros for clinical history</td></tr>
+        <tr><td>Warehouse</td><td>Aurora PostgreSQL</td><td>ACID joins across patients, encounters, meds; familiar SQL for analysts</td></tr>
+        <tr><td>Full-text search</td><td>Amazon OpenSearch Service</td><td>Sub-second search across note bodies and report narratives; fine-grained access filters</td></tr>
+        <tr><td>Internal API</td><td>FastAPI on ECS Fargate behind ALB</td><td>Typed REST for search, cohort export, audit-logged patient chart retrieval</td></tr>
+        <tr><td>AI inference</td><td>Amazon Bedrock (Claude) + Titan Embeddings</td><td>HIPAA-eligible when configured in BAA account; no PHI sent to consumer APIs</td></tr>
+        <tr><td>AI orchestration</td><td>LangGraph</td><td>Multi-step agents: retrieve → summarize → cite sources → human-review gate</td></tr>
+        <tr><td>Secrets &amp; keys</td><td>AWS Secrets Manager + KMS CMK</td><td>Athena credentials and DB passwords rotated; envelope encryption for S3</td></tr>
+        <tr><td>Monitoring</td><td>CloudWatch + SNS + optional PagerDuty</td><td>Sync lag, row-count anomalies, API 429 throttling, audit log shipping</td></tr>
+        <tr><td>Identity</td><td>AWS IAM Identity Center + app RBAC</td><td>Map practice roles (clinician, researcher, admin) to data scopes</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Why FHIR + Data View together?</strong> FHIR R4 gives standardized resources (Patient, Condition, Observation) with <code>_lastUpdated</code> for incremental sync. Athena Data View fills gaps — wide encounter exports, legacy document metadata, or resources not yet exposed as FHIR — without abandoning the FHIR-first model.</p>
+    <p><strong>Why Aurora + OpenSearch instead of one store?</strong> Relational joins power cohort SQL ("patients with ICD X and lab Y"); OpenSearch handles unstructured note text at scale. Duplicating note text into the index is cheaper than forcing full-text into Postgres.</p>
+    <p><strong>Why Bedrock over external LLMs?</strong> Consumer chat APIs are not HIPAA-ready for PHI. Bedrock in a BAA-covered account with VPC endpoints keeps inference inside the compliance boundary.</p>
+
+    <p>Incremental FHIR search pattern (watermark stored in DynamoDB or Aurora config table):</p>
+    <pre><code>GET /fhir/r4/Patient?_lastUpdated=gt2026-07-05T00:00:00Z&amp;_count=100
+Authorization: Bearer {access_token}
+Accept: application/fhir+json
+
+<span class="kw">#</span> Paginate via Bundle.link[relation=next]
+<span class="kw">#</span> Write each resource to s3://clinical-raw/{practice_id}/patient/sync_date=2026-07-06/{resource_id}.json</code></pre>
+
+    <h2 id="agent-design">Component design</h2>
+
+    <h3>1 — Athena API connector</h3>
+    <ul>
+      <li><strong>Input:</strong> OAuth credentials, practice ID, resource manifest, last watermark per resource type</li>
+      <li><strong>Output:</strong> Raw FHIR Bundles and Data View CSV/JSON in S3; extraction manifest with row counts and checksums</li>
+      <li><strong>QA gate:</strong> row count within ±15% of trailing 7-day median; halt and alert on larger deviation</li>
+    </ul>
+
+    <h3>2 — Document &amp; attachment fetcher</h3>
+    <ul>
+      <li><strong>Input:</strong> DocumentReference and Binary resource IDs from prior sync</li>
+      <li><strong>Output:</strong> PDF/HTML attachments in S3 <code>attachments/</code> prefix; text extracted via Textract or pdfminer for indexing</li>
+      <li><strong>QA gate:</strong> attachment byte count &gt; 0; OCR confidence threshold logged for manual review queue</li>
+    </ul>
+
+    <h3>3 — Normalization engine (dbt)</h3>
+    <ul>
+      <li><strong>Input:</strong> S3 raw JSON partitions</li>
+      <li><strong>Output:</strong> <code>dim_patient</code>, <code>fact_encounter</code>, <code>fact_condition</code>, <code>fact_medication</code>, <code>fact_observation</code>, <code>fact_document</code> with SCD2 history tables</li>
+      <li><strong>Mapping:</strong> FHIR CodeableConcept → internal code tables; unresolved codes flagged in <code>staging.unmapped_codes</code></li>
+    </ul>
+
+    <h3>4 — Search indexer</h3>
+    <ul>
+      <li><strong>Input:</strong> Changed rows from warehouse CDC stream or dbt <code>incremental</code> models</li>
+      <li><strong>Output:</strong> OpenSearch documents with patient_id, encounter_id, note_text, report_type, service_date, provider_id</li>
+      <li><strong>QA gate:</strong> index document count matches warehouse delta; reindex job idempotent on <code>resource_version</code></li>
+    </ul>
+
+    <h3>5 — Clinical search API</h3>
+    <ul>
+      <li><strong>Endpoints:</strong> <code>GET /patients?q=</code>, <code>GET /patients/{id}/timeline</code>, <code>POST /cohorts</code>, <code>GET /search/notes</code></li>
+      <li><strong>Auth:</strong> JWT from SSO; patient-level access logged to <code>audit.query_log</code></li>
+      <li><strong>QA gate:</strong> integration tests against synthetic patients; no cross-patient leakage in search results</li>
+    </ul>
+
+    <h3>6 — Clinical AI orchestrator (Phase 3)</h3>
+    <table>
+      <thead>
+        <tr><th>Agent / workflow</th><th>Responsibility</th><th>Inputs</th><th>Outputs</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Chart retriever</td><td>Fetch relevant encounters, notes, labs for a patient or cohort</td><td>patient_id, date range, query embedding</td><td>Ranked context chunks with source URIs</td></tr>
+        <tr><td>Summarizer</td><td>Generate longitudinal chart summary with citations</td><td>Retrieved chunks, prompt template</td><td>Structured summary JSON + footnotes to source documents</td></tr>
+        <tr><td>Timeline builder</td><td>Order clinical events chronologically</td><td>warehouse fact tables</td><td>Timeline API response / export</td></tr>
+        <tr><td>Cohort analyst</td><td>Translate natural language to SQL + validate result set</td><td>NL query, schema catalog</td><td>SQL (reviewable) + patient count + export link</td></tr>
+        <tr><td>Outcome analyzer</td><td>Compare treatment paths across matched cohorts</td><td>cohort A/B definitions, outcome metrics</td><td>Statistical summary (descriptive; not diagnostic)</td></tr>
+        <tr><td>Safety reviewer</td><td>Block diagnoses, treatment recommendations, and PHI in logs</td><td>LLM draft output</td><td>Approved text or rejection with reason code</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="phaseEffortChart" aria-label="Implementation effort distribution across build phases"></canvas>
+      <p class="chart-caption">Indicative build effort distribution by phase (% of total hours)</p>
+    </div>
+
+    <h2 id="implementation">Implementation plan</h2>
+
+    <div class="impl-phase">
+      <h3>Phase 1 — HIPAA foundation &amp; Athena connectivity (weeks 1–2)</h3>
+      <p>Stand up BAA-covered AWS account baseline: KMS CMK, VPC, private subnets, S3 raw bucket with encryption and access logging, Secrets Manager for Athena OAuth, CloudTrail and Config enabled. Register Athena developer app; validate FHIR read access for Patient and Encounter in sandbox. Document resource manifest and watermark schema.</p>
+      <p><strong>Risk:</strong> Athena API approval delays — start developer portal registration day one. <strong>Rollback:</strong> infrastructure only; no PHI loaded until connectivity validated.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 2 — Incremental extraction pipeline (weeks 3–5)</h3>
+      <p>Build Lambda extractors per FHIR resource type with <code>_lastUpdated</code> watermarking, S3 partitioning, SQS DLQ, and nightly EventBridge schedule. Add Data View jobs for resources with thin FHIR coverage. Initial backfill orchestrator with rate-limit backoff (429 handling). CloudWatch dashboard: rows per resource, API errors, sync duration.</p>
+      <p><strong>Risk:</strong> Athena rate limits on large backfill — throttle with token bucket; run backfill over a weekend window. <strong>Rollback:</strong> disable EventBridge rule; raw S3 data retained for replay.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 3 — Normalized warehouse &amp; search (weeks 6–9)</h3>
+      <p>Deploy Aurora PostgreSQL; implement dbt models for all clinical entities with SCD2 history. Stand up OpenSearch domain; bulk index note and report text. Ship internal FastAPI with patient search, timeline, and cohort SQL endpoints. Wire audit logging on every patient-level query.</p>
+      <p><strong>Risk:</strong> Unmapped local codes breaking joins — maintain <code>unmapped_codes</code> queue for clinical informatics review. <strong>Rollback:</strong> search API can serve warehouse-only queries while index catches up.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 4 — Document ingestion &amp; attachment pipeline (weeks 8–10)</h3>
+      <p>Fetch DocumentReference and Binary resources; extract text from PDFs; index attachment content alongside structured notes. Reconcile document counts against Athena document list API.</p>
+      <p><strong>Risk:</strong> Scanned PDFs with poor OCR — flag low-confidence extractions for manual review, do not silently drop. <strong>Rollback:</strong> structured data search remains available without attachment text.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 5 — Clinical AI layer (weeks 11–14)</h3>
+      <p>Enable Bedrock in VPC; build LangGraph workflows for chart summarization, NL cohort queries, and outcome comparison. Implement safety reviewer agent and human-in-the-loop approval for research exports. Token budget and query logging per user role.</p>
+      <p><strong>Risk:</strong> LLM hallucination on sparse charts — require citation-backed outputs; block unsupported clinical claims. <strong>Rollback:</strong> disable AI endpoints; search and warehouse APIs unaffected.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 6 — Hardening, compliance review &amp; handoff (weeks 14–16)</h3>
+      <p>Penetration test scoped to internal API; HIPAA risk assessment update; runbook for on-call sync failures, credential rotation, and disaster recovery (Aurora snapshot restore, S3 replay). Train practice admin on monitoring dashboard and user provisioning.</p>
+      <p><strong>Risk:</strong> Undocumented operational dependencies — pair with practice IT on Athena credential ownership. <strong>Rollback:</strong> N/A; documentation and runbooks are the deliverable.</p>
+    </div>
+
+    <h2 id="reporting">Reporting &amp; ops</h2>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sync completion &amp; duration</td><td>EventBridge + Lambda metrics</td><td>Daily; alert if not complete by 06:00</td></tr>
+        <tr><td>Records ingested per resource type</td><td>Extraction manifest in S3</td><td>Daily; alert on &gt;15% deviation from median</td></tr>
+        <tr><td>Watermark lag vs Athena</td><td>Checkpoint table vs max <code>_lastUpdated</code></td><td>Hourly during sync window</td></tr>
+        <tr><td>API error rate (429, 5xx)</td><td>CloudWatch Logs Insights</td><td>Real-time; SNS on sustained 429</td></tr>
+        <tr><td>Unmapped clinical codes</td><td><code>staging.unmapped_codes</code></td><td>Weekly informatics review</td></tr>
+        <tr><td>Search query latency p95</td><td>ALB + OpenSearch metrics</td><td>Daily dashboard</td></tr>
+        <tr><td>Patient data access audit</td><td><code>audit.query_log</code></td><td>Continuous; monthly compliance export</td></tr>
+        <tr><td>AI query volume &amp; token spend</td><td>Bedrock invocation logs</td><td>Weekly budget review</td></tr>
+        <tr><td>DLQ depth</td><td>SQS <code>clinical-extract-dlq</code></td><td>Alert on any message &gt; 0</td></tr>
+      </tbody>
+    </table>
+    <p>Ops cadence would include a daily automated sync health email (row counts, duration, errors), a weekly platform review with the practice data owner (lag, unmapped codes, search performance), and a quarterly access audit (IAM roles, inactive users, break-glass usage). On-call pages only for sync failure, DLQ backlog, or search API availability drop — not per-query events.</p>
+
+    <h2 id="deliverables">Proposed deliverables</h2>
+    <p>Following the phased plan, a build would ship these artifacts:</p>
+    <ul>
+      <li>HIPAA AWS account baseline — VPC, KMS, S3, CloudTrail, Config, BAA checklist</li>
+      <li>AthenaOne OAuth integration with Secrets Manager rotation runbook</li>
+      <li>Nightly incremental FHIR extractors for all scoped resource types with S3 raw landing</li>
+      <li>Athena Data View jobs for bulk/tabular resources with thin FHIR coverage</li>
+      <li>dbt project — staging, core, and SCD2 history models with data dictionary</li>
+      <li>Aurora PostgreSQL clinical warehouse with ER diagram and sample cohort queries</li>
+      <li>OpenSearch full-text index across provider notes, lab narratives, and imaging reports</li>
+      <li>Internal FastAPI — patient search, timeline, cohort builder, audit-logged chart retrieval</li>
+      <li>CloudWatch operations dashboard and SNS alert wiring</li>
+      <li>LangGraph clinical AI workflows — summarization, NL search, cohort analysis, outcome comparison</li>
+      <li>HIPAA risk assessment update, penetration test report, and on-call runbook</li>
+      <li>Admin training session and recorded handoff walkthrough</li>
+    </ul>
+
+    <h2 id="estimate">Effort estimate</h2>
+    <p>Indicative effort for Phases 1–6 (assumes Athena API credentials approved, single practice context, and a dedicated compliance reviewer):</p>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Hours (range)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phase 1 — HIPAA foundation &amp; connectivity</td><td>60–80 hrs</td></tr>
+        <tr><td>Phase 2 — Incremental extraction</td><td>100–140 hrs</td></tr>
+        <tr><td>Phase 3 — Warehouse &amp; search</td><td>120–160 hrs</td></tr>
+        <tr><td>Phase 4 — Documents &amp; attachments</td><td>40–60 hrs</td></tr>
+        <tr><td>Phase 5 — Clinical AI layer</td><td>80–120 hrs</td></tr>
+        <tr><td>Phase 6 — Hardening &amp; handoff</td><td>40–60 hrs</td></tr>
+        <tr><td><strong>Total (Phases 1–6)</strong></td><td><strong>440–620 hrs</strong></td></tr>
+        <tr><td>Ongoing maintenance (monitoring, code updates, Athena API changes)</td><td>16–24 hrs/month</td></tr>
+      </tbody>
+    </table>
+    <p>At 25–35 hrs/week, delivery would land in roughly 14–18 weeks. Milestone-based pricing aligned to phases de-risks the engagement — extraction validated against Athena counts before warehouse modeling, search live before AI workflows enabled.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>AthenaOne</strong></td><td>athenahealth's cloud EHR platform; exposes REST, FHIR R4, and Data View APIs</td></tr>
+        <tr><td><strong>FHIR R4</strong></td><td>Fast Healthcare Interoperability Resources — HL7 standard for exchanging clinical data as JSON resources</td></tr>
+        <tr><td><strong>Athena Data View</strong></td><td>athenahealth bulk data export service for tabular clinical datasets beyond standard FHIR coverage</td></tr>
+        <tr><td><strong>PHI</strong></td><td>Protected Health Information — individually identifiable health data governed by HIPAA</td></tr>
+        <tr><td><strong>BAA</strong></td><td>Business Associate Agreement — contract required between covered entity and AWS (or any vendor handling PHI)</td></tr>
+        <tr><td><strong>SCD2</strong></td><td>Slowly Changing Dimension Type 2 — warehouse pattern retaining full history of record changes with effective dates</td></tr>
+        <tr><td><strong>Watermark</strong></td><td>Timestamp checkpoint (<code>_lastUpdated</code>) used to fetch only records changed since the last sync</td></tr>
+        <tr><td><strong>OpenSearch</strong></td><td>AWS-managed search engine for full-text queries across clinical note and report text</td></tr>
+        <tr><td><strong>RAG</strong></td><td>Retrieval-Augmented Generation — AI pattern that grounds LLM answers in retrieved clinical documents</td></tr>
+        <tr><td><strong>LangGraph</strong></td><td>Framework for building multi-step AI agent workflows with explicit state and human-review gates</td></tr>
+        <tr><td><strong>CodeableConcept</strong></td><td>FHIR data type wrapping clinical codes (ICD-10, LOINC, SNOMED) with optional display text</td></tr>
+      </tbody>
+    </table>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=12"></script>
+  <script src="../../site-nav.js" defer></script>
+  <script src="../../script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('platformComponentChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Extraction', 'Storage & transform', 'Search & API', 'Clinical AI'],
+        datasets: [{
+          data: [4, 5, 3, 3],
+          backgroundColor: ['#7c3aed', '#2563eb', '#16a34a', '#db2777'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var names = {
+                  0: 'Lambda, EventBridge, SQS, Athena APIs',
+                  1: 'S3, dbt, Aurora, KMS, Secrets Manager',
+                  2: 'OpenSearch, FastAPI, ECS, ALB, audit log',
+                  3: 'Bedrock, LangGraph, embeddings, safety reviewer'
+                };
+                return names[ctx.dataIndex] || ctx.label;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('resourceVolumeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Observation', 'Condition', 'Medication', 'Encounter', 'Document', 'Procedure', 'Patient', 'Allergy'],
+        datasets: [{
+          label: 'Daily incremental records',
+          data: [420, 180, 95, 72, 48, 35, 12, 8],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Records (illustrative)' } } }
+      }
+    });
+
+    new Chart(document.getElementById('syncLatencyChart'), {
+      type: 'bar',
+      data: {
+        labels: ['FHIR extract', 'S3 landing', 'dbt transform', 'OpenSearch index', 'Validation'],
+        datasets: [
+          {
+            label: 'Median (min)',
+            data: [45, 8, 22, 15, 5],
+            backgroundColor: '#2563eb',
+            borderRadius: 4
+          },
+          {
+            label: 'p95 (min)',
+            data: [90, 15, 40, 35, 12],
+            backgroundColor: '#7c3aed',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Duration (minutes)' } } }
+      }
+    });
+
+    new Chart(document.getElementById('phaseEffortChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Foundation', 'Extraction', 'Warehouse & search', 'Documents', 'Clinical AI', 'Hardening'],
+        datasets: [{
+          data: [12, 24, 28, 10, 18, 8],
+          backgroundColor: ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>Snowflake to BigQuery Migration</title>
+  <meta name="description" content="Proposed Snowflake to BigQuery migration: dbt SQL port, Kafka Sink rebuild, Cloud Composer orchestration, historical backfill, and parallel-run cutover.">
+  <meta name="keywords" content="Snowflake to BigQuery migration, dbt BigQuery, Cloud Composer Airflow, Kafka BigQuery Sink, CDC Airbyte Datastream, BigQuery Migration Service, warehouse cutover, ELT platform GCP">
+  <link rel="canonical" href="https://stackcone.com/solutions/snowflake-to-bigquery-migration/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/snowflake-to-bigquery-migration/">
+  <meta property="og:title" content="Snowflake to BigQuery Migration — ELT Platform on GCP">
+  <meta property="og:description" content="Proposed phased migration: rebuild ingestion, port Snowflake transforms to dbt on BigQuery, Composer orchestration, backfill, and reconciled cutover.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Snowflake to BigQuery Migration — ELT Platform on GCP">
+  <meta name="twitter:description" content="Proposed Snowflake to BigQuery migration with dbt, Kafka Sink, CDC, Cloud Composer, and parallel-run cutover.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <link rel="stylesheet" href="../solutions.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Snowflake to BigQuery Migration — ELT Platform on Google Cloud",
+    "description": "Proposed Snowflake to BigQuery migration: dbt SQL port, Kafka Sink rebuild, Cloud Composer orchestration, historical backfill, and parallel-run cutover.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-07-12",
+    "dateModified": "2026-07-12",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/snowflake-to-bigquery-migration/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "articleSection": "Data",
+    "keywords": [
+      "Snowflake to BigQuery migration",
+      "dbt BigQuery",
+      "Cloud Composer Airflow",
+      "Kafka BigQuery Sink",
+      "CDC Airbyte Datastream",
+      "BigQuery Migration Service",
+      "warehouse cutover",
+      "ELT platform GCP",
+      "parallel-run reconciliation",
+      "BigQuery IAM row-level security"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "Snowflake to BigQuery Migration", "item": "https://stackcone.com/solutions/snowflake-to-bigquery-migration/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Snowflake to BigQuery Migration — ELT Platform on Google Cloud</h1>
+    <p class="meta">By Amar Kumar</p>
+    <p>A proposed <strong>Snowflake to BigQuery migration</strong> for an ELT-heavy analytics platform would rebuild streaming and batch ingestion on Google Cloud, port Snowflake-native SQL (Streams, Tasks, dynamic tables, stored procedures) into <strong>dbt</strong> incremental models, replace cron with <strong>Cloud Composer</strong>, run a historical backfill and parallel reconciliation, then cut over BI, reverse-ETL, and AI pipelines — with the legacy Snowflake stack and managed ELT tool decommissioned.</p>
+
+    <blockquote>
+      <p><strong>Proposed outcome:</strong> A reconciled BigQuery platform with Kafka Sink and CDC ingestion, dbt transforms, Composer orchestration, residency-aware IAM controls, GCP cost visibility, and a freeze / final-delta / cutover executed with minimal downtime.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#scenario">Scenario</a></li>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#agent-design">Component design</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#reporting">Reporting &amp; ops</a></li>
+        <li><a href="#deliverables">Proposed deliverables</a></li>
+        <li><a href="#estimate">Effort estimate</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="scenario">Scenario</h2>
+    <p>This brief describes a <strong>proposed solution</strong> — not a delivered engagement. It maps a recurring warehouse migration pattern: an analytics platform that grew on Snowflake must standardize on BigQuery for cost, GCP-native integrations, and residency controls, while production continues until cutover.</p>
+    <ul>
+      <li><strong>Organization:</strong> Data platform / analytics engineering team with BI, reverse-ETL, and AI insight pipelines downstream of the warehouse</li>
+      <li><strong>Current stack:</strong> Streaming and batch into Snowflake; transforms as Snowflake SQL plus Python and shell; cron-based scheduling; managed ELT tool for some source loads</li>
+      <li><strong>Target stack:</strong> BigQuery datasets with partition/cluster design; Kafka BigQuery Sink on existing Kubernetes; Airbyte OSS or Datastream CDC; Cloud Composer (Airflow) or Scheduler + Workflows; native BI connectors</li>
+      <li><strong>Owner profile:</strong> Hands-on data engineer working with a Data Architect / PM and internal DE; AI-assisted bulk SQL translation is part of the workflow</li>
+      <li><strong>Constraints:</strong> Google Cloud data-residency boundaries; all sampling must pass PII-redaction and secret-scanning before leaving the environment</li>
+      <li><strong>Timeline:</strong> Roughly six months foundation through cutover and decommission, dual-running with production Snowflake until freeze</li>
+    </ul>
+
+    <h2 id="problem">Problem</h2>
+    <p>Moving warehouses is not a dump-and-load. Snowflake-native constructs, cron orchestration, and a managed ELT dependency create a multi-track migration where ingestion, transforms, security, and cutover each need an explicit design — not a one-shot dialect rewrite.</p>
+    <ul>
+      <li><strong>No 1:1 equivalents</strong> — Streams + Tasks CDC, dynamic tables, zero-copy clones, and JavaScript stored procedures do not translate cleanly; they need BigQuery patterns or Cloud Run jobs</li>
+      <li><strong>Cron without a DAG graph</strong> — dependency-blind schedules, weak retries, and painful backfills make parallel-run validation and freeze windows risky</li>
+      <li><strong>Managed ELT lock-in</strong> — the current tool may lack clean BigQuery destinations, residency options, or cost transparency once the warehouse moves</li>
+      <li><strong>Security remapping</strong> — Snowflake RBAC and row-access policies must become IAM, authorized views, row-level access policies, and policy-tag column masking</li>
+      <li><strong>Cost model change</strong> — Snowflake credits vs BigQuery on-demand / Editions slots; without partitioning, clustering, and reservation planning, “cheaper warehouse” never materializes</li>
+      <li><strong>Silent cutover drift</strong> — large historical backfills and consumer repointing without row-count / aggregate reconciliation produce BI and AI pipelines that look green but disagree with source of truth</li>
+      <li><strong>PII / residency</strong> — sampling and debug exports that leave the GCP boundary without redaction create compliance exposure during migration</li>
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <h3>Functional</h3>
+    <ul>
+      <li><strong>Transformation migration</strong> — port incremental models formerly driven by Streams, Tasks, stored procedures, and dynamic tables into BigQuery / dbt</li>
+      <li><strong>SQL translation</strong> — BigQuery Migration Service for bulk dialect conversion; manual fixes for VARIANT ↔ JSON/STRUCT, QUALIFY, and non-translatable constructs</li>
+      <li><strong>Re-architecture</strong> — map clones, JS procedures, and usage-metadata jobs to native BigQuery SQL, scheduled queries, or Cloud Run Python jobs</li>
+      <li><strong>Ingestion rebuild</strong> — Kafka Connect BigQuery Sink (Storage Write API) on existing Kubernetes; replace managed ELT with Airbyte OSS or Datastream CDC; switch BI/event sources to native BigQuery destinations</li>
+      <li><strong>Foundation &amp; security</strong> — datasets, regions (residency), partitioning, clustering; IAM; row-level access policies; column-level controls / authorized views</li>
+      <li><strong>Orchestration</strong> — Cloud Composer DAGs (preferred) or Cloud Scheduler + Workflows replacing cron — dependencies, retries, backfills, alerting</li>
+      <li><strong>Historical migration</strong> — unload to GCS, load via BigQuery jobs / Data Transfer Service with partition and cluster keys applied on land</li>
+      <li><strong>Validation &amp; cutover</strong> — parallel run, reconcile, repoint consumers, freeze / final-delta / cutover, decommission Snowflake and managed ELT</li>
+    </ul>
+    <h3>Non-functional</h3>
+    <ul>
+      <li><strong>Residency &amp; PII</strong> — dataset locations honor boundaries; samples redacted and secret-scanned before any external use</li>
+      <li><strong>Idempotency</strong> — loads and incremental models safe to re-run; MERGE / insert-overwrite patterns documented</li>
+      <li><strong>Cost control</strong> — partition pruning and clustering on hot tables; slot reservation plan where scan volume justifies Editions</li>
+      <li><strong>Observability</strong> — DAG SLAs, ingestion lag, reconciliation metrics, and GCP billing dashboards from day one of parallel run</li>
+      <li><strong>Cutover RTO</strong> — freeze window sized for final delta + consumer smoke tests; documented rollback to Snowflake until freeze closes</li>
+      <li><strong>Workload Identity</strong> — service accounts for Composer, Sink, CDC, and Cloud Run — no long-lived keys in repos</li>
+    </ul>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>Four tracks run in parallel until cutover: <strong>ingestion</strong> (Kafka Sink + CDC → BigQuery raw), <strong>transform</strong> (dbt incremental → curated/marts), <strong>orchestration</strong> (Composer DAGs), and <strong>migration control</strong> (historical GCS loads + reconciliation against Snowflake).</p>
+
+    <div class="diagram-wrap" data-diagram-title="Snowflake to BigQuery target architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef src fill:#f8fafc,stroke:#475569,color:#334155
+  classDef ingest fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef bq fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef orch fill:#fef3c7,stroke:#d97706,color:#92400e
+  classDef legacy fill:#fee2e2,stroke:#dc2626,color:#991b1b
+  classDef cons fill:#ccfbf1,stroke:#0d9488,color:#115e59
+
+  KAFKA["Kafka topics\nstream events"]:::src
+  OLTP["OLTP / SaaS\nsources"]:::src
+  SF["Snowflake\nlegacy warehouse"]:::legacy
+
+  SINK["Kafka BigQuery Sink\nStorage Write API"]:::ingest
+  CDC["Airbyte / Datastream\nCDC · batch ELT"]:::ingest
+  GCS["GCS staging\nunload · backfill"]:::ingest
+
+  RAW["BigQuery raw\npartitioned · clustered"]:::bq
+  DBT["dbt incremental\nstaging · core · marts"]:::bq
+  CUR["BigQuery curated\nIAM · RLS · policy tags"]:::bq
+
+  COMP["Cloud Composer\nAirflow DAGs"]:::orch
+  CRUN["Cloud Run\nnon-SQL jobs"]:::orch
+
+  BI["BI tools\nnative BQ connector"]:::cons
+  RETL["Reverse ETL"]:::cons
+  AI["AI insights\npipelines"]:::cons
+
+  KAFKA --> SINK
+  OLTP --> CDC
+  SINK --> RAW
+  CDC --> RAW
+  SF --> GCS
+  GCS --> RAW
+  RAW --> DBT
+  DBT --> CUR
+  COMP --> DBT
+  COMP --> CDC
+  COMP --> CRUN
+  CUR --> BI
+  CUR --> RETL
+  CUR --> AI
+  SF -.->|"parallel reconcile"| CUR</div>
+      </div>
+      <p class="diagram-caption">Target architecture — rebuilt ingestion into BigQuery raw, dbt transforms to curated marts, Composer orchestration, and parallel reconciliation against Snowflake until cutover</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Parallel run and cutover sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant Src as Sources
+  participant SF as Snowflake
+  participant BQ as BigQuery
+  participant Rec as Reconcile suite
+  participant Cons as BI · reverse-ETL · AI
+
+  Src->>SF: production writes continue
+  Src->>BQ: dual-write / rebuilt ingestion
+  SF->>BQ: historical unload via GCS
+  loop nightly parallel run
+    BQ->>Rec: row counts · key aggregates
+    SF->>Rec: same metrics
+    Rec-->>Rec: diff report · alert on breach
+  end
+  Note over Src,Cons: freeze window
+  Src--xSF: pause non-critical writers
+  SF->>BQ: final delta sync
+  Rec->>Rec: sign-off checklist
+  Cons->>BQ: repoint connections
+  Note over SF: decommission ELT + Snowflake</div>
+      </div>
+      <p class="diagram-caption">Cutover sequence — dual-run with reconciliation, freeze, final delta, consumer repoint, then decommission of Snowflake and the managed ELT tool</p>
+    </div>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="platformComponentChart" aria-label="Migration platform component map by track"></canvas>
+      <p class="chart-caption">Component map by migration track (major services per layer)</p>
+    </div>
+
+    <p class="solution-section-label">End-to-end flow</p>
+    <div class="pipeline" role="img" aria-label="From Snowflake inventory through BigQuery rebuild to cutover and decommission">
+      <span class="pipeline-step">Inventory SF</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">BQ foundation</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Rebuild ingest</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">dbt port</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Backfill</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Reconcile</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Cutover</span>
+    </div>
+    <p class="diagram-caption">Six-month lifecycle — foundation and ingestion first, transforms and Composer next, historical backfill and parallel run, then freeze and cutover</p>
+
+    <div class="chart-wrap">
+      <canvas id="constructMapChart" aria-label="Snowflake constructs mapped to BigQuery patterns"></canvas>
+      <p class="chart-caption">Indicative share of Snowflake transform objects by migration path (illustrative)</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="reconKpiChart" aria-label="Parallel-run reconciliation KPI thresholds"></canvas>
+      <p class="chart-caption">Example reconciliation thresholds before cutover sign-off (illustrative)</p>
+    </div>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <p><strong>Recommendation:</strong> standardize the warehouse on <strong>BigQuery</strong> with <strong>dbt</strong> for transforms, <strong>Kafka Connect BigQuery Sink</strong> for streaming, <strong>Airbyte OSS or Datastream</strong> for CDC/batch replacement of the managed ELT tool, and <strong>Cloud Composer</strong> for orchestration — using the <strong>BigQuery Migration Service</strong> for bulk SQL assist and <strong>Cloud Run</strong> only where SQL cannot express prior JS/procedure logic.</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Warehouse</td><td>BigQuery (Editions / autoscaling slots)</td><td>Target platform; Standard SQL, partitioning, clustering, IAM, Storage Write API</td></tr>
+        <tr><td>Transform</td><td>dbt Core or dbt Cloud on BigQuery</td><td>Incremental models + macros replace Tasks / dynamic-table patterns with version control and tests</td></tr>
+        <tr><td>SQL assist</td><td>BigQuery Migration Service</td><td>Bulk Snowflake → BigQuery dialect translation; human review for remainder</td></tr>
+        <tr><td>Streaming ingest</td><td>Kafka Connect BigQuery Sink</td><td>Fits existing Kubernetes footprint; Storage Write API for throughput</td></tr>
+        <tr><td>CDC / batch ELT</td><td>Airbyte OSS or Datastream</td><td>Open-source or managed CDC with native BigQuery destinations; exits managed ELT lock-in</td></tr>
+        <tr><td>Orchestration</td><td>Cloud Composer (Airflow 2)</td><td>DAG dependencies, retries, backfills, and alerting — stronger than cron or ad-hoc Scheduler chains</td></tr>
+        <tr><td>Alt orchestration</td><td>Cloud Scheduler + Workflows</td><td>Lighter option if DAG graph is small; Composer preferred for ELT-heavy dependency trees</td></tr>
+        <tr><td>Non-SQL jobs</td><td>Cloud Run + Python</td><td>Port shell scripts and JS stored-procedure logic with Workload Identity</td></tr>
+        <tr><td>Historical load</td><td>GCS + load jobs / Data Transfer Service</td><td>Unload from Snowflake, land with partition/cluster design</td></tr>
+        <tr><td>Security</td><td>IAM, RLS policies, policy tags, authorized views</td><td>Row/column controls and residency-aware dataset layout</td></tr>
+        <tr><td>IaC (preferred)</td><td>Terraform + Helm / ArgoCD</td><td>Reproducible Sink, CDC, and Composer environment on GKE</td></tr>
+        <tr><td>Cost ops</td><td>Billing export → BigQuery + Looker / Looker Studio</td><td>Slot vs on-demand visibility; prove migration savings</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Why dbt over BigQuery scheduled queries alone?</strong> An ELT-heavy estate needs incremental materializations, ref graphs, tests, and PR review. Scheduled queries work for a handful of jobs; they do not replace a transformation layer that grew as Streams, Tasks, and dynamic tables.</p>
+    <p><strong>Why Composer over Scheduler + Workflows?</strong> Composer is heavier to operate but matches cron-replacement reality: multi-hop dependencies, backfills during parallel run, and SLA alerts. Scheduler + Workflows is a fallback when the DAG surface is intentionally small.</p>
+    <p><strong>Why Airbyte or Datastream instead of keeping the managed ELT tool?</strong> Cutover success includes decommissioning that tool. Open-source or GCP-native CDC with BigQuery destinations removes a second vendor boundary and aligns residency and IAM with the rest of the GCP estate.</p>
+
+    <p>Illustrative dbt incremental pattern replacing a Snowflake Stream + Task CDC merge:</p>
+    <pre><code>{{ config(
+  materialized='incremental',
+  incremental_strategy='merge',
+  unique_key='event_id',
+  partition_by={'field': 'event_date', 'data_type': 'date'},
+  cluster_by=['account_id']
+) }}
+
+<span class="kw">select</span>
+  event_id,
+  account_id,
+  event_ts,
+  <span class="fn">date</span>(event_ts) <span class="kw">as</span> event_date,
+  payload
+<span class="kw">from</span> {{ ref('stg_events') }}
+{% <span class="kw">if</span> is_incremental() %}
+<span class="kw">where</span> event_ts &gt; (
+  <span class="kw">select</span> <span class="fn">coalesce</span>(<span class="fn">max</span>(event_ts), <span class="fn">timestamp</span>(<span class="str">'1970-01-01'</span>))
+  <span class="kw">from</span> {{ this }}
+)
+{% endif %}</code></pre>
+
+    <h2 id="agent-design">Component design</h2>
+
+    <h3>1 — Inventory &amp; translation factory</h3>
+    <ul>
+      <li><strong>Input:</strong> Snowflake object catalog (tables, views, Streams, Tasks, procedures, dynamic tables, scripts)</li>
+      <li><strong>Output:</strong> Migration inventory tagged auto-translate / manual-SQL / Cloud-Run rewrite; Migration Service batch jobs + review queue</li>
+      <li><strong>QA gate:</strong> every production Task or dynamic table mapped to an owner, SLA, and dbt model or job ID before Phase 3 exit</li>
+    </ul>
+
+    <h3>2 — BigQuery foundation &amp; security</h3>
+    <ul>
+      <li><strong>Input:</strong> Residency map, consumer roles, PII column inventory</li>
+      <li><strong>Output:</strong> Dataset layout (raw / staging / curated / marts), partition/cluster standards, IAM bindings, row-level policies, policy tags, authorized views</li>
+      <li><strong>QA gate:</strong> negative access tests — analyst role cannot select tagged PII; residency violation blocked by dataset location</li>
+    </ul>
+
+    <h3>3 — Streaming ingestion (Kafka Sink)</h3>
+    <ul>
+      <li><strong>Input:</strong> Existing Kafka topics and schemas; GKE Helm values</li>
+      <li><strong>Output:</strong> BigQuery Sink connectors writing via Storage Write API into partitioned raw tables; DLQ topic for poison messages</li>
+      <li><strong>QA gate:</strong> lag &lt; agreed SLA; null-rate and schema-drift alerts; dual-read sample vs Snowflake stream for N days</li>
+    </ul>
+
+    <h3>4 — CDC / batch ELT replacement</h3>
+    <ul>
+      <li><strong>Input:</strong> Source systems currently loaded by the managed ELT tool</li>
+      <li><strong>Output:</strong> Airbyte or Datastream connections to BigQuery; sync cadence documented in Composer</li>
+      <li><strong>QA gate:</strong> source row counts and primary-key coverage match prior ELT within threshold before that connector is retired</li>
+    </ul>
+
+    <h3>5 — dbt transformation layer</h3>
+    <ul>
+      <li><strong>Input:</strong> Translated SQL, macro library, source freshness tests</li>
+      <li><strong>Output:</strong> <code>staging</code> → <code>intermediate</code> → <code>marts</code> project; incremental models for former Stream/Task paths; docs and contracts</li>
+      <li><strong>QA gate:</strong> dbt tests green; mart-level aggregates within reconciliation thresholds vs Snowflake</li>
+    </ul>
+
+    <h3>6 — Cloud Run re-architecture jobs</h3>
+    <ul>
+      <li><strong>Input:</strong> JS stored procedures, shell jobs, usage-metadata scripts with no SQL equivalent</li>
+      <li><strong>Output:</strong> Containerized Python jobs on Cloud Run, triggered by Composer; structured logs to Cloud Logging</li>
+      <li><strong>QA gate:</strong> unit tests on fixtures; idempotent re-run; secrets only via Secret Manager</li>
+    </ul>
+
+    <h3>7 — Orchestration (Composer)</h3>
+    <ul>
+      <li><strong>Input:</strong> Legacy cron inventory and dependency notes</li>
+      <li><strong>Output:</strong> DAG packs with sensors, retries, SLA misses → alerting; backfill operators for parallel-run catch-up</li>
+      <li><strong>QA gate:</strong> dry-run in Composer staging; no production DAG without on-call runbook link in docstring</li>
+    </ul>
+
+    <h3>8 — Backfill &amp; reconciliation</h3>
+    <table>
+      <thead>
+        <tr><th>Component</th><th>Responsibility</th><th>Inputs</th><th>Outputs</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Unload orchestrator</td><td>Export Snowflake history to GCS by partition</td><td>Table list, date ranges, warehouse size</td><td>Parquet/Avro in GCS; manifest checksums</td></tr>
+        <tr><td>Load controller</td><td>BigQuery load / Data Transfer with cluster keys</td><td>GCS manifests, table DDL</td><td>Loaded raw/history tables</td></tr>
+        <tr><td>Reconcile suite</td><td>Compare SF vs BQ nightly</td><td>Primary keys, metric SQL catalog</td><td>Diff report; alert on threshold breach</td></tr>
+        <tr><td>Cutover runbook</td><td>Freeze, final delta, repoint, smoke tests</td><td>Sign-off checklist</td><td>Consumer cutover ticket + rollback flag</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="phaseEffortChart" aria-label="Implementation effort distribution across six-month phases"></canvas>
+      <p class="chart-caption">Indicative build effort distribution by phase (% of total hours)</p>
+    </div>
+
+    <h2 id="implementation">Implementation plan</h2>
+
+    <div class="impl-phase">
+      <h3>Phase 1 — Foundation, security &amp; inventory (weeks 1–4)</h3>
+      <p>Stand up BigQuery projects/datasets by residency region; define partition/cluster standards; implement IAM, service accounts with Workload Identity, row-level policies, policy tags, and authorized views for PII. Complete Snowflake object inventory and tag each object with migration path (auto / manual / Cloud Run). Wire billing export for cost baselines. Scaffold empty dbt project and Composer environment (dev).</p>
+      <p><strong>Risk:</strong> Incomplete inventory misses shadow Tasks or undocumented shell jobs. <strong>Rollback:</strong> no production traffic on BigQuery yet — foundation-only; Snowflake unchanged.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 2 — Ingestion rebuild (weeks 3–8)</h3>
+      <p>Deploy Kafka BigQuery Sink on the existing Kubernetes footprint (Helm/ArgoCD). Stand up Airbyte OSS or Datastream for sources previously on the managed ELT tool; dual-write or shadow-load into BigQuery raw while Snowflake remains source of truth. Add DLQ, schema-drift detection, and lag dashboards. Switch pilot BI/event connectors to native BigQuery destinations in a non-prod consumer.</p>
+      <p><strong>Risk:</strong> Sink throughput or schema evolution breaks consumers. <strong>Rollback:</strong> disable Sink connectors; Snowflake ingestion continues; raw BigQuery tables retained for replay.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 3 — Transformation migration (weeks 5–14)</h3>
+      <p>Run BigQuery Migration Service on the SQL corpus; triage failures into manual dbt models. Port Streams + Tasks CDC paths to incremental merge models; replace dynamic tables with incremental or table materializations on Composer schedules. Re-architect JS procedures and clone-based workflows into Cloud Run or BigQuery SQL. Expand dbt tests and contracts; begin mart-level reconciliation against Snowflake.</p>
+      <p><strong>Risk:</strong> Semi-structured VARIANT logic and QUALIFY-heavy queries under-translate. <strong>Rollback:</strong> keep Snowflake transforms authoritative; BigQuery marts stay in shadow until reconcile gates pass.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 4 — Orchestration cutover from cron (weeks 10–16)</h3>
+      <p>Model cron jobs as Composer DAGs with explicit dependencies, retries, and SLA miss alerts. Migrate backfill operators needed for parallel-run catch-up. Retire equivalent cron entries only after two weeks of green DAG runs. Document on-call playbooks for DAG failure and stuck sensors.</p>
+      <p><strong>Risk:</strong> Hidden cron order assumptions surface as race conditions. <strong>Rollback:</strong> re-enable specific cron lines; Composer DAGs paused per domain.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 5 — Historical backfill &amp; parallel run (weeks 14–20)</h3>
+      <p>Unload large tables to GCS; load into BigQuery with final partition/cluster design. Run nightly reconciliation: row counts, key aggregates, and sampled hash checks. Tune slots vs on-demand using observed scan patterns. Hold cutover gate until reconcile KPIs stay inside thresholds for an agreed streak (e.g. 10 consecutive days).</p>
+      <p><strong>Risk:</strong> Multi-terabyte unload cost/time overruns — partition by date and parallelize. <strong>Rollback:</strong> stop loads; retain GCS manifests; Snowflake remains production.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 6 — Freeze, cutover &amp; decommission (weeks 20–24)</h3>
+      <p>Execute freeze window: pause non-critical writers, apply final delta, run smoke tests on BI / reverse-ETL / AI pipelines, repoint production connections to BigQuery. Decommission managed ELT connectors, then Snowflake warehouses and unused roles after a short hypercare period. Hand off cost dashboards and runbooks to the internal DE team.</p>
+      <p><strong>Risk:</strong> Late-discovered consumer still hardcoded to Snowflake. <strong>Rollback:</strong> keep Snowflake readable through hypercare; reverse DNS/connection strings if smoke tests fail before freeze close.</p>
+    </div>
+
+    <h2 id="reporting">Reporting &amp; ops</h2>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Composer DAG success / duration / SLA</td><td>Airflow metrics + Cloud Monitoring</td><td>Real-time; page on SLA miss</td></tr>
+        <tr><td>Kafka Sink lag &amp; DLQ depth</td><td>Connector JMX / Kafka lag exporters</td><td>Real-time; alert on lag breach</td></tr>
+        <tr><td>CDC sync freshness</td><td>Airbyte / Datastream job status</td><td>Per sync; alert on consecutive failure</td></tr>
+        <tr><td>SF vs BQ row-count / aggregate diffs</td><td>Reconcile suite → BigQuery audit tables</td><td>Nightly during parallel run</td></tr>
+        <tr><td>Scanned bytes &amp; slot utilization</td><td>INFORMATION_SCHEMA + Editions metrics</td><td>Daily cost review</td></tr>
+        <tr><td>Policy-tag / IAM access anomalies</td><td>Data Catalog + Cloud Audit Logs</td><td>Weekly compliance export</td></tr>
+        <tr><td>dbt test failures</td><td>dbt Cloud / CI artifacts</td><td>Per deploy; block merge on critical tests</td></tr>
+        <tr><td>GCP billing vs baseline</td><td>Billing export dashboard</td><td>Weekly during migration; monthly after</td></tr>
+      </tbody>
+    </table>
+    <p>Ops cadence would include a daily parallel-run reconcile email (diffs, lag, failed DAGs), a weekly migration standup with the Architect / PM (inventory burn-down, cutover blockers), and hypercare war-room coverage for 1–2 weeks post-cutover. On-call pages for DAG SLA misses, Sink lag, and reconcile threshold breaches — not for every dbt warning.</p>
+
+    <h2 id="deliverables">Proposed deliverables</h2>
+    <p>Following the phased plan, a build would ship these artifacts:</p>
+    <ul>
+      <li>Snowflake object inventory with migration-path tags and owner map</li>
+      <li>BigQuery foundation — datasets, regions, partition/cluster standards, IAM / RLS / policy tags / authorized views (Terraform preferred)</li>
+      <li>Kafka BigQuery Sink deployment on existing Kubernetes with DLQ and lag dashboards</li>
+      <li>Airbyte OSS or Datastream CDC connections replacing the managed ELT tool</li>
+      <li>dbt project — staging, intermediate, and mart models with tests, docs, and incremental macros</li>
+      <li>SQL translation report — Migration Service coverage vs manual / Cloud Run rewrites</li>
+      <li>Cloud Composer DAG pack replacing cron, with retries, backfills, and alert wiring</li>
+      <li>Cloud Run jobs for non-SQL procedure and shell logic</li>
+      <li>Historical unload/load runbooks, GCS manifests, and partition/cluster DDL applied on land</li>
+      <li>Parallel-run reconciliation suite and cutover checklist (freeze / final delta / repoint / rollback)</li>
+      <li>Cost model — on-demand vs Editions recommendation — and GCP billing dashboard</li>
+      <li>Decommission plan for Snowflake and the managed ELT tool, plus hypercare handoff notes</li>
+    </ul>
+
+    <h2 id="estimate">Effort estimate</h2>
+    <p>Indicative effort for a six-month, hands-on IC engagement (assumes existing Kafka/Kubernetes footprint, Architect/PM partnership, and AI-assisted bulk SQL translation):</p>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Hours (range)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phase 1 — Foundation, security &amp; inventory</td><td>80–120 hrs</td></tr>
+        <tr><td>Phase 2 — Ingestion rebuild</td><td>120–180 hrs</td></tr>
+        <tr><td>Phase 3 — Transformation / dbt migration</td><td>200–280 hrs</td></tr>
+        <tr><td>Phase 4 — Composer orchestration</td><td>80–120 hrs</td></tr>
+        <tr><td>Phase 5 — Backfill &amp; parallel run</td><td>120–180 hrs</td></tr>
+        <tr><td>Phase 6 — Cutover &amp; decommission</td><td>60–100 hrs</td></tr>
+        <tr><td><strong>Total (Phases 1–6)</strong></td><td><strong>660–980 hrs</strong></td></tr>
+        <tr><td>Ongoing maintenance (DAGs, models, cost tuning)</td><td>20–40 hrs/month</td></tr>
+      </tbody>
+    </table>
+    <p>At 30+ hrs/week, delivery would span roughly 22–26 weeks foundation through hypercare. Milestone gates — Sink healthy, dbt marts reconciling, Composer green, backfill complete, cutover signed — keep dual-run cost bounded and make rollback decisions explicit.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>ELT</strong></td><td>Extract-Load-Transform — load raw data first, then transform inside the warehouse</td></tr>
+        <tr><td><strong>CDC</strong></td><td>Change Data Capture — incremental replication of source inserts/updates/deletes</td></tr>
+        <tr><td><strong>Snowflake Stream / Task</strong></td><td>Native CDC change table + scheduled SQL runner often used for incremental merges</td></tr>
+        <tr><td><strong>Dynamic table</strong></td><td>Snowflake declarative incremental materialization; typically remapped to dbt incremental models</td></tr>
+        <tr><td><strong>dbt</strong></td><td>Data build tool — SQL models, tests, docs, and incremental strategies on BigQuery</td></tr>
+        <tr><td><strong>BigQuery Migration Service</strong></td><td>Google tooling to assist bulk translation of Snowflake SQL to BigQuery Standard SQL</td></tr>
+        <tr><td><strong>Storage Write API</strong></td><td>High-throughput BigQuery write path used by the Kafka BigQuery Sink</td></tr>
+        <tr><td><strong>Cloud Composer</strong></td><td>Managed Apache Airflow on GCP for DAG-based orchestration</td></tr>
+        <tr><td><strong>Authorized view</strong></td><td>BigQuery view that grants query access to a subset of columns/rows without table-level grants</td></tr>
+        <tr><td><strong>Policy tag</strong></td><td>Data Catalog taxonomy node used for column-level access and masking</td></tr>
+        <tr><td><strong>Parallel run</strong></td><td>Period when Snowflake and BigQuery both process production-like data for reconciliation</td></tr>
+        <tr><td><strong>Freeze / final delta</strong></td><td>Short write pause, last change sync, then consumer cutover to BigQuery</td></tr>
+      </tbody>
+    </table>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=12"></script>
+  <script src="../../site-nav.js" defer></script>
+  <script src="../../script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('platformComponentChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Ingestion', 'Transform & BQ', 'Orchestration', 'Migration control'],
+        datasets: [{
+          data: [4, 5, 3, 4],
+          backgroundColor: ['#7c3aed', '#2563eb', '#ea580c', '#16a34a'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var names = {
+                  0: 'Kafka Sink, Airbyte/Datastream, GCS unload, DLQ',
+                  1: 'BigQuery, dbt, IAM/RLS/policy tags, Cloud Run',
+                  2: 'Cloud Composer, sensors, SLA alerts, backfills',
+                  3: 'Inventory, reconcile suite, cutover runbook, billing'
+                };
+                return names[ctx.dataIndex] || ctx.label;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('constructMapChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Auto-translate SQL', 'dbt incremental rewrite', 'Cloud Run re-arch', 'Retire / consolidate'],
+        datasets: [{
+          label: 'Share of transform objects (%)',
+          data: [45, 30, 15, 10],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 50,
+            title: { display: true, text: '% of objects (illustrative)' }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('reconKpiChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Row count', 'Revenue sum', 'Distinct keys', 'Null rate', 'Freshness lag'],
+        datasets: [
+          {
+            label: 'Tolerance',
+            data: [0.1, 0.5, 0, 1.0, 15],
+            backgroundColor: '#2563eb',
+            borderRadius: 4
+          },
+          {
+            label: 'Example observed drift',
+            data: [0.04, 0.2, 0, 0.3, 6],
+            backgroundColor: '#16a34a',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var units = ['%', '%', 'count', 'pp', 'min'];
+                return ctx.dataset.label + ': ' + ctx.raw + ' ' + units[ctx.dataIndex];
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Threshold / drift (mixed units — see tooltip)' }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('phaseEffortChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Foundation', 'Ingestion', 'Transforms', 'Composer', 'Backfill', 'Cutover'],
+        datasets: [{
+          data: [12, 18, 28, 12, 18, 12],
+          backgroundColor: ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+</body>
+</html>

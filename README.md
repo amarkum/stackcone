@@ -38,20 +38,20 @@
 
 ## Blog highlights
 
-- [How to Build a Production RAG Chatbot](https://stackcone.com/blog/posts/how-to-build-a-production-rag-chatbot.html)
-- [How to Build a Flutter App with Firebase Auth and Firestore](https://stackcone.com/blog/posts/how-to-build-flutter-app-firebase-auth-firestore.html)
-- [How SSE Streaming Works in Chatbots](https://stackcone.com/blog/posts/how-sse-streaming-works-chatbots-llm-tokens.html)
-- [Best Economical LLM Models for RAG](https://stackcone.com/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic.html)
-- [Automate Data Engineering Fixes with AI Agents and MCP](https://stackcone.com/blog/posts/ai-agent-mcp-data-engineering-automation.html)
+- [How to Build a Production RAG Chatbot](https://stackcone.com/blog/posts/how-to-build-a-production-rag-chatbot/)
+- [How to Build a Flutter App with Firebase Auth and Firestore](https://stackcone.com/blog/posts/how-to-build-flutter-app-firebase-auth-firestore/)
+- [How SSE Streaming Works in Chatbots](https://stackcone.com/blog/posts/how-sse-streaming-works-chatbots-llm-tokens/)
+- [Best Economical LLM Models for RAG](https://stackcone.com/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/)
+- [Automate Data Engineering Fixes with AI Agents and MCP](https://stackcone.com/blog/posts/ai-agent-mcp-data-engineering-automation/)
 
 ## Solution briefs
 
 Architecture and implementation plans for production software problems:
 
-- [Marketing Attribution Pipeline — BigQuery & Looker](https://stackcone.com/solutions/marketing-attribution-pipeline-bigquery-looker.html)
-- [NYC Property Records Search Platform](https://stackcone.com/solutions/nyc-property-records-search-platform.html)
-- [Autonomous Agent Orchestration Platform](https://stackcone.com/solutions/autonomous-agent-orchestration-platform.html)
-- [Multi-Agent SEO Content Pipeline for WordPress](https://stackcone.com/solutions/wordpress-seo-multi-agent-pipeline.html)
+- [Marketing Attribution Pipeline — BigQuery & Looker](https://stackcone.com/solutions/marketing-attribution-pipeline-bigquery-looker/)
+- [NYC Property Records Search Platform](https://stackcone.com/solutions/nyc-property-records-search-platform/)
+- [Autonomous Agent Orchestration Platform](https://stackcone.com/solutions/autonomous-agent-orchestration-platform/)
+- [Multi-Agent SEO Content Pipeline for WordPress](https://stackcone.com/solutions/wordpress-seo-multi-agent-pipeline/)
 
 ## Connect
 

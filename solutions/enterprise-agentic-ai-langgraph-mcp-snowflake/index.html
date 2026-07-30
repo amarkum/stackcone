@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>Enterprise Agentic AI — LangGraph MCP</title>
+  <meta name="description" content="Proposed enterprise agentic AI for financial services: LangGraph role agents, MCP tools, Snowflake Cortex, governed data access, eval gates — AWS, Azure.">
+  <meta name="keywords" content="enterprise agentic AI, LangGraph multi-agent, MCP Model Context Protocol, Snowflake Cortex, governed data access, AWS Bedrock, Azure AI Foundry, financial services AI, agent evaluation framework, RAG production">
+  <link rel="canonical" href="https://stackcone.com/solutions/enterprise-agentic-ai-langgraph-mcp-snowflake/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/enterprise-agentic-ai-langgraph-mcp-snowflake/">
+  <meta property="og:title" content="Enterprise Agentic AI — LangGraph, MCP, Snowflake Cortex">
+  <meta property="og:description" content="Production multi-agent system: role-specific LangGraph agents, MCP tool servers, Snowflake Cortex RAG, governed access layer, and CI eval gates for regulated finance.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Enterprise Agentic AI — LangGraph MCP">
+  <meta name="twitter:description" content="Proposed financial-services agent platform: governed data access, Snowflake Cortex, MCP tools, Bedrock/Azure hosting, evals on every agent.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <link rel="stylesheet" href="../solutions.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Enterprise Agentic AI System for Financial Services",
+    "description": "Proposed enterprise agentic AI for financial services: LangGraph role agents, MCP tools, Snowflake Cortex, governed data access, eval gates — AWS, Azure.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-07-12",
+    "dateModified": "2026-07-12",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/enterprise-agentic-ai-langgraph-mcp-snowflake/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "articleSection": "Platform",
+    "keywords": [
+      "enterprise agentic AI",
+      "LangGraph multi-agent",
+      "MCP Model Context Protocol",
+      "Snowflake Cortex",
+      "governed data access",
+      "AWS Bedrock",
+      "Azure AI Foundry",
+      "financial services AI agents",
+      "agent evaluation framework",
+      "production RAG tool calling"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "Enterprise Agentic AI LangGraph MCP", "item": "https://stackcone.com/solutions/enterprise-agentic-ai-langgraph-mcp-snowflake/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Enterprise Agentic AI System for Financial Services</h1>
+    <p class="meta">By Amar Kumar</p>
+    <p>This brief proposes a <strong>production enterprise agentic AI system</strong> for financial services: role-specific LangGraph agents that reason over governed enterprise data via a credential-isolated access layer, integrate Snowflake Cortex and MCP tool servers, and ship with eval gates on every agent before production release.</p>
+
+    <blockquote>
+      <p><strong>Proposed outcome:</strong> A multi-agent platform where business users interact with specialist agents — research, operations, compliance — that retrieve answers and take approved actions through API-mediated data access, never raw database credentials, with CI eval regression, full audit traces, and deployment on AWS Bedrock or Azure AI Foundry.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#scenario">Scenario</a></li>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#agent-design">Agent &amp; component design</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#reporting">Reporting &amp; ops</a></li>
+        <li><a href="#deliverables">Proposed deliverables</a></li>
+        <li><a href="#estimate">Effort estimate</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="scenario">Scenario</h2>
+    <p>This is a <strong>proposed solution</strong> for an enterprise financial services client with an existing architecture and design spec — an execution-focused build where a senior agentic AI developer ships against clear requirements, not open-ended strategy.</p>
+    <ul>
+      <li><strong>Users:</strong> Business analysts, relationship managers, and operations staff — non-technical consumers of agent outputs and actions</li>
+      <li><strong>Data estate:</strong> Governed Snowflake warehouse, CRM (Salesforce), internal REST APIs, document repositories, and an optional semantic/knowledge layer</li>
+      <li><strong>Agent types:</strong> Role-specific agents — portfolio research, client onboarding assist, compliance Q&amp;A — orchestrated by a LangGraph supervisor with A2A handoffs</li>
+      <li><strong>Constraints:</strong> Regulated industry — audit logs, PII redaction, tool allowlists, human approval for write actions</li>
+      <li><strong>Delivery model:</strong> Fixed-scope agent implementation against defined design; iterative eval expansion as new roles are added</li>
+      <li><strong>Cloud:</strong> AWS Bedrock and/or Azure AI Foundry for model inference; Snowflake Cortex for governed SQL and enterprise search</li>
+    </ul>
+
+    <h2 id="problem">Problem</h2>
+    <p>Enterprise financial services teams cannot deploy agent prototypes that embed warehouse credentials, bypass row-level security, or ship without regression tests. The gap between a LangGraph demo and a SOC-ready production system is governance, eval discipline, and standardized tool access — not more prompt tweaking.</p>
+    <ul>
+      <li><strong>Credential sprawl risk</strong> — agent runtimes that hold database connection strings create leak paths via prompts, logs, or tool misuse</li>
+      <li><strong>Ungoverned retrieval</strong> — RAG over raw tables bypasses entitlements and licensed data usage terms</li>
+      <li><strong>Demo vs production gap</strong> — notebook agents fail multi-agent edge cases, approval flows, and model version changes</li>
+      <li><strong>Tool chaos</strong> — each agent reimplements API clients with inconsistent auth, error handling, and versioning</li>
+      <li><strong>No eval discipline</strong> — agents promoted on manual spot checks; regressions discovered by business users in production</li>
+      <li><strong>Role blur</strong> — a single generalist bot hallucinates on domain tasks that specialist agents would handle with narrower, tested tools</li>
+      <li><strong>Multi-cloud friction</strong> — Bedrock, Azure Foundry, and Snowflake Cortex each expose different SDKs without a unified trace or model routing layer</li>
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <h3>Functional</h3>
+    <ul>
+      <li><strong>Role-specific agents:</strong> Distinct LangGraph graphs per business role with scoped tools, prompts, and eval packages</li>
+      <li><strong>Supervisor orchestration:</strong> Route user intent to the correct agent; support A2A delegation and context handoff</li>
+      <li><strong>Governed RAG:</strong> Retrieval via Cortex Search and semantic layer — queries respect user entitlements</li>
+      <li><strong>Tool/function calling:</strong> MCP servers exposing approved internal APIs; read-first, write behind human approval</li>
+      <li><strong>Snowflake Cortex:</strong> Analyst for natural-language-to-governed-SQL; Search for document and chunk retrieval</li>
+      <li><strong>Human-in-the-loop:</strong> LangGraph interrupt nodes before irreversible actions (CRM writes, report submission, ticket creation)</li>
+      <li><strong>Eval suite per agent:</strong> Golden tasks covering expected tool calls, citation patterns, and refusal cases</li>
+      <li><strong>Audit trail:</strong> Immutable log of prompts, retrieved sources, tool invocations, model ID, and user identity</li>
+    </ul>
+    <h3>Non-functional</h3>
+    <ul>
+      <li><strong>Security:</strong> Zero raw DB credentials in agent pods; session-scoped tokens issued by governed access layer only</li>
+      <li><strong>Latency:</strong> Interactive turns p95 &lt; 8 s; long research workflows run async with streaming partial results</li>
+      <li><strong>Availability:</strong> 99.9% on agent API tier; graceful fallback when Cortex or an MCP server is degraded</li>
+      <li><strong>Eval gate:</strong> No agent promotes to production without ≥90% task success on offline golden set</li>
+      <li><strong>Observability:</strong> OpenTelemetry spans correlated across LangGraph nodes, MCP calls, and Cortex queries</li>
+      <li><strong>Portability:</strong> Model router abstracts Bedrock, Azure Foundry, and Cortex LLM functions behind one interface</li>
+    </ul>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>The design separates <strong>orchestration</strong> (LangGraph supervisor and role agents), <strong>tooling</strong> (MCP servers), and <strong>data access</strong> (governed gateway to Snowflake Cortex and internal APIs). Agents hold no warehouse passwords — they receive short-lived scoped tokens and call MCP tools that enforce policy server-side.</p>
+
+    <div class="diagram-wrap" data-diagram-title="Enterprise agentic AI architecture with governed access layer">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef user fill:#fef3c7,stroke:#d97706,color:#92400e
+  classDef orch fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef tool fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef gov fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef data fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef cloud fill:#fce7f3,stroke:#db2777,color:#9d174d
+
+  BU["Business user\nweb / Teams embed"]:::user
+  API["Agent API\nFastAPI + auth"]:::orch
+  SUP["LangGraph supervisor\nintent router + A2A"]:::orch
+  R1["Research agent\nCortex tools"]:::orch
+  R2["Operations agent\nworkflow MCP"]:::orch
+  R3["Compliance agent\npolicy RAG only"]:::orch
+  BU --> API --> SUP
+  SUP --> R1
+  SUP --> R2
+  SUP --> R3
+
+  MCP1["MCP: snowflake-governed\nAnalyst + Search"]:::tool
+  MCP2["MCP: salesforce-read\nCRM lookup"]:::tool
+  MCP3["MCP: internal-workflows\nticket / report APIs"]:::tool
+  R1 --> MCP1
+  R2 --> MCP2
+  R2 --> MCP3
+  R3 --> MCP1
+
+  GAL["Governed access layer\nentitlements + audit"]:::gov
+  MCP1 --> GAL
+  MCP2 --> GAL
+  MCP3 --> GAL
+
+  SF["Snowflake\nCortex + warehouse RLS"]:::data
+  CRM["Salesforce\nOAuth API"]:::data
+  INT["Internal APIs\nservice accounts"]:::data
+  GAL --> SF
+  GAL --> CRM
+  GAL --> INT
+
+  BR["AWS Bedrock /\nAzure AI Foundry"]:::cloud
+  R1 --> BR
+  R2 --> BR
+  R3 --> BR
+
+  EV["Eval CI + Langfuse\ntraces + datasets"]:::gov
+  API --> EV</div>
+      </div>
+      <p class="diagram-caption">Enterprise architecture — LangGraph role agents invoke MCP tool servers through a governed access layer; LLM inference routes to Bedrock or Azure; eval CI gates every deploy</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Governed tool call sequence via MCP and access layer">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant User as Business user
+  participant Agent as Research agent
+  participant MCP as MCP snowflake-governed
+  participant GAL as Governed access layer
+  participant Cortex as Snowflake Cortex Analyst
+  participant Eval as Audit + Langfuse
+
+  User->>Agent: "AUM trend for mandate X?"
+  Agent->>MCP: cortex_analyst(query, session_token)
+  MCP->>GAL: validate token + entitlements
+  GAL->>Cortex: governed NL to SQL
+  Cortex->>GAL: result rows (RLS applied)
+  GAL->>MCP: redacted response + query_id
+  MCP->>Agent: structured JSON + lineage
+  Agent->>User: answer with citation
+  Agent->>Eval: log tools, sources, model_id
+  alt policy denial
+    GAL->>MCP: 403 entitlement_denied
+    MCP->>Agent: refusal payload
+    Agent->>User: cannot access this dataset
+  end</div>
+      </div>
+      <p class="diagram-caption">Governed tool-call sequence — MCP server validates session token; access layer enforces entitlements before Cortex executes; denials produce agent refusals, not credential errors</p>
+    </div>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="agentPlatformChart" aria-label="Enterprise agent platform component map by layer"></canvas>
+      <p class="chart-caption">Component map by platform layer — orchestration, tooling, governance, data, and cloud inference</p>
+    </div>
+
+    <p class="solution-section-label">End-to-end flow</p>
+    <div class="pipeline" role="img" aria-label="From user query through supervisor routing, agent reasoning, governed tool calls, and eval-logged response">
+      <span class="pipeline-step">User query</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Supervisor route</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Role agent</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">MCP + Cortex</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">HITL if write</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Audit + eval</span>
+    </div>
+    <p class="diagram-caption">Production request path — write actions pause at human approval; every path emits an auditable trace for compliance review</p>
+
+    <div class="chart-wrap">
+      <canvas id="agentRoleChart" aria-label="Distribution of production agent invocations by role type"></canvas>
+      <p class="chart-caption">Indicative agent routing mix after three role agents are live — supervisor directs traffic by classified intent</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="evalGateChart" aria-label="Eval gate metrics for agent production readiness"></canvas>
+      <p class="chart-caption">Per-agent eval thresholds required before production promotion</p>
+    </div>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <p><strong>Recommendation:</strong> <strong>LangGraph</strong> for orchestration, <strong>MCP</strong> for tool standardization, <strong>Snowflake Cortex</strong> for governed retrieval and SQL, a custom <strong>governed access layer</strong> (FastAPI) for entitlements, and <strong>AWS Bedrock</strong> / <strong>Azure AI Foundry</strong> for model hosting — with <strong>Langfuse</strong> and pytest eval packages gating every deploy.</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Orchestration</td><td>LangGraph</td><td>Checkpointed state graphs, HITL interrupts, conditional routing, A2A handoffs — proven for production agents</td></tr>
+        <tr><td>Tool protocol</td><td>MCP (Model Context Protocol)</td><td>Domain teams ship versioned tool servers; agents discover tools without bespoke SDK sprawl</td></tr>
+        <tr><td>Governed data</td><td>Snowflake Cortex Analyst + Search</td><td>NL→SQL with warehouse RLS; managed search without exporting credentials to agent pods</td></tr>
+        <tr><td>Access layer</td><td>FastAPI + policy engine (OPA or custom)</td><td>Session tokens, entitlement checks, SQL allowlists, immutable audit log</td></tr>
+        <tr><td>LLM hosting</td><td>AWS Bedrock + Azure AI Foundry</td><td>Enterprise VPC endpoints, model choice per task, contractual compliance</td></tr>
+        <tr><td>RAG indexing</td><td>LlamaIndex pipelines → Cortex Search</td><td>Chunk and embed approved corpora; align metadata to semantic layer entities</td></tr>
+        <tr><td>Semantic layer</td><td>dbt metrics + optional Neo4j graph</td><td>Consistent entity definitions shared by Cortex Analyst and agents</td></tr>
+        <tr><td>Runtime</td><td>Python 3.11+, FastAPI, Temporal</td><td>Long-running agent jobs with durable execution and retry policies</td></tr>
+        <tr><td>Evals</td><td>pytest + Langfuse datasets + LLM-as-judge</td><td>Per-agent golden tasks run in CI; production traces sampled back into datasets</td></tr>
+        <tr><td>Infra</td><td>AWS EKS/ECS or Azure Container Apps</td><td>Terraform modules; secrets in AWS Secrets Manager / Azure Key Vault</td></tr>
+        <tr><td>Observability</td><td>Langfuse + CloudWatch / Azure Monitor</td><td>End-to-end traces: graph node → MCP call → Cortex query → model token usage</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Why MCP over bespoke tool JSON schemas?</strong> In a multi-team enterprise, CRM, warehouse, and workflow APIs are owned by different groups. MCP lets each team publish a versioned server; agent developers consume a stable protocol instead of merging API clients into every graph.</p>
+    <p><strong>Why a governed access layer?</strong> Regulated finance requires entitlements enforced outside the LLM. An agent that receives a user session token can only invoke MCP tools the access layer validates — warehouse service accounts never appear in agent environment variables.</p>
+    <p><strong>Why LangGraph over CrewAI or AutoGen?</strong> Explicit graph edges, checkpoint persistence, and <code>interrupt()</code> for HITL map directly to approval workflows auditors expect. Crew-style role play is harder to eval deterministically.</p>
+    <p><strong>Bedrock vs Azure Foundry?</strong> Use whichever matches the client’s existing cloud contract; a thin model router abstracts provider SDKs so agents reference <code>model_id</code> not vendor-specific clients.</p>
+
+    <h2 id="agent-design">Agent &amp; component design</h2>
+    <h3>1 — LangGraph supervisor (router)</h3>
+    <ul>
+      <li><strong>Input:</strong> Authenticated user message + profile (role, entitlements, active mandate)</li>
+      <li><strong>Logic:</strong> Intent classifier → route to research / operations / compliance agent; manage A2A handoff with compressed context packet</li>
+      <li><strong>Output:</strong> Streaming tokens from selected agent; trace ID for audit</li>
+      <li><strong>QA gate:</strong> Routing accuracy ≥95% on 50-intent eval set before prod</li>
+    </ul>
+
+    <h3>2 — Research analyst agent</h3>
+    <ul>
+      <li><strong>Tools (MCP):</strong> <code>cortex_analyst</code>, <code>cortex_search</code>, <code>get_semantic_metric</code></li>
+      <li><strong>Behavior:</strong> Always cite <code>query_id</code> or chunk source; refuse when entitlement denied; no write tools</li>
+      <li><strong>Eval focus:</strong> Numerical accuracy on golden SQL questions; citation presence; refusal on out-of-scope datasets</li>
+    </ul>
+
+    <h3>3 — Operations agent</h3>
+    <ul>
+      <li><strong>Tools (MCP):</strong> <code>salesforce_read</code>, <code>create_service_ticket</code>, <code>submit_draft_report</code></li>
+      <li><strong>HITL node:</strong> LangGraph <code>interrupt()</code> before any write; user approves in UI; checkpoint resumes on confirm</li>
+      <li><strong>Eval focus:</strong> Correct tool selection; never write without approval flag; idempotent retries</li>
+    </ul>
+
+    <h3>4 — Compliance Q&amp;A agent</h3>
+    <ul>
+      <li><strong>Tools:</strong> Cortex Search over policy corpus only — no Analyst SQL, no CRM</li>
+      <li><strong>Behavior:</strong> High refusal precision; answer only from retrieved policy chunks; escalate ambiguous queries</li>
+      <li><strong>Eval focus:</strong> Zero hallucinated policy citations; 100% refusal on out-of-corpus questions in test set</li>
+    </ul>
+
+    <h3>5 — MCP server: snowflake-governed (illustrative)</h3>
+    <pre><code><span class="kw">from</span> mcp.server import Server
+<span class="kw">from</span> mcp.types import Tool, TextContent
+
+server = Server("snowflake-governed")
+
+<span class="fn">@server</span>.tool()
+async def cortex_analyst(query: str, session_token: str) -&gt; list[TextContent]:
+    claims = access_layer.validate(session_token)
+    if "analyst" <span class="kw">not</span> <span class="kw">in</span> claims.allowed_tools:
+        raise PermissionError("entitlement_denied")
+    result = await cortex_client.analyst(
+        query=query,
+        role=claims.snowflake_role,
+        warehouse=claims.warehouse,
+    )
+    access_layer.audit(user=claims.user_id, tool="cortex_analyst", query_id=result.id)
+    return [TextContent(type="text", text=result.to_json())]</code></pre>
+
+    <h3>6 — Per-agent eval package (CI gate)</h3>
+    <pre><code>@pytest.mark.agent("research_analyst")
+@pytest.mark.parametrize("case", load_golden_cases("research_analyst"))
+async def test_research_agent(case, agent_runner):
+    result = await agent_runner.run(case.user_message, context=case.context)
+    assert result.tools_called == case.expected_tools
+    assert citation_present(result.answer)
+    if case.expect_refusal:
+        assert result.refused and not result.tools_called
+    else:
+        score = await llm_judge relevance(case.expected_facts, result.answer)
+        assert score &gt;= 0.85</code></pre>
+
+    <h3>7 — Model router</h3>
+    <table>
+      <thead>
+        <tr><th>Task</th><th>Model (illustrative)</th><th>Provider</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Supervisor intent routing</td><td>Claude 3.5 Haiku / GPT-4o mini</td><td>Bedrock or Azure</td></tr>
+        <tr><td>Research synthesis</td><td>Claude Sonnet / GPT-4o</td><td>Bedrock or Azure</td></tr>
+        <tr><td>Compliance answers</td><td>Claude Sonnet (low temperature)</td><td>Bedrock</td></tr>
+        <tr><td>Eval LLM-as-judge</td><td>GPT-4o mini</td><td>Azure Foundry</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="toolLatencyChart" aria-label="Latency breakdown for a typical enterprise agent turn"></canvas>
+      <p class="chart-caption">Typical interactive turn latency budget — p95 target under 8 seconds including governed Cortex call</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="deployLifecycleChart" aria-label="Agent deployment lifecycle from eval to production"></canvas>
+      <p class="chart-caption">Agent promotion funnel — every role agent passes eval CI before staging and production</p>
+    </div>
+
+    <h2 id="implementation">Implementation plan</h2>
+
+    <div class="impl-phase">
+      <h3>Phase 1 — Platform foundation (week 1–3)</h3>
+      <p>Scaffold LangGraph monorepo, governed access layer with session token issuance, first MCP server skeleton, Langfuse project, and CI eval harness template. Deploy dev environment on AWS or Azure with Bedrock/Foundry connectivity and Snowflake service account (access layer only — not in agent pods).</p>
+      <p><strong>Risk:</strong> Snowflake Cortex region availability — confirm Cortex Analyst enabled in client account. <strong>Rollback:</strong> mock Cortex responses in MCP server for parallel frontend work.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 2 — First role agent: research analyst (week 4–6)</h3>
+      <p>Implement research agent graph, <code>snowflake-governed</code> MCP with Cortex Analyst + Search, 30-task golden eval set, streaming API endpoint. Internal UAT with 5 analyst users on read-only entitlements.</p>
+      <p><strong>Risk:</strong> Cortex Analyst generates SQL outside allowlist — add post-generation SQL parser gate. <strong>Rollback:</strong> disable Analyst tool; Search-only mode for UAT.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 3 — Supervisor + A2A routing (week 7–9)</h3>
+      <p>Build supervisor graph with intent classifier, handoff protocol, and shared context compression. Expand eval set with routing cases. Define streaming UX contract (partial tool status, citation cards) with frontend team.</p>
+      <p><strong>Risk:</strong> Context loss on A2A handoff — pass structured handoff packet, not raw chat. <strong>Rollback:</strong> single-agent mode bypassing supervisor.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 4 — Operations + compliance agents (week 10–13)</h3>
+      <p>Ship operations agent with HITL write approval, Salesforce-read MCP, workflow MCP. Ship compliance agent with policy-only search corpus. Separate eval packages (30+ tasks each) gating staging promotion.</p>
+      <p><strong>Risk:</strong> Write tool idempotency — require client-supplied idempotency keys. <strong>Rollback:</strong> operations agent read-only until HITL UI signed off.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 5 — Production hardening (week 14–16)</h3>
+      <p>Pen test findings, audit log export for compliance, load test 100 concurrent sessions, Terraform prod modules, secrets rotation runbook, model router config for multi-provider failover.</p>
+      <p><strong>Risk:</strong> Audit log volume — partition by date, archive to S3/Blob with retention policy. <strong>Rollback:</strong> blue/green agent deployment with traffic switch via API gateway.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 6 — Eval flywheel + semantic layer (week 17–18)</h3>
+      <p>Sample production traces into Langfuse datasets; weekly eval triage; connect dbt semantic layer entities to Cortex Analyst context; document prompt version registry and agent rollback procedure.</p>
+      <p><strong>Risk:</strong> Eval set drift from real usage — auto-promote flagged prod traces to golden candidates. <strong>Rollback:</strong> pin prior prompt version in model registry.</p>
+    </div>
+
+    <h2 id="reporting">Reporting &amp; ops</h2>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Eval pass rate per agent</td><td>CI pytest + Langfuse dataset runs</td><td>Every deploy (blocking)</td></tr>
+        <tr><td>Tool call error rate</td><td>MCP server logs + access layer 5xx</td><td>Real-time PagerDuty if &gt; 2%</td></tr>
+        <tr><td>Cortex entitlement denial rate</td><td>Governed access layer audit</td><td>Daily — tune routing if spikes</td></tr>
+        <tr><td>HITL approval latency</td><td>LangGraph checkpoint timestamps</td><td>Weekly ops review</td></tr>
+        <tr><td>User negative feedback → eval</td><td>Thumbs-down API → dataset queue</td><td>Weekly triage</td></tr>
+        <tr><td>p95 agent turn latency</td><td>OpenTelemetry on FastAPI + graph nodes</td><td>Live dashboard</td></tr>
+        <tr><td>Model cost by agent/role</td><td>Langfuse cost attribution</td><td>Monthly FinOps review</td></tr>
+        <tr><td>Prompt/version in prod</td><td>Model registry + git tag</td><td>Change log on every promotion</td></tr>
+      </tbody>
+    </table>
+    <p>Ops cadence would include daily failed-tool review, weekly eval dataset curation from production samples, and monthly security review of MCP server permissions. The senior agent developer would own eval standards — no agent merges without a green CI eval run and signed checklist.</p>
+
+    <h2 id="deliverables">Proposed deliverables</h2>
+    <p>Following the phased plan, a build would ship these artifacts:</p>
+    <ul>
+      <li>Governed access layer API — session tokens, entitlement middleware, SQL allowlist, immutable audit log</li>
+      <li>MCP server suite: <code>snowflake-governed</code>, <code>salesforce-read</code>, <code>internal-workflows</code></li>
+      <li>LangGraph supervisor graph with A2A handoff protocol</li>
+      <li>Three role agent graphs: research analyst, operations, compliance Q&amp;A</li>
+      <li>Snowflake Cortex Analyst and Search integration aligned to dbt semantic layer</li>
+      <li>Per-agent eval packages (30+ golden tasks each) running in CI as deploy gate</li>
+      <li>Model router configuration for AWS Bedrock and Azure AI Foundry</li>
+      <li>HITL approval checkpoint pattern with LangGraph interrupt/resume</li>
+      <li>Langfuse dashboards — traces, eval trends, tool failure breakdown, cost by agent</li>
+      <li>Terraform modules for AWS/Azure deployment with secrets management</li>
+      <li>Security and ops runbooks — credential rotation, agent version rollback, Cortex outage mode</li>
+    </ul>
+
+    <h2 id="estimate">Effort estimate</h2>
+    <p>Indicative effort for platform foundation plus three role agents through production hardening (assumes existing architecture spec, Snowflake Cortex enabled, and client SSO available):</p>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Hours (range)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phases 1–6 (platform + supervisor + 3 role agents + hardening)</td><td>400–560 hrs</td></tr>
+        <tr><td>Additional role agent with MCP tools and evals (each)</td><td>+60–90 hrs</td></tr>
+        <tr><td>Knowledge graph semantic layer (Neo4j + dbt sync)</td><td>+80–120 hrs</td></tr>
+        <tr><td>Dual-cloud active-active (Bedrock + Foundry failover)</td><td>+40–60 hrs</td></tr>
+        <tr><td>Ongoing eval curation, prompt updates, model rotation</td><td>12–20 hrs/month</td></tr>
+        <tr><td>Platform costs (indicative monthly at institutional pilot scale)</td><td>Snowflake Cortex, Bedrock/Azure tokens, infra — typically USD 5,000–15,000</td></tr>
+      </tbody>
+    </table>
+    <p>The $15K fixed-price signal in the sourcing context would realistically scope Phase 1–2 (foundation + first research agent with evals) or a time-boxed MVP milestone — not the full six-phase platform. A production system with three governed role agents, HITL writes, and compliance audit typically lands in the 400+ hour range above.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>MCP</strong></td><td>Model Context Protocol — open standard for agents to discover and invoke external tool servers</td></tr>
+        <tr><td><strong>A2A</strong></td><td>Agent-to-agent delegation — supervisor handing a sub-task to a specialist agent with context packet</td></tr>
+        <tr><td><strong>Governed access layer</strong></td><td>API middleware that enforces entitlements and audit; agents never hold warehouse credentials</td></tr>
+        <tr><td><strong>Cortex Analyst</strong></td><td>Snowflake feature that translates natural language to SQL executed under caller’s warehouse role and RLS</td></tr>
+        <tr><td><strong>Cortex Search</strong></td><td>Snowflake managed hybrid search over approved document corpora indexed in the account</td></tr>
+        <tr><td><strong>HITL</strong></td><td>Human-in-the-loop — LangGraph interrupt pausing execution until a user approves a proposed action</td></tr>
+        <tr><td><strong>LangGraph</strong></td><td>Library for building stateful, checkpointed agent workflows as explicit directed graphs</td></tr>
+        <tr><td><strong>Eval gate</strong></td><td>CI threshold that blocks production deploy when an agent’s golden task success rate regresses</td></tr>
+        <tr><td><strong>Semantic layer</strong></td><td>dbt-defined business metrics and entities providing consistent definitions for SQL and agents</td></tr>
+        <tr><td><strong>Bedrock / AI Foundry</strong></td><td>AWS and Azure managed LLM hosting platforms with enterprise VPC and compliance options</td></tr>
+      </tbody>
+    </table>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=12"></script>
+  <script src="../../site-nav.js" defer></script>
+  <script src="../../script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('agentPlatformChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Orchestration', 'MCP tools', 'Governance', 'Data / Cortex', 'Cloud LLM'],
+        datasets: [{
+          data: [3, 3, 2, 3, 2],
+          backgroundColor: ['#7c3aed', '#2563eb', '#16a34a', '#64748b', '#db2777'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var names = {
+                  0: 'LangGraph supervisor + role agents',
+                  1: 'Snowflake, CRM, workflow MCP servers',
+                  2: 'Access layer, audit, eval CI',
+                  3: 'Cortex Analyst/Search, semantic layer',
+                  4: 'Bedrock, Azure AI Foundry'
+                };
+                return names[ctx.dataIndex] || ctx.label;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('agentRoleChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Research analyst', 'Operations', 'Compliance Q&A', 'Supervisor-only (clarify)'],
+        datasets: [{
+          data: [45, 30, 15, 10],
+          backgroundColor: ['#2563eb', '#7c3aed', '#16a34a', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    new Chart(document.getElementById('evalGateChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Task success', 'Tool accuracy', 'Citation presence', 'Refusal precision', 'Routing accuracy'],
+        datasets: [{
+          label: 'Minimum % for prod',
+          data: [90, 92, 95, 98, 95],
+          backgroundColor: palette.slice(0, 5),
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, max: 100, title: { display: true, text: '%' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    new Chart(document.getElementById('toolLatencyChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Auth + route', 'LLM plan', 'MCP + Cortex', 'LLM synthesize', 'Audit write'],
+        datasets: [{
+          label: 'Milliseconds (p95 target)',
+          data: [120, 1800, 3200, 2200, 80],
+          backgroundColor: palette.slice(0, 5),
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'ms' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    new Chart(document.getElementById('deployLifecycleChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Eval CI pass', 'Staging UAT', 'Security sign-off', 'Prod canary', 'Full rollout'],
+        datasets: [{
+          label: 'Agents reaching stage (%)',
+          data: [100, 85, 75, 70, 65],
+          backgroundColor: '#7c3aed',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        scales: {
+          x: { beginAtZero: true, max: 100, title: { display: true, text: '%' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

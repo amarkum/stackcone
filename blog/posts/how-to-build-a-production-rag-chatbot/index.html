@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>How to Build a Production RAG Chatbot (2026)</title>
+  <meta name="description" content="Learn how to build a production RAG chatbot: document ingestion, embeddings, vector DB, retrieval pipeline, LLM answers, and step-by-step Python code.">
+  <meta name="keywords" content="how to build a rag chatbot, production rag chatbot, build rag chatbot python, rag chatbot tutorial, vector database chatbot, retrieval augmented generation, fastapi rag api">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/how-to-build-a-production-rag-chatbot/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/how-to-build-a-production-rag-chatbot/">
+  <meta property="og:title" content="How to Build a Production RAG Chatbot (2026)">
+  <meta property="og:description" content="Learn how to build a production RAG chatbot: document ingestion, embeddings, vector DB, retrieval pipeline, LLM answers, and step-by-step Python code.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Build a Production RAG Chatbot (2026)">
+  <meta name="twitter:description" content="Learn how to build a production RAG chatbot: document ingestion, embeddings, vector DB, retrieval pipeline, LLM answers, and step-by-step Python code.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Build a Production RAG Chatbot — Complete Guide",
+    "description": "Learn how to build a production RAG chatbot: document ingestion, embeddings, vector DB, retrieval pipeline, LLM answers, and step-by-step Python code.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-01",
+    "dateModified": "2026-07-28",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-to-build-a-production-rag-chatbot/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["how to build a rag chatbot", "production rag chatbot", "build rag chatbot python", "rag chatbot tutorial", "vector database chatbot", "retrieval augmented generation", "fastapi rag api"],
+    "articleSection": "RAG",
+    "about": { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Build a Production RAG Chatbot", "item": "https://stackcone.com/blog/posts/how-to-build-a-production-rag-chatbot/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Build a Production RAG Chatbot",
+    "description": "Build a production RAG chatbot: ingest documents, embed and store in a vector database, retrieve relevant chunks, and generate grounded answers with an LLM.",
+    "step": [
+      { "@type": "HowToStep", "name": "Set up document ingestion", "text": "Parse and chunk your documents, then generate embeddings for each chunk." },
+      { "@type": "HowToStep", "name": "Configure vector database", "text": "Store embeddings in a vector database such as Pinecone, pgvector, or Chroma for similarity search." },
+      { "@type": "HowToStep", "name": "Build retrieval pipeline", "text": "On each user query, embed the question and retrieve the top-k most relevant document chunks." },
+      { "@type": "HowToStep", "name": "Generate answers with LLM", "text": "Pass retrieved context and the user question to an LLM to produce grounded, cited answers." },
+      { "@type": "HowToStep", "name": "Deploy and monitor", "text": "Ship the RAG API with FastAPI or similar, add logging, and monitor retrieval quality and latency." }
+    ],
+    "tool": [{ "@type": "HowToTool", "name": "Python" }, { "@type": "HowToTool", "name": "OpenAI API" }, { "@type": "HowToTool", "name": "Vector database" }]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How to Build a Production RAG Chatbot — Complete Guide</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>A practical guide to building a production RAG chatbot from scratch: concepts, stack, architecture, code, and launch.</p>
+
+    <p>You want a chatbot that answers from <strong>your</strong> docs — not from the model's memory. That's a RAG chatbot.</p>
+    <p>This guide shows how to build a production RAG chatbot: ingest documents, store them in a vector database, retrieve relevant chunks on each question, and generate answers with an LLM.</p>
+
+    <blockquote>
+      <p><strong>Who is this for?</strong> Developers with basic Python and an API key. No ML background required.</p>
+    </blockquote>
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#what-is-an-llm">What is an LLM?</a></li>
+        <li><a href="#what-is-rag">What is RAG?</a></li>
+        <li><a href="#what-are-embeddings">What are embeddings?</a></li>
+        <li><a href="#what-is-a-vector-database">What is a vector database?</a></li>
+        <li><a href="#chunking">Chunking</a></li>
+        <li><a href="#rag-vs-fine-tuning-vs-plain-llm">RAG vs fine-tuning vs plain LLM</a></li>
+        <li><a href="#tools--stack">Tools &amp; stack</a></li>
+        <li><a href="#which-vector-database">Which vector database?</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#build-step-by-step">Build a production RAG chatbot step by step</a></li>
+        <li><a href="#going-to-production">Going to production</a></li>
+        <li><a href="#launch-checklist">Launch checklist</a></li>
+        <li><a href="#api-reference">API reference</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <div class="chart-wrap">
+      <canvas id="roadmapChart" aria-label="Build effort by phase"></canvas>
+      <p class="chart-caption">Suggested effort split when building your first RAG chatbot (% of total work)</p>
+    </div>
+
+    <h2 id="what-is-an-llm">What is an LLM?</h2>
+    <p>An <strong>LLM (Large Language Model)</strong> generates text — answers, summaries, code. Examples: GPT-4o, Gemini, Claude, Llama.</p>
+    <p>It only knows training data plus what you send in the prompt. It does <strong>not</strong> automatically know your wiki, PDFs, or tickets. RAG feeds it the right text at question time.</p>
+
+    <h2 id="what-is-rag">What is RAG?</h2>
+    <p><strong>RAG (Retrieval-Augmented Generation)</strong> = search your knowledge base, then ask the LLM to answer using what was found.</p>
+    <table>
+      <thead>
+        <tr><th>Step</th><th>What happens</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Retrieve</strong></td><td>Find document chunks related to the question</td></tr>
+        <tr><td><strong>Augment</strong></td><td>Add those chunks to the LLM prompt</td></tr>
+        <tr><td><strong>Generate</strong></td><td>LLM writes the answer from that context</td></tr>
+      </tbody>
+    </table>
+    <p>Like an open-book exam: the model reads the relevant pages you hand it, then responds.</p>
+
+    <h2 id="what-are-embeddings">What are embeddings?</h2>
+    <p>Text is converted to a <strong>vector</strong> (a list of numbers). Similar meaning → similar vectors.</p>
+    <ul>
+      <li>"Reset password" and "forgot login" → close vectors</li>
+      <li>"Reset password" and "weather forecast" → far apart</li>
+    </ul>
+    <p>An <strong>embedding model</strong> (separate from your chat LLM) creates these vectors. You embed all docs at ingest time and embed each user question at query time, then find the closest doc vectors.</p>
+    <pre><code><span class="str">"How do I reset my password?"</span>  →  [<span class="num">0.12</span>, <span class="num">-0.45</span>, <span class="num">0.88</span>, ...]
+<span class="str">"Password recovery steps"</span>      →  [<span class="num">0.11</span>, <span class="num">-0.42</span>, <span class="num">0.91</span>, ...]   <span class="cm">← relevant</span>
+<span class="str">"Weather in Tokyo"</span>             →  [<span class="num">-0.67</span>, <span class="num">0.22</span>, <span class="num">-0.11</span>, ...]  <span class="cm">← not relevant</span></code></pre>
+
+    <h2 id="what-is-a-vector-database">What is a vector database?</h2>
+    <p>Stores millions of vectors and returns <strong>nearest neighbors</strong> quickly.</p>
+    <p>Each record usually has:</p>
+    <ul>
+      <li><strong>ID</strong> — chunk identifier</li>
+      <li><strong>Vector</strong> — embedding</li>
+      <li><strong>Metadata</strong> — title, URL, doc id, text snippet</li>
+    </ul>
+    <p>Regular SQL is for exact matches (<code>WHERE id = 5</code>). Vector DBs are for <strong>similar meaning</strong>.</p>
+    <p><strong>Query flow:</strong> embed question → vector DB returns top-k chunks → pass chunks to LLM.</p>
+
+    <h2 id="chunking">Chunking</h2>
+    <p>Documents are too large for one prompt. <strong>Chunking</strong> splits them into pieces (often 800–1200 characters) with 10–20% overlap.</p>
+    <table>
+      <thead>
+        <tr><th>Setting</th><th>Recommendation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Size</td><td>800–1200 chars (~400–800 tokens)</td></tr>
+        <tr><td>Overlap</td><td>10–20%</td></tr>
+        <tr><td>Split on</td><td>Headings, then paragraphs</td></tr>
+        <tr><td>Metadata</td><td><code>title</code>, <code>doc_id</code>, <code>source_url</code>, <code>section</code></td></tr>
+      </tbody>
+    </table>
+    <p>Bad chunks → bad search → bad answers. Worth reviewing samples after first ingest.</p>
+
+    <h2 id="rag-vs-fine-tuning-vs-plain-llm">RAG vs fine-tuning vs plain LLM</h2>
+    <table>
+      <thead>
+        <tr><th>Approach</th><th>Use when</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Plain LLM</strong></td><td>General questions, no private docs</td></tr>
+        <tr><td><strong>RAG</strong></td><td>Answers must come from your docs that change over time</td></tr>
+        <tr><td><strong>Fine-tuning</strong></td><td>Tone, format, domain language — not as a substitute for live docs</td></tr>
+      </tbody>
+    </table>
+    <p>For doc Q&amp;A and support bots, <strong>start with RAG</strong>.</p>
+
+    <h2 id="tools--stack">Tools &amp; stack</h2>
+    <table>
+      <thead>
+        <tr><th>Component</th><th>Role</th><th>Common choices</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Chat LLM</td><td>Generates answers</td><td>GPT-4o-mini, Gemini Flash, Claude Haiku</td></tr>
+        <tr><td>Embedding model</td><td>Text → vectors</td><td>OpenAI embed-3-small, Gemini embedding</td></tr>
+        <tr><td>Vector database</td><td>Store &amp; search vectors</td><td>Pinecone, Chroma, pgvector, Qdrant</td></tr>
+        <tr><td>Reranker (optional)</td><td>Improve search ranking</td><td>Cohere Rerank</td></tr>
+        <tr><td>API</td><td><code>/chat</code> endpoint</td><td>FastAPI, Express</td></tr>
+        <tr><td>Ingest</td><td>Parse, chunk, embed, store</td><td>Python script + cron</td></tr>
+        <tr><td>UI</td><td>Chat interface</td><td>HTML/JS, React</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Beginner stack (copy this):</strong></p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Pick</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Language</td><td>Python</td></tr>
+        <tr><td>API</td><td>FastAPI</td></tr>
+        <tr><td>Vector DB</td><td>Pinecone or Chroma (local)</td></tr>
+        <tr><td>Embeddings</td><td>OpenAI <code>text-embedding-3-small</code></td></tr>
+        <tr><td>Chat</td><td>GPT-4o-mini or Gemini Flash</td></tr>
+        <tr><td>Deploy</td><td>Docker + Cloud Run / Railway</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Project layout:</strong></p>
+    <pre><code>docs/           <span class="cm">← your source markdown/PDF exports</span>
+ingest/         <span class="cm">← chunk.py, index.py (run when docs change)</span>
+app/            <span class="cm">← retrieve.py, main.py (chat API)</span>
+frontend/       <span class="cm">← chat UI</span>
+.env            <span class="cm">← API keys (never commit)</span></code></pre>
+
+    <p><strong>LangChain?</strong> Optional. Plain Python is fine for v1 — you'll see every step clearly.</p>
+
+    <h2 id="which-vector-database">Which vector database?</h2>
+    <table>
+      <thead>
+        <tr><th>Database</th><th>Best for</th><th>Beginner?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Pinecone</strong></td><td>Managed, fast start, scales</td><td>★ Easiest cloud option</td></tr>
+        <tr><td><strong>Chroma</strong></td><td>Local dev, small projects</td><td>★ Easiest to learn</td></tr>
+        <tr><td><strong>pgvector</strong></td><td>Already on PostgreSQL</td><td>Medium</td></tr>
+        <tr><td><strong>Qdrant</strong></td><td>Performance, filters, hybrid search</td><td>Medium</td></tr>
+        <tr><td><strong>Weaviate</strong></td><td>Hybrid BM25 + vector built-in</td><td>Medium</td></tr>
+      </tbody>
+    </table>
+    <p>Start with <strong>Pinecone</strong> or <strong>Chroma</strong>. Switch when you outgrow free tier or need hybrid search at scale.</p>
+
+    <div class="chart-wrap">
+      <canvas id="vectorCompareChart" aria-label="Vector database comparison radar chart"></canvas>
+      <p class="chart-caption">Vector DB comparison across ease, scale, speed, features, and cost (higher is better)</p>
+    </div>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>Two pipelines share one vector index.</p>
+
+    <h3>Offline — when docs change</h3>
+    <div class="pipeline" role="img" aria-label="Offline pipeline: Sources to Parse to Chunk to Embed to Vector DB">
+      <span class="pipeline-step">Sources</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Parse</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Chunk + metadata</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Embed</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Vector DB</span>
+    </div>
+    <p>Run on upload, git push, or schedule.</p>
+
+    <h3>Online — when user asks</h3>
+    <div class="pipeline" role="img" aria-label="Online pipeline: Question to Embed to Vector search to optional Rerank to Build prompt to LLM to Answer">
+      <span class="pipeline-step">Question</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Embed query</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Vector search (top-k)</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step optional">Rerank</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Build prompt</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">LLM</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Answer + sources</span>
+    </div>
+
+    <h3>End-to-end (one question)</h3>
+    <ol>
+      <li>User sends message to your API</li>
+      <li>API embeds the question</li>
+      <li>Vector DB returns top 20–40 similar chunks</li>
+      <li>(Optional) Reranker keeps best 5–10</li>
+      <li>API builds prompt: system instructions + chunks + question</li>
+      <li>LLM returns answer</li>
+      <li>API responds with answer and source links</li>
+    </ol>
+
+    <div class="chart-wrap">
+      <canvas id="funnelChart" aria-label="Retrieval funnel from vector search to cited sources"></canvas>
+      <p class="chart-caption">Typical chunk funnel: from vector top-k to chunks cited in the answer</p>
+    </div>
+
+    <h3>Typical latency</h3>
+    <table>
+      <thead>
+        <tr><th>Stage</th><th>~ms</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Embed query</td><td>80</td></tr>
+        <tr><td>Vector search</td><td>120</td></tr>
+        <tr><td>Rerank</td><td>200</td></tr>
+        <tr><td>LLM response</td><td>1500–2500</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="latencyChart" aria-label="Latency breakdown by pipeline stage"></canvas>
+      <p class="chart-caption">Latency breakdown per request (ms) — LLM dominates total time</p>
+    </div>
+
+    <h2 id="build-step-by-step">Build a Production RAG Chatbot Step by Step</h2>
+
+    <h3>Step 1 — Environment</h3>
+    <p><strong>.env</strong></p>
+    <pre><code>OPENAI_API_KEY=sk-...
+EMBEDDING_MODEL=text-embedding-3-small
+DEFAULT_MODEL=gpt-4o-mini
+
+PINECONE_API_KEY=...
+PINECONE_INDEX=kb-prod
+PINECONE_NAMESPACE=default
+
+RETRIEVAL_TOP_K=<span class="num">30</span>
+MAX_CONTEXT_CHUNKS=<span class="num">8</span></code></pre>
+
+    <p><strong>requirements.txt</strong></p>
+    <pre><code>fastapi
+uvicorn
+python-dotenv
+openai
+pinecone-client
+tiktoken</code></pre>
+    <p>Add <code>cohere</code> if you use reranking.</p>
+
+    <h3>Step 2 — Chunk documents</h3>
+    <p><strong>ingest/chunk.py</strong></p>
+    <pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+CHUNK_SIZE = <span class="num">1000</span>
+OVERLAP = <span class="num">200</span>
+
+<span class="kw">def</span> <span class="fn">chunk_text</span>(text: <span class="fn">str</span>, doc_id: <span class="fn">str</span>, title: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    chunks, start, idx = [], <span class="num">0</span>, <span class="num">0</span>
+    <span class="kw">while</span> start &lt; <span class="fn">len</span>(text):
+        piece = text[start : start + CHUNK_SIZE].strip()
+        <span class="kw">if</span> piece:
+            chunks.append({
+                <span class="str">"id"</span>: <span class="str">f"</span>{doc_id}<span class="str">_{idx}"</span>,
+                <span class="str">"text"</span>: piece,
+                <span class="str">"metadata"</span>: {<span class="str">"doc_id"</span>: doc_id, <span class="str">"title"</span>: title, <span class="str">"chunk_index"</span>: idx},
+            })
+            idx += <span class="num">1</span>
+        start += CHUNK_SIZE - OVERLAP
+    <span class="kw">return</span> chunks
+
+<span class="kw">def</span> <span class="fn">load_docs</span>(folder: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    out = []
+    <span class="kw">for</span> path <span class="kw">in</span> Path(folder).glob(<span class="str">"**/*.md"</span>):
+        out.extend(<span class="fn">chunk_text</span>(path.read_text(encoding=<span class="str">"utf-8"</span>), path.stem, path.stem))
+    <span class="kw">return</span> out</code></pre>
+
+    <h3>Step 3 — Embed and index</h3>
+    <p><strong>ingest/index.py</strong></p>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">from</span> pinecone <span class="kw">import</span> Pinecone
+<span class="kw">from</span> chunk <span class="kw">import</span> load_docs
+
+client = OpenAI()
+pc = Pinecone(api_key=os.environ[<span class="str">"PINECONE_API_KEY"</span>])
+index = pc.Index(os.environ[<span class="str">"PINECONE_INDEX"</span>])
+
+<span class="kw">def</span> <span class="fn">embed</span>(texts: <span class="fn">list</span>[<span class="fn">str</span>]) -&gt; <span class="fn">list</span>[<span class="fn">list</span>[<span class="fn">float</span>]]:
+    r = client.embeddings.create(model=os.environ[<span class="str">"EMBEDDING_MODEL"</span>], input=texts)
+    <span class="kw">return</span> [d.embedding <span class="kw">for</span> d <span class="kw">in</span> r.data]
+
+<span class="kw">def</span> <span class="fn">upsert_chunks</span>(chunks: <span class="fn">list</span>[<span class="fn">dict</span>], batch_size=<span class="num">50</span>):
+    ns = os.environ.get(<span class="str">"PINECONE_NAMESPACE"</span>, <span class="str">"default"</span>)
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="fn">len</span>(chunks), batch_size):
+        batch = chunks[i : i + batch_size]
+        vecs = <span class="fn">embed</span>([c[<span class="str">"text"</span>] <span class="kw">for</span> c <span class="kw">in</span> batch])
+        index.upsert(
+            vectors=[
+                {<span class="str">"id"</span>: c[<span class="str">"id"</span>], <span class="str">"values"</span>: v, <span class="str">"metadata"</span>: {**c[<span class="str">"metadata"</span>], <span class="str">"text"</span>: c[<span class="str">"text"</span>]}}
+                <span class="kw">for</span> c, v <span class="kw">in</span> <span class="fn">zip</span>(batch, vecs)
+            ],
+            namespace=ns,
+        )
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    <span class="fn">upsert_chunks</span>(<span class="fn">load_docs</span>(<span class="str">"docs"</span>))
+    <span class="fn">print</span>(<span class="str">"Indexed."</span>)</code></pre>
+    <p>Run after docs change: <code>python ingest/index.py</code></p>
+
+    <h3>Step 4 — Retrieve relevant chunks</h3>
+    <p><strong>app/retrieve.py</strong></p>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = OpenAI()
+
+<span class="kw">def</span> <span class="fn">embed_query</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">float</span>]:
+    r = client.embeddings.create(model=os.environ[<span class="str">"EMBEDDING_MODEL"</span>], input=text)
+    <span class="kw">return</span> r.data[<span class="num">0</span>].embedding
+
+<span class="kw">def</span> <span class="fn">retrieve</span>(query: <span class="fn">str</span>, index, top_k: <span class="fn">int</span> | <span class="fn">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+    k = top_k <span class="kw">or</span> <span class="fn">int</span>(os.environ.get(<span class="str">"RETRIEVAL_TOP_K"</span>, <span class="str">"30"</span>))
+    hits = index.query(vector=<span class="fn">embed_query</span>(query), top_k=k, include_metadata=<span class="kw">True</span>)
+    <span class="kw">return</span> [{<span class="str">"text"</span>: m.metadata[<span class="str">"text"</span>], **m.metadata} <span class="kw">for</span> m <span class="kw">in</span> hits.matches]</code></pre>
+    <p><strong>Optional rerank</strong> (Cohere) — call after vector search, keep top 8. Big quality win for little code.</p>
+
+    <h3>Step 5 — Chat API</h3>
+    <p><strong>app/main.py</strong></p>
+    <pre><code><span class="kw">import</span> os
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">from</span> retrieve <span class="kw">import</span> retrieve
+
+app = FastAPI()
+client = OpenAI()
+<span class="cm"># index = init pinecone on startup</span>
+
+SYSTEM = <span class="str">"""You are a helpful assistant. Answer using only the context below.
+If the context does not contain the answer, say so clearly."""</span>
+
+<span class="kw">class</span> <span class="fn">ChatRequest</span>(BaseModel):
+    message: <span class="fn">str</span>
+    conversation_history: <span class="fn">list</span>[<span class="fn">dict</span>] = []
+
+<span class="kw">def</span> <span class="fn">format_context</span>(docs: <span class="fn">list</span>[<span class="fn">dict</span>]) -&gt; <span class="fn">str</span>:
+    max_chunks = <span class="fn">int</span>(os.environ.get(<span class="str">"MAX_CONTEXT_CHUNKS"</span>, <span class="str">"8"</span>))
+    parts = [<span class="str">f"Source: {d.get('title', 'doc')}\n{d['text']}"</span> <span class="kw">for</span> d <span class="kw">in</span> docs[:max_chunks]]
+    <span class="kw">return</span> <span class="str">"\n---\n"</span>.join(parts)
+
+@app.post(<span class="str">"/chat"</span>)
+<span class="kw">async def</span> <span class="fn">chat</span>(req: ChatRequest):
+    docs = <span class="fn">retrieve</span>(req.message, index)
+
+    <span class="kw">if not</span> docs:
+        <span class="kw">return</span> {<span class="str">"response"</span>: <span class="str">"I couldn't find anything relevant in the knowledge base."</span>, <span class="str">"sources"</span>: []}
+
+    ctx = <span class="fn">format_context</span>(docs)
+    messages = [
+        {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: SYSTEM},
+        *req.conversation_history,
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">f"Context:\n{ctx}\n\nQuestion: {req.message}"</span>},
+    ]
+    out = client.chat.completions.create(model=os.environ[<span class="str">"DEFAULT_MODEL"</span>], messages=messages)
+    <span class="kw">return</span> {
+        <span class="str">"response"</span>: out.choices[<span class="num">0</span>].message.content,
+        <span class="str">"sources"</span>: [{<span class="str">"title"</span>: d.get(<span class="str">"title"</span>)} <span class="kw">for</span> d <span class="kw">in</span> docs[:<span class="num">5</span>]],
+    }</code></pre>
+    <p>Run: <code>uvicorn app.main:app --reload --port 8000</code></p>
+
+    <h3>Step 6 — Chat UI</h3>
+    <p><strong>frontend/chat.js</strong></p>
+    <pre><code><span class="kw">async function</span> <span class="fn">sendMessage</span>(message, history = []) {
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"/chat"</span>, {
+    method: <span class="str">"POST"</span>,
+    headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    body: JSON.stringify({ message, conversation_history: history }),
+  });
+  <span class="kw">return</span> res.json();
+}</code></pre>
+    <p>Render <code>response</code> as markdown. Show <code>sources</code> as links below the answer.</p>
+
+    <h2 id="going-to-production">Going to production</h2>
+
+    <h3>Improve retrieval</h3>
+    <ul>
+      <li><strong>Rerank</strong> top vector hits before sending to LLM</li>
+      <li><strong>Query rewrite</strong> for follow-ups ("what about step 2?") using a cheap model</li>
+      <li><strong>Hybrid search</strong> (BM25 + vector) if users search error codes and SKUs</li>
+      <li><strong>Re-sync</strong> docs on a schedule or webhook when content changes</li>
+    </ul>
+
+    <h3>Multi-turn chat</h3>
+    <p>Send last N messages in <code>conversation_history</code>. Retrieve fresh chunks each turn — don't rely only on old answers.</p>
+
+    <h3>Multiple models</h3>
+    <table>
+      <thead>
+        <tr><th>Task</th><th>Model tier</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Embeddings</td><td>Embedding API</td></tr>
+        <tr><td>Main answers</td><td>Mid (Flash, 4o-mini)</td></tr>
+        <tr><td>Rewrite / summary</td><td>Cheapest tier</td></tr>
+      </tbody>
+    </table>
+    <p>Use env vars for model IDs.</p>
+
+    <div class="chart-wrap">
+      <canvas id="modelChart" aria-label="Relative cost by model tier"></canvas>
+      <p class="chart-caption">Relative cost index by task (embedding and rewrite are cheap; answer quality scales with tier)</p>
+    </div>
+
+    <h3>Evaluation</h3>
+    <p>Build 30+ test questions with expected source docs. Measure <strong>hit@k</strong> after every KB update. If search fails, no prompt fix will save you.</p>
+
+    <h3>Deploy</h3>
+    <ul>
+      <li>Dockerize the API</li>
+      <li>Secrets in env / vault — never in frontend</li>
+      <li>Auth + rate limits on <code>/chat</code></li>
+      <li>Log token usage per request</li>
+    </ul>
+
+    <div class="chart-wrap">
+      <canvas id="costChart" aria-label="Cost breakdown per request"></canvas>
+      <p class="chart-caption">Typical per-request cost breakdown for a production RAG chatbot</p>
+    </div>
+
+    <h3>When search returns nothing</h3>
+    <p>Return a clear message ("no relevant docs found"). Optionally skip the LLM call. That's a one-line check — not a separate system to build on day one.</p>
+
+    <h2 id="launch-checklist">Launch checklist</h2>
+
+    <div class="checklist-grid">
+      <div class="checklist-col">
+        <h3>Must have</h3>
+        <ul>
+          <li>Docs ingested and vector index populated</li>
+          <li>Same embedding model at ingest and query</li>
+          <li><code>/chat</code> API working</li>
+          <li>System prompt + context template</li>
+          <li>Basic UI</li>
+          <li>API keys server-side only</li>
+        </ul>
+      </div>
+      <div class="checklist-col">
+        <h3>Should have</h3>
+        <ul>
+          <li>Reranker</li>
+          <li>Sources shown in UI</li>
+          <li>Incremental re-index when docs change</li>
+          <li>Auth on API</li>
+          <li>30+ test questions</li>
+        </ul>
+      </div>
+      <div class="checklist-col">
+        <h3>Later</h3>
+        <ul>
+          <li>Query rewrite for follow-ups</li>
+          <li>Hybrid search</li>
+          <li>Streaming</li>
+          <li>Usage/cost dashboards</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="priorityChart" aria-label="Launch checklist priority breakdown"></canvas>
+      <p class="chart-caption">Launch checklist items by priority tier</p>
+    </div>
+
+    <h2 id="api-reference">API reference</h2>
+    <pre><code>curl -X POST http://localhost:8000/chat \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"message": "How do I reset my password?"}'</span></code></pre>
+
+    <p><strong>Request</strong></p>
+    <pre><code>{
+  <span class="str">"message"</span>: <span class="str">"How do I reset my password?"</span>,
+  <span class="str">"conversation_history"</span>: []
+}</code></pre>
+
+    <p><strong>Response</strong></p>
+    <pre><code>{
+  <span class="str">"response"</span>: <span class="str">"To reset your password, go to Settings → Account..."</span>,
+  <span class="str">"sources"</span>: [{ <span class="str">"title"</span>: <span class="str">"account-settings"</span> }]
+}</code></pre>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>LLM</strong></td><td>Large language model that generates text</td></tr>
+        <tr><td><strong>RAG</strong></td><td>Retrieve docs, add to prompt, generate answer</td></tr>
+        <tr><td><strong>Embedding</strong></td><td>Numeric vector representing text meaning</td></tr>
+        <tr><td><strong>Vector database</strong></td><td>DB optimized for similarity search on embeddings</td></tr>
+        <tr><td><strong>Chunk</strong></td><td>Small piece of a document stored in the index</td></tr>
+        <tr><td><strong>top-k</strong></td><td>Number of similar chunks to retrieve (e.g. 30)</td></tr>
+        <tr><td><strong>Reranker</strong></td><td>Model that re-orders retrieved chunks by relevance</td></tr>
+        <tr><td><strong>System prompt</strong></td><td>Instructions that define bot behavior</td></tr>
+        <tr><td><strong>Ingest</strong></td><td>Offline pipeline: parse → chunk → embed → store</td></tr>
+        <tr><td><strong>Context window</strong></td><td>Max tokens the LLM can read in one request</td></tr>
+      </tbody>
+    </table>
+
+    <aside class="blog-cta">
+      <p><strong>Need help building a production RAG chatbot?</strong></p>
+      <p>stackcone designs and ships RAG systems for enterprise and startups — document ingestion, vector search, LLM integration, and deployment. 10+ years experience, 100% job success on Upwork.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+
+    <p class="closing">You're building a <strong>search layer</strong> plus a <strong>chat layer</strong>. Get search right first — the rest follows.</p>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('roadmapChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Foundation', 'Retrieval', 'Generation', 'Delivery', 'Quality', 'Ship'],
+        datasets: [{
+          label: 'Effort %',
+          data: [25, 30, 15, 12, 10, 8],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 35, title: { display: true, text: 'Effort %' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('vectorCompareChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Ease of use', 'Scalability', 'Speed', 'Features', 'Cost efficiency'],
+        datasets: [
+          { label: 'Pinecone', data: [9, 9, 8, 7, 6], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,.15)', pointBackgroundColor: '#2563eb' },
+          { label: 'Chroma', data: [10, 5, 7, 6, 10], borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,.12)', pointBackgroundColor: '#16a34a' },
+          { label: 'pgvector', data: [6, 8, 7, 8, 8], borderColor: '#9333ea', backgroundColor: 'rgba(147,51,234,.12)', pointBackgroundColor: '#9333ea' },
+          { label: 'Qdrant', data: [7, 9, 9, 9, 7], borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,.12)', pointBackgroundColor: '#ea580c' }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { r: { beginAtZero: true, max: 10, ticks: { stepSize: 2 } } }
+      }
+    });
+
+    new Chart(document.getElementById('funnelChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Vector top-k', 'After rerank', 'In context', 'Cited'],
+        datasets: [{
+          label: 'Chunks',
+          data: [40, 10, 8, 3],
+          backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, max: 45 } }
+      }
+    });
+
+    new Chart(document.getElementById('latencyChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Embed', 'Vector search', 'Rerank', 'LLM first token', 'LLM full'],
+        datasets: [{
+          label: 'Latency (ms)',
+          data: [80, 120, 200, 400, 1800],
+          backgroundColor: ['#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'ms' } } }
+      }
+    });
+
+    new Chart(document.getElementById('modelChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Embed', 'Rewrite', 'Summary', 'Answer lite', 'Answer mid', 'Answer pro'],
+        datasets: [{
+          label: 'Relative cost',
+          data: [1, 2, 2, 8, 20, 60],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Cost index' } } }
+      }
+    });
+
+    new Chart(document.getElementById('costChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['LLM output', 'LLM input', 'Rerank', 'Embed', 'Other'],
+        datasets: [{
+          data: [42, 28, 15, 10, 5],
+          backgroundColor: ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#dbeafe']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    new Chart(document.getElementById('priorityChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Must', 'Should', 'Later'],
+        datasets: [{
+          data: [6, 5, 4],
+          backgroundColor: ['#ef4444', '#f59e0b', '#22c55e']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

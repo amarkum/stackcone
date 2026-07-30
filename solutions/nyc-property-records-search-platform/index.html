@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>NYC Landlord &amp; Property Records Search Platform</title>
+  <meta name="description" content="Proposed NYC landlord and property records search: 80+ open-data APIs, BBL resolution, verify-links, HITL review, and branded PDF delivery on Cloudflare.">
+  <meta name="keywords" content="NYC landlord record search, NYC property records search, NYC open data, Cloudflare Workers D1 R2, Socrata SODA API, BBL geocoding, title search automation, provenance verify-link, municipal records PDF">
+  <link rel="canonical" href="https://stackcone.com/solutions/nyc-property-records-search-platform/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/nyc-property-records-search-platform/">
+  <meta property="og:title" content="NYC Landlord &amp; Property Records Search Platform">
+  <meta property="og:description" content="NYC landlord and property records search portal — 80+ gov datasets, verify-links, reviewer sign-off, and branded PDF delivery.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NYC Landlord &amp; Property Records Search Platform">
+  <meta name="twitter:description" content="NYC landlord and property records search: open-data pipeline, BBL spine, provenance links, HITL gate, and branded PDFs.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <link rel="stylesheet" href="../solutions.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Production Property-Records Search Platform for NYC Open Data",
+    "description": "Proposed NYC property records search platform: Cloudflare Workers, 80+ open-data APIs, BBL resolution, verify-links, HITL review, and branded PDF delivery.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-23",
+    "dateModified": "2026-06-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/nyc-property-records-search-platform/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "articleSection": "Platform",
+    "keywords": [
+      "property records search platform",
+      "NYC open data integration",
+      "Cloudflare Workers D1 R2 Queues",
+      "Socrata SODA API",
+      "BBL parcel geocoding",
+      "title search automation",
+      "provenance verify-link",
+      "human-in-the-loop review",
+      "municipal records PDF generation",
+      "real estate compliance data"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "NYC Property Records Search", "item": "https://stackcone.com/solutions/nyc-property-records-search-platform/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>NYC Landlord &amp; Property Records Search Platform</h1>
+    <p class="meta">By Amar Kumar</p>
+    <p>A proposed <strong>property records search platform</strong> for a New York real-estate services company that already pulls municipal data from NYC's open-data ecosystem. The build would wrap the existing data engine in a production layer — an internal ordering portal, a reconciliation pipeline across 80+ official datasets with verify-links on every result line, human-in-the-loop review before finalization, and branded PDF delivery tracked by internal file number.</p>
+
+    <blockquote>
+      <p><strong>Proposed outcome:</strong> A daily-use internal product that replaces third-party vendor searches for NYC municipal/departmental records — turning raw open data into certified, client-ready reports with one-click source verification on every line item.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#scenario">Scenario</a></li>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#agent-design">Component design</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#reporting">Reporting &amp; ops</a></li>
+        <li><a href="#deliverables">Proposed deliverables</a></li>
+        <li><a href="#estimate">Effort estimate</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="scenario">Scenario</h2>
+    <p>This brief describes a <strong>proposed solution</strong> — not a delivered engagement. It maps a pattern common among title and settlement shops: proven internal data pulls, but no production portal to order, verify, and deliver searches in-house.</p>
+    <ul>
+      <li><strong>Organization:</strong> Established NYC real-estate services company with two decades of title and settlement experience and a serious internal automation stack (AI pipelines, CRM intelligence, financial systems)</li>
+      <li><strong>Existing asset:</strong> Working data engine that already queries NYC open-data sources — the build extends this engine, not replaces it</li>
+      <li><strong>Owner profile:</strong> Expert full-stack engineer (or tight lead + helper) owning backend pipeline and internal portal UI; long-term multi-phase partnership</li>
+      <li><strong>Geography:</strong> NYC five boroughs for MVP; surrounding counties in later phases (fundamentally different data model — more intake automation than direct API pulls)</li>
+      <li><strong>Users:</strong> Production team ordering searches against properties and internal file numbers, reviewing results, signing off before delivery</li>
+      <li><strong>Liability context:</strong> Search outputs carry certification implications — auto-publish without human gate is unacceptable</li>
+    </ul>
+
+    <h2 id="problem">Problem</h2>
+    <p>The company pays third-party vendors for municipal and title searches. The underlying data is largely free from official NYC and NY State sources, and internal proof-of-concept pulls already work. What is missing is the production layer around that data.</p>
+    <ul>
+      <li><strong>Vendor cost and latency</strong> — recurring fees for data accessible directly; turnaround tied to external vendor queues</li>
+      <li><strong>No unified workflow</strong> — orders, status, review, and delivery scattered across email, vendor portals, and spreadsheets</li>
+      <li><strong>Messy government data</strong> — 80+ datasets with inconsistent schemas, pagination, rate limits, stale records, and occasional errors</li>
+      <li><strong>Provenance gap</strong> — vendor PDFs rarely expose live links back to the official source record for line-by-line verification</li>
+      <li><strong>Property key fragmentation</strong> — datasets join on address, BBL (borough/block/lot), parcel ID, or agency-specific identifiers inconsistently</li>
+      <li><strong>Liability without gates</strong> — publishing a search without human review and confidence scoring creates certification risk</li>
+      <li><strong>No file-number spine</strong> — internal title-production software tracks files; search results must map to that identifier for write-back in later phases</li>
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <h3>Functional (Phase 1 MVP)</h3>
+    <ul>
+      <li><strong>Ordering portal</strong> — order a municipal/departmental search against a property and internal file number; select search types (COO, violations across DOB/HPD/ECB, tax/water/sewer, fire, housing, zoning, environmental, etc.)</li>
+      <li><strong>BBL resolution spine</strong> — address → geocode → borough/block/lot as the canonical property key tying every dataset</li>
+      <li><strong>Data pipeline</strong> — resilient async jobs querying Socrata/SODA, ArcGIS REST, and agency record systems; normalize into one result set per search</li>
+      <li><strong>Verify-link on every line</strong> — each result item includes a live URL to the official source record (non-negotiable product requirement)</li>
+      <li><strong>Reconciliation</strong> — merge duplicates, flag conflicts between sources, preserve raw provenance</li>
+      <li><strong>Status dashboard</strong> — searches grouped under files with green / needs-review / problem states</li>
+      <li><strong>Human-in-the-loop review</strong> — confidence scoring + sign-off gate before finalization</li>
+      <li><strong>Branded PDF reports</strong> — dynamic generation stored and retrievable by file number</li>
+      <li><strong>Audit trail</strong> — who ordered, when data was fetched, reviewer sign-off, PDF version history</li>
+    </ul>
+    <h3>Functional (later phases)</h3>
+    <ul>
+      <li>Title-chain module — recorded documents, judgments, liens, lis pendens, tax warrants, estate/probate, owner-name searches</li>
+      <li>Write-back into existing title-production software via its API</li>
+      <li>Slack-based approval and notification workflows</li>
+      <li>Surrounding county expansion where no unified open-data API exists</li>
+    </ul>
+    <h3>Non-functional</h3>
+    <ul>
+      <li><strong>Reliability</strong> — 80+ external APIs must not silently break; health checks, schema drift alerts, circuit breakers</li>
+      <li><strong>Provenance</strong> — immutable fetch metadata (source API, query, timestamp, raw payload hash) per result line</li>
+      <li><strong>Security</strong> — role-scoped portal access; secrets outside repo; R2 signed URLs for PDFs</li>
+      <li><strong>Performance</strong> — queue-backed parallel fetches; search completes in minutes, not hours</li>
+      <li><strong>Observability</strong> — per-dataset success rates, latency, error taxonomy</li>
+      <li><strong>Extensibility</strong> — new datasets added via config + adapter module, not forked pipeline code</li>
+    </ul>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>Three tiers: a <strong>portal + workflow layer</strong> (React + Workers API), an <strong>async data plane</strong> (Queues + fetch workers wrapping the existing engine), and a <strong>provenance + delivery layer</strong> (D1 registry, R2 PDFs, review queue).</p>
+
+    <div class="diagram-wrap" data-diagram-title="NYC property records platform architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef portal fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef worker fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef data fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  classDef ext fill:#f8fafc,stroke:#475569,color:#334155
+
+  UI["React portal\norder · dashboard · review"]:::portal
+  API["Workers API\nauth · workflow · registry"]:::portal
+  UI --> API
+
+  BBL["BBL resolver\nGeoclient · PLUTO"]:::worker
+  ORCH["Fetch orchestrator\nQueue fan-out"]:::worker
+  RECON["Reconcile + provenance\nnormalize · dedupe · verify URL"]:::worker
+  PDF["PDF generator\nbranded · per-line links"]:::worker
+  API --> BBL
+  BBL --> ORCH
+  ORCH --> RECON
+  RECON --> PDF
+
+  D1[("D1 registry\nfiles · searches · lines")]:::data
+  R2["R2 storage\nPDFs · raw snapshots"]:::data
+  CRON["Cron health checks\nschema drift alerts"]:::data
+  API --> D1
+  RECON --> D1
+  PDF --> R2
+  CRON --> ORCH
+
+  ENG["Existing data engine\nadapter — do not rebuild"]:::worker
+  ORCH --> ENG
+
+  SODA["NYC Open Data\nSODA · ArcGIS"]:::ext
+  ACRIS["ACRIS · agency systems"]:::ext
+  ENG --> SODA
+  ENG --> ACRIS</div>
+      </div>
+      <p class="diagram-caption">Platform architecture — portal and Workers API orchestrate BBL resolution, queue-backed fetches via the existing engine, reconciliation with provenance, and PDF delivery</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Search execution sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant User as Production team
+  participant Portal as React portal
+  participant API as Workers API
+  participant BBL as BBL resolver
+  participant Q as Queues
+  participant Adp as Dataset adapters
+  participant Gov as NYC open data
+  participant Rev as Review queue
+  participant PDF as PDF service
+
+  User->>Portal: order search (file #, address, types)
+  Portal->>API: POST /searches
+  API->>BBL: resolve address to BBL
+  BBL->>API: BBL + PLUTO attrs
+  API->>Q: enqueue N dataset jobs
+  loop parallel fetches
+    Q->>Adp: consume job
+    Adp->>Gov: SODA / ArcGIS / agency API
+    Gov->>Adp: raw records
+    Adp->>API: result lines + provenance
+  end
+  API->>API: reconcile + confidence score
+  alt needs review
+    API->>Rev: queue low-confidence lines
+    Rev->>User: notify reviewer
+    User->>Rev: sign off
+  end
+  API->>PDF: generate branded report
+  PDF->>API: R2 URL + version
+  API->>Portal: status delivered</div>
+      </div>
+      <p class="diagram-caption">Search execution — parallel queue fetches, reconciliation with confidence scoring, mandatory review gate, then PDF delivery with verify-links</p>
+    </div>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="platformComponentChart" aria-label="Platform component map showing portal, workers, data plane, and external NYC data sources"></canvas>
+      <p class="chart-caption">Component map by platform tier (major services per layer)</p>
+    </div>
+
+    <p class="solution-section-label">End-to-end flow</p>
+    <div class="pipeline" role="img" aria-label="From order through BBL resolution, parallel fetches, reconciliation, review, and PDF delivery">
+      <span class="pipeline-step">Order</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">BBL resolve</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Fetch 80+ sources</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Reconcile</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Review</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">PDF deliver</span>
+    </div>
+    <p class="diagram-caption">Municipal search lifecycle — every result line carries a verify-link; nothing finalizes without reviewer sign-off</p>
+
+    <div class="chart-wrap">
+      <canvas id="datasetCategoryChart" aria-label="NYC municipal dataset category mix for phase 1 MVP"></canvas>
+      <p class="chart-caption">Indicative phase-1 dataset coverage by category (% of 80+ source adapters)</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="searchLifecycleChart" aria-label="Search request lifecycle duration by stage"></canvas>
+      <p class="chart-caption">Typical search lifecycle — median vs p95 duration by stage (illustrative)</p>
+    </div>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <p><strong>Recommendation:</strong> <strong>Cloudflare Workers</strong> for compute, <strong>D1</strong> for the relational registry, <strong>R2</strong> for PDFs and raw snapshots, <strong>Queues</strong> for parallel dataset fetches, and a <strong>React</strong> portal on Cloudflare Pages — wrapping the existing data engine via adapter, not rebuild.</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Compute</td><td>Cloudflare Workers</td><td>Edge-native, consistent with client's newer systems; fast cold start for API routes and webhook handlers</td></tr>
+        <tr><td>Database</td><td>D1 (SQLite)</td><td>Search orders, file registry, result lines, provenance, review state — relational model fits audit and dashboard queries</td></tr>
+        <tr><td>Object storage</td><td>R2</td><td>PDF reports, raw fetch snapshots, large JSON payloads; no egress fees to Workers</td></tr>
+        <tr><td>Async jobs</td><td>Queues + Cron Triggers</td><td>Parallel dataset pulls; scheduled health checks and schema drift detection</td></tr>
+        <tr><td>Frontend</td><td>React (Vite) on Pages</td><td>Internal portal — order form, file-grouped dashboard, review UI with verify-link previews</td></tr>
+        <tr><td>PDF</td><td>React-PDF or Browser Rendering API</td><td>Branded templates with clickable verify-link per result line</td></tr>
+        <tr><td>Geocoding</td><td>NYC Geoclient / GeoSearch + PLUTO</td><td>Official NYC address → BBL resolution; tax lot attributes for cross-dataset joins</td></tr>
+        <tr><td>Existing engine</td><td>Worker service binding or HTTP adapter</td><td>Preserve proven pull logic — wrap, do not rewrite from scratch</td></tr>
+        <tr><td>Auth</td><td>Cloudflare Access</td><td>SSO for internal production team; no custom auth to maintain</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Why Cloudflare over AWS Lambda?</strong> The organization has standardized on Cloudflare for newer systems — Workers, D1, R2, and Queues co-locate without cross-service latency for metadata joins. AWS Lambda + DynamoDB + S3 remains viable for teams with deep existing investment, but stack consistency reduces ops surface here.</p>
+    <p><strong>Why D1 over DynamoDB?</strong> Search results are inherently relational (files → searches → result_lines → provenance_records). SQL filters for the status dashboard and certification audit reports are simpler than single-table Dynamo patterns.</p>
+
+    <p>Provenance record shape (every result line would carry this metadata in D1):</p>
+    <pre><code>interface ProvenanceRecord {
+  id: string;
+  result_line_id: string;
+  source_api: string;       <span class="cm">// e.g. "data.cityofnewyork.us/resource/..."</span>
+  source_record_id: string; <span class="cm">// agency-native ID for URL rebuild</span>
+  source_url: string;       <span class="cm">// live verify-link (required)</span>
+  query_params: string;     <span class="cm">// JSON: BBL, address, date range used</span>
+  fetched_at: string;       <span class="cm">// ISO timestamp</span>
+  payload_hash: string;     <span class="cm">// SHA-256 of raw response</span>
+  adapter_version: string;  <span class="cm">// pin schema expectations</span>
+}</code></pre>
+
+    <h2 id="agent-design">Component design</h2>
+
+    <h3>1 — Order &amp; workflow service</h3>
+    <ul>
+      <li><strong>Input:</strong> file number, address or BBL, search type checklist, requester ID</li>
+      <li><strong>Output:</strong> <code>search_id</code>, status transitions (<code>queued</code> → <code>fetching</code> → <code>reconciling</code> → <code>review</code> → <code>approved</code> → <code>delivered</code>)</li>
+      <li><strong>QA gate:</strong> validate file number format; reject duplicate in-flight search for same file + property + type</li>
+    </ul>
+
+    <h3>2 — Property key resolver</h3>
+    <ul>
+      <li><strong>Input:</strong> street address + borough, or raw BBL</li>
+      <li><strong>Output:</strong> normalized BBL, lat/lon, PLUTO attributes (building class, units, land use)</li>
+      <li><strong>Tools:</strong> Geoclient API, PLUTO dataset join, fallback manual BBL entry flagged for reviewer</li>
+    </ul>
+
+    <h3>3 — Dataset fetch orchestrator</h3>
+    <ul>
+      <li><strong>Input:</strong> BBL + enabled dataset adapters for search type</li>
+      <li><strong>Output:</strong> raw payloads per adapter; fetch metadata logged to D1</li>
+      <li><strong>Pattern:</strong> Queue consumer per adapter family (SODA batch, ArcGIS REST, engine-backed) with shared retry, backoff, and circuit-breaker config</li>
+    </ul>
+
+    <h3>4 — Reconciliation &amp; provenance engine</h3>
+    <ul>
+      <li><strong>Input:</strong> raw adapter results</li>
+      <li><strong>Output:</strong> normalized <code>result_lines</code> with <code>source_url</code>, <code>source_api</code>, <code>fetched_at</code>, <code>confidence_factors</code></li>
+      <li><strong>Rules:</strong> dedupe by agency record ID; flag address mismatches against BBL; never drop provenance on merge</li>
+    </ul>
+
+    <h3>5 — Confidence scorer + review queue</h3>
+    <ul>
+      <li><strong>Input:</strong> reconciled result set</li>
+      <li><strong>Output:</strong> per-line and per-search confidence score; route conflicts and low-confidence items to review inbox</li>
+      <li><strong>QA gate:</strong> no PDF generation until reviewer sign-off — search outputs carry liability</li>
+    </ul>
+
+    <h3>6 — PDF report generator</h3>
+    <ul>
+      <li><strong>Input:</strong> approved result set + branding template</li>
+      <li><strong>Output:</strong> PDF in R2; verify-link rendered as clickable URL per line</li>
+      <li><strong>Versioning:</strong> new PDF version on re-run; prior versions retained for audit</li>
+    </ul>
+
+    <h3>7 — File &amp; search registry</h3>
+    <table>
+      <thead>
+        <tr><th>Table</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>files</code></td><td>Internal file numbers; link to title-production system ID (phase 2 write-back)</td></tr>
+        <tr><td><code>searches</code></td><td>Order metadata, BBL, status, requester, timestamps</td></tr>
+        <tr><td><code>result_lines</code></td><td>Normalized findings with category, severity, verify-link</td></tr>
+        <tr><td><code>provenance_records</code></td><td>Immutable fetch metadata per line</td></tr>
+        <tr><td><code>review_events</code></td><td>Reviewer actions, notes, sign-off timestamps</td></tr>
+        <tr><td><code>pdf_artifacts</code></td><td>R2 keys, version, generated_at</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="mvpPhaseChart" aria-label="MVP implementation effort distribution across phases"></canvas>
+      <p class="chart-caption">Indicative MVP effort distribution by phase (% of total hours)</p>
+    </div>
+
+    <h2 id="implementation">Implementation plan</h2>
+
+    <div class="impl-phase">
+      <h3>Phase 1 — Foundation &amp; engine wrap (week 1–3)</h3>
+      <p>Provision Workers, D1 schema, R2 buckets, Queues. HTTP adapter wrapping existing data engine with health endpoint. BBL resolver service with PLUTO join. Basic REST API: create search, get status, list by file number.</p>
+      <p><strong>Risk:</strong> Undocumented engine APIs — schedule pairing sessions with internal team in week 1. <strong>Rollback:</strong> read-only portal against engine without write path.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 2 — Dataset adapter library (week 4–7)</h3>
+      <p>Implement shared adapter interface; port highest-priority datasets (DOB violations, HPD, ECB, tax/lien, COO, zoning, environmental). Shared SODA client with pagination, rate-limit handling, schema version pins. Cron health checks per dataset with Slack alerts on failure.</p>
+      <p><strong>Risk:</strong> API schema drift — pin expected columns; alert on missing fields before silent empty results. <strong>Rollback:</strong> disable adapter via feature flag without stopping other datasets.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 3 — Portal UI (week 8–10)</h3>
+      <p>React portal: order form with address autocomplete, file-grouped dashboard (green / needs-review / problem), search detail view with result lines and verify-link previews. Cloudflare Access for SSO.</p>
+      <p><strong>Risk:</strong> UX friction slows production team adoption — embed reviewers in weekly UAT. <strong>Rollback:</strong> API-only mode for power users until UI polished.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 4 — Reconciliation &amp; provenance (week 11–13)</h3>
+      <p>Normalization rules, conflict detection, immutable provenance store. Verify-link validator (HTTP HEAD check that source URL resolves). Conflict UI showing side-by-side source records.</p>
+      <p><strong>Risk:</strong> Source URLs change format — store agency record ID separately so links can be rebuilt. <strong>Rollback:</strong> show raw links even if validator fails; flag for manual review.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 5 — Review gate &amp; PDF delivery (week 14–16)</h3>
+      <p>Review queue UI, sign-off workflow, confidence scoring v1. Branded PDF template with per-line verify links and file number header. R2 storage + retrieval by file number from portal.</p>
+      <p><strong>Risk:</strong> PDF layout breaks on long violation lists — paginate with continuation sheets. <strong>Rollback:</strong> HTML report fallback until PDF template stable.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 6 — Hardening &amp; title-chain prep (week 17–20)</h3>
+      <p>Load testing on 80+ parallel fetches, ops dashboards, runbooks, on-call alerts for dataset outages. Document adapter-add guide for internal team. Spike ACRIS and title-chain data sources for phase 2 roadmap; draft write-back API spec for title-production software.</p>
+      <p><strong>Risk:</strong> Silent pipeline degradation over time — mandatory weekly dataset health report. <strong>Rollback:</strong> vendor fallback path for critical search types until confidence KPIs met.</p>
+    </div>
+
+    <h2 id="reporting">Reporting &amp; ops</h2>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Search completion time</td><td><code>searches</code> timestamps</td><td>Real-time dashboard</td></tr>
+        <tr><td>Per-dataset fetch success rate</td><td>Adapter Worker logs</td><td>Daily; alert if below 95%</td></tr>
+        <tr><td>Review queue depth</td><td><code>review_events</code></td><td>Alert if &gt; N items or &gt; 24h unreviewed</td></tr>
+        <tr><td>Verify-link broken rate</td><td>Link validator cron job</td><td>Weekly trend report</td></tr>
+        <tr><td>API schema drift</td><td>Health check cron</td><td>Immediate Slack alert</td></tr>
+        <tr><td>PDF generation failures</td><td>Worker error logs</td><td>Real-time alert</td></tr>
+        <tr><td>Vendor vs in-house cost</td><td>Order volume × vendor rate</td><td>Monthly leadership summary</td></tr>
+      </tbody>
+    </table>
+    <p>Ops cadence would include a weekly 30-minute pipeline standup (failed datasets, review backlog, schema changes) and a monthly review with leadership (search volume, turnaround time, vendor cost avoided, phase 2 readiness). On-call rotation for prod Worker errors and dataset-wide outage only — not per-search alerts.</p>
+
+    <h2 id="deliverables">Proposed deliverables</h2>
+    <p>Following the phased plan, a build would ship these artifacts:</p>
+    <ul>
+      <li>Cloudflare Workers API with D1 schema, R2 buckets, and Queue topology documented</li>
+      <li>Adapter library for 80+ NYC open-data sources with shared provenance model</li>
+      <li>BBL resolution service (Geoclient + PLUTO join)</li>
+      <li>HTTP adapter layer wrapping the existing data engine (no from-scratch rebuild)</li>
+      <li>React internal portal — order form, file-grouped status dashboard, review UI, PDF download</li>
+      <li>Human-in-the-loop review queue with confidence scoring and sign-off audit trail</li>
+      <li>Branded PDF report generator with verify-link on every result line</li>
+      <li>Ops dashboard and per-dataset health monitoring with schema drift alerts</li>
+      <li>Runbooks: add new dataset adapter, handle API outage, reviewer workflow, credential rotation</li>
+      <li>Integration specification for title-production write-back (phase 2)</li>
+    </ul>
+
+    <h2 id="estimate">Effort estimate</h2>
+    <p>Indicative effort for MVP through phase 6 (assumes access to existing engine, API credentials for NYC data sources, and production team available for UAT):</p>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Hours (range)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Phase 1 MVP (phases 1–5)</td><td>280–380 hrs</td></tr>
+        <tr><td>Phase 6 hardening &amp; title-chain spike</td><td>40–60 hrs</td></tr>
+        <tr><td>Title-chain module (later phase)</td><td>120–180 hrs</td></tr>
+        <tr><td>Write-back + Slack workflows (later phase)</td><td>60–90 hrs</td></tr>
+        <tr><td>Ongoing maintenance (adapter updates, health monitoring)</td><td>10–16 hrs/month</td></tr>
+      </tbody>
+    </table>
+    <p>At 25–30 hrs/week, MVP delivery would land in roughly 10–14 weeks. Milestone-based pricing aligned to phases 1–5 would de-risk the engagement for both parties — each phase ships a testable increment before the next begins.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>BBL</strong></td><td>Borough-Block-Lot — NYC's canonical parcel identifier tying datasets together</td></tr>
+        <tr><td><strong>PLUTO</strong></td><td>Primary Land Use Tax Lot Output — NYC tax lot dataset with building and land use attributes</td></tr>
+        <tr><td><strong>ACRIS</strong></td><td>Automated City Register Information System — recorded documents (deeds, mortgages, etc.)</td></tr>
+        <tr><td><strong>SODA / Socrata</strong></td><td>NYC Open Data API platform used by most municipal datasets</td></tr>
+        <tr><td><strong>COO</strong></td><td>Certificate of Occupancy — DOB document confirming legal use of a building</td></tr>
+        <tr><td><strong>HPD / DOB / ECB</strong></td><td>Housing Preservation, Department of Buildings, Environmental Control Board — major violation systems</td></tr>
+        <tr><td><strong>Provenance</strong></td><td>Metadata tracing each result line to its official source fetch (API, query, timestamp, hash)</td></tr>
+        <tr><td><strong>Verify-link</strong></td><td>Live URL to the official government record — one-click human confirmation of any line item</td></tr>
+        <tr><td><strong>HITL</strong></td><td>Human-in-the-loop — reviewer sign-off gate before a search is finalized and delivered</td></tr>
+        <tr><td><strong>Geoclient</strong></td><td>NYC official geocoding service for address → BBL resolution</td></tr>
+      </tbody>
+    </table>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=12"></script>
+  <script src="../../site-nav.js" defer></script>
+  <script src="../../script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('platformComponentChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Portal & API', 'Fetch workers', 'Data plane', 'External NYC data'],
+        datasets: [{
+          data: [2, 4, 3, 2],
+          backgroundColor: ['#7c3aed', '#2563eb', '#16a34a', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var names = {
+                  0: 'React portal, Workers API',
+                  1: 'BBL, orchestrator, reconcile, PDF, engine adapter',
+                  2: 'D1, R2, Cron health checks',
+                  3: 'SODA, ArcGIS, ACRIS, agency APIs'
+                };
+                return names[ctx.dataIndex] || ctx.label;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('datasetCategoryChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Violations (DOB/HPD/ECB)', 'Tax & liens', 'COO & permits', 'Zoning & env', 'Utilities', 'Other municipal'],
+        datasets: [{
+          label: 'Adapter share %',
+          data: [32, 18, 15, 14, 11, 10],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 40, title: { display: true, text: '% of dataset adapters' } } }
+      }
+    });
+
+    new Chart(document.getElementById('searchLifecycleChart'), {
+      type: 'bar',
+      data: {
+        labels: ['BBL resolve', 'Queue fan-out', 'Parallel fetch', 'Reconcile', 'Review', 'PDF generate'],
+        datasets: [
+          {
+            label: 'Median (sec)',
+            data: [2, 1, 45, 8, 120, 6],
+            backgroundColor: '#2563eb',
+            borderRadius: 4
+          },
+          {
+            label: 'p95 (sec)',
+            data: [8, 3, 180, 25, 900, 18],
+            backgroundColor: '#7c3aed',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Duration (seconds)' } } }
+      }
+    });
+
+    new Chart(document.getElementById('mvpPhaseChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Foundation', 'Adapters', 'Portal UI', 'Provenance', 'Review & PDF', 'Hardening'],
+        datasets: [{
+          data: [15, 28, 18, 17, 14, 8],
+          backgroundColor: ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -153,10 +153,22 @@ function loadTestimonials() {
   var grid = document.getElementById('testimonials-grid');
   var paginationEl = document.getElementById('testimonials-pagination');
   if (!grid || !paginationEl) return;
+
+  var staticCount = grid.querySelectorAll('.testimonial-card').length;
+
   fetch(assetPrefix() + 'data/testimonials.json')
     .then(function (r) { return r.json(); })
-    .then(function (data) { initTestimonials(Array.isArray(data) ? data : testimonialsFallback); })
-    .catch(function () { initTestimonials(testimonialsFallback); });
+    .then(function (data) {
+      var list = Array.isArray(data) ? data : testimonialsFallback;
+      if (list.length > staticCount) {
+        initTestimonials(list);
+      }
+    })
+    .catch(function () {
+      if (staticCount === 0) {
+        initTestimonials(testimonialsFallback);
+      }
+    });
 }
 
 if (document.readyState === 'loading') {

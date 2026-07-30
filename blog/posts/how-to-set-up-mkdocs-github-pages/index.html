@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>How to Set Up MkDocs for GitHub Pages (2026)</title>
+  <meta name="description" content="How to set up MkDocs for GitHub Pages — install, mkdocs.yml, Material theme, plugins, GitHub Actions deploy, custom domains, and docs-site best practices.">
+  <meta name="keywords" content="mkdocs github pages, how to set up mkdocs, mkdocs material theme, mkdocs github actions, documentation site github pages, mkdocs deploy">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/how-to-set-up-mkdocs-github-pages/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/how-to-set-up-mkdocs-github-pages/">
+  <meta property="og:title" content="How to Set Up MkDocs for GitHub Pages (2026)">
+  <meta property="og:description" content="How to set up MkDocs for GitHub Pages — install, mkdocs.yml, Material theme, plugins, GitHub Actions deploy, custom domains, and docs-site best practices.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Set Up MkDocs for GitHub Pages (2026)">
+  <meta name="twitter:description" content="How to set up MkDocs for GitHub Pages — install, mkdocs.yml, Material theme, plugins, GitHub Actions deploy, custom domains, and docs-site best practices.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Set Up MkDocs for GitHub Pages",
+    "description": "How to set up MkDocs for GitHub Pages — install, mkdocs.yml, Material theme, plugins, GitHub Actions deploy, custom domains, and docs-site best practices.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-14",
+    "dateModified": "2026-07-28",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-to-set-up-mkdocs-github-pages/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["mkdocs github pages", "how to set up mkdocs", "mkdocs material theme", "mkdocs github actions", "documentation site github pages", "mkdocs deploy"],
+    "articleSection": "Docs",
+    "about": { "@type": "Thing", "name": "MkDocs Documentation" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Set Up MkDocs for GitHub Pages", "item": "https://stackcone.com/blog/posts/how-to-set-up-mkdocs-github-pages/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How to Set Up MkDocs for GitHub Pages</h1>
+    <p class="meta">June 2026 · Published by Amar Kumar</p>
+    <p>MkDocs turns a folder of Markdown files into a fast, searchable documentation site. This guide walks through installation, configuration, the Material theme, navigation, plugins, local preview, and production deployment to GitHub Pages.</p>
+
+    <p>You have Markdown in a repo (or synced from cloud storage). You want a polished docs site with search, mobile layout, and a URL like <code>docs.yourproduct.com</code> — without maintaining a custom frontend. <strong>MkDocs</strong> is the standard answer: Python-based, config-driven, and designed exactly for technical documentation.</p>
+    <p>This article is a <strong>step-by-step setup guide</strong>, not a feature overview. By the end you will have a working site locally and a repeatable path to GitHub Pages.</p>
+
+    <p>Related pipeline guide: <a href="/blog/posts/publish-knowledge-base-github-pages-dropbox-sync/">Publish a Knowledge Base to GitHub Pages</a>.</p>
+
+    <blockquote>
+      <p><strong>Who is this for?</strong> Developers and technical writers who want a maintainable docs site from Markdown — especially teams already using GitHub for source control.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#why-mkdocs">Why MkDocs</a></li>
+        <li><a href="#prerequisites">Prerequisites and installation</a></li>
+        <li><a href="#project-structure">Project structure</a></li>
+        <li><a href="#first-site">Create your first site</a></li>
+        <li><a href="#mkdocs-yml">mkdocs.yml in detail</a></li>
+        <li><a href="#material-theme">Material for MkDocs theme</a></li>
+        <li><a href="#navigation">Navigation patterns</a></li>
+        <li><a href="#markdown-extensions">Markdown extensions</a></li>
+        <li><a href="#assets">Images and static files</a></li>
+        <li><a href="#local-dev">Local development</a></li>
+        <li><a href="#build">Build and inspect output</a></li>
+        <li><a href="#github-pages">Deploy to GitHub Pages</a></li>
+        <li><a href="#custom-domain">Custom domain and HTTPS</a></li>
+        <li><a href="#plugins">Useful plugins</a></li>
+        <li><a href="#docs-and-rag">Docs + RAG alignment</a></li>
+        <li><a href="#ci-checklist">CI checklist</a></li>
+        <li><a href="#common-mistakes">Common mistakes</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <div class="chart-wrap">
+      <canvas id="stackChart" aria-label="Documentation stack comparison"></canvas>
+      <p class="chart-caption">Typical setup time to first deployed page (hours, small team)</p>
+    </div>
+
+    <h2 id="why-mkdocs">Why MkDocs</h2>
+    <table>
+      <thead><tr><th>Option</th><th>Pros</th><th>Cons</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MkDocs + Material</strong></td><td>Fast builds, great search, minimal JS</td><td>Python toolchain required</td></tr>
+        <tr><td>Docusaurus</td><td>React ecosystem, versioning</td><td>Heavier stack, more config</td></tr>
+        <tr><td>Hugo / Jekyll</td><td>Very fast, no Python</td><td>Less doc-specific defaults</td></tr>
+        <tr><td>Notion export</td><td>Easy for writers</td><td>Weak SEO, poor version control</td></tr>
+      </tbody>
+    </table>
+    <p>MkDocs wins when your source of truth is <strong>Markdown in Git</strong> and you want <strong>minutes-to-live</strong> deployment. The Material theme adds professional navigation, dark mode, and built-in search without a Node build step.</p>
+
+    <h2 id="prerequisites">Prerequisites and installation</h2>
+    <p>You need <strong>Python 3.9+</strong> and <code>pip</code>. Use a virtual environment so MkDocs does not pollute system Python.</p>
+
+    <pre><code><span class="fn">python3</span> -m venv .venv
+<span class="fn">source</span> .venv/bin/activate          <span class="cm"># Windows: .venv\Scripts\activate</span>
+pip install --upgrade pip
+pip install mkdocs mkdocs-material</code></pre>
+
+    <p>Verify with <code>mkdocs --version</code>. Pin versions in production:</p>
+
+    <pre><code><span class="cm"># requirements-docs.txt</span>
+mkdocs&gt;=1.6,&lt;2
+mkdocs-material&gt;=9.5,&lt;10
+mkdocs-minify-plugin&gt;=0.8,&lt;1
+mkdocs-redirects&gt;=1.2,&lt;2</code></pre>
+
+    <h2 id="project-structure">Project structure</h2>
+    <p>MkDocs expects a config file at the repo root. Markdown lives under <code>docs/</code> by default.</p>
+
+    <pre><code>my-docs/
+├── docs/                          <span class="cm">← all published .md pages</span>
+│   ├── index.md                   <span class="cm">← site homepage (/)</span>
+│   ├── getting-started/
+│   │   ├── index.md
+│   │   └── installation.md
+│   ├── guides/
+│   │   └── api-authentication.md
+│   └── assets/
+│       └── screenshots/
+├── mkdocs.yml                     <span class="cm">← site configuration</span>
+├── requirements-docs.txt
+├── .github/workflows/docs.yml
+└── site/                          <span class="cm">← build output (gitignored)</span></code></pre>
+
+    <p><strong>Rules:</strong> one <code>.md</code> file = one page; keep images under <code>docs/assets/</code>; never commit <code>site/</code> unless you deploy by pushing build output to <code>gh-pages</code>.</p>
+
+    <h2 id="first-site">Create your first site</h2>
+    <pre><code>mkdocs new my-docs
+<span class="fn">cd</span> my-docs
+mkdocs serve</code></pre>
+    <p>Open <code>http://127.0.0.1:8000</code>. Edit <code>docs/index.md</code> — the browser auto-reloads.</p>
+
+    <pre><code><span class="cm"># mkdocs.yml — minimal starting config</span>
+<span class="kw">site_name</span>: My Product Docs
+<span class="kw">site_url</span>: https://yourorg.github.io/my-docs/
+<span class="kw">repo_url</span>: https://github.com/yourorg/my-docs
+<span class="kw">edit_uri</span>: edit/main/docs/
+
+<span class="kw">theme</span>:
+  <span class="kw">name</span>: material
+
+<span class="kw">nav</span>:
+  - Home: index.md
+  - Getting started:
+      - Overview: getting-started/index.md
+      - Installation: getting-started/installation.md</code></pre>
+
+    <h2 id="mkdocs-yml">mkdocs.yml in detail</h2>
+    <p>The config file controls theme, nav, plugins, extensions, metadata, and build behavior.</p>
+
+    <h3>Site metadata</h3>
+    <pre><code><span class="kw">site_name</span>: My Product Docs
+<span class="kw">site_url</span>: https://docs.example.com/       <span class="cm"># trailing slash matters</span>
+<span class="kw">site_description</span>: Official documentation for My Product API and SDK.
+<span class="kw">copyright</span>: Copyright &amp;copy; 2026 Example Inc.
+<span class="kw">repo_url</span>: https://github.com/yourorg/my-docs
+<span class="kw">edit_uri</span>: edit/main/docs/</code></pre>
+    <p><code>site_url</code> drives sitemap generation, Open Graph tags, and absolute links. Set it to your <strong>final public URL</strong>, not localhost.</p>
+
+    <h3>Theme block</h3>
+    <pre><code><span class="kw">theme</span>:
+  <span class="kw">name</span>: material
+  <span class="kw">logo</span>: assets/logo.svg
+  <span class="kw">palette</span>:
+    - <span class="kw">scheme</span>: default
+      <span class="kw">primary</span>: indigo
+      <span class="kw">toggle</span>:
+        <span class="kw">icon</span>: material/brightness-7
+        <span class="kw">name</span>: Switch to dark mode
+    - <span class="kw">scheme</span>: slate
+      <span class="kw">primary</span>: indigo
+      <span class="kw">toggle</span>:
+        <span class="kw">icon</span>: material/brightness-4
+        <span class="kw">name</span>: Switch to light mode
+  <span class="kw">features</span>:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - content.code.copy
+    - content.action.edit</code></pre>
+
+    <table>
+      <thead><tr><th>Feature</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>navigation.tabs</code></td><td>Top-level sections as horizontal tabs</td></tr>
+        <tr><td><code>navigation.sections</code></td><td>Sidebar groups with section headers</td></tr>
+        <tr><td><code>content.code.copy</code></td><td>Copy button on code blocks</td></tr>
+        <tr><td><code>content.action.edit</code></td><td>Edit-on-GitHub button per page</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Navigation</h3>
+    <pre><code><span class="kw">nav</span>:
+  - Home: index.md
+  - Getting started:
+      - getting-started/index.md
+      - Install: getting-started/installation.md
+  - Guides:
+      - guides/api-authentication.md
+      - guides/webhooks.md
+  - Changelog: changelog.md</code></pre>
+    <p>Omit <code>nav</code> and MkDocs auto-discovers files alphabetically — usually not what you want. External links work: <code>API: https://api.example.com/docs</code>.</p>
+
+    <h3>Markdown extensions and plugins</h3>
+    <pre><code><span class="kw">markdown_extensions</span>:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+<span class="kw">plugins</span>:
+  - search:
+      lang: en
+  - minify:
+      minify_html: true
+  - redirects:
+      redirect_maps:
+        old-page.md: new-page.md
+
+<span class="kw">strict</span>: true    <span class="cm"># fail build on warnings — use in CI</span></code></pre>
+
+    <div class="chart-wrap">
+      <canvas id="buildTimeChart" aria-label="MkDocs build time by page count"></canvas>
+      <p class="chart-caption">Approximate build time vs page count (Material + minify, CI runner)</p>
+    </div>
+
+    <h2 id="material-theme">Material for MkDocs theme</h2>
+    <p>Install separately with <code>pip install mkdocs-material</code>. It replaces the default theme entirely.</p>
+    <ul>
+      <li>Instant full-text search with highlighting</li>
+      <li>Responsive layout and dark mode</li>
+      <li>Admonitions, Mermaid diagrams, tabbed content</li>
+      <li>Versioning support for multiple doc releases</li>
+    </ul>
+    <p>Custom branding via <code>extra_css</code>:</p>
+    <pre><code><span class="kw">extra_css</span>:
+  - stylesheets/extra.css</code></pre>
+    <pre><code><span class="cm">/* docs/stylesheets/extra.css */</span>
+:root {
+  --md-primary-fg-color: #2563eb;
+}</code></pre>
+
+    <h2 id="navigation">Navigation patterns</h2>
+    <p><strong>Small projects</strong> — flat nav with a handful of pages. <strong>Most products</strong> — folders with <code>index.md</code> per section; enable <code>navigation.sections</code> and <code>navigation.indexes</code>. <strong>Large repos (50+ pages)</strong> — generate nav in CI or use <code>mkdocs-awesome-pages-plugin</code> with per-folder <code>.pages</code> files.</p>
+    <p>Split <strong>guides</strong> (narrative) from <strong>reference</strong> (API specs). Users search differently; nav should match mental models.</p>
+
+    <h2 id="markdown-extensions">Markdown extensions and admonitions</h2>
+    <pre><code>!!! note "Beta feature"
+    This endpoint is available on Pro plans only.
+
+!!! warning
+    Rotating your API key invalidates active sessions immediately.
+
+=== "Python"
+    ```python
+    import requests
+    r = requests.get("https:<span class="cm">//api.example.com/v1/users")</span>
+    ```
+
+=== "curl"
+    ```bash
+    curl -H "Authorization: Bearer $TOKEN" \
+      https:<span class="cm">//api.example.com/v1/users</span>
+    ```</code></pre>
+    <p>Mermaid diagrams: enable a custom fence in <code>pymdownx.superfences</code>, then write fenced <code>mermaid</code> blocks in Markdown.</p>
+
+    <h2 id="assets">Images, assets, and static files</h2>
+    <p>Place files under <code>docs/</code>. Reference with relative paths from the current page:</p>
+    <pre><code>![Dashboard overview](assets/screenshots/dashboard.png)
+
+<span class="cm">&lt;!-- from docs/guides/api-authentication.md --&gt;</span>
+![Auth flow](../assets/diagrams/oauth-flow.png)</code></pre>
+    <p>Do not use absolute <code>/assets/...</code> paths unless you understand MkDocs URL rewriting with <code>use_directory_urls</code>.</p>
+
+    <h2 id="local-dev">Local development workflow</h2>
+    <table>
+      <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>mkdocs serve</code></td><td>Dev server with live reload</td></tr>
+        <tr><td><code>mkdocs serve --dirty</code></td><td>Faster reload — changed pages only</td></tr>
+        <tr><td><code>mkdocs build --strict</code></td><td>Production build; fail on warnings</td></tr>
+      </tbody>
+    </table>
+    <p>Add <code>site/</code> and <code>.venv/</code> to <code>.gitignore</code>.</p>
+
+    <h2 id="build">Build and inspect output</h2>
+    <pre><code>mkdocs build --strict
+<span class="cm"># site/ now contains static HTML + search/search_index.json</span></code></pre>
+    <p>Inspect <code>site/sitemap.xml</code> (requires <code>site_url</code>). Broken internal links surface as warnings — errors with <code>--strict</code>.</p>
+
+    <h2 id="github-pages">Deploy to GitHub Pages</h2>
+    <p>Three common methods — pick one and stick with it.</p>
+
+    <div class="chart-wrap">
+      <canvas id="deployChart" aria-label="GitHub Pages deployment methods"></canvas>
+      <p class="chart-caption">Recommended adoption by team size (informal survey pattern)</p>
+    </div>
+
+    <h3>Method A — GitHub Actions (recommended)</h3>
+    <p>Build in CI; deploy the <code>site/</code> artifact. Reproducible, reviewable, no force-push to <code>gh-pages</code>.</p>
+
+    <pre><code><span class="cm"># .github/workflows/docs.yml</span>
+<span class="kw">name</span>: Deploy docs
+<span class="kw">on</span>:
+  <span class="kw">push</span>:
+    <span class="kw">branches</span>: [main]
+    <span class="kw">paths</span>: [<span class="str">"docs/**"</span>, <span class="str">"mkdocs.yml"</span>, <span class="str">"requirements-docs.txt"</span>]
+
+<span class="kw">permissions</span>:
+  <span class="kw">contents</span>: read
+  <span class="kw">pages</span>: write
+  <span class="kw">id-token</span>: write
+
+<span class="kw">jobs</span>:
+  <span class="kw">build</span>:
+    <span class="kw">runs-on</span>: ubuntu-latest
+    <span class="kw">steps</span>:
+      - <span class="kw">uses</span>: actions/checkout@v4
+      - <span class="kw">uses</span>: actions/setup-python@v5
+        <span class="kw">with</span>:
+          <span class="kw">python-version</span>: <span class="str">"3.12"</span>
+          <span class="kw">cache</span>: pip
+      - <span class="kw">run</span>: pip install -r requirements-docs.txt
+      - <span class="kw">run</span>: mkdocs build --strict
+      - <span class="kw">uses</span>: actions/upload-pages-artifact@v3
+        <span class="kw">with</span>:
+          <span class="kw">path</span>: site
+  <span class="kw">deploy</span>:
+    <span class="kw">needs</span>: build
+    <span class="kw">runs-on</span>: ubuntu-latest
+    <span class="kw">environment</span>:
+      <span class="kw">name</span>: github-pages
+    <span class="kw">steps</span>:
+      - <span class="kw">uses</span>: actions/deploy-pages@v4</code></pre>
+    <p>Repo <strong>Settings → Pages → Build and deployment → GitHub Actions</strong>.</p>
+
+    <h3>Method B — mkdocs gh-deploy</h3>
+    <pre><code><span class="fn">mkdocs</span> gh-deploy --force</code></pre>
+    <p>One command pushes <code>site/</code> to the <code>gh-pages</code> branch. Simple for solo devs; harder to review diffs.</p>
+
+    <h3>Method C — Manual site/ commit</h3>
+    <p>Commit build output to a branch. Works but couples source and artifacts — generally avoid.</p>
+
+    <table>
+      <thead><tr><th>Method</th><th>Best for</th><th>Trade-off</th></tr></thead>
+      <tbody>
+        <tr><td>GitHub Actions</td><td>Teams, CI, strict builds</td><td>Initial workflow setup</td></tr>
+        <tr><td><code>mkdocs gh-deploy</code></td><td>Solo, quick start</td><td>Opaque force-push</td></tr>
+        <tr><td>Manual <code>site/</code></td><td>Legacy repos</td><td>Bloated git history</td></tr>
+      </tbody>
+    </table>
+
+    <div class="pipeline" role="img" aria-label="MkDocs deploy pipeline: Markdown in Git to mkdocs build to GitHub Actions to GitHub Pages">
+      <span class="pipeline-step">Markdown in Git</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">mkdocs build</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">GitHub Actions</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">GitHub Pages</span>
+    </div>
+
+    <h2 id="custom-domain">Custom domain and HTTPS</h2>
+    <ol>
+      <li>Create <code>docs/CNAME</code> containing <code>docs.example.com</code> — MkDocs copies it to the site root on build.</li>
+      <li>DNS: <code>CNAME</code> record <code>docs</code> → <code>yourorg.github.io</code>.</li>
+      <li>GitHub repo <strong>Settings → Pages → Custom domain</strong> → enter the domain.</li>
+      <li>Enable <strong>Enforce HTTPS</strong> once the certificate provisions.</li>
+      <li>Update <code>site_url</code> to <code>https://docs.example.com/</code>.</li>
+    </ol>
+
+    <h2 id="plugins">Useful plugins</h2>
+    <table>
+      <thead><tr><th>Plugin</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>search</code></td><td>Full-text lunr index (client-side, no server)</td></tr>
+        <tr><td><code>minify</code></td><td>Smaller HTML/CSS/JS</td></tr>
+        <tr><td><code>redirects</code></td><td>Meta redirects for renamed pages</td></tr>
+        <tr><td><code>git-revision-date-localized</code></td><td>"Last updated" from Git history</td></tr>
+        <tr><td><code>mkdocstrings</code></td><td>Auto API docs from Python docstrings</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="docs-and-rag">Docs + RAG: keeping HTML and vectors aligned</h2>
+    <p>If the same Markdown powers a <strong>chatbot</strong> and a <strong>public site</strong>, treat one folder as the publish contract (<code>docs/</code> or a <code>master/</code> mirror). A sync job can chunk and embed changed pages for vector search, run <code>mkdocs build</code> on the same sources, and deploy HTML to GitHub Pages.</p>
+    <p>See <a href="/blog/posts/publish-knowledge-base-github-pages-dropbox-sync/">Publish a Knowledge Base to GitHub Pages</a> for the full dual-output pipeline.</p>
+
+    <div class="chart-wrap">
+      <canvas id="dualOutputChart" aria-label="Dual output from single markdown source"></canvas>
+      <p class="chart-caption">One Markdown source → static site + vector index (typical sync job stages)</p>
+    </div>
+
+    <h2 id="ci-checklist">CI checklist</h2>
+    <ul>
+      <li>Python version pinned in workflow (3.11 or 3.12)</li>
+      <li><code>requirements-docs.txt</code> with pinned MkDocs + Material</li>
+      <li><code>mkdocs build --strict</code> in CI</li>
+      <li><code>site_url</code> matches production URL</li>
+      <li><code>docs/CNAME</code> present if using custom domain</li>
+      <li>Path filters on workflow (only run when docs change)</li>
+      <li><code>.gitignore</code> includes <code>site/</code> and <code>.venv/</code></li>
+    </ul>
+
+    <h2 id="common-mistakes">Common mistakes</h2>
+    <table>
+      <thead><tr><th>Mistake</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Wrong <code>site_url</code></td><td>Set HTTPS production URL with trailing slash</td></tr>
+        <tr><td>Images 404 on GitHub Pages</td><td>Relative paths from <code>docs/</code></td></tr>
+        <tr><td>Nav points to missing file</td><td>Run <code>mkdocs build --strict</code> locally</td></tr>
+        <tr><td>Pages source mismatch</td><td>Align Settings → Pages with deploy method</td></tr>
+        <tr><td>Material not installed</td><td><code>pip install mkdocs-material</code></td></tr>
+        <tr><td>Broken search on project sites</td><td><code>site_url</code> must include repo path</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MkDocs</strong></td><td>Static site generator for Markdown documentation</td></tr>
+        <tr><td><strong>Material</strong></td><td>Popular MkDocs theme with search, tabs, admonitions</td></tr>
+        <tr><td><strong>mkdocs.yml</strong></td><td>Site configuration file at repo root</td></tr>
+        <tr><td><strong>site/</strong></td><td>Build output directory (static HTML)</td></tr>
+        <tr><td><strong>lunr</strong></td><td>Client-side search index used by Material</td></tr>
+        <tr><td><strong>strict mode</strong></td><td>Fail build on warnings (broken links, etc.)</td></tr>
+      </tbody>
+    </table>
+
+    <p class="closing">Start with <code>mkdocs new</code>, swap in Material, define <code>nav</code>, enable <code>strict</code>, and deploy via GitHub Actions. You get a maintainable docs site that scales from ten pages to hundreds.</p>
+
+    <p>Related: <a href="/blog/posts/publish-knowledge-base-github-pages-dropbox-sync/">Publish a Knowledge Base to GitHub Pages</a> · <a href="/blog/posts/how-to-build-a-production-rag-chatbot/">How to Build a RAG Chatbot</a></p>
+
+    <aside class="blog-cta">
+      <p><strong>Need docs + RAG wired together?</strong></p>
+      <p>stackcone builds documentation pipelines, MkDocs deployments, and production RAG systems — one Markdown source, search for humans and bots.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('stackChart'), {
+      type: 'bar',
+      data: {
+        labels: ['MkDocs + Material', 'Docusaurus', 'Hugo', 'Custom React'],
+        datasets: [{
+          label: 'Hours to first deploy',
+          data: [2, 6, 4, 24],
+          backgroundColor: palette.slice(0, 4),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } }
+      }
+    });
+
+    new Chart(document.getElementById('buildTimeChart'), {
+      type: 'line',
+      data: {
+        labels: ['10', '25', '50', '100', '250', '500'],
+        datasets: [{
+          label: 'Build time (s)',
+          data: [1.2, 2.1, 3.5, 6, 18, 45],
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,.12)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: 'Page count' } },
+          y: { beginAtZero: true, title: { display: true, text: 'Seconds' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('deployChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['GitHub Actions', 'mkdocs gh-deploy', 'Manual site/'],
+        datasets: [{
+          data: [62, 28, 10],
+          backgroundColor: ['#2563eb', '#16a34a', '#ea580c']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    new Chart(document.getElementById('dualOutputChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Chunk + embed', 'Pinecone upsert', 'mkdocs build', 'GitHub push'],
+        datasets: [{
+          label: 'Time %',
+          data: [45, 25, 15, 15],
+          backgroundColor: palette.slice(0, 4),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 50, title: { display: true, text: 'Time %' } } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

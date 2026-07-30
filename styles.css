@@ -327,7 +327,7 @@ body.landing-page .hero-trust,
 body.landing-page .hero-title,
 body.landing-page .hero-desc,
 body.landing-page .hero-ctas {
-  opacity: 0;
+  opacity: 1;
   transform: translate3d(0, var(--reveal-distance), 0);
   animation: heroReveal var(--reveal-duration) var(--ease-out-expo) forwards;
 }
@@ -339,7 +339,6 @@ body.landing-page .hero-ctas { animation-delay: 0.48s; }
 
 @keyframes heroReveal {
   to {
-    opacity: 1;
     transform: translate3d(0, 0, 0);
   }
 }
@@ -350,17 +349,15 @@ body.landing-page main > section:not(.hero) {
 }
 
 .reveal-child {
-  opacity: 0;
-  transform: translate3d(0, 32px, 0);
+  opacity: 1;
+  transform: translate3d(0, 24px, 0);
   transition:
-    opacity 0.85s var(--ease-out-expo),
     transform 0.85s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0s);
-  will-change: opacity, transform;
+  will-change: transform;
 }
 
 .reveal-child.is-visible {
-  opacity: 1;
   transform: translate3d(0, 0, 0);
 }
 
@@ -528,6 +525,116 @@ body.landing-page main > section:not(.hero) {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--section-gap);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.services-jump {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.25rem;
+  max-width: var(--container-max);
+  margin: 0 auto 2rem;
+  padding: 0 var(--container-padding);
+}
+
+.services-jump a {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.35rem 0;
+  transition: color 0.2s;
+}
+
+.services-jump a:hover {
+  color: var(--accent);
+}
+
+.service-grid .service-card {
+  max-width: 100%;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 2.5rem 2.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.service-grid .service-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.service-grid .service-card .service-tagline {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1.75rem;
+}
+
+.service-grid .service-card .service-features {
+  margin-bottom: 1.5rem;
+}
+
+.service-grid .service-card .service-features li {
+  font-size: 1rem;
+}
+
+.why-stackcone {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.why-stackcone-inner {
+  max-width: 52rem;
+}
+
+.why-stackcone-lead {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-mid);
+  margin: 0 0 2rem;
+}
+
+.why-stackcone-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .why-stackcone-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.why-stackcone-item {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface, transparent);
+}
+
+.why-stackcone-item h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+}
+
+.why-stackcone-item p {
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+  margin: 0;
+}
+
+.why-stackcone-footer {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+  margin: 0;
 }
 
 /* Stack tabs: AI, Data, Cloud, Full stack, Mobile */

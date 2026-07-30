@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>Multi-Agent SEO Pipeline for WordPress</title>
+  <meta name="description" content="Build a multi-agent SEO pipeline for WordPress: keyword research, YMYL content, autonomous publishing, and GSC/Bing reporting with LangGraph.">
+  <meta name="keywords" content="multi-agent SEO pipeline, WordPress SEO automation, AI content agents, LangGraph, Search Console API, Bing Webmaster, programmatic SEO, YMYL content, SEO orchestration, autonomous publishing">
+  <link rel="canonical" href="https://stackcone.com/solutions/wordpress-seo-multi-agent-pipeline/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/wordpress-seo-multi-agent-pipeline/">
+  <meta property="og:title" content="Multi-Agent SEO Pipeline for WordPress">
+  <meta property="og:description" content="Multi-agent SEO pipeline for WordPress: keyword research, YMYL content, autonomous publishing, and GSC/Bing reporting.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Multi-Agent SEO Pipeline for WordPress">
+  <meta name="twitter:description" content="Three-agent WordPress SEO automation: keyword research, YMYL writing, publishing, and GSC/Bing reporting with LangGraph.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <link rel="stylesheet" href="../../blog/blog.css">
+  <link rel="stylesheet" href="../solutions.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Autonomous Multi-Agent SEO Content Pipeline for WordPress",
+    "description": "WordPress multi-agent SEO pipeline: keyword research, YMYL content, autonomous publishing, and Google/Bing reporting — LangGraph architecture guide.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-06-14",
+    "dateModified": "2026-06-14",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/wordpress-seo-multi-agent-pipeline/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "articleSection": "Automation",
+    "keywords": [
+      "WordPress SEO automation",
+      "multi-agent SEO pipeline",
+      "AI content agents",
+      "LangGraph orchestration",
+      "Search Console API",
+      "Bing Webmaster Tools",
+      "programmatic SEO",
+      "YMYL content automation",
+      "SEO agent architecture",
+      "autonomous WordPress publishing"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "Multi-Agent SEO Content Pipeline", "item": "https://stackcone.com/solutions/wordpress-seo-multi-agent-pipeline/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Multi-Agent SEO Pipeline for WordPress</h1>
+    <p class="meta">By Amar Kumar</p>
+    <p>A proposed architecture for a technical site owner running a niche <strong>health / GLP-1</strong> WordPress site with manual AI-assisted posts today. The target is a <strong>scheduled, self-checking content engine</strong>: real keyword data in, E-E-A-T-aware articles out, published to WordPress, with weekly Google and Bing performance reports.</p>
+
+    <blockquote>
+      <p><strong>Proposed outcome:</strong> Three coordinated agents (research, writing, orchestration) plus reporting — maintainable Python services the owner can inspect, tune, and extend.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#scenario">Scenario</a></li>
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#agent-design">Agent design</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#reporting">Reporting &amp; ops</a></li>
+        <li><a href="#deliverables">Proposed deliverables</a></li>
+        <li><a href="#estimate">Effort estimate</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="scenario">Scenario</h2>
+    <p>This brief describes a <strong>proposed solution</strong> — not a shipped product. It maps a common pattern: YMYL WordPress site, technical owner, need for autonomous SEO content with guardrails.</p>
+    <ul>
+      <li><strong>Platform:</strong> WordPress, health / wellness, GLP-1 (weight-loss medication) — <strong>YMYL</strong> niche</li>
+      <li><strong>Owner profile:</strong> Technical (front-end background, paid-media ops); wants architecture transparency, not black-box output</li>
+      <li><strong>Scope:</strong> Keyword agent, content agent, manager/orchestrator, WordPress publish, GSC + Bing reporting</li>
+      <li><strong>Data inputs:</strong> DataForSEO, Ahrefs or SEMrush APIs, SERP data, Search Console; rank tracking as needed</li>
+    </ul>
+
+    <h2 id="problem">Problem</h2>
+    <p>One-off AI posts do not compound. Without a queue, QA gates, and analytics loop, you cannot scale organic traffic safely in YMYL:</p>
+    <ul>
+      <li>Keyword picks are guesses instead of volume, difficulty, and intent data</li>
+      <li>Articles lack consistent structure, internal links, schema, and medical accuracy checks</li>
+      <li>No orchestrator means no schedule, no cross-agent QA, no rollback when quality fails</li>
+      <li>Traffic and rankings live in silos — GSC, Bing, rank trackers — with no unified owner report</li>
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <h3>Functional</h3>
+    <ul>
+      <li><strong>Keyword Research Agent</strong> — cluster keywords, gap analysis, volume/difficulty/intent, prioritized content queue from live APIs</li>
+      <li><strong>Content Writing Agent</strong> — SEO structure (H1–H3, meta, schema), internal links, on-brand tone; publish to WordPress (draft or scheduled)</li>
+      <li><strong>Manager Agent</strong> — run pipeline on schedule, QA other agents, approve/reject/requeue, weekly performance digest</li>
+      <li><strong>Reporting</strong> — impressions, clicks, avg position, keyword rankings on Google and Bing</li>
+    </ul>
+    <h3>Non-functional</h3>
+    <ul>
+      <li>YMYL quality bar — citations, disclaimers, human-review option for sensitive topics</li>
+      <li>Maintainable by a technical owner (config files, logs, replay failed jobs)</li>
+      <li>Idempotent publishing — no duplicate posts on retry</li>
+      <li>Secrets in env / vault; API rate limits respected</li>
+    </ul>
+
+    <h2 id="architecture">Architecture</h2>
+    <p>Three layers: a <strong>scheduler + orchestrator</strong> runs specialized agents, agents read/write <strong>PostgreSQL</strong> state, and external APIs handle SERP data, WordPress publishing, and owner reporting.</p>
+
+    <div class="diagram-wrap" data-diagram-title="System architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef trigger fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef orch fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef agent fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef data fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  classDef ext fill:#f8fafc,stroke:#475569,color:#334155
+
+  SCH["Scheduler\nAPScheduler"]:::trigger
+  ORCH["Orchestrator Agent\nLangGraph workflow"]:::orch
+  SCH -->|"cron / webhook"| ORCH
+
+  KW["Keyword Agent\nSERP + volume"]:::agent
+  CT["Content Agent\nLLM + templates"]:::agent
+  QA["QA / Policy\nYMYL checks"]:::agent
+  RP["Report Agent\nGSC + Bing"]:::agent
+
+  ORCH --> KW
+  ORCH --> CT
+  ORCH --> QA
+  ORCH --> RP
+
+  PG[("PostgreSQL\ncontent_queue · job_runs\narticle_versions · metrics_daily")]:::data
+  KW --> PG
+  CT --> PG
+  QA --> PG
+  RP --> PG
+
+  SEO["DataForSEO / Ahrefs API"]:::ext
+  WP["WordPress REST API"]:::ext
+  NT["Email / Slack\nweekly report"]:::ext
+  PG --> SEO
+  PG --> WP
+  PG --> NT</div>
+      </div>
+      <p class="diagram-caption">System architecture — orchestrator, agents, state store, and external integrations</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Publish sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant SCH as Scheduler
+  participant OR as Orchestrator
+  participant KW as Keyword
+  participant CT as Content
+  participant QA as QA Policy
+  participant PG as Database
+  participant WP as WordPress
+
+  SCH->>OR: cron / webhook trigger
+  OR->>KW: fetch SERP + volume
+  KW->>PG: upsert content_queue
+  OR->>CT: generate from queue row
+  CT->>PG: save article_version
+  OR->>QA: YMYL + SEO rubric
+  QA-->>OR: pass or fail + feedback
+  alt QA pass
+    OR->>WP: publish (idempotent slug)
+    OR->>PG: log job_run + metrics
+  else QA fail
+    OR->>PG: requeue with notes
+  end</div>
+      </div>
+      <p class="diagram-caption">Publish sequence — QA gate before WordPress write</p>
+    </div>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="archLayersChart" aria-label="Architecture layer component map"></canvas>
+      <p class="chart-caption">Component map by layer (count of major services)</p>
+    </div>
+
+    <p class="solution-section-label">End-to-end flow</p>
+    <div class="pipeline" role="img" aria-label="Happy-path pipeline from schedule to analytics">
+      <span class="pipeline-step">Scheduler</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Keyword queue</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Draft article</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">QA gate</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">WordPress</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Metrics rollup</span>
+    </div>
+    <p class="diagram-caption">Happy-path pipeline from schedule to analytics</p>
+
+    <div class="chart-wrap">
+      <canvas id="agentShareChart" aria-label="Build effort by component"></canvas>
+      <p class="chart-caption">Illustrative build effort split across pipeline components (% of engineering time)</p>
+    </div>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <p><strong>Recommendation:</strong> Python services with <strong>LangGraph</strong> for agent orchestration, <strong>PostgreSQL</strong> for state, <strong>Celery + Redis</strong> (or APScheduler for lighter loads) for schedules, and <strong>n8n</strong> only for optional no-code webhook bridges (e.g. Slack alerts).</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Orchestration</td><td>LangGraph + Python 3.11</td><td>Explicit agent graph, retries, human-in-the-loop nodes, testable</td></tr>
+        <tr><td>LLM</td><td>Claude / GPT-4.1 (configurable)</td><td>Strong long-form + instruction following; swap via env</td></tr>
+        <tr><td>Keyword data</td><td>DataForSEO + optional Ahrefs API</td><td>SERP, volume, difficulty without scraping hacks</td></tr>
+        <tr><td>State &amp; queue</td><td>PostgreSQL</td><td>Content queue, job audit trail, dedupe keys</td></tr>
+        <tr><td>Publishing</td><td>WordPress REST API</td><td>Native posts, meta, schema plugin fields</td></tr>
+        <tr><td>Analytics</td><td>Google Search Console API, Bing Webmaster API</td><td>Official traffic and query data</td></tr>
+        <tr><td>Rank tracking</td><td>DataForSEO rank API or Ahrefs</td><td>Keyword position history beyond GSC lag</td></tr>
+        <tr><td>Deploy</td><td>Docker on VPS or Railway</td><td>Owner can SSH, tail logs, update .env</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Why not n8n-only?</strong> Multi-step agent QA, YMYL policy checks, and versioned article state get brittle in pure no-code chains. Use n8n for notifications; keep agent logic in Python.</p>
+
+    <h2 id="agent-design">Agent design</h2>
+    <h3>1 — Keyword Research Agent</h3>
+    <ul>
+      <li><strong>Input:</strong> seed topics, site map URLs, GSC queries with impressions</li>
+      <li><strong>Output:</strong> ranked rows in <code>content_queue</code> (keyword, intent, volume, difficulty, cluster, priority score)</li>
+      <li><strong>Tools:</strong> DataForSEO keyword data, SERP snapshot, optional gap vs competitors</li>
+    </ul>
+    <h3>2 — Content Writing Agent</h3>
+    <ul>
+      <li><strong>Input:</strong> queue row + style guide + internal link map</li>
+      <li><strong>Output:</strong> markdown/HTML, title, meta description, FAQ schema JSON, suggested internal links</li>
+      <li><strong>Guards:</strong> banned-claim list for YMYL, required disclaimer block, citation placeholders</li>
+    </ul>
+    <h3>3 — Manager / Orchestrator Agent</h3>
+    <ul>
+      <li>Triggers weekly keyword refresh and daily publish slots</li>
+      <li>Runs QA rubric (structure, word count, link count, schema valid, policy pass)</li>
+      <li>On fail: requeue with feedback; on pass: WordPress create/update with idempotency key</li>
+      <li>Aggregates GSC + Bing + rank API into weekly owner report</li>
+    </ul>
+
+    <div class="chart-wrap">
+      <canvas id="phaseTimelineChart" aria-label="Implementation phases timeline"></canvas>
+      <p class="chart-caption">Suggested phase timeline (weeks) for initial production build</p>
+    </div>
+
+    <h2 id="implementation">Implementation plan</h2>
+
+    <div class="impl-phase">
+      <h3>Phase 1 — Foundation (week 1–2)</h3>
+      <p>Repo, Docker, PostgreSQL schema, WordPress app password, API keys in env. Read-only pulls from GSC and Bing to validate OAuth.</p>
+      <p><strong>Risk:</strong> Bing API setup delays — start OAuth early. <strong>Rollback:</strong> manual posting still works; no auto-publish until Phase 3.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 2 — Keyword agent (week 3)</h3>
+      <p>DataForSEO integration, clustering logic, queue table, priority scoring. Owner UI or CSV export of queue.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 3 — Content agent + WordPress (week 4–5)</h3>
+      <p>Prompt templates, internal link resolver, schema generation, publish as <code>draft</code> first. Idempotent <code>POST</code> with slug key.</p>
+      <p><strong>Risk:</strong> YMYL quality — enable human approval node in LangGraph before <code>publish</code>.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 4 — Orchestrator + QA (week 6)</h3>
+      <p>LangGraph workflow: keyword → write → QA → publish. Schedules, retries, dead-letter queue, structured logs.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 5 — Reporting (week 7)</h3>
+      <p>Daily metrics ingest, weekly email/Slack: clicks, impressions, position deltas, top queries, Bing parity view.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 6 — Hardening &amp; handover (week 8)</h3>
+      <p>Runbook, config docs, owner workshop, 2-week hypercare. Tune QA thresholds from first month of data.</p>
+    </div>
+
+    <h2 id="reporting">Reporting &amp; ops</h2>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Clicks, impressions, CTR, position</td><td>Google Search Console API</td><td>Daily store, weekly roll-up</td></tr>
+        <tr><td>Same for Bing</td><td>Bing Webmaster Tools API</td><td>Daily store, weekly roll-up</td></tr>
+        <tr><td>Keyword rank (target list)</td><td>DataForSEO / Ahrefs rank API</td><td>Weekly</td></tr>
+        <tr><td>Published / failed jobs</td><td>Internal <code>job_runs</code> table</td><td>Real-time dashboard or log tail</td></tr>
+      </tbody>
+    </table>
+    <p>Weekly owner digest: side-by-side Google vs Bing trend lines, top 10 query movers, articles published, QA rejection reasons.</p>
+
+    <h2 id="deliverables">Proposed deliverables</h2>
+    <p>Following the phased plan above, a build would ship these artifacts:</p>
+    <ul>
+      <li>LangGraph orchestrator with three agent roles and an explicit QA state machine</li>
+      <li>PostgreSQL content queue with priority scoring from live SERP APIs</li>
+      <li>Content agent with YMYL template, schema JSON-LD, and internal link injection</li>
+      <li>WordPress publisher with draft-first mode and idempotent slug keys</li>
+      <li>GSC + Bing ETL jobs and weekly HTML/PDF report generator</li>
+      <li>Docker Compose stack, <code>.env</code> template, and owner runbook for schedules and prompt edits</li>
+    </ul>
+
+    <h2 id="estimate">Effort estimate</h2>
+    <p>Indicative engineering effort for the phased plan (assumes APIs provisioned, one WordPress environment, human-in-the-loop for YMYL until QA thresholds are trusted):</p>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Hours (range)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Initial production build (phases 1–6)</td><td>90–120 hrs</td></tr>
+        <tr><td>Ongoing maintenance / prompt tuning</td><td>8–15 hrs/month</td></tr>
+      </tbody>
+    </table>
+    <p>Assumes APIs provisioned by the site owner, one WordPress environment, and human-in-the-loop for YMYL until QA thresholds are trusted.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>YMYL</strong></td><td>Your Money Your Life — Google quality category for health/finance content</td></tr>
+        <tr><td><strong>E-E-A-T</strong></td><td>Experience, Expertise, Authoritativeness, Trust — content quality signals</td></tr>
+        <tr><td><strong>LangGraph</strong></td><td>Library for stateful multi-step agent workflows with branches and retries</td></tr>
+        <tr><td><strong>Content queue</strong></td><td>Prioritized table of keywords/topics awaiting production</td></tr>
+        <tr><td><strong>GSC</strong></td><td>Google Search Console — search performance data</td></tr>
+        <tr><td><strong>Idempotent publish</strong></td><td>Re-running a job does not create duplicate WordPress posts</td></tr>
+      </tbody>
+    </table>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=12"></script>
+  <script src="../../site-nav.js" defer></script>
+  <script src="../../script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('archLayersChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Orchestration', 'Agents', 'Data store', 'External APIs'],
+        datasets: [{
+          data: [2, 4, 1, 3],
+          backgroundColor: ['#7c3aed', '#2563eb', '#16a34a', '#ea580c'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                var names = {
+                  0: 'Scheduler + Orchestrator',
+                  1: 'Keyword, Content, QA, Report',
+                  2: 'PostgreSQL',
+                  3: 'SEO APIs, WordPress, notifications'
+                };
+                return names[ctx.dataIndex] || ctx.label;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('agentShareChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Orchestrator', 'Keyword agent', 'Content agent', 'Reporting', 'WordPress/ops'],
+        datasets: [{
+          label: 'Effort %',
+          data: [22, 20, 28, 18, 12],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 35, title: { display: true, text: '% of build time' } } }
+      }
+    });
+
+    new Chart(document.getElementById('phaseTimelineChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Foundation', 'Keyword', 'Content+WP', 'Orchestrator', 'Reporting', 'Handover'],
+        datasets: [{
+          label: 'Weeks',
+          data: [2, 1, 2, 1, 1, 1],
+          backgroundColor: '#2563eb',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, max: 3, title: { display: true, text: 'Weeks' } } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

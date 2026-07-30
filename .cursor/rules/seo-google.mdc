@@ -20,8 +20,8 @@ When editing HTML or site content, keep the site optimized for Google search.
 
 - **One H1 per page**: Main heading only. Use H2 for section titles, H3 for subsections. Don’t skip levels (e.g. H1 → H4).
 - **Semantic HTML**: Prefer `<main>`, `<section>`, `<article>`, `<header>`, `<footer>`, `<nav>` where appropriate.
-- **Images**: Always set meaningful `alt` text for accessibility and SEO. Avoid alt="" unless purely decorative.
-- **Links**: Use descriptive link text where possible; avoid "click here" or vague labels.
+- **Images**: Always set meaningful, non-empty `alt` text (match visible label or describe the image). Do not use `alt=""` unless the image is purely decorative and redundant with adjacent visible text—and prefer descriptive alt over empty.
+- **Links**: Use clean directory URLs (e.g. `/blog/posts/{slug}/`, `/solutions/{slug}/`) without `.html` in internal links. Legacy `.html` paths may redirect but should not be used in new content.
 
 ## Structured data (JSON-LD)
 
@@ -34,5 +34,7 @@ When editing HTML or site content, keep the site optimized for Google search.
 - Multiple H1s or missing H1.
 - Blocking crawlers with meta robots unless intended (e.g. noindex for drafts).
 - Publishing raw `.md` alongside HTML (duplicate content). Author in `blog/md/` or `solutions/md/`; only `.html` is public, indexed, and linked.
+
+- **Analytics**: GA4 via `/assets/analytics.js` (set `GA_MEASUREMENT_ID` in that file). Do not add client-side HTTP→HTTPS redirect scripts—GitHub Pages serves HTTPS natively.
 
 When adding or changing pages, update canonical, title, and description; preserve or add OG/Twitter and structured data as needed.

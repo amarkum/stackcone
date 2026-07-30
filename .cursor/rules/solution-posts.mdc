@@ -10,13 +10,13 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
 
 ## Deliverables (always)
 
-1. `solutions/{slug}.html` — **published page** (only public URL)
+1. `solutions/{slug}/index.html` — **published page** (only public URL)
 2. `solutions/md/{slug}.md` — markdown source for authoring (not linked, not in sitemap)
 3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page only
 5. Run `python3 _dev/apply_highlights.py solutions/{slug}.html` if the page has code blocks
 
-**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Published HTML: `solutions/{slug}.html`. Source markdown: `solutions/md/{slug}.md` — **never** put `.md` next to `.html` in `solutions/`.
+**Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Published HTML: `solutions/{slug}/index.html`. Source markdown: `solutions/md/{slug}.md` — **never** put `.md` next to `.html` in `solutions/`.
 
 ## solutions.json entry
 
@@ -25,7 +25,7 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
   "id": "{slug}",
   "title": "Outcome-focused title",
   "description": "Problem + approach in one sentence (under ~155 chars)",
-  "href": "./{slug}.html",
+  "href": "./{slug}/",
   "date": "YYYY-MM-DD",
   "dateLabel": "Month YYYY",
   "author": "Amar Kumar",
@@ -74,20 +74,20 @@ Do **not** add a bottom-of-page CTA block (no “Contact us”, “Hire on Upwor
 
 **Mermaid theme/config:** only in `solutions/diagrams.js` (`StackconeMermaidConfig`). Never `%%{init:...}%%` in post HTML.
 
-## Path convention (`solutions/{slug}.html`)
+## Path convention (`solutions/{slug}/index.html`)
 
-All paths below are **relative from** `solutions/`. Do not use root-absolute `/…` paths (breaks local `file://` preview).
+All paths below are **relative from** `solutions/{slug}/`. Do not use root-absolute `/…` paths (breaks local `file://` preview).
 
 | Asset | Path |
 |-------|------|
-| CSS | `../styles.css`, `../blog/blog.css`, `solutions.css` |
-| Favicon | `../favicon/dark-favicon.png`, `../favicon/white-favicon.png` |
-| Logo | `../logo/stackcone.png` |
-| Mermaid + diagrams | `diagrams.js?v={N}` — bump `{N}` when `diagrams.js` changes |
-| Site JS | `../site-nav.js`, `../script.js` |
-| Diagram fullscreen icon | `icons/expand.svg` |
+| CSS | `../../styles.css`, `../../blog/blog.css`, `../solutions.css` |
+| Favicon | `../../favicon/dark-favicon.png`, `../../favicon/white-favicon.png` |
+| Logo | `../../logo/stackcone.png` |
+| Mermaid + diagrams | `../diagrams.js?v={N}` — bump `{N}` when `diagrams.js` changes |
+| Site JS | `../../site-nav.js`, `../../script.js` |
+| Diagram fullscreen icon | `../icons/expand.svg` |
 
-Canonical / OG URLs always `https://stackcone.com/solutions/{slug}.html`.
+Canonical / OG URLs always `https://stackcone.com/solutions/{slug}/`.
 
 ## Exact HTML — full page skeleton
 
@@ -103,9 +103,9 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
   <title>{title ≤60 chars} | stackcone Solutions</title>
   <meta name="description" content="{meta description ≤155 chars}">
   <meta name="keywords" content="{6–10 comma-separated keywords}">
-  <link rel="canonical" href="https://stackcone.com/solutions/{slug}.html">
+  <link rel="canonical" href="https://stackcone.com/solutions/{slug}/">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://stackcone.com/solutions/{slug}.html">
+  <meta property="og:url" content="https://stackcone.com/solutions/{slug}/">
   <meta property="og:title" content="{og title}">
   <meta property="og:description" content="{og description ≤155 chars}">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
@@ -137,7 +137,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
     },
     "datePublished": "{YYYY-MM-DD}",
     "dateModified": "{YYYY-MM-DD}",
-    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/{slug}.html" },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/{slug}/" },
     "image": "https://stackcone.com/logo/stackcone.png",
     "articleSection": "{category from solutions.json}",
     "keywords": ["{keyword1}", "{keyword2}", "..."]
@@ -150,7 +150,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
       { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
-      { "@type": "ListItem", "position": 3, "name": "{short title for breadcrumb}", "item": "https://stackcone.com/solutions/{slug}.html" }
+      { "@type": "ListItem", "position": 3, "name": "{short title for breadcrumb}", "item": "https://stackcone.com/solutions/{slug}/" }
     ]
   }
   </script>
@@ -349,7 +349,7 @@ Follow `.cursor/rules/seo-google.mdc`. Every new solution page must have **uniqu
 | `<title>` | Primary keyword + outcome; `\| stackcone Solutions` suffix; **≤ 60 chars** |
 | `<meta name="description">` | Value prop + primary keyword + 1 secondary; **≤ 155 chars**; unique per page |
 | `<meta name="keywords">` | **6–10** comma-separated terms: primary, secondaries, niche, stack names |
-| `<link rel="canonical">` | `https://stackcone.com/solutions/{slug}.html` — exact URL |
+| `<link rel="canonical">` | `https://stackcone.com/solutions/{slug}/` — exact URL |
 | `og:title` | Same as title or slightly shorter (no suffix if too long) |
 | `og:description` | Can differ from meta description but same intent; **≤ 155 chars** |
 | `og:url` | Same as canonical |

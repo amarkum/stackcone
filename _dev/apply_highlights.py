@@ -62,7 +62,7 @@ def html_targets(arg: Path) -> list[Path]:
     if arg.is_file():
         return [arg]
     if arg.is_dir():
-        return sorted(arg.glob("*.html"))
+        return sorted(arg.rglob("index.html")) if arg.name in ("posts", "solutions") else sorted(arg.glob("*.html"))
     return []
 
 

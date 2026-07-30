@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>Auto Model Routing Without an LLM Classifier (2026) | stackcone</title>
+  <meta name="description" content="Auto model routing without an LLM classifier — heuristic tier selection, regex signals, post-retrieval upgrades, and pytest-tested routing for production RAG chat.">
+  <meta name="keywords" content="auto model routing llm, llm model selection rag, heuristic model router, multi provider llm routing, cursor auto model routing, production rag chatbot, llm tier selection">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/auto-model-routing-without-llm-classifier/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/auto-model-routing-without-llm-classifier/">
+  <meta property="og:title" content="Auto Model Routing Without an LLM Classifier (2026)">
+  <meta property="og:description" content="Auto model routing without an LLM classifier — heuristic tier selection, regex signals, post-retrieval upgrades, and pytest-tested routing for production RAG chat.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Auto Model Routing Without an LLM Classifier (2026)">
+  <meta name="twitter:description" content="Auto model routing without an LLM classifier — heuristic tier selection, regex signals, post-retrieval upgrades, and pytest-tested routing for production RAG chat.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Auto Model Routing Without Calling an LLM to Pick an LLM",
+    "description": "Auto model routing without an LLM classifier — heuristic tier selection, regex signals, post-retrieval upgrades, and pytest-tested routing for production RAG chat.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-07-04",
+    "dateModified": "2026-07-04",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/auto-model-routing-without-llm-classifier/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["auto model routing llm", "llm model selection rag", "heuristic model router", "multi provider llm routing", "production rag chatbot"],
+    "articleSection": "RAG",
+    "about": { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Auto Model Routing Without an LLM Classifier", "item": "https://stackcone.com/blog/posts/auto-model-routing-without-llm-classifier/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why not use an LLM to classify which model to route to?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An LLM classifier adds latency, tokens, and cost on every request, is non-deterministic and hard to test, and creates a failure point before the main answer. Heuristic routing is instant, free, and fully testable with pytest."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is two-pass model routing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pass 1 picks a starting model tier from message heuristics before retrieval. Pass 2 bumps the tier after rerank if retrieval confidence is low — catching cases where a cheap model was chosen but the knowledge base returned weak matches."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is model routing different from query rewrite in RAG?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Query rewrite expands follow-up questions into standalone search queries using a cheap LLM. Model routing selects which generator model produces the final answer. Rewrite runs before retrieval; routing Pass 1 runs before rewrite and Pass 2 runs after rerank."
+        }
+      }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Auto Model Routing Without Calling an LLM to Pick an LLM</h1>
+    <p class="meta">July 2026 · Published by Amar Kumar</p>
+    <p>How to build Cursor-style Auto model routing for production RAG chat — heuristic tier selection, regex signals, post-retrieval upgrades, and pytest-tested routing with zero classifier LLM calls.</p>
+
+    <p>Most chat products offer an <strong>Auto</strong> model mode. The obvious implementation: call a cheap LLM to classify the user's question, then route to the right tier. That works — but it adds latency, tokens, and failure modes on every request.</p>
+    <p>We built a different approach for a production RAG chatbot: <strong>heuristic routing</strong> (regex + feature scoring) before retrieval, then a <strong>post-retrieval tier bump</strong> when the knowledge base returns weak matches. No classifier call. Deterministic. Testable with plain pytest.</p>
+    <p>Part of our RAG engineering series. See <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Best Economical LLM Models for RAG</a> for pricing context and <a href="/blog/posts/cohere-reranking-production-rag-retrieval/">Cohere Reranking for Production RAG</a> for the retrieval layer this router plugs into.</p>
+
+    <blockquote>
+      <p><strong>Who is this for?</strong> Teams running multi-provider RAG chat (Gemini, OpenRouter, OpenAI) who want Cursor-style Auto routing without paying for a routing LLM on every turn.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#why-not-classifier">Why not use an LLM classifier?</a></li>
+        <li><a href="#two-pass">Two-pass routing architecture</a></li>
+        <li><a href="#tier-ladder">The tier ladder</a></li>
+        <li><a href="#pre-retrieval">Pre-retrieval heuristics</a></li>
+        <li><a href="#complexity-score">Complexity scoring</a></li>
+        <li><a href="#rule-priority">Rule priority and examples</a></li>
+        <li><a href="#post-retrieval">Post-retrieval tier upgrade</a></li>
+        <li><a href="#auto-pool">Auto pool vs manual picker</a></li>
+        <li><a href="#pipeline">Wiring into the chat pipeline</a></li>
+        <li><a href="#testing">Testing with pytest</a></li>
+        <li><a href="#checklist">Tuning checklist</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="why-not-classifier">Why not use an LLM classifier?</h2>
+    <p>The classifier pattern:</p>
+    <div class="pipeline" role="img" aria-label="LLM classifier routing pattern">
+      <span class="pipeline-step">User message</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Cheap LLM classify</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Pick model</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">RAG</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Answer</span>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Issue</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Extra LLM call every turn</td><td>+200–400 ms latency, +500–1500 input tokens</td></tr>
+        <tr><td>Classifier drift</td><td>Model updates change routing behavior silently</td></tr>
+        <tr><td>Hard to test</td><td>Non-deterministic; flaky CI</td></tr>
+        <tr><td>Double billing</td><td>You pay for routing <em>and</em> answering</td></tr>
+        <tr><td>Failure coupling</td><td>Classifier 503 blocks the whole chat</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Heuristic routing</strong> accepts imperfect classification on edge cases in exchange for zero routing cost, instant routing, and full test coverage. Cursor's Auto mode uses a similar philosophy — feature-based routing, not a meta-LLM call.</p>
+
+    <div class="chart-wrap">
+      <canvas id="costCompareChart" aria-label="Cost comparison classifier vs heuristic routing"></canvas>
+      <p class="chart-caption">Per-request routing overhead: heuristic routing adds ~0 ms and $0; an LLM classifier adds tokens and latency on every turn</p>
+    </div>
+
+    <h2 id="two-pass">Two-pass routing architecture</h2>
+    <p>Routing happens in two passes:</p>
+
+    <div class="pipeline" role="img" aria-label="Two-pass routing architecture">
+      <span class="pipeline-step">User message</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Pass 1: Heuristics</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Retrieve + rerank</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Pass 2: Upgrade</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">LLM answer</span>
+    </div>
+
+    <p><strong>Pass 1 (pre-retrieval):</strong> Inspect message text, word count, conversation history, and regex patterns. Pick a starting model tier.</p>
+    <p><strong>Pass 2 (post-retrieval):</strong> After vector search and optional Cohere rerank, check retrieval confidence. If the top rerank score is low, bump the model up one or two tiers on the ladder.</p>
+    <p>This split matters because a short FAQ ("how do I zoom in?") needs a cheap model when retrieval is confident — but the same cheap model fails when retrieval returns weak chunks on a troubleshooting question.</p>
+
+    <h2 id="tier-ladder">The tier ladder</h2>
+    <p>Define a fixed ladder of models from economy to premium. The router never jumps to an arbitrary model — it always moves along this ladder.</p>
+
+    <table>
+      <thead>
+        <tr><th>Tier</th><th>Role</th><th>Example model IDs</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0 — Economy</td><td>Cheapest; high-volume FAQs</td><td><code>gemini-2.5-flash-lite</code>, <code>deepseek-v4-flash</code></td></tr>
+        <tr><td>1 — Standard</td><td>Routine support, moderate explain</td><td><code>deepseek-chat-v3.1</code>, <code>mistral-small-2603</code></td></tr>
+        <tr><td>2 — Capable</td><td>Deep guides, long questions, first-turn debug</td><td><code>gemini-2.5-flash</code>, <code>qwen3-235b-a22b</code></td></tr>
+        <tr><td>3 — Premium</td><td>Hard multi-turn troubleshoot</td><td><code>gemini-3-flash-preview</code></td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>_TIER_LADDER = (
+    <span class="str">"gemini-2.5-flash-lite"</span>,   <span class="cm"># 0 economy</span>
+    <span class="str">"deepseek-chat-v3.1"</span>,      <span class="cm"># 1 standard</span>
+    <span class="str">"gemini-2.5-flash"</span>,        <span class="cm"># 2 capable</span>
+    <span class="str">"gemini-3-flash-preview"</span>,  <span class="cm"># 3 premium</span>
+)
+
+<span class="kw">def</span> <span class="fn">_bump_model_tier</span>(model: <span class="fn">str</span>, steps: <span class="fn">int</span> = <span class="num">1</span>) -&gt; <span class="fn">str</span>:
+    new_idx = <span class="fn">min</span>(_ladder_index(model) + steps, <span class="fn">len</span>(_TIER_LADDER) - <span class="num">1</span>)
+    <span class="kw">return</span> _TIER_LADDER[new_idx]</code></pre>
+
+    <div class="chart-wrap">
+      <canvas id="tierDistChart" aria-label="Typical Auto routing distribution by tier"></canvas>
+      <p class="chart-caption">Typical Auto resolution distribution — most traffic stays on economy/standard tiers; premium is reserved for hard troubleshoot follow-ups</p>
+    </div>
+
+    <h2 id="pre-retrieval">Pre-retrieval heuristics</h2>
+    <p>Before any vector search, <code>resolve_auto_model()</code> inspects the user message using regex signal patterns:</p>
+
+    <table>
+      <thead>
+        <tr><th>Pattern</th><th>Keywords</th><th>Routes to</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hard troubleshoot</td><td><code>not working</code>, <code>error</code>, <code>crash</code>, <code>debug</code></td><td>Capable or Premium</td></tr>
+        <tr><td>Compare / either-or</td><td><code>compare</code>, <code>vs</code>, <code>pros and cons</code>, <code>A or B</code></td><td>Mistral (comparison reasoning)</td></tr>
+        <tr><td>Deep / guide</td><td><code>in detail</code>, <code>step by step</code>, <code>walk me through</code></td><td>Capable Flash</td></tr>
+        <tr><td>Support / account</td><td><code>license</code>, <code>activate</code>, <code>subscription</code></td><td>Standard tier</td></tr>
+      </tbody>
+    </table>
+
+    <p>Hard troubleshoot runs <strong>before</strong> support keywords — so "My license export keeps failing with an error" routes to debug tier, not routine support.</p>
+
+    <pre><code>_HARD_RE = re.compile(
+    r"\b(not working|doesn't work|error|bug|broken|crash|"
+    r"troubleshoot|debug|fix this|still failing)\b",
+    re.I,
+)
+
+_COMPARE_RE = re.compile(
+    r"\b(compare|comparison|difference|versus|vs\.?|"
+    r"which one|pros and cons)\b|"
+    r"\bor\b.+\b(or|local|cloud|vs)\b",
+    re.I,
+)
+
+_DEEP_RE = re.compile(
+    r"\b(in detail|step by step|walk me through|"
+    r"full explanation|tell me more|elaborate)\b",
+    re.I,
+)</code></pre>
+
+    <h3>Length and structure signals</h3>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Threshold</th><th>Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Word count</td><td>&gt; 45 words</td><td>+2 complexity; route to Capable</td></tr>
+        <tr><td>Multiple questions</td><td>&gt; 1 <code>?</code> in message</td><td>+2 complexity</td></tr>
+        <tr><td>Long paste</td><td>&gt; 2500 chars</td><td>Route to Capable</td></tr>
+        <tr><td>Follow-up turn</td><td>Prior assistant message exists</td><td>+1 complexity; may bump tier</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="complexity-score">Complexity scoring</h2>
+    <p>A numeric score aggregates structural features before rule matching:</p>
+
+    <pre><code><span class="kw">def</span> <span class="fn">_complexity_score</span>(lower, words, chars, prior_assistant, conversation_summary=<span class="kw">None</span>):
+    score = <span class="num">0</span>
+    <span class="kw">if</span> words &gt; <span class="num">12</span>:  score += <span class="num">1</span>
+    <span class="kw">if</span> words &gt; <span class="num">28</span>:  score += <span class="num">1</span>
+    <span class="kw">if</span> words &gt; <span class="num">45</span>:  score += <span class="num">2</span>
+    <span class="kw">if</span> chars &gt; <span class="num">1200</span>: score += <span class="num">1</span>
+    <span class="kw">if</span> chars &gt; <span class="num">2500</span>: score += <span class="num">2</span>
+    <span class="kw">if</span> lower.count(<span class="str">"?"</span>) &gt; <span class="num">1</span>: score += <span class="num">2</span>
+    <span class="kw">if</span> prior_assistant &gt; <span class="num">0</span>: score += <span class="num">1</span>
+    <span class="kw">if</span> _DEEP_RE.search(lower) <span class="kw">or</span> _GUIDE_RE.search(lower): score += <span class="num">2</span>
+    <span class="kw">if</span> _HARD_RE.search(lower): score += <span class="num">2</span>
+    <span class="kw">if</span> conversation_summary <span class="kw">and</span> <span class="fn">len</span>(conversation_summary.strip()) &gt; <span class="num">800</span>:
+        score += <span class="num">1</span>
+    <span class="kw">return</span> score</code></pre>
+
+    <p>Score ≥ 6 routes to Capable tier regardless of other rules.</p>
+
+    <h2 id="rule-priority">Rule priority and examples</h2>
+    <p>Rules are evaluated in priority order — first match wins:</p>
+
+    <table>
+      <thead>
+        <tr><th>Priority</th><th>Condition</th><th>Model tier</th><th>Reason code</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Hard troubleshoot + follow-up or score ≥ 5</td><td>Premium</td><td><code>hard_troubleshoot_premium</code></td></tr>
+        <tr><td>2</td><td>Hard troubleshoot (first turn)</td><td>Capable</td><td><code>hard_troubleshoot</code></td></tr>
+        <tr><td>3</td><td>Compare / either-or</td><td>Mistral</td><td><code>compare_or_either_or</code></td></tr>
+        <tr><td>4</td><td>Deep explanation or step-by-step</td><td>Capable</td><td><code>deep_or_guide</code></td></tr>
+        <tr><td>5</td><td>Very long message</td><td>Capable</td><td><code>long_context</code></td></tr>
+        <tr><td>6</td><td>Multi-question or score ≥ 6</td><td>Capable</td><td><code>high_complexity</code></td></tr>
+        <tr><td>7</td><td>Follow-up + elaboration</td><td>Capable</td><td><code>follow_up_elaboration</code></td></tr>
+        <tr><td>8</td><td>Follow-up (generic)</td><td>Standard</td><td><code>follow_up</code></td></tr>
+        <tr><td>9</td><td>Support keywords or 14–40 words</td><td>Standard</td><td><code>routine_support</code></td></tr>
+        <tr><td>10</td><td>Short FAQ (&gt; 8 words)</td><td>Economy+</td><td><code>short_faq</code></td></tr>
+        <tr><td>11</td><td>Minimal (≤ 3 words)</td><td>Default economy</td><td><code>minimal</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Worked examples</h3>
+    <table>
+      <thead>
+        <tr><th>User message</th><th>Resolved model</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"how do I zoom in?"</td><td><code>gemini-3.1-flash-lite</code></td><td>Short FAQ</td></tr>
+        <tr><td>"How do I activate my license?"</td><td><code>deepseek-chat-v3.1</code></td><td>Support keyword</td></tr>
+        <tr><td>"Compare frameless vs framed cabinets"</td><td><code>mistral-small-2603</code></td><td>Compare pattern</td></tr>
+        <tr><td>"explain the export folder in very detail"</td><td><code>gemini-2.5-flash</code></td><td>Deep pattern</td></tr>
+        <tr><td>"export keeps crashing" (turn 1)</td><td><code>gemini-2.5-flash</code></td><td>Hard troubleshoot</td></tr>
+        <tr><td>Same message (turn 2)</td><td><code>gemini-3-flash-preview</code></td><td>Hard + follow-up → premium</td></tr>
+      </tbody>
+    </table>
+
+    <p>Log the <code>reason</code> code on every route — essential for tuning.</p>
+
+    <h2 id="post-retrieval">Post-retrieval tier upgrade</h2>
+    <p>After retrieval and rerank, <code>adjust_auto_model_for_retrieval()</code> may bump the tier based on confidence signals:</p>
+
+    <table>
+      <thead>
+        <tr><th>Condition</th><th>Bump</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Rerank ran, top score &lt; 0.08</td><td>+2 tiers</td></tr>
+        <tr><td>Rerank ran, top score &lt; 0.15</td><td>+1 tier</td></tr>
+        <tr><td>No rerank, top cosine &lt; 0.72</td><td>+1 tier</td></tr>
+        <tr><td>Otherwise</td><td>No change</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>RERANK_UPGRADE_THRESHOLD = <span class="num">0.15</span>
+RERANK_STRONG_UPGRADE_THRESHOLD = <span class="num">0.08</span>
+COSINE_UPGRADE_THRESHOLD = <span class="num">0.72</span>
+
+<span class="kw">def</span> <span class="fn">adjust_auto_model_for_retrieval</span>(
+    model: <span class="fn">str</span>,
+    *,
+    top_rerank_score: <span class="fn">float</span> = <span class="num">0.0</span>,
+    rerank_ran: <span class="fn">bool</span> = <span class="kw">False</span>,
+    top_cosine: <span class="fn">float</span> = <span class="num">0.0</span>,
+) -&gt; <span class="fn">str</span>:
+    bumps = <span class="num">0</span>
+    <span class="kw">if</span> rerank_ran:
+        <span class="kw">if</span> top_rerank_score &lt; RERANK_STRONG_UPGRADE_THRESHOLD:
+            bumps = <span class="num">2</span>
+        <span class="kw">elif</span> top_rerank_score &lt; RERANK_UPGRADE_THRESHOLD:
+            bumps = <span class="num">1</span>
+    <span class="kw">elif</span> top_cosine &gt; <span class="num">0</span> <span class="kw">and</span> top_cosine &lt; COSINE_UPGRADE_THRESHOLD:
+        bumps = <span class="num">1</span>
+    <span class="kw">return</span> _bump_model_tier(model, bumps) <span class="kw">if</span> bumps &gt; <span class="num">0</span> <span class="kw">else</span> model</code></pre>
+
+    <p>Example: economy model selected for a short question, but rerank top score is 0.04 → bump +2 from tier 0 to tier 2. This catches the gray zone between the soft no-results gate (score &lt; 0.05) and confident retrieval — where a stronger model can synthesize weak context.</p>
+
+    <div class="chart-wrap">
+      <canvas id="upgradeChart" aria-label="Post-retrieval tier upgrade zones by rerank score"></canvas>
+      <p class="chart-caption">Rerank score zones: no upgrade above 0.15, +1 tier between 0.08–0.15, +2 tiers below 0.08</p>
+    </div>
+
+    <h2 id="auto-pool">Auto pool vs manual picker</h2>
+    <p><strong>Auto mode</strong> routes only within a fixed pool of budget-to-mid models. Premium manual models (Claude Sonnet, Claude Haiku) stay in the UI picker but are never Auto-selected.</p>
+
+    <table>
+      <thead>
+        <tr><th>Design choice</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Exclude Claude from Auto</td><td>Cost control — Sonnet at default would erase routing savings</td></tr>
+        <tr><td>Fixed Auto pool</td><td>Predictable cost envelope per request</td></tr>
+        <tr><td>Manual picker for frontier</td><td>Power users pick Claude explicitly when needed</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>AUTO_MODEL_POOL = frozenset({
+    "gemini-2.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "deepseek-v4-flash",
+    "deepseek-chat-v3.1",
+    "mistral-small-2603",
+    "gemini-2.5-flash",
+    "qwen3-235b-a22b",
+    "gemini-3-flash-preview",
+})
+<span class="kw">#</span> Claude models: manual picker only, never Auto</code></pre>
+
+    <h2 id="pipeline">Wiring into the chat pipeline</h2>
+    <p>In the FastAPI chat handler, routing fits between request parsing and retrieval:</p>
+
+    <pre><code><span class="kw">def</span> <span class="fn">_resolve_chat_model</span>(request):
+    requested = request.model <span class="kw">or</span> default_chat_model()
+    <span class="kw">if</span> requested == <span class="str">"auto"</span>:
+        resolved = resolve_auto_model(
+            request.message,
+            request.conversation_history,
+            conversation_summary=request.conversation_summary,
+        )
+        <span class="kw">return</span> resolved, <span class="str">"auto"</span>
+    <span class="kw">return</span> requested, <span class="kw">None</span>
+
+<span class="cm"># ... after retrieval + rerank ...</span>
+<span class="kw">if</span> auto_requested == <span class="str">"auto"</span>:
+    model_name = adjust_auto_model_for_retrieval(
+        model_name,
+        top_rerank_score=top_rerank_score,
+        rerank_ran=rerank_scores <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>,
+        top_cosine=top_cosine,
+    )</code></pre>
+
+    <p>Return both <code>requested_model: "auto"</code> and <code>resolved_model</code> in usage headers so billing dashboards show what Auto picked.</p>
+
+    <div class="pipeline" role="img" aria-label="Full chat pipeline with Auto routing">
+      <span class="pipeline-step">Resolve Auto (Pass 1)</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Query rewrite</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Embed + search</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Rerank</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Upgrade (Pass 2)</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Generate</span>
+    </div>
+
+    <h2 id="testing">Testing with pytest</h2>
+    <p>Heuristic routers are fully deterministic — write table-driven tests and run them on every PR:</p>
+
+    <pre><code><span class="kw">def</span> <span class="fn">test_heuristic_short_faq</span>():
+    <span class="kw">assert</span> resolve_auto_model(<span class="str">"how do I zoom in?"</span>) <span class="kw">in</span> (
+        <span class="str">"deepseek-v4-flash"</span>,
+        <span class="str">"gemini-2.5-flash-lite"</span>,
+        <span class="str">"gemini-3.1-flash-lite"</span>,
+    )
+
+<span class="kw">def</span> <span class="fn">test_heuristic_compare_routes_to_mistral</span>():
+    <span class="kw">assert</span> resolve_auto_model(<span class="str">"Compare option A vs option B"</span>) == <span class="str">"mistral-small-2603"</span>
+
+<span class="kw">def</span> <span class="fn">test_heuristic_hard_troubleshoot_premium_on_follow_up</span>():
+    history = [{<span class="str">"role"</span>: <span class="str">"assistant"</span>, <span class="str">"content"</span>: <span class="str">"Try restarting."</span>}]
+    <span class="kw">assert</span> resolve_auto_model(
+        <span class="str">"export keeps crashing when I click export"</span>, history
+    ) == <span class="str">"gemini-3-flash-preview"</span>
+
+<span class="kw">def</span> <span class="fn">test_retrieval_upgrade_bumps_on_low_rerank</span>():
+    <span class="kw">assert</span> adjust_auto_model_for_retrieval(
+        <span class="str">"gemini-2.5-flash-lite"</span>,
+        top_rerank_score=<span class="num">0.10</span>,
+        rerank_ran=<span class="kw">True</span>,
+    ) == <span class="str">"deepseek-chat-v3.1"</span>
+
+<span class="kw">def</span> <span class="fn">test_retrieval_upgrade_skips_when_confident</span>():
+    <span class="kw">assert</span> adjust_auto_model_for_retrieval(
+        <span class="str">"gemini-2.5-flash-lite"</span>,
+        top_rerank_score=<span class="num">0.42</span>,
+        rerank_ran=<span class="kw">True</span>,
+    ) == <span class="str">"gemini-2.5-flash-lite"</span></code></pre>
+
+    <p>When you tune a regex or threshold, update the test — the test suite <em>is</em> your routing spec.</p>
+
+    <h2 id="checklist">Tuning checklist</h2>
+    <div class="checklist-grid">
+      <div class="checklist-col">
+        <h3>Must have</h3>
+        <ul>
+          <li>Fixed tier ladder (no arbitrary model jumps)</li>
+          <li>Reason codes logged on every route</li>
+          <li>Post-retrieval bump tied to rerank scores</li>
+          <li>pytest coverage for top message patterns</li>
+          <li>Usage header with requested + resolved model</li>
+        </ul>
+      </div>
+      <div class="checklist-col">
+        <h3>Should have</h3>
+        <ul>
+          <li>Hard-troubleshoot priority over support keywords</li>
+          <li>Compare questions routed to comparison-capable model</li>
+          <li>Frontier models excluded from Auto pool</li>
+          <li>Conversation summary length as complexity signal</li>
+        </ul>
+      </div>
+      <div class="checklist-col">
+        <h3>Measure</h3>
+        <ul>
+          <li>Auto resolution distribution by tier</li>
+          <li>Cost per request: Auto vs always-Sonnet baseline</li>
+          <li>Quality on hard-troubleshoot routes</li>
+          <li>How often Pass 2 bumps tier</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Why not use token count alone?</h3>
+    <p>Word count misses intent. "Compare X vs Y" is 4 words but needs a comparison-capable model. Regex patterns catch intent; length catches paste dumps and multi-question messages.</p>
+
+    <h3>Doesn't heuristic routing miss edge cases?</h3>
+    <p>Yes — occasionally. Pass 2 (retrieval upgrade) catches the worst misses. Manual model picker covers power users. The goal is 90% cost savings on 95% of traffic, not perfect classification.</p>
+
+    <h3>How is this different from query rewrite?</h3>
+    <p>Query rewrite expands follow-ups into standalone search queries (an LLM call). Model routing picks which generator model to use. Rewrite runs before retrieval; routing Pass 1 runs before rewrite; Pass 2 runs after rerank.</p>
+
+    <h3>Can I add an LLM classifier as a fallback?</h3>
+    <p>You can, but we don't. If heuristics fail often enough to justify a classifier, fix the heuristics first — they're cheaper to iterate.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Need help building multi-provider RAG with cost-aware routing?</strong></p>
+      <p>stackcone designs and ships production RAG systems — model routing, reranking pipelines, evaluation harnesses, and Cloud Run deployment. 10+ years experience, 100% job success on Upwork.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+
+    <p class="closing">Auto routing is a unit economics feature. Skip the classifier, test the heuristics, and let retrieval confidence finish the job.</p>
+    <p>← <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Best Economical LLM Models for RAG</a> · <a href="/blog/posts/cohere-reranking-production-rag-retrieval/">Cohere Reranking for Production RAG</a></p>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+
+    new Chart(document.getElementById('costCompareChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Heuristic router', 'LLM classifier'],
+        datasets: [{
+          label: 'Routing cost per request ($)',
+          data: [0, 0.0008],
+          backgroundColor: ['#16a34a', '#dc2626'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'USD' } } }
+      }
+    });
+
+    new Chart(document.getElementById('tierDistChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Economy (tier 0)', 'Standard (tier 1)', 'Capable (tier 2)', 'Premium (tier 3)'],
+        datasets: [{
+          data: [42, 35, 18, 5],
+          backgroundColor: ['#93c5fd', '#3b82f6', '#1d4ed8', '#7c3aed']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    new Chart(document.getElementById('upgradeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['&lt; 0.08 (bump +2)', '0.08–0.15 (bump +1)', '≥ 0.15 (no bump)'],
+        datasets: [{
+          label: 'Share of Auto requests (%)',
+          data: [8, 14, 78],
+          backgroundColor: ['#dc2626', '#ea580c', '#16a34a'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: '%' } } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

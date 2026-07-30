@@ -262,7 +262,7 @@ def update_article_json_ld(html: str, seo: dict, category: str) -> str:
 
 
 def update_breadcrumb_name(html: str, slug: str, name: str) -> str:
-    url = f"https://stackcone.com/blog/posts/{slug}.html"
+    url = f"https://stackcone.com/blog/posts/{slug}/"
     pattern = (
         rf'(\{{ "@type": "ListItem", "position": 3, "name": ")([^"]*)("'
         rf', "item": "{re.escape(url)}" \}})'
@@ -272,7 +272,7 @@ def update_breadcrumb_name(html: str, slug: str, name: str) -> str:
 
 def update_sitemap(slug: str) -> None:
     xml = SITEMAP.read_text(encoding="utf-8")
-    loc = f"https://stackcone.com/blog/posts/{slug}.html"
+    loc = f"https://stackcone.com/blog/posts/{slug}/"
     block = re.search(
         rf"<url>\s*<loc>{re.escape(loc)}</loc>\s*<lastmod>[^<]+</lastmod>",
         xml,
@@ -315,7 +315,9 @@ def main() -> None:
     posts_by_id = {p["id"]: p for p in data["posts"]}
 
     for post_id, seo in SEO.items():
-        path = POSTS_DIR / f"{post_id}.html"
+        path = POSTS_DIR / post_id / "index.html"
+        if not path.exists():
+            path = POSTS_DIR / f"{post_id}.html"
         if not path.exists():
             raise SystemExit(f"Missing {path}")
 
@@ -337,12 +339,12 @@ def main() -> None:
         html = replace_meta(html, "twitter:description", description)  # type: ignore[arg-type]
         html = replace_h1(html, h1)  # type: ignore[arg-type]
         html = update_article_json_ld(html, seo, category)
-        html = update_breadcrumb_name(html, f"{post_id}.html", h1)  # type: ignore[arg-type]
+        html = update_breadcrumb_name(html, post_id, h1)  # type: ignore[arg-type]
         path.write_text(html, encoding="utf-8")
 
         post["title"] = h1
         post["description"] = description
-        update_sitemap(f"{post_id}.html")
+        update_sitemap(post_id)
         print(f"Updated {post_id}")
 
     POSTS_JSON.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
