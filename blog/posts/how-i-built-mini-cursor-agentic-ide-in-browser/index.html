@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-  <title>How I Built a Mini Cursor Agentic Code IDE in the Live Browser</title>
-  <meta name="description" content="Technical deep-dive: build a Cursor-style AI coding agent in Flask with SSE streaming, WebSocket tool progress, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.">
+  <title>How I Built a Live-Browser AI Coding Agent with Flask and Monaco</title>
+  <meta name="description" content="Build a Cursor-style AI coding agent in the browser: Flask harness loop, SSE + WebSocket streaming, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.">
   <meta name="keywords" content="agentic coding IDE, cursor clone, AI coding agent, flask agent loop, monaco editor AI, SSE streaming agent, tool calling coding agent">
   <link rel="canonical" href="https://stackcone.com/blog/posts/how-i-built-mini-cursor-agentic-ide-in-browser/">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://stackcone.com/blog/posts/how-i-built-mini-cursor-agentic-ide-in-browser/">
-  <meta property="og:title" content="How I Built a Mini Cursor Agentic Code IDE in the Live Browser">
-  <meta property="og:description" content="Technical deep-dive: build a Cursor-style AI coding agent in Flask with SSE streaming, WebSocket tool progress, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.">
+  <meta property="og:title" content="How I Built a Live-Browser AI Coding Agent with Flask and Monaco">
+  <meta property="og:description" content="Build a Cursor-style AI coding agent in the browser: Flask harness loop, SSE + WebSocket streaming, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.">
   <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="stackcone">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How I Built a Mini Cursor Agentic Code IDE in the Live Browser">
-  <meta name="twitter:description" content="Technical deep-dive: build a Cursor-style AI coding agent in Flask with SSE streaming, WebSocket tool progress, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.">
+  <meta name="twitter:title" content="How I Built a Live-Browser AI Coding Agent with Flask and Monaco">
+  <meta name="twitter:description" content="Build a Cursor-style AI coding agent in the browser: Flask harness loop, SSE + WebSocket streaming, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
@@ -31,8 +31,8 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "How I Built a Mini Cursor Agentic Code IDE in the Live Browser",
-    "description": "Technical deep-dive: build a Cursor-style AI coding agent in Flask with SSE streaming, WebSocket tool progress, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.",
+    "headline": "How I Built a Live-Browser AI Coding Agent with Flask and Monaco",
+    "description": "Build a Cursor-style AI coding agent in the browser: Flask harness loop, SSE + WebSocket streaming, Monaco editor, terminal, JSONL sessions, and three-tier context compaction.",
     "author": { "@type": "Person", "name": "Amar Kumar" },
     "publisher": {
       "@type": "Organization",
@@ -88,7 +88,7 @@
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
-      { "@type": "ListItem", "position": 3, "name": "Mini Cursor Agentic Code IDE", "item": "https://stackcone.com/blog/posts/how-i-built-mini-cursor-agentic-ide-in-browser/" }
+      { "@type": "ListItem", "position": 3, "name": "Live-Browser AI Coding Agent", "item": "https://stackcone.com/blog/posts/how-i-built-mini-cursor-agentic-ide-in-browser/" }
     ]
   }
   </script>
@@ -113,9 +113,9 @@
 
   <article class="blog-article">
 
-    <h1>How I Built a Mini Cursor Agentic Code IDE in the Live Browser</h1>
+    <h1>How I Built a Live-Browser AI Coding Agent with Flask and Monaco</h1>
     <p class="meta">August 2026 · Published by Amar Kumar</p>
-    <p><strong>AgenticCode</strong> is an in-browser AI coding agent that behaves like Cursor Agent mode or Claude Code: an LLM gets tools to read, search, edit, and run commands against a real project on disk, runs those tools in a controlled iteration loop, and streams inline diffs, tool-call activity, and shell output back to a browser UI in real time.</p>
+    <p><strong>LiveCode Agent</strong> is an in-browser AI coding agent that behaves like Cursor Agent mode or Claude Code: an LLM gets tools to read, search, edit, and run commands against a real project on disk, runs those tools in a controlled iteration loop, and streams inline diffs, tool-call activity, and shell output back to a browser UI in real time.</p>
     <p>I built it entirely inside a Flask application with no exotic infrastructure — no vector database, no embeddings pipeline, no LangChain, no npm build step. The entire system is a Python generator function, a tool dispatch table, a JSONL file per session, and a carefully engineered context management strategy. This post walks through every major subsystem with pseudocode you can adapt.</p>
 
     <blockquote>
@@ -152,7 +152,7 @@
     <h2 id="overview">Overview and line counts</h2>
     <p>The key claim this document makes, and backs with implementation detail: you do not need LangChain, LlamaIndex, or AutoGen to build a production-quality agentic coding system. You need:</p>
     <ul>
-      <li>A Python package (<code>agenticcode/</code>) — agent loop, tools, sessions, compaction — roughly <strong>4,376 lines across 19 files</strong></li>
+      <li>A Python package (<code>livecode/</code>) — agent loop, tools, sessions, compaction — roughly <strong>4,376 lines across 19 files</strong></li>
       <li>A Flask route module — <strong>278 lines</strong></li>
       <li>A frontend JavaScript file — Monaco, terminal, chat — <strong>3,658 lines</strong></li>
       <li>Two CSS files and two HTML templates for the embedded IDE panel</li>
@@ -162,9 +162,9 @@
 
     <h2 id="architecture">System architecture</h2>
     <h3>Two halves, two channels</h3>
-    <p>AgenticCode splits cleanly into a Python backend and a JavaScript frontend. They communicate over <strong>two simultaneous real-time channels</strong>: SSE for answer tokens, WebSocket for structured tool progress, diffs, permissions, and shell streams.</p>
+    <p>LiveCode Agent splits cleanly into a Python backend and a JavaScript frontend. They communicate over <strong>two simultaneous real-time channels</strong>: SSE for answer tokens, WebSocket for structured tool progress, diffs, permissions, and shell streams.</p>
 
-    <div class="diagram-wrap" data-diagram-title="AgenticCode system architecture">
+    <div class="diagram-wrap" data-diagram-title="LiveCode Agent system architecture">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
         <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
       </button>
@@ -182,8 +182,8 @@ token · answer · done"]:::api
   WS["WebSocket
  tool · diff · permission"]:::api
   FL["Flask routes
-/agentic-agent"]:::api
-  HN["run_agentic_turn()
+/livecode-agent"]:::api
+  HN["run_livecode_turn()
 generator loop"]:::core
   TL["14 tools
 grep · edit · shell"]:::core
@@ -211,36 +211,36 @@ index cache"]:::disk
     <p><strong>WebSocket</strong> (implemented with Socket.IO in my stack) carries everything else: tool-call progress, streamed shell output, diff blocks, permission prompts, and thinking indicators. These payloads have rich, differently-shaped JSON structures that would be painful to shoehorn into a flat SSE text stream.</p>
 
     <h3>Why fetch() + ReadableStream instead of EventSource</h3>
-    <p>The browser's built-in <code>EventSource</code> API only supports GET requests. The turn endpoint needs a JSON body (user message, model selection, session ID). The frontend does a raw <code>fetch("/agentic-agent", { method: "POST", body: JSON.stringify({...}) })</code> and manually reads the response as a <code>ReadableStream</code>, decoding with a <code>TextDecoder</code> and parsing <code>data: </code> prefixed SSE lines. Roughly 60 lines of frontend code — non-standard but straightforward.</p>
+    <p>The browser's built-in <code>EventSource</code> API only supports GET requests. The turn endpoint needs a JSON body (user message, model selection, session ID). The frontend does a raw <code>fetch("/livecode-agent", { method: "POST", body: JSON.stringify({...}) })</code> and manually reads the response as a <code>ReadableStream</code>, decoding with a <code>TextDecoder</code> and parsing <code>data: </code> prefixed SSE lines. Roughly 60 lines of frontend code — non-standard but straightforward.</p>
 
     <h3>HTTP endpoints</h3>
     <table>
       <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
       <tbody>
-        <tr><td><code>/agentic-agent</code></td><td>POST</td><td>Main turn — returns <code>text/event-stream</code></td></tr>
-        <tr><td><code>/agentic/sessions</code></td><td>GET</td><td>List saved sessions for a project</td></tr>
-        <tr><td><code>/agentic/session</code></td><td>GET</td><td>Load one session's canonical history</td></tr>
-        <tr><td><code>/agentic/session/fork</code></td><td>POST</td><td>Fork a session at its current state</td></tr>
-        <tr><td><code>/agentic/session/rewind</code></td><td>POST</td><td>Roll history back to message N</td></tr>
-        <tr><td><code>/agentic/session/rename</code></td><td>POST</td><td>Rename a session</td></tr>
-        <tr><td><code>/agentic/session/delete</code></td><td>POST</td><td>Delete a session</td></tr>
-        <tr><td><code>/agentic/permission</code></td><td>POST</td><td>Approve or deny a sensitive tool call</td></tr>
-        <tr><td><code>/agentic/interject</code></td><td>POST</td><td>Inject a mid-turn user message</td></tr>
-        <tr><td><code>/agentic/index</code></td><td>POST</td><td>Force-rebuild the file manifest</td></tr>
+        <tr><td><code>/livecode-agent</code></td><td>POST</td><td>Main turn — returns <code>text/event-stream</code></td></tr>
+        <tr><td><code>/livecode/sessions</code></td><td>GET</td><td>List saved sessions for a project</td></tr>
+        <tr><td><code>/livecode/session</code></td><td>GET</td><td>Load one session's canonical history</td></tr>
+        <tr><td><code>/livecode/session/fork</code></td><td>POST</td><td>Fork a session at its current state</td></tr>
+        <tr><td><code>/livecode/session/rewind</code></td><td>POST</td><td>Roll history back to message N</td></tr>
+        <tr><td><code>/livecode/session/rename</code></td><td>POST</td><td>Rename a session</td></tr>
+        <tr><td><code>/livecode/session/delete</code></td><td>POST</td><td>Delete a session</td></tr>
+        <tr><td><code>/livecode/permission</code></td><td>POST</td><td>Approve or deny a sensitive tool call</td></tr>
+        <tr><td><code>/livecode/interject</code></td><td>POST</td><td>Inject a mid-turn user message</td></tr>
+        <tr><td><code>/livecode/index</code></td><td>POST</td><td>Force-rebuild the file manifest</td></tr>
       </tbody>
     </table>
 
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;agent_turn<span class="kw">&lt;/span&gt;</span>():
-    span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;generate<span class="kw">&lt;/span&gt;</span>():
-        span class="kw"&gt;for<span class="kw">&lt;/span&gt;</span> chunk span class="kw"&gt;in<span class="kw">&lt;/span&gt;</span> run_agentic_turn(...):
-            span class="kw"&gt;yield<span class="kw">&lt;/span&gt;</span> chunk  span class="cm"&gt;# "data: {...}\n\n"<span class="kw">&lt;/span&gt;</span>
+    <pre><code><span class="kw">def</span> <span class="fn">agent_turn</span>():
+    <span class="kw">def</span> <span class="fn">generate</span>():
+        <span class="kw">for</span> chunk <span class="kw">in</span> run_livecode_turn(...):
+            <span class="kw">yield</span> chunk  <span class="cm"># "data: {...}\n\n"</span>
 
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> Response(
+    <span class="kw">return</span> Response(
         stream_with_context(generate()),
-        mimetype=span class="str"&gt;"text/event-stream"<span class="kw">&lt;/span&gt;</span>,
+        mimetype=<span class="str">"text/event-stream"</span>,
         headers={
-            span class="str"&gt;"Cache-Control"<span class="kw">&lt;/span&gt;</span>: span class="str"&gt;"no-cache"<span class="kw">&lt;/span&gt;</span>,
-            span class="str"&gt;"X-Accel-Buffering"<span class="kw">&lt;/span&gt;</span>: span class="str"&gt;"no"<span class="kw">&lt;/span&gt;</span>,
+            <span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>,
+            <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>,
         },
     )</code></pre>
     <p>After the generator exhausts, the route persists the turn to disk via append-only JSONL writes.</p>
@@ -257,14 +257,14 @@ index cache"]:::disk
         <div class="mermaid-pending">sequenceDiagram
   autonumber
   participant U as Browser
-  participant F as Flask /agentic-agent
+  participant F as Flask /livecode-agent
   participant H as Harness loop
   participant L as LLM
   participant T as Tools
   participant W as WebSocket
 
   U->>F: POST question + session_id
-  F->>H: run_agentic_turn()
+  F->>H: run_livecode_turn()
   H->>H: classify · index · compact
   loop up to 20 iterations
     H->>L: messages + tool schemas
@@ -294,7 +294,7 @@ index cache"]:::disk
         <div class="mermaid-pending">flowchart TD
   classDef step fill:#f1f5f9,stroke:#64748b,color:#334155
   classDef gate fill:#fef3c7,stroke:#d97706,color:#92400e
-  classDef finish fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef end fill:#dcfce7,stroke:#16a34a,color:#14532d
 
   A([Start turn]):::step
   B[Stationarity check]:::gate
@@ -303,9 +303,9 @@ index cache"]:::disk
   E{Tool calls?}:::gate
   F[Dispatch tools]:::step
   G{attempt_completion?}:::gate
-  H[Stream answer SSE]:::finish
+  H[Stream answer SSE]:::end
   I[Codebase recovery nudge]:::gate
-  J[Exhaustion summarizer]:::finish
+  J[Exhaustion summarizer]:::end
 
   A --> B --> C --> D --> E
   E -->|yes| F --> G
@@ -327,7 +327,7 @@ index cache"]:::disk
   participant H as Harness thread
   participant W as WebSocket
   participant U as Browser UI
-  participant P as POST /agentic/permission
+  participant P as POST /livecode/permission
 
   H->>H: sensitive tool write edit shell
   H->>W: permission_request
@@ -348,7 +348,7 @@ index cache"]:::disk
         <div class="mermaid-pending">flowchart TB
   classDef file fill:#f8fafc,stroke:#475569,color:#334155
 
-  ROOT["~/.agenticcode/sessions/project_hash/session_id/"]:::file
+  ROOT["~/.livecode/sessions/project_hash/session_id/"]:::file
   J["chat_history.jsonl
 append-only messages"]:::file
   S["summary.json
@@ -367,7 +367,7 @@ audit trail"]:::file
     </div>
 
     <h2 id="charts">Metrics and charts</h2>
-    <p>Illustrative breakdowns from the AgenticCode codebase and runtime thresholds. These numbers come from direct line counts and configured constants — not synthetic benchmarks.</p>
+    <p>Illustrative breakdowns from the LiveCode Agent codebase and runtime thresholds. These numbers come from direct line counts and configured constants — not synthetic benchmarks.</p>
 
     <div class="chart-wrap">
       <canvas id="codebaseSizeChart" aria-label="Lines of code by subsystem"></canvas>
@@ -390,7 +390,7 @@ audit trail"]:::file
     </div>
 
     <h2 id="backend">Backend package structure</h2>
-    <p>The <code>agenticcode/</code> package is 19 files. Here is every module and its responsibility:</p>
+    <p>The <code>livecode/</code> package is 19 files. Here is every module and its responsibility:</p>
     <table>
       <thead><tr><th>File</th><th>Lines</th><th>Responsibility</th></tr></thead>
       <tbody>
@@ -415,18 +415,18 @@ audit trail"]:::file
     </table>
 
     <h3>Constants that drive the whole system</h3>
-    <pre><code>MAX_ITERATIONS = <span class="num">20</span>
-CONTEXT_WINDOW = <span class="num">128</span>_000
-AUTO_COMPACT_RATIO = <span class="num">0.85</span>       <span class="cm"># full-replace at 108,800 tokens</span>
-INTER_COMPACT_RATIO = <span class="num">0.65</span>      <span class="cm"># inter-turn at 83,200 tokens</span>
-IN_TURN_COMPACT_RATIO = <span class="num">0.70</span>    <span class="cm"># in-turn budget 89,600 tokens</span>
-KEEP_RECENT_TOOL_MSGS = <span class="num">6</span>
-STATIONARITY_NUDGE_AFTER = <span class="num">8</span>
-STATIONARITY_HARD_STOP = <span class="num">16</span>
-TOOL_RESULT_MAX_CHARS = <span class="num">16</span>_000</code></pre>
+    <pre><code>MAX_ITERATIONS = 20
+CONTEXT_WINDOW = 128_000
+AUTO_COMPACT_RATIO = 0.85       <span class="cm"># full-replace at 108,800 tokens</span>
+INTER_COMPACT_RATIO = 0.65      <span class="cm"># inter-turn at 83,200 tokens</span>
+IN_TURN_COMPACT_RATIO = 0.70    <span class="cm"># in-turn budget 89,600 tokens</span>
+KEEP_RECENT_TOOL_MSGS = 6
+STATIONARITY_NUDGE_AFTER = 8
+STATIONARITY_HARD_STOP = 16
+TOOL_RESULT_MAX_CHARS = 16_000</code></pre>
 
-    <h2 id="harness">The agent harness loop</h2>
-    <p><code>run_agentic_turn()</code> in <code>harness.py</code> is a Python <strong>generator function</strong>. It yields raw SSE payload strings (<code>data: {...}\n\n</code>) directly. It never returns a value.</p>
+    <h2 id="harness">The agent harness loop — build guide</h2>
+    <p><code>run_livecode_turn()</code> in <code>harness.py</code> is a Python <strong>generator function</strong>. It yields raw SSE payload strings (<code>data: {...}\n\n</code>) directly. It never returns a value.</p>
 
     <h3>Turn setup (before the loop)</h3>
     <ol>
@@ -438,203 +438,72 @@ TOOL_RESULT_MAX_CHARS = <span class="num">16</span>_000</code></pre>
     </ol>
 
     <h3>Build the harness loop — step by step</h3>
-    <p>The heart of AgenticCode is a Python <strong>generator</strong> named <code>run_agentic_turn()</code>. A generator can <code>yield</code> many times without returning — perfect for SSE streaming. Flask wraps it in <code>stream_with_context()</code> and the browser reads chunks as they arrive.</p>
-    <p>Below is the full loop broken into nine steps. Each step shows the code you would write, then a table explaining every identifier so you can recreate the harness from scratch.</p>
+    <p><code>run_livecode_turn()</code> is a Python <strong>generator</strong>: it <code>yield</code>s SSE strings many times per user message. Below, each step shows the code to write and what every identifier means.</p>
 
-    <h4>Step 0 — Generator signature and state you need</h4>
-    <p>Before the loop starts, initialize mutable state the loop will read and write every iteration:</p>
-    <pre><code><span class="kw">def</span> <span class="fn">run_agentic_turn</span>(question, project_path, session_id, model=<span class="str">"auto"</span>):
-    <span class="str">"""Yields SSE strings: data: {...}\\n\\n — never returns a final value."""</span>
-    messages = build_base_messages(question, project_path, session_id)
-    turn_persist = []          <span class="cm"># durable copy written to JSONL after the turn</span>
-    stationarity = IdenticalToolCallRun()
-    had_tool_errors = <span class="kw">False</span>
-    no_tools_used = <span class="kw">True</span>
-    classification = classify_turn(question)</code></pre>
-    <table>
-      <thead><tr><th>Symbol</th><th>What it is</th><th>Why you need it</th></tr></thead>
-      <tbody>
-        <tr><td><code>question</code></td><td>Raw user string from the POST body</td><td>Appended as the latest <code>role: user</code> message</td></tr>
-        <tr><td><code>project_path</code></td><td>Absolute path to the repo root on disk</td><td>Every file tool resolves paths relative to this</td></tr>
-        <tr><td><code>session_id</code></td><td>Alphanumeric id (max 128 chars)</td><td>Names the JSONL directory; keys interjection queues</td></tr>
-        <tr><td><code>messages</code></td><td>List of OpenAI-format dicts</td><td>Grows each iteration with assistant + tool messages</td></tr>
-        <tr><td><code>turn_persist</code></td><td>Parallel list for disk</td><td>Canonical log appended to <code>chat_history.jsonl</code></td></tr>
-        <tr><td><code>stationarity</code></td><td>Tracker object</td><td>Counts consecutive identical <code>tool_name:args</code> fingerprints</td></tr>
-        <tr><td><code>classification</code></td><td>Dict from routing</td><td>Drives model tier and <code>tool_choice</code> policy</td></tr>
-      </tbody>
-    </table>
-
-    <h4>Step 1 — The iteration ceiling</h4>
-    <p><code>MAX_ITERATIONS = 20</code> is a hard safety cap. One user message can trigger up to 20 LLM round-trips. Without a cap, a confused model can burn tokens forever.</p>
+    <h4>Step 1 — Iteration ceiling</h4>
     <pre><code><span class="kw">for</span> iteration <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, MAX_ITERATIONS + <span class="num">1</span>):
-    <span class="cm"># body runs once per LLM round-trip</span></code></pre>
-    <table>
-      <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>iteration</code></td><td>1-based counter — log it as <code>iteration 3/20</code> for debugging</td></tr>
-        <tr><td><code>range(1, MAX_ITERATIONS + 1)</code></td><td>Produces 1, 2, … 20 inclusive</td></tr>
-        <tr><td><code>MAX_ITERATIONS</code></td><td>Constant in <code>prompts.py</code> — tune per model cost/latency budget</td></tr>
-      </tbody>
-    </table>
+    <span class="cm"># one LLM round-trip per iteration; hard cap prevents runaway token spend</span></code></pre>
+    <table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody>
+    <tr><td><code>MAX_ITERATIONS</code></td><td>Hard cap (20) on LLM calls per user message</td></tr>
+    <tr><td><code>iteration</code></td><td>1-based counter logged as <code>iteration 3/20</code></td></tr>
+    </tbody></table>
 
-    <h4>Step 2 — Stationarity gate (stop infinite retries)</h4>
-    <p>Models sometimes call the same tool with identical arguments in a loop — e.g. <code>grep_repo("foo")</code> fifteen times. Stationarity detection hashes each call as <code>tool_name:sorted_json(args)</code> and counts consecutive repeats.</p>
-    <pre><code>    count = stationarity.observe(last_tool_name, last_tool_args)
-
-    <span class="kw">if</span> count &gt;= STATIONARITY_HARD_STOP:      <span class="cm"># default 16</span>
+    <h4>Step 2 — Stationarity gate</h4>
+    <pre><code>    <span class="kw">if</span> stationarity.count &gt;= STATIONARITY_HARD_STOP:
         <span class="kw">yield</span> sse_done(<span class="str">"Stopped: repeated identical tool calls."</span>)
         <span class="kw">return</span>
+    <span class="kw">if</span> stationarity.count &gt;= STATIONARITY_NUDGE_AFTER:
+        messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: STATIONARITY_NUDGE})</code></pre>
 
-    <span class="kw">if</span> count &gt;= STATIONARITY_NUDGE_AFTER:    <span class="cm"># default 8</span>
-        messages.append({
-            <span class="str">"role"</span>: <span class="str">"user"</span>,
-            <span class="str">"content"</span>: <span class="str">"You are repeating the same tool call. Change approach."</span>,
-        })</code></pre>
-    <table>
-      <thead><tr><th>Constant</th><th>Value</th><th>Behavior</th></tr></thead>
-      <tbody>
-        <tr><td><code>STATIONARITY_NUDGE_AFTER</code></td><td>8</td><td>Inject a user-message nudge — cheap, no extra model tier yet</td></tr>
-        <tr><td><code>STATIONARITY_HARD_STOP</code></td><td>16</td><td><code>yield</code> a final SSE event and <code>return</code> from the generator</td></tr>
-        <tr><td><code>observe()</code></td><td>method</td><td>Returns consecutive count; resets to 1 when fingerprint changes</td></tr>
-      </tbody>
-    </table>
-
-    <h4>Step 3 — Model selection (auto routing)</h4>
-    <p>When the user picks <code>model="auto"</code>, pick a tier from <code>classification["complexity"]</code>. Escalate to a stronger model if tools keep failing or stationarity nudges fired.</p>
-    <pre><code>    iteration_model = pick_model(
-        user_model=model,
-        classification=classification,
-        iteration=iteration,
-        escalate=had_tool_errors <span class="kw">or</span> stationarity.nudge_fired,
-    )</code></pre>
-    <table>
-      <thead><tr><th>Parameter</th><th>Source</th><th>Effect</th></tr></thead>
-      <tbody>
-        <tr><td><code>classification["complexity"]</code></td><td><code>"low" | "medium" | "high"</code></td><td>Maps to cheaper vs capable Azure deployment</td></tr>
-        <tr><td><code>escalate</code></td><td>Bool</td><td>When True, bump one tier for remainder of turn</td></tr>
-        <tr><td><code>iteration</code></td><td>Loop counter</td><td>Lets you log which model answered iteration N</td></tr>
-      </tbody>
-    </table>
-
-    <h4>Step 4 — Context management (before every LLM call)</h4>
-    <p>Three operations run in this exact order. Skipping or reordering them causes API errors or context blow-ups mid-turn.</p>
-    <pre><code>    messages = compact_stale_tool_messages(
-        messages,
-        budget=<span class="fn">int</span>(CONTEXT_WINDOW * IN_TURN_COMPACT_RATIO),  <span class="cm"># 89_600 tokens</span>
-    )
+    <h4>Step 3 — Model + context before each LLM call</h4>
+    <pre><code>    iteration_model = pick_model(model, classification, iteration, had_tool_errors)
+    messages = compact_stale_tool_messages(messages, budget=<span class="num">89600</span>)
     messages.extend(drain_interjection_queue(session_id))
     messages = sanitize_messages_for_api(messages)</code></pre>
-    <table>
-      <thead><tr><th>Call</th><th>What it does</th><th>Why before LLM</th></tr></thead>
-      <tbody>
-        <tr><td><code>compact_stale_tool_messages</code></td><td>Dedupes old file reads; shrinks stale tool JSON</td><td>Long tool loops can fill 128k context in one turn</td></tr>
-        <tr><td><code>drain_interjection_queue</code></td><td>Pops mid-turn user messages typed while agent runs</td><td>User can redirect without waiting for turn end</td></tr>
-        <tr><td><code>sanitize_messages_for_api</code></td><td>Removes orphan tool messages; strips unreplied tool_calls</td><td>OpenAI rejects malformed assistant/tool sequencing</td></tr>
-        <tr><td><code>budget=89600</code></td><td>70% of 128k context window</td><td>Leaves headroom for the next LLM response</td></tr>
-      </tbody>
-    </table>
 
-    <h4>Step 5 — LLM call with tools</h4>
-    <p>This is the only network call in the iteration. Pass the tool schema list, messages, and a <code>tool_choice</code> policy that can force a tool on iteration 1 for actionable tasks.</p>
+    <h4>Step 4 — LLM call with tools</h4>
     <pre><code>    response = call_llm_with_tools(
         model=iteration_model,
         messages=messages,
-        tools=AGENTIC_TOOLS,
+        tools=LIVECODE_TOOLS,
         tool_choice=pick_tool_choice(classification, iteration),
-        prompt_cache_key=f<span class="str">"{project_hash}:{session_id}"</span>,
     )</code></pre>
-    <table>
-      <thead><tr><th>Argument</th><th>Type</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>model</code></td><td>str</td><td>Azure deployment name for this iteration</td></tr>
-        <tr><td><code>messages</code></td><td>list[dict]</td><td>Full conversation including system + history + tools</td></tr>
-        <tr><td><code>tools</code></td><td>list[dict]</td><td>OpenAI function schemas — 14 tools in <code>AGENTIC_TOOLS</code></td></tr>
-        <tr><td><code>tool_choice</code></td><td><code>"auto" | "required" | "none"</code></td><td><code>"required"</code> on iter 1 forces a tool call for actionable tasks</td></tr>
-        <tr><td><code>prompt_cache_key</code></td><td>str</td><td>Stable prefix for provider-side prompt caching</td></tr>
-        <tr><td><code>response.tool_calls</code></td><td>list | None</td><td>When present, go to Step 6; when absent, go to Step 7 or 8</td></tr>
-        <tr><td><code>response.content</code></td><td>str | None</td><td>Plain prose answer when model skips tools</td></tr>
-      </tbody>
-    </table>
 
-    <h4>Step 6 — Dispatch tool calls</h4>
-    <p>If the model returned tool calls, execute them, append results to <code>messages</code>, stream diffs over WebSocket, and loop unless <code>attempt_completion</code> was called.</p>
+    <h4>Step 5 — Dispatch tools or finish</h4>
     <pre><code>    <span class="kw">if</span> response.tool_calls:
-        no_tools_used = <span class="kw">False</span>
         results = dispatch_parallel_or_serial(response.tool_calls, session_id)
-
         <span class="kw">for</span> tool_call, result <span class="kw">in</span> <span class="fn">zip</span>(response.tool_calls, results):
-            messages.append({
-                <span class="str">"role"</span>: <span class="str">"tool"</span>,
-                <span class="str">"tool_call_id"</span>: tool_call.id,
-                <span class="str">"content"</span>: <span class="fn">json</span>.dumps(compact_tool_result(result)),
-            })
-            turn_persist.append(messages[-<span class="num">1</span>])
-
-            <span class="kw">if</span> tool_call.name <span class="kw">in</span> (<span class="str">"write_file"</span>, <span class="str">"edit_file"</span>):
-                emit_websocket(<span class="str">"diff_block"</span>, result[<span class="str">"diff_html"</span>])
-
+            messages.append(tool_message(tool_call, compact_tool_result(result)))
         <span class="kw">if</span> any(tc.name == <span class="str">"attempt_completion"</span> <span class="kw">for</span> tc <span class="kw">in</span> response.tool_calls):
-            answer = extract_completion_result(results)
-            <span class="kw">yield</span> sse_done(answer=answer, turn_messages=turn_persist)
+            <span class="kw">yield</span> sse_done(answer=extract_completion(results), turn_messages=turn_persist)
             <span class="kw">return</span>
+        <span class="kw">continue</span>
 
-        <span class="kw">continue</span>  <span class="cm"># next iteration</span></code></pre>
-    <table>
-      <thead><tr><th>Symbol</th><th>Role</th></tr></thead>
-      <tbody>
-        <tr><td><code>dispatch_parallel_or_serial</code></td><td>ThreadPool if len &gt; 1 (max 6 workers); else inline</td></tr>
-        <tr><td><code>tool_call.id</code></td><td>Must match in the following <code>role: tool</code> message</td></tr>
-        <tr><td><code>compact_tool_result</code></td><td>Hard cap 16,000 chars before appending to context</td></tr>
-        <tr><td><code>attempt_completion</code></td><td>Sentinel tool — model calls this when task is done</td></tr>
-        <tr><td><code>continue</code></td><td>Skip to next iteration; do not stream an answer yet</td></tr>
-      </tbody>
-    </table>
+    <span class="kw">if</span> iteration == <span class="num">1</span> <span class="kw">and</span> no_tools_used <span class="kw">and</span> needs_codebase_evidence(question):
+        messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: CODEBASE_RECOVERY_PROMPT})
+        <span class="kw">continue</span>
 
-    <h4>Step 7 — Codebase-evidence recovery (iteration 1 only)</h4>
-    <p>If the user asked about code ("how does X work") and the model answered in plain prose without tools on the first iteration, inject a recovery nudge and force <code>tool_choice="required"</code> on the next pass.</p>
-    <pre><code>    <span class="kw">if</span> (
-        iteration == <span class="num">1</span>
-        <span class="kw">and</span> no_tools_used
-        <span class="kw">and</span> needs_codebase_evidence(question)
-    ):
-        messages.append({
-            <span class="str">"role"</span>: <span class="str">"user"</span>,
-            <span class="str">"content"</span>: CODEBASE_RECOVERY_PROMPT,
-        })
-        force_tool_choice_required = <span class="kw">True</span>
-        <span class="kw">continue</span></code></pre>
-
-    <h4>Step 8 — Stream a plain-text answer</h4>
-    <p>When the model returns content with no tool calls (and recovery did not trigger), stream tokens over SSE and finish the turn.</p>
-    <pre><code>    <span class="kw">if</span> response.content:
-        <span class="kw">for</span> token <span class="kw">in</span> stream_response_tokens(response):
-            <span class="kw">yield</span> sse_event({<span class="str">"type"</span>: <span class="str">"token"</span>, <span class="str">"content"</span>: token})
+    <span class="kw">if</span> response.content:
+        <span class="kw">yield</span> <span class="kw">from</span> stream_tokens_as_sse(response.content)
         <span class="kw">yield</span> sse_done(answer=response.content, turn_messages=turn_persist)
         <span class="kw">return</span></code></pre>
 
-    <h4>Step 9 — Exhaustion fallback (after all 20 iterations)</h4>
-    <p>If the loop exits without <code>attempt_completion</code>, append a final user instruction and call the LLM once without tools. The user always gets a closing summary.</p>
-    <pre><code>messages.append({
-    <span class="str">"role"</span>: <span class="str">"user"</span>,
-    <span class="str">"content"</span>: <span class="str">"Summarize your findings. Do not call any more tools."</span>,
-})
-final_answer = call_llm_no_tools(messages)
-<span class="kw">yield</span> sse_done(answer=final_answer, turn_messages=turn_persist)</code></pre>
+    <h4>Step 6 — Exhaustion fallback</h4>
+    <pre><code>messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Summarize without more tools."</span>})
+<span class="kw">yield</span> sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre>
 
-    <h4>Full loop — copy-paste skeleton</h4>
-    <p>All nine steps assembled into one generator body:</p>
-    <pre><code><span class="kw">def</span> <span class="fn">run_agentic_turn</span>(question, project_path, session_id, model=<span class="str">"auto"</span>):
+    <h4>Full skeleton</h4>
+    <pre><code><span class="kw">def</span> <span class="fn">run_livecode_turn</span>(question, project_path, session_id, model=<span class="str">"auto"</span>):
     messages = build_base_messages(question, project_path, session_id)
     turn_persist, stationarity = [], IdenticalToolCallRun()
     classification = classify_turn(question)
     had_tool_errors, no_tools_used = <span class="kw">False</span>, <span class="kw">True</span>
 
     <span class="kw">for</span> iteration <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, MAX_ITERATIONS + <span class="num">1</span>):
-        count = stationarity.last_count
-        <span class="kw">if</span> count &gt;= STATIONARITY_HARD_STOP:
+        <span class="kw">if</span> stationarity.count &gt;= STATIONARITY_HARD_STOP:
             <span class="kw">yield</span> sse_done(<span class="str">"Stopped: repeated identical tool calls."</span>)
             <span class="kw">return</span>
-        <span class="kw">if</span> count &gt;= STATIONARITY_NUDGE_AFTER:
+        <span class="kw">if</span> stationarity.count &gt;= STATIONARITY_NUDGE_AFTER:
             messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: STATIONARITY_NUDGE})
 
         iteration_model = pick_model(model, classification, iteration, had_tool_errors)
@@ -645,7 +514,7 @@ final_answer = call_llm_no_tools(messages)
         response = call_llm_with_tools(
             model=iteration_model,
             messages=messages,
-            tools=AGENTIC_TOOLS,
+            tools=LIVECODE_TOOLS,
             tool_choice=pick_tool_choice(classification, iteration),
         )
 
@@ -676,12 +545,12 @@ final_answer = call_llm_no_tools(messages)
 
     <h3>Parallel tool dispatch</h3>
     <p>When the model returns multiple independent tool calls, they run concurrently but results are reassembled in original order — the OpenAI function-calling contract requires tool results in the same order as the calls. I cap workers at six to avoid stampeding the filesystem or shell on large parallel batches.</p>
-    <pre><code>span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;len<span class="kw">&lt;/span&gt;</span>(tool_calls) &gt; span class="num"&gt;1<span class="kw">&lt;/span&gt;</span>:
-    span class="kw"&gt;with<span class="kw">&lt;/span&gt;</span> ThreadPoolExecutor(max_workers=span class="fn"&gt;min<span class="kw">&lt;/span&gt;</span>(span class="fn"&gt;len<span class="kw">&lt;/span&gt;</span>(tool_calls), span class="num"&gt;6<span class="kw">&lt;/span&gt;</span>)) span class="kw"&gt;as<span class="kw">&lt;/span&gt;</span> pool:
-        futures = {pool.submit(execute_one, tc): i span class="kw"&gt;for<span class="kw">&lt;/span&gt;</span> i, tc span class="kw"&gt;in<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;enumerate<span class="kw">&lt;/span&gt;</span>(tool_calls)}
+    <pre><code><span class="kw">if</span> <span class="fn">len</span>(tool_calls) &gt; <span class="num">1</span>:
+    <span class="kw">with</span> ThreadPoolExecutor(max_workers=<span class="fn">min</span>(<span class="fn">len</span>(tool_calls), <span class="num">6</span>)) <span class="kw">as</span> pool:
+        futures = {pool.submit(execute_one, tc): i <span class="kw">for</span> i, tc <span class="kw">in</span> <span class="fn">enumerate</span>(tool_calls)}
         results = reassemble_in_original_order(futures)
-span class="kw"&gt;else<span class="kw">&lt;/span&gt;</span>:
-    results = [execute_one(tool_calls[span class="num"&gt;0<span class="kw">&lt;/span&gt;</span>])]</code></pre>
+<span class="kw">else</span>:
+    results = [execute_one(tool_calls[<span class="num">0</span>])]</code></pre>
 
     <h2 id="tools">Tool system</h2>
     <p>The tool schemas are standard OpenAI function-calling JSON schema objects. Fourteen core tools:</p>
@@ -707,23 +576,23 @@ span class="kw"&gt;else<span class="kw">&lt;/span&gt;</span>:
 
     <h3>edit_file — ambiguity-rejecting SEARCH/REPLACE</h3>
     <p>One of the most important correctness guarantees in the whole system:</p>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;edit_file<span class="kw">&lt;/span&gt;</span>(path, old_string, new_string):
+    <pre><code><span class="kw">def</span> <span class="fn">edit_file</span>(path, old_string, new_string):
     content = read_file(path)
     occurrences = content.count(old_string)
 
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> occurrences == span class="num"&gt;0<span class="kw">&lt;/span&gt;</span>:
-        span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> error(span class="str"&gt;"old_string not found in file"<span class="kw">&lt;/span&gt;</span>)
+    <span class="kw">if</span> occurrences == <span class="num">0</span>:
+        <span class="kw">return</span> error(<span class="str">"old_string not found in file"</span>)
 
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> occurrences &gt; span class="num"&gt;1<span class="kw">&lt;/span&gt;</span>:
-        span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> error(
-            span class="str"&gt;"old_string found multiple times — too ambiguous. "<span class="kw">&lt;/span&gt;</span>
-            span class="str"&gt;"Provide more surrounding context to make the target unique."<span class="kw">&lt;/span&gt;</span>
+    <span class="kw">if</span> occurrences &gt; <span class="num">1</span>:
+        <span class="kw">return</span> error(
+            <span class="str">"old_string found multiple times — too ambiguous. "</span>
+            <span class="str">"Provide more surrounding context to make the target unique."</span>
         )
 
-    new_content = content.replace(old_string, new_string, span class="num"&gt;1<span class="kw">&lt;/span&gt;</span>)
+    new_content = content.replace(old_string, new_string, <span class="num">1</span>)
     write_file(path, new_content)
     diff_html, diff_text, adds, dels = create_diff_html(content, new_content)
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> success(diff_html=diff_html, additions=adds, deletions=dels)</code></pre>
+    <span class="kw">return</span> success(diff_html=diff_html, additions=adds, deletions=dels)</code></pre>
     <p>An ambiguous edit is rejected rather than silently applied to the wrong occurrence — the same discipline Claude Code's Edit tool enforces.</p>
 
     <h3>run_command — blocklist and git-log redirect</h3>
@@ -746,18 +615,18 @@ span class="kw"&gt;else<span class="kw">&lt;/span&gt;</span>:
     <span class="cm"># 600s timeout, output capped to last 12,000 chars</span></code></pre>
 
     <h3>git_log — structured, not raw text</h3>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;git_log<span class="kw">&lt;/span&gt;</span>(path=span class="kw"&gt;None<span class="kw">&lt;/span&gt;</span>, grep=span class="kw"&gt;None<span class="kw">&lt;/span&gt;</span>, since=span class="kw"&gt;None<span class="kw">&lt;/span&gt;</span>, max_commits=span class="num"&gt;80<span class="kw">&lt;/span&gt;</span>):
-    cmd = [span class="str"&gt;"git"<span class="kw">&lt;/span&gt;</span>, span class="str"&gt;"--no-pager"<span class="kw">&lt;/span&gt;</span>, span class="str"&gt;"log"<span class="kw">&lt;/span&gt;</span>, fspan class="str"&gt;"-n{max_commits}"<span class="kw">&lt;/span&gt;</span>,
-           span class="str"&gt;"--date=short"<span class="kw">&lt;/span&gt;</span>, span class="str"&gt;"--pretty=format:%h %ad %an %s"<span class="kw">&lt;/span&gt;</span>]
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> path: cmd += [span class="str"&gt;"--"<span class="kw">&lt;/span&gt;</span>, path]
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> grep: cmd += [fspan class="str"&gt;"--grep={grep}"<span class="kw">&lt;/span&gt;</span>]
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> since: cmd += [fspan class="str"&gt;"--since={since}"<span class="kw">&lt;/span&gt;</span>]
+    <pre><code><span class="kw">def</span> <span class="fn">git_log</span>(path=<span class="kw">None</span>, grep=<span class="kw">None</span>, since=<span class="kw">None</span>, max_commits=<span class="num">80</span>):
+    cmd = [<span class="str">"git"</span>, <span class="str">"--no-pager"</span>, <span class="str">"log"</span>, f<span class="str">"-n{max_commits}"</span>,
+           <span class="str">"--date=short"</span>, <span class="str">"--pretty=format:%h %ad %an %s"</span>]
+    <span class="kw">if</span> path: cmd += [<span class="str">"--"</span>, path]
+    <span class="kw">if</span> grep: cmd += [f<span class="str">"--grep={grep}"</span>]
+    <span class="kw">if</span> since: cmd += [f<span class="str">"--since={since}"</span>]
 
-    output = subprocess.run(cmd, capture_output=span class="kw"&gt;True<span class="kw">&lt;/span&gt;</span>, text=span class="kw"&gt;True<span class="kw">&lt;/span&gt;</span>).stdout
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> [
-        {span class="str"&gt;"hash"<span class="kw">&lt;/span&gt;</span>: m[span class="num"&gt;1<span class="kw">&lt;/span&gt;</span>], span class="str"&gt;"date"<span class="kw">&lt;/span&gt;</span>: m[span class="num"&gt;2<span class="kw">&lt;/span&gt;</span>], span class="str"&gt;"author"<span class="kw">&lt;/span&gt;</span>: m[span class="num"&gt;3<span class="kw">&lt;/span&gt;</span>], span class="str"&gt;"subject"<span class="kw">&lt;/span&gt;</span>: m[span class="num"&gt;4<span class="kw">&lt;/span&gt;</span>]}
-        span class="kw"&gt;for<span class="kw">&lt;/span&gt;</span> line span class="kw"&gt;in<span class="kw">&lt;/span&gt;</span> output.splitlines()
-        span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> (m := GIT_LOG_LINE_RE.match(line))
+    output = subprocess.run(cmd, capture_output=<span class="kw">True</span>, text=<span class="kw">True</span>).stdout
+    <span class="kw">return</span> [
+        {<span class="str">"hash"</span>: m[<span class="num">1</span>], <span class="str">"date"</span>: m[<span class="num">2</span>], <span class="str">"author"</span>: m[<span class="num">3</span>], <span class="str">"subject"</span>: m[<span class="num">4</span>]}
+        <span class="kw">for</span> line <span class="kw">in</span> output.splitlines()
+        <span class="kw">if</span> (m := GIT_LOG_LINE_RE.match(line))
     ]</code></pre>
 
     <h3>Tool result compaction and UI labels</h3>
@@ -771,15 +640,15 @@ span class="kw"&gt;else<span class="kw">&lt;/span&gt;</span>:
     <ul>
       <li><strong>Purpose:</strong> flat list of every file in the project</li>
       <li><strong>Used by:</strong> grep_repo, read_repo_file, list_repo_dir, project layout tree</li>
-      <li><strong>Storage:</strong> <code>~/.agenticcode/index/&lt;project_hash&gt;.json</code></li>
+      <li><strong>Storage:</strong> <code>~/.livecode/index/&lt;project_hash&gt;.json</code></li>
       <li><strong>Cache invalidation:</strong> max mtime of project root + top-level entries</li>
       <li><strong>Limits:</strong> 8,000 files, 512 KB per file</li>
     </ul>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;resolve_safe_path<span class="kw">&lt;/span&gt;</span>(project_root, requested_path):
+    <pre><code><span class="kw">def</span> <span class="fn">resolve_safe_path</span>(project_root, requested_path):
     resolved = realpath(join(project_root, requested_path))
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> span class="kw"&gt;not<span class="kw">&lt;/span&gt;</span> resolved.startswith(realpath(project_root)):
-        span class="kw"&gt;raise<span class="kw">&lt;/span&gt;</span> PermissionError(fspan class="str"&gt;"Path traversal attempt: {requested_path}"<span class="kw">&lt;/span&gt;</span>)
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> resolved</code></pre>
+    <span class="kw">if</span> <span class="kw">not</span> resolved.startswith(realpath(project_root)):
+        <span class="kw">raise</span> PermissionError(f<span class="str">"Path traversal attempt: {requested_path}"</span>)
+    <span class="kw">return</span> resolved</code></pre>
 
     <h3>Symbol index</h3>
     <p>Python parsing uses <code>ast.walk()</code> for ClassDef, FunctionDef, AsyncFunctionDef. JavaScript/TypeScript uses a lightweight regex — deliberately avoiding a full TS parser dependency. Extensions: <code>.py</code>, <code>.js</code>, <code>.jsx</code>, <code>.ts</code>, <code>.tsx</code>, <code>.mjs</code>, <code>.cjs</code>.</p>
@@ -787,35 +656,35 @@ span class="kw"&gt;else<span class="kw">&lt;/span&gt;</span>:
 
     <h2 id="sessions">Session persistence</h2>
     <p>Every conversation is a directory on disk — not a database row.</p>
-    <pre><code>~/.agenticcode/sessions/
+    <pre><code>~/.livecode/sessions/
 └── &lt;project_hash&gt;/
     └── &lt;session_id&gt;/
-        ├── chat_history.jsonl    &lt;span class="cm"&gt;<span class="cm"># append-only OpenAI-format messages&lt;/span&gt;</span>
-        ├── summary.json            &lt;span class="cm"&gt;<span class="cm"># metadata + reminder state&lt;/span&gt;</span>
-        ├── compaction.json         &lt;span class="cm"&gt;<span class="cm"># active compaction sidecar&lt;/span&gt;</span>
-        └── compaction_checkpoints/ &lt;span class="cm"&gt;<span class="cm"># audit trail per compaction event&lt;/span&gt;</span></code></pre>
+        ├── chat_history.jsonl    <span class="cm"># append-only OpenAI-format messages</span>
+        ├── summary.json            <span class="cm"># metadata + reminder state</span>
+        ├── compaction.json         <span class="cm"># active compaction sidecar</span>
+        └── compaction_checkpoints/ <span class="cm"># audit trail per compaction event</span></code></pre>
 
     <h3>What gets fed to the LLM each turn</h3>
     <p>The harness never sends raw JSONL verbatim. It calls <code>get_projected_messages()</code>:</p>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;get_projected_messages<span class="kw">&lt;/span&gt;</span>(session_dir):
-    messages = load_jsonl(span class="str"&gt;"chat_history.jsonl"<span class="kw">&lt;/span&gt;</span>)
-    compaction = load_json(span class="str"&gt;"compaction.json"<span class="kw">&lt;/span&gt;</span>)
+    <pre><code><span class="kw">def</span> <span class="fn">get_projected_messages</span>(session_dir):
+    messages = load_jsonl(<span class="str">"chat_history.jsonl"</span>)
+    compaction = load_json(<span class="str">"compaction.json"</span>)
 
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> compaction span class="kw"&gt;and<span class="kw">&lt;/span&gt;</span> hash_prefix(messages, compaction) == compaction[span class="str"&gt;"prefix_hash"<span class="kw">&lt;/span&gt;</span>]:
+    <span class="kw">if</span> compaction <span class="kw">and</span> hash_prefix(messages, compaction) == compaction[<span class="str">"prefix_hash"</span>]:
         summary_msg = {
-            span class="str"&gt;"role"<span class="kw">&lt;/span&gt;</span>: span class="str"&gt;"user"<span class="kw">&lt;/span&gt;</span>,
-            span class="str"&gt;"content"<span class="kw">&lt;/span&gt;</span>: fspan class="str"&gt;"[Previous conversation summary — continue from this context]\n\n{compaction['summary']}"<span class="kw">&lt;/span&gt;</span>
+            <span class="str">"role"</span>: <span class="str">"user"</span>,
+            <span class="str">"content"</span>: f<span class="str">"[Previous conversation summary — continue from this context]\n\n{compaction['summary']}"</span>
         }
-        span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> [summary_msg] + messages[compaction[span class="str"&gt;"boundary_index"<span class="kw">&lt;/span&gt;</span>]:]
+        <span class="kw">return</span> [summary_msg] + messages[compaction[<span class="str">"boundary_index"</span>]:]
 
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> sanitize_messages_for_api(messages)</code></pre>
+    <span class="kw">return</span> sanitize_messages_for_api(messages)</code></pre>
     <p>Hash verification protects against stale summaries after session rewind — if the prefix no longer matches, fall back to full history.</p>
 
     <h3>Message sanitization for the OpenAI API</h3>
     <p><code>sanitize_messages_for_api()</code> drops orphaned tool messages and strips unreplied tool_calls off assistant messages — without this, the API rejects malformed sequencing outright.</p>
 
     <h2 id="compaction">Context compaction — three tiers</h2>
-    <p>Long agent sessions are where most agentic systems break down. AgenticCode uses three tiers:</p>
+    <p>Long agent sessions are where most agentic systems break down. LiveCode Agent uses three tiers:</p>
     <div class="diagram-wrap" data-diagram-title="Three-tier compaction">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
         <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
@@ -855,18 +724,18 @@ LLM 7-section summary"]:::hot
 
     <h2 id="memory">Memory system</h2>
     <p>Cross-session memory is intentionally simple — no embeddings.</p>
-    <pre><code>~/.agenticcode/memory/&lt;project_hash&gt;.md</code></pre>
-    <pre><code>MAX_MEMORY_READ = &lt;span class="num"&gt;2&lt;/span&gt;_048   &lt;span class="cm"&gt;<span class="cm"># chars returned to system prompt&lt;/span&gt;</span>
-MAX_MEMORY_STORE = &lt;span class="num"&gt;6&lt;/span&gt;_144  &lt;span class="cm"&gt;<span class="cm"># chars kept on disk (3x read window)&lt;/span&gt;</span>
+    <pre><code>~/.livecode/memory/&lt;project_hash&gt;.md</code></pre>
+    <pre><code>MAX_MEMORY_READ = <span class="num">2</span>_048   <span class="cm"># chars returned to system prompt</span>
+MAX_MEMORY_STORE = <span class="num">6</span>_144  <span class="cm"># chars kept on disk (3x read window)</span>
 
-&lt;span class="kw"&gt;def&lt;/span&gt; &lt;span class="fn"&gt;load_project_memory&lt;/span&gt;(project_path):
+<span class="kw">def</span> <span class="fn">load_project_memory</span>(project_path):
     content = read_memory_file(project_path)
-    &lt;span class="kw"&gt;return&lt;/span&gt; content[-MAX_MEMORY_READ:]  &lt;span class="cm"&gt;<span class="cm"># recency-biased&lt;/span&gt;</span>
+    <span class="kw">return</span> content[-MAX_MEMORY_READ:]  <span class="cm"># recency-biased</span>
 
-&lt;span class="kw"&gt;def&lt;/span&gt; &lt;span class="fn"&gt;append_project_memory&lt;/span&gt;(project_path, note):
+<span class="kw">def</span> <span class="fn">append_project_memory</span>(project_path, note):
     existing = read_memory_file(project_path)
-    new_content = existing + f&lt;span class="str"&gt;"\n- {note}"&lt;/span&gt;
-    &lt;span class="kw"&gt;if&lt;/span&gt; &lt;span class="fn"&gt;len&lt;/span&gt;(new_content) &gt; MAX_MEMORY_STORE:
+    new_content = existing + f<span class="str">"\n- {note}"</span>
+    <span class="kw">if</span> <span class="fn">len</span>(new_content) &gt; MAX_MEMORY_STORE:
         new_content = new_content[-MAX_MEMORY_STORE:]
     write_memory_file(project_path, new_content)</code></pre>
     <p>Once a session has been compacted, the harness switches to a terser compaction-specific system prompt that drops the memory block — trading a small amount of continuity for a leaner prompt.</p>
@@ -874,13 +743,13 @@ MAX_MEMORY_STORE = &lt;span class="num"&gt;6&lt;/span&gt;_144  &lt;span class="c
     <h2 id="routing">Request classification and routing</h2>
     <p>Before the agent loop starts, every question is classified:</p>
     <pre><code>{
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"is_meta"</span>&lt;/span&gt;: False,
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"is_actionable"</span>&lt;/span&gt;: True,
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"needs_shell"</span>&lt;/span&gt;: True,
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"chat_only"</span>&lt;/span&gt;: False,
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"expects_multi_step"</span>&lt;/span&gt;: True,
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"complexity"</span>&lt;/span&gt;: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"medium"</span>&lt;/span&gt;,
-  &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"is_follow_up"</span>&lt;/span&gt;: False
+  <span class="str">"is_meta"</span>: False,
+  <span class="str">"is_actionable"</span>: True,
+  <span class="str">"needs_shell"</span>: True,
+  <span class="str">"chat_only"</span>: False,
+  <span class="str">"expects_multi_step"</span>: True,
+  <span class="str">"complexity"</span>: <span class="str">"medium"</span>,
+  <span class="str">"is_follow_up"</span>: False
 }</code></pre>
     <p>Heuristics first; cheap LLM call if confidence &lt; 0.7.</p>
     <pre><code><span class="kw">def</span> <span class="fn">pick_tool_choice</span>(classification, iteration):
@@ -893,30 +762,30 @@ MAX_MEMORY_STORE = &lt;span class="num"&gt;6&lt;/span&gt;_144  &lt;span class="c
 
     <h2 id="permissions">Permission and safety system</h2>
     <p>Three tools require explicit user approval: <code>write_file</code>, <code>edit_file</code>, <code>run_command</code>.</p>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;request_permission<span class="kw">&lt;/span&gt;</span>(session_id, tool_name, arguments):
+    <pre><code><span class="kw">def</span> <span class="fn">request_permission</span>(session_id, tool_name, arguments):
     event = threading.Event()
     _pending[session_id] = event
 
-    emit_websocket(span class="str"&gt;"permission_request"<span class="kw">&lt;/span&gt;</span>, tool=tool_name, arguments=arguments)
+    emit_websocket(<span class="str">"permission_request"</span>, tool=tool_name, arguments=arguments)
 
-    event.wait(timeout=span class="num"&gt;300<span class="kw">&lt;/span&gt;</span>)  span class="cm"&gt;# 5-minute timeout<span class="kw">&lt;/span&gt;</span>
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> _decisions.get(session_id, span class="kw"&gt;False<span class="kw">&lt;/span&gt;</span>)
+    event.wait(timeout=<span class="num">300</span>)  <span class="cm"># 5-minute timeout</span>
+    <span class="kw">return</span> _decisions.get(session_id, <span class="kw">False</span>)
 
-span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;resolve_permission<span class="kw">&lt;/span&gt;</span>(session_id, approved):
+<span class="kw">def</span> <span class="fn">resolve_permission</span>(session_id, approved):
     _decisions[session_id] = approved
-    _pending[session_id].span class="fn"&gt;set<span class="kw">&lt;/span&gt;</span>()</code></pre>
-    <p>The harness worker thread blocks on a <code>threading.Event</code> until the browser calls <code>POST /agentic/permission</code>.</p>
+    _pending[session_id].<span class="fn">set</span>()</code></pre>
+    <p>The harness worker thread blocks on a <code>threading.Event</code> until the browser calls <code>POST /livecode/permission</code>.</p>
 
     <h2 id="subagents">Sub-agent architecture</h2>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;spawn_subagent<span class="kw">&lt;/span&gt;</span>(instruction, parent_session_id, project_path):
-    child_session_id = fspan class="str"&gt;"{parent_session_id}_sub_{uuid4().hex[:8]}"<span class="kw">&lt;/span&gt;</span>
+    <pre><code><span class="kw">def</span> <span class="fn">spawn_subagent</span>(instruction, parent_session_id, project_path):
+    child_session_id = f<span class="str">"{parent_session_id}_sub_{uuid4().hex[:8]}"</span>
     result = run_subagent_turn(
         instruction=instruction,
         project_path=project_path,
         session_id=child_session_id,
-        max_iterations=span class="num"&gt;5<span class="kw">&lt;/span&gt;</span>,  span class="cm"&gt;# vs 20 for parent<span class="kw">&lt;/span&gt;</span>
+        max_iterations=<span class="num">5</span>,  <span class="cm"># vs 20 for parent</span>
     )
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> {span class="str"&gt;"result"<span class="kw">&lt;/span&gt;</span>: result, span class="str"&gt;"child_session_id"<span class="kw">&lt;/span&gt;</span>: child_session_id}</code></pre>
+    <span class="kw">return</span> {<span class="str">"result"</span>: result, <span class="str">"child_session_id"</span>: child_session_id}</code></pre>
     <p>Child sessions are ephemeral — not shown in the session list. The parent only sees the final synthesized result; intermediate child tool calls never pollute parent context.</p>
 
     <h2 id="realtime">Real-time communication</h2>
@@ -927,50 +796,50 @@ data: {"type": "answer", "content": "I'll start by grepping..."}\n\n
 data: {"type": "done", "answer": "...", "turn_messages": [...]}\n\n</code></pre>
 
     <h3>Frontend SSE consumer</h3>
-    <pre><code>span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> response = span class="kw"&gt;await<span class="kw">&lt;/span&gt;</span> fetch(span class="str"&gt;"/agentic-agent"<span class="kw">&lt;/span&gt;</span>, {
-  method: span class="str"&gt;"POST"<span class="kw">&lt;/span&gt;</span>,
+    <pre><code><span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="str">"/livecode-agent"</span>, {
+  method: <span class="str">"POST"</span>,
   body: JSON.stringify({ question, session_id, model }),
-  headers: { span class="str"&gt;"Content-Type"<span class="kw">&lt;/span&gt;</span>: span class="str"&gt;"application/json"<span class="kw">&lt;/span&gt;</span> },
+  headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
 });
 
-span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> reader = response.body.getReader();
-span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> decoder = span class="kw"&gt;new<span class="kw">&lt;/span&gt;</span> TextDecoder();
-let buffer = span class="str"&gt;""<span class="kw">&lt;/span&gt;</span>;
+<span class="kw">const</span> reader = response.body.getReader();
+<span class="kw">const</span> decoder = <span class="kw">new</span> TextDecoder();
+let buffer = <span class="str">""</span>;
 
-span class="kw"&gt;while<span class="kw">&lt;/span&gt;</span> (span class="kw"&gt;true<span class="kw">&lt;/span&gt;</span>) {
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> { done, value } = span class="kw"&gt;await<span class="kw">&lt;/span&gt;</span> reader.read();
-  span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> (done) span class="kw"&gt;break<span class="kw">&lt;/span&gt;</span>;
-  buffer += decoder.decode(value, { stream: span class="kw"&gt;true<span class="kw">&lt;/span&gt;</span> });
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> lines = buffer.split(span class="str"&gt;"\n\n"<span class="kw">&lt;/span&gt;</span>);
+<span class="kw">while</span> (<span class="kw">true</span>) {
+  <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.read();
+  <span class="kw">if</span> (done) <span class="kw">break</span>;
+  buffer += decoder.decode(value, { stream: <span class="kw">true</span> });
+  <span class="kw">const</span> lines = buffer.split(<span class="str">"\n\n"</span>);
   buffer = lines.pop();
-  span class="kw"&gt;for<span class="kw">&lt;/span&gt;</span> (span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> line of lines) {
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> (line.startsWith(span class="str"&gt;"data: "<span class="kw">&lt;/span&gt;</span>)) {
-      handleSSEEvent(JSON.parse(line.slice(span class="num"&gt;6<span class="kw">&lt;/span&gt;</span>)));
+  <span class="kw">for</span> (<span class="kw">const</span> line of lines) {
+    <span class="kw">if</span> (line.startsWith(<span class="str">"data: "</span>)) {
+      handleSSEEvent(JSON.parse(line.slice(<span class="num">6</span>)));
     }
   }
 }</code></pre>
 
     <h3>WebSocket progress events</h3>
-    <pre><code>socket.on(&lt;span class=<span class="str">"str"</span>&gt;<span class="str">"agentic_progress"</span>&lt;/span&gt;, (event) =&gt; {
+    <pre><code>socket.on(<span class="str">"livecode_progress"</span>, (event) =&gt; {
   switch (event.type) {
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"agent_thinking"</span>&lt;/span&gt;: showThinkingIndicator(); break;
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"tool_call"</span>&lt;/span&gt;: appendActivityChip(event.label, &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"running"</span>&lt;/span&gt;); break;
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"tool_result"</span>&lt;/span&gt;: finalizeActivityChip(event.tool_name); break;
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"diff_block"</span>&lt;/span&gt;: renderDiffBlock(event.diff_html); break;
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"permission_request"</span>&lt;/span&gt;: showPermissionPrompt(event); break;
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"compaction"</span>&lt;/span&gt;: showCompactionNotice(); break;
-    case &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"model_resolved"</span>&lt;/span&gt;: updateModelBadge(event.model); break;
+    case <span class="str">"agent_thinking"</span>: showThinkingIndicator(); break;
+    case <span class="str">"tool_call"</span>: appendActivityChip(event.label, <span class="str">"running"</span>); break;
+    case <span class="str">"tool_result"</span>: finalizeActivityChip(event.tool_name); break;
+    case <span class="str">"diff_block"</span>: renderDiffBlock(event.diff_html); break;
+    case <span class="str">"permission_request"</span>: showPermissionPrompt(event); break;
+    case <span class="str">"compaction"</span>: showCompactionNotice(); break;
+    case <span class="str">"model_resolved"</span>: updateModelBadge(event.model); break;
   }
 });</code></pre>
 
     <h3>Mid-turn interjection</h3>
-    <p>While the agent loop runs, the user can POST a follow-up message to <code>/agentic/interject</code>. A thread-safe queue drains at the start of every iteration before the next LLM call — so you can redirect a long-running task without waiting for all 20 iterations to finish.</p>
+    <p>While the agent loop runs, the user can POST a follow-up message to <code>/livecode/interject</code>. A thread-safe queue drains at the start of every iteration before the next LLM call — so you can redirect a long-running task without waiting for all 20 iterations to finish.</p>
 
     <h3>Activity chip state machine</h3>
     <p>Tool progress uses a simple three-state UI model: <em>running</em> (spinner + human label from <code>human_tool_label()</code>), <em>success</em> (checkmark), or <em>error</em> (red badge). Chips collapse into a single row per iteration, matching Cursor's activity feed density.</p>
 
     <h2 id="frontend">Frontend architecture</h2>
-    <p><code>agenticcode.js</code> — 3,658 lines, plain JavaScript, no build step, no npm. Global functions and global state. Major clusters:</p>
+    <p><code>livecode.js</code> — 3,658 lines, plain JavaScript, no build step, no npm. Global functions and global state. Major clusters:</p>
     <ul>
       <li><strong>Session management</strong> — list, rename, delete, fork via REST endpoints</li>
       <li><strong>Monaco editor</strong> — vendored AMD bundle, dynamic language from file extension, theme sync</li>
@@ -982,109 +851,109 @@ span class="kw"&gt;while<span class="kw">&lt;/span&gt;</span> (span class="kw"&g
     </ul>
 
     <h3>Monaco integration (pseudocode)</h3>
-    <pre><code>require.config({ paths: { vs: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"/static/monaco/vs"</span>&lt;/span&gt; } });
-require([&lt;span class=<span class="str">"str"</span>&gt;<span class="str">"vs/editor/editor.main"</span>&lt;/span&gt;], &lt;span class=<span class="str">"kw"</span>&gt;<span class="kw">function</span>&lt;/span&gt;() {
-  window.ideEditor = monaco.editor.create(document.getElementById(&lt;span class=<span class="str">"str"</span>&gt;<span class="str">"ide-monaco"</span>&lt;/span&gt;), {
-    value: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">""</span>&lt;/span&gt;,
-    language: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"python"</span>&lt;/span&gt;,
+    <pre><code>require.config({ paths: { vs: <span class="str">"/static/monaco/vs"</span> } });
+require([<span class="str">"vs/editor/editor.main"</span>], <span class="kw">function</span>() {
+  window.ideEditor = monaco.editor.create(document.getElementById(<span class="str">"ide-monaco"</span>), {
+    value: <span class="str">""</span>,
+    language: <span class="str">"python"</span>,
     theme: currentTheme,
     automaticLayout: true,
     minimap: { enabled: false },
   });
 });
 
-&lt;span class=<span class="str">"kw"</span>&gt;<span class="kw">function</span>&lt;/span&gt; mapToMonacoLang(filename) {
-  &lt;span class=<span class="str">"kw"</span>&gt;<span class="kw">const</span>&lt;/span&gt; ext = filename.split(&lt;span class=<span class="str">"str"</span>&gt;<span class="str">"."</span>&lt;/span&gt;).pop();
-  &lt;span class=<span class="str">"kw"</span>&gt;<span class="kw">const</span>&lt;/span&gt; MAP = { py: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"python"</span>&lt;/span&gt;, js: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"javascript"</span>&lt;/span&gt;, ts: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"typescript"</span>&lt;/span&gt;,
-                jsx: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"javascript"</span>&lt;/span&gt;, tsx: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"typescript"</span>&lt;/span&gt;, md: &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"markdown"</span>&lt;/span&gt; };
-  &lt;span class=<span class="str">"kw"</span>&gt;<span class="kw">return</span>&lt;/span&gt; MAP[ext] || &lt;span class=<span class="str">"str"</span>&gt;<span class="str">"plaintext"</span>&lt;/span&gt;;
+<span class="kw">function</span> mapToMonacoLang(filename) {
+  <span class="kw">const</span> ext = filename.split(<span class="str">"."</span>).pop();
+  <span class="kw">const</span> MAP = { py: <span class="str">"python"</span>, js: <span class="str">"javascript"</span>, ts: <span class="str">"typescript"</span>,
+                jsx: <span class="str">"javascript"</span>, tsx: <span class="str">"typescript"</span>, md: <span class="str">"markdown"</span> };
+  <span class="kw">return</span> MAP[ext] || <span class="str">"plaintext"</span>;
 }</code></pre>
 
     <h3>Terminal integration (pseudocode)</h3>
-    <pre><code>span class="kw"&gt;function<span class="kw">&lt;/span&gt;</span> createTerminalTab(name) {
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> term = span class="kw"&gt;new<span class="kw">&lt;/span&gt;</span> Terminal({
+    <pre><code><span class="kw">function</span> createTerminalTab(name) {
+  <span class="kw">const</span> term = <span class="kw">new</span> Terminal({
     cursorBlink: true,
-    fontFamily: span class="str"&gt;"JetBrains Mono, monospace"<span class="kw">&lt;/span&gt;</span>,
-    fontSize: span class="num"&gt;13<span class="kw">&lt;/span&gt;</span>,
+    fontFamily: <span class="str">"JetBrains Mono, monospace"</span>,
+    fontSize: <span class="num">13</span>,
   });
-  term.open(document.getElementById(span class="str"&gt;"ide-terminal-container"<span class="kw">&lt;/span&gt;</span>));
-  socket.on(span class="str"&gt;"terminal_output"<span class="kw">&lt;/span&gt;</span>, (data) =&gt; {
-    span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> (data.tab_id === tabId) term.write(data.content);
+  term.open(document.getElementById(<span class="str">"ide-terminal-container"</span>));
+  socket.on(<span class="str">"terminal_output"</span>, (data) =&gt; {
+    <span class="kw">if</span> (data.tab_id === tabId) term.write(data.content);
   });
 }</code></pre>
 
     <h2 id="diffs">Diff generation</h2>
-    <pre><code>span class="kw"&gt;def<span class="kw">&lt;/span&gt;</span> span class="fn"&gt;create_diff_html<span class="kw">&lt;/span&gt;</span>(original_content, new_content, context_lines=span class="num"&gt;2<span class="kw">&lt;/span&gt;</span>):
-    original_lines = original_content.splitlines(keepends=span class="kw"&gt;True<span class="kw">&lt;/span&gt;</span>)
-    new_lines = new_content.splitlines(keepends=span class="kw"&gt;True<span class="kw">&lt;/span&gt;</span>)
+    <pre><code><span class="kw">def</span> <span class="fn">create_diff_html</span>(original_content, new_content, context_lines=<span class="num">2</span>):
+    original_lines = original_content.splitlines(keepends=<span class="kw">True</span>)
+    new_lines = new_content.splitlines(keepends=<span class="kw">True</span>)
 
     matcher = difflib.SequenceMatcher(
-        span class="kw"&gt;None<span class="kw">&lt;/span&gt;</span>, original_lines, new_lines, autojunk=span class="kw"&gt;False<span class="kw">&lt;/span&gt;</span>
+        <span class="kw">None</span>, original_lines, new_lines, autojunk=<span class="kw">False</span>
     )
     opcodes = matcher.get_opcodes()
     change_blocks = group_into_contiguous_blocks(opcodes, context_lines)
 
-    diff_html_parts = [render_block_html(b) span class="kw"&gt;for<span class="kw">&lt;/span&gt;</span> b span class="kw"&gt;in<span class="kw">&lt;/span&gt;</span> change_blocks]
+    diff_html_parts = [render_block_html(b) <span class="kw">for</span> b <span class="kw">in</span> change_blocks]
 
-    unified = difflib.unified_diff(original_lines, new_lines, lineterm=span class="str"&gt;""<span class="kw">&lt;/span&gt;</span>)
-    diff_text = span class="str"&gt;""<span class="kw">&lt;/span&gt;</span>.join(unified)
+    unified = difflib.unified_diff(original_lines, new_lines, lineterm=<span class="str">""</span>)
+    diff_text = <span class="str">""</span>.join(unified)
     additions = count_plus_lines(diff_text)
     deletions = count_minus_lines(diff_text)
 
-    span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> span class="str"&gt;""<span class="kw">&lt;/span&gt;</span>.join(diff_html_parts), diff_text, additions, deletions</code></pre>
+    <span class="kw">return</span> <span class="str">""</span>.join(diff_html_parts), diff_text, additions, deletions</code></pre>
     <p>Each line renders with gutter bar, line number, +/- sign, and content span. <code>data-start-line</code> and <code>data-end-line</code> on block wrappers power "jump to line" links in the diff header.</p>
     <p>Small diffs (≤ 8 changed lines) render expanded by default. Larger diffs collapse behind a chevron toggle bound via event delegation — not re-bound per diff block.</p>
 
     <h3>Frontend diff block builder (JavaScript)</h3>
     <p>The browser wraps server-generated diff HTML in a collapsible card with filename, +/- counts, and a copy button:</p>
-    <pre><code>span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> DIFF_SMALL_LINE_THRESHOLD = span class="num"&gt;8<span class="kw">&lt;/span&gt;</span>;
+    <pre><code><span class="kw">const</span> DIFF_SMALL_LINE_THRESHOLD = <span class="num">8</span>;
 
-span class="kw"&gt;function<span class="kw">&lt;/span&gt;</span> buildDiffBlockHtml(diffEvent) {
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> { diff_html, diff_text, additions, deletions, file_path } = diffEvent;
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> changedLines = additions + deletions;
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> isSmall = changedLines = DIFF_SMALL_LINE_THRESHOLD;
+function buildDiffBlockHtml(diffEvent) {
+  <span class="kw">const</span> { diff_html, diff_text, additions, deletions, file_path } = diffEvent;
+  <span class="kw">const</span> changedLines = additions + deletions;
+  <span class="kw">const</span> isSmall = changedLines &lt;= DIFF_SMALL_LINE_THRESHOLD;
 
-  span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span> span class="str"&gt;`
-    div class="agentic-diff-block"&gt;
-      div class="diff-header"&gt;
-        span class="diff-filename"&gt;${file_path}<span class="kw">&lt;/span&gt;</span>
-        span class="diff-additions"&gt;+${additions}<span class="kw">&lt;/span&gt;</span>
-        span class="diff-deletions"&gt;-${deletions}<span class="kw">&lt;/span&gt;</span>
-        ${isSmall ? "" : 'button class="diff-chevron-toggle"&gt;▼<span class="kw">&lt;/button&gt;</span>'}
-        button class="diff-copy-btn" data-diff="${escapeHtml(diff_text)}"&gt;Copy<span class="kw">&lt;/button&gt;</span>
-      <span class="kw">&lt;/div&gt;</span>
-      div class="diff-content ${isSmall ? "is-expanded" : "is-collapsed"}"&gt;
+  <span class="kw">return</span> `
+    &lt;div <span class="kw">class</span>=<span class="str">"livecode-diff-block"</span>&gt;
+      &lt;div <span class="kw">class</span>=<span class="str">"diff-header"</span>&gt;
+        ${file_path}
+        +${additions}
+        -${deletions}
+        ${isSmall ? <span class="str">""</span> : <span class="str">'&lt;button class="diff-chevron-toggle"&gt;▼&lt;/button&gt;'</span>}
+        &lt;button <span class="kw">class</span>=<span class="str">"diff-copy-btn"</span> data-diff=<span class="str">"${escapeHtml(diff_text)}"</span>&gt;Copy&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div <span class="kw">class</span>=<span class="str">"diff-content ${isSmall ? "</span><span class="kw">is</span>-expanded<span class="str">" : "</span><span class="kw">is</span>-collapsed<span class="str">"}"</span>&gt;
         ${diff_html}
-      <span class="kw">&lt;/div&gt;</span>
-    <span class="kw">&lt;/div&gt;</span>`<span class="kw">&lt;/span&gt;</span>;
+      &lt;/div&gt;
+    &lt;/div&gt;`;
 }
 
-document.addEventListener(span class="str"&gt;"click"<span class="kw">&lt;/span&gt;</span>, (event) =&gt; {
-  span class="kw"&gt;if<span class="kw">&lt;/span&gt;</span> (!event.target.matches(span class="str"&gt;".diff-chevron-toggle"<span class="kw">&lt;/span&gt;</span>)) span class="kw"&gt;return<span class="kw">&lt;/span&gt;</span>;
-  span class="kw"&gt;const<span class="kw">&lt;/span&gt;</span> content = event.target.closest(span class="str"&gt;".agentic-diff-block"<span class="kw">&lt;/span&gt;</span>).querySelector(span class="str"&gt;".diff-content"<span class="kw">&lt;/span&gt;</span>);
-  content.classList.toggle(span class="str"&gt;"is-expanded"<span class="kw">&lt;/span&gt;</span>);
-  content.classList.toggle(span class="str"&gt;"is-collapsed"<span class="kw">&lt;/span&gt;</span>);
+document.addEventListener(<span class="str">"click"</span>, (event) =&gt; {
+  <span class="kw">if</span> (!event.target.matches(<span class="str">".diff-chevron-toggle"</span>)) <span class="kw">return</span>;
+  <span class="kw">const</span> content = event.target.closest(<span class="str">".livecode-diff-block"</span>).querySelector(<span class="str">".diff-content"</span>);
+  content.classList.toggle(<span class="str">"is-expanded"</span>);
+  content.classList.toggle(<span class="str">"is-collapsed"</span>);
 });</code></pre>
 
     <h2 id="rules">Project rules discovery</h2>
-    <pre><code>RULES_FILES = [&lt;span class="str"&gt;"AGENTS.md"&lt;/span&gt;, &lt;span class="str"&gt;"CLAUDE.md"&lt;/span&gt;, &lt;span class="str"&gt;".cursor/rules"&lt;/span&gt;, &lt;span class="str"&gt;".claude/rules"&lt;/span&gt;]
+    <pre><code>RULES_FILES = [<span class="str">"AGENTS.md"</span>, <span class="str">"CLAUDE.md"</span>, <span class="str">".cursor/rules"</span>, <span class="str">".claude/rules"</span>]
 
-&lt;span class="kw"&gt;def&lt;/span&gt; &lt;span class="fn"&gt;discover_project_rules&lt;/span&gt;(project_path):
+<span class="kw">def</span> <span class="fn">discover_project_rules</span>(project_path):
     git_root = find_git_root(project_path)
     search_dirs = build_path_chain(git_root, project_path)
 
     found_content = []
-    &lt;span class="kw"&gt;for&lt;/span&gt; directory &lt;span class="kw"&gt;<span class="kw">in</span>&lt;/span&gt; search_dirs:
-        &lt;span class="kw"&gt;for&lt;/span&gt; rules_file &lt;span class="kw"&gt;<span class="kw">in</span>&lt;/span&gt; RULES_FILES:
-            candidate = <span class="kw">join</span>(directory, rules_file)
-            &lt;span class="kw"&gt;if&lt;/span&gt; <span class="kw">exists</span>(candidate):
-                found_content.append(f&lt;span class="str"&gt;"# {rules_file}\n{read(candidate).strip()}"&lt;/span&gt;)
+    <span class="kw">for</span> directory <span class="kw">in</span> search_dirs:
+        <span class="kw">for</span> rules_file <span class="kw">in</span> RULES_FILES:
+            candidate = join(directory, rules_file)
+            <span class="kw">if</span> exists(candidate):
+                found_content.append(f<span class="str">"# {rules_file}\n{read(candidate).strip()}"</span>)
 
-    &lt;span class="kw"&gt;if&lt;/span&gt; &lt;span class="kw"&gt;<span class="kw">not</span>&lt;/span&gt; found_content:
-        &lt;span class="kw"&gt;return&lt;/span&gt; &lt;span class="kw"&gt;None&lt;/span&gt;
+    <span class="kw">if</span> <span class="kw">not</span> found_content:
+        <span class="kw">return</span> <span class="kw">None</span>
 
-    combined = &lt;span class="str"&gt;"\n\n"&lt;/span&gt;.<span class="kw">join</span>(found_content)
-    &lt;span class="kw"&gt;return&lt;/span&gt; f&lt;span class="str"&gt;"&lt;system-reminder&gt;\n{combined}\n&lt;/system-reminder&gt;"&lt;/span&gt;</code></pre>
+    combined = <span class="str">"\n\n"</span>.join(found_content)
+    <span class="kw">return</span> f<span class="str">"&lt;system-reminder&gt;\n{combined}\n&lt;/system-reminder&gt;"</span></code></pre>
     <p>Injected as a follow-up system message after the main system prompt — the same convention Claude Code uses for <code>CLAUDE.md</code>.</p>
 
     <h2 id="tradeoffs">Design decisions and tradeoffs</h2>
@@ -1128,10 +997,10 @@ document.addEventListener(span class="str"&gt;"click"<span class="kw">&lt;/span&
     <p>Stationarity detection (identical call fingerprints), a 20-iteration hard cap, and a forced summarization pass when the cap is hit.</p>
 
     <h3>How is this different from Cursor?</h3>
-    <p>Same agent pattern — tools, iteration loop, streaming UI. AgenticCode is self-hosted in your Flask app with full control over tools, permissions, persistence format, and model routing.</p>
+    <p>Same agent pattern — tools, iteration loop, streaming UI. LiveCode Agent is self-hosted in your Flask app with full control over tools, permissions, persistence format, and model routing.</p>
 
     <h3>What about vector search / RAG for the codebase?</h3>
-    <p>AgenticCode deliberately uses ripgrep, symbol index, and file reads instead of embeddings. For most coding tasks, targeted grep + read beats semantic search on stale indexes — and it is vastly simpler to operate.</p>
+    <p>LiveCode Agent deliberately uses ripgrep, symbol index, and file reads instead of embeddings. For most coding tasks, targeted grep + read beats semantic search on stale indexes — and it is vastly simpler to operate.</p>
 
     <h2 id="related">Related guides</h2>
     <ul>

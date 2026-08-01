@@ -1,12 +1,12 @@
-# How I Built a Mini Cursor Agentic Code IDE in the Live Browser
+# How I Built a Live-Browser AI Coding Agent with Flask and Monaco
 
 ## Overview
 
-**AgenticCode** is an in-browser AI coding agent that works like Cursor Agent mode or Claude Code: an LLM gets tools to read, search, edit, and run commands against a real project on disk, iterates in a controlled loop, and streams diffs, tool activity, and shell output back to a browser UI in real time.
+**LiveCode Agent** is an in-browser AI coding agent that works like Cursor Agent mode or Claude Code: an LLM gets tools to read, search, edit, and run commands against a real project on disk, iterates in a controlled loop, and streams diffs, tool activity, and shell output back to a browser UI in real time.
 
 No LangChain. No vector database. No webpack build pipeline. The stack is:
 
-- A Python package (`agenticcode/`) — agent loop, tools, sessions, compaction (~4,400 lines)
+- A Python package (`livecode/`) — agent loop, tools, sessions, compaction (~4,400 lines)
 - A Flask route module — turn endpoint + session CRUD (~280 lines)
 - A frontend JS file — Monaco, terminal, chat, streaming (~3,600 lines)
 - Two CSS files and HTML templates
@@ -38,7 +38,7 @@ This post is a technical deep-dive with pseudocode for every major subsystem.
 ```
 Browser
   │
-  ├── fetch() + ReadableStream ──► POST /agentic-agent (SSE)
+  ├── fetch() + ReadableStream ──► POST /livecode-agent (SSE)
   │         token │ answer │ done
   │
   └── WebSocket / Socket.IO ◄──── tool_call │ diff_block │ permission_request
@@ -53,7 +53,7 @@ Browser
 ### Flask turn endpoint (pseudocode)
 
 ```python
-@app.post("/agentic-agent")
+@app.post("/livecode-agent")
 def agent_turn():
     body = request.get_json()
     session_id = body["session_id"]
@@ -61,7 +61,7 @@ def agent_turn():
     model = body.get("model", "auto")
 
     def generate():
-        for chunk in run_agentic_turn(
+        for chunk in run_livecode_turn(
             question=question,
             project_path=body["project_path"],
             session_id=session_id,
@@ -114,12 +114,12 @@ TOOL_RESULT_MAX_CHARS = 16_000
 
 ## The agent harness loop
 
-`run_agentic_turn()` is a **generator** yielding SSE strings.
+`run_livecode_turn()` is a **generator** yielding SSE strings.
 
 ### Turn setup
 
 ```python
-def run_agentic_turn(question, project_path, session_id, model):
+def run_livecode_turn(question, project_path, session_id, model):
     classification = classify_turn(question)  # heuristics, then LLM fallback
     build_workspace_index(project_path)
     get_codebase_index(project_path)
@@ -152,7 +152,7 @@ for iteration in range(1, MAX_ITERATIONS + 1):
     response = call_llm_with_tools(
         model=pick_model(classification, iteration),
         messages=messages,
-        tools=AGENTIC_TOOLS,
+        tools=LIVECODE_TOOLS,
         tool_choice=pick_tool_choice(classification, iteration),
     )
 
@@ -266,7 +266,7 @@ else:
 
 ### File manifest
 
-- Cached at `~/.agenticcode/index/<project_hash>.json`
+- Cached at `~/.livecode/index/<project_hash>.json`
 - Invalidated by max mtime of project root + top-level entries
 - Caps: 8,000 files, 512 KB per file
 - Every path goes through `resolve_safe_path()` to block traversal
@@ -289,7 +289,7 @@ def resolve_safe_path(root, requested):
 ## Session persistence
 
 ```
-~/.agenticcode/sessions/<project_hash>/<session_id>/
+~/.livecode/sessions/<project_hash>/<session_id>/
   chat_history.jsonl    # append-only OpenAI messages
   summary.json          # metadata + reminders
   compaction.json       # boundary + summary + prefix_hash
@@ -390,7 +390,7 @@ def execute_with_permission(session_id, tool_name, args):
 def spawn_subagent(instruction, parent_session_id):
     child_id = f"{parent_session_id}_sub_{uuid4().hex[:8]}"
     output = []
-    for chunk in run_agentic_turn(
+    for chunk in run_livecode_turn(
         question=instruction,
         session_id=child_id,
         max_iterations=5,
@@ -407,7 +407,7 @@ Parent only sees the final synthesized result — child tool noise stays out of 
 ### SSE client (pseudocode)
 
 ```javascript
-const res = await fetch("/agentic-agent", {
+const res = await fetch("/livecode-agent", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ question, session_id, model }),
@@ -432,7 +432,7 @@ while (true) {
 ### WebSocket progress events
 
 ```javascript
-socket.on("agentic_progress", (event) => {
+socket.on("livecode_progress", (event) => {
   switch (event.type) {
     case "tool_call": appendActivityChip(event.label); break;
     case "diff_block": renderDiff(event.diff_html); break;
@@ -533,4 +533,4 @@ SSE is ideal for token streaming over HTTP POST. WebSocket fits structured tool 
 Stationarity detection (identical call fingerprints), a 20-iteration hard cap, and a forced summarization pass at exhaustion.
 
 **How is this different from Cursor?**  
-Same agent pattern (tools + loop + streaming UI). AgenticCode is self-hosted in your Flask app with full control over tools, permissions, and persistence format.
+Same agent pattern (tools + loop + streaming UI). LiveCode Agent is self-hosted in your Flask app with full control over tools, permissions, and persistence format.

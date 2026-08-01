@@ -33,7 +33,15 @@ CODE_HIGHLIGHT_SCRIPT_RE = re.compile(
 
 
 def unescape_code(raw: str) -> str:
-    return html.unescape(raw)
+    code = html.unescape(raw)
+    # Strip valid highlight spans
+    code = re.sub(r'<span class="[^"]+">', '', code)
+    code = re.sub(r'</span>', '', code)
+    # Strip legacy corrupted span markup
+    code = re.sub(r'span class="(?:kw|fn|str|num|cm)"&gt;', '', code)
+    code = re.sub(r'&lt;/span&gt;', '', code)
+    code = re.sub(r'&lt;span class="(?:kw|fn|str|num|cm)"&gt;', '', code)
+    return code
 
 
 def process_html(path: Path) -> bool:
