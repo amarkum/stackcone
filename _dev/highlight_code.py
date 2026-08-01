@@ -505,7 +505,7 @@ def detect_lang(code: str, hinted: str | None) -> str:
         if hint not in ("text",):
             return hint
     s = code.lstrip()
-    if s.startswith("#!/usr/bin/env python") or re.search(r"^def ", s, re.M):
+    if s.startswith("#!/usr/bin/env python") or re.search(r"^def ", s, re.M) or re.search(r"^for ", s, re.M):
         return "python"
     if s.startswith("<") and re.search(r"<\/?[\w:-]+", s):
         return "xml"
@@ -545,4 +545,11 @@ def detect_lang(code: str, hinted: str | None) -> str:
 
 
 def already_highlighted(code: str) -> bool:
-    return '<span class="' in code
+    if '<span class="' not in code:
+        return False
+    # Re-highlight blocks that were only partially wrapped (mixed plain + spans)
+    plain_lines = sum(1 for line in code.splitlines() if line.strip() and '<span class="' not in line)
+    span_lines = sum(1 for line in code.splitlines() if '<span class="' in line)
+    if plain_lines > 0 and span_lines > 0:
+        return False
+    return True
