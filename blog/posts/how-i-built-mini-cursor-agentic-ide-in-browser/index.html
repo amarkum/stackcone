@@ -294,7 +294,7 @@ index cache"]:::disk
         <div class="mermaid-pending">flowchart TD
   classDef step fill:#f1f5f9,stroke:#64748b,color:#334155
   classDef gate fill:#fef3c7,stroke:#d97706,color:#92400e
-  classDef end fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef finish fill:#dcfce7,stroke:#16a34a,color:#14532d
 
   A([Start turn]):::step
   B[Stationarity check]:::gate
@@ -303,9 +303,9 @@ index cache"]:::disk
   E{Tool calls?}:::gate
   F[Dispatch tools]:::step
   G{attempt_completion?}:::gate
-  H[Stream answer SSE]:::end
+  H[Stream answer SSE]:::finish
   I[Codebase recovery nudge]:::gate
-  J[Exhaustion summarizer]:::end
+  J[Exhaustion summarizer]:::finish
 
   A --> B --> C --> D --> E
   E -->|yes| F --> G
