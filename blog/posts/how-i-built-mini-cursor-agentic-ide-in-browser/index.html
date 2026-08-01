@@ -26,6 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../../styles.css">
   <link rel="stylesheet" href="../../../blog/blog.css">
+  <link rel="stylesheet" href="../../../solutions/solutions.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -40,7 +41,7 @@
       "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
     },
     "datePublished": "2026-08-01",
-    "dateModified": "2026-08-01",
+    "dateModified": "2026-08-02",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-i-built-mini-cursor-agentic-ide-in-browser/" },
     "image": "https://stackcone.com/logo/stackcone.png",
     "keywords": ["agentic coding IDE", "cursor clone", "AI coding agent", "flask agent loop", "monaco editor AI"],
@@ -126,6 +127,8 @@
       <ol>
         <li><a href="#overview">Overview and line counts</a></li>
         <li><a href="#architecture">System architecture</a></li>
+        <li><a href="#diagrams">Architecture diagrams</a></li>
+        <li><a href="#charts">Metrics and charts</a></li>
         <li><a href="#backend">Backend package structure</a></li>
         <li><a href="#harness">The agent harness loop</a></li>
         <li><a href="#tools">Tool system</a></li>
@@ -154,22 +157,56 @@
       <li>A frontend JavaScript file — Monaco, terminal, chat — <strong>3,658 lines</strong></li>
       <li>Two CSS files and two HTML templates for the embedded IDE panel</li>
     </ul>
+    <p>At runtime the browser loads a single-page IDE shell: file tree on the left, Monaco editor center, xterm terminal bottom, and agent chat on the right. Every user message triggers a POST that keeps the HTTP connection open for the duration of the turn — often 30 seconds to several minutes for multi-file refactors.</p>
     <p>The UI mirrors what Cursor users expect: a chat pane with collapsible tool-call activity chips, inline diffs with expand/collapse, a Monaco code editor, an embedded terminal, and a file explorer — all in one browser tab, backed by a project on the user's actual filesystem.</p>
 
     <h2 id="architecture">System architecture</h2>
     <h3>Two halves, two channels</h3>
-    <p>AgenticCode splits cleanly into a Python backend and a JavaScript frontend. They communicate over <strong>two simultaneous real-time channels</strong>:</p>
-    <pre><code>Browser
-  │
-  ├─── fetch() + ReadableStream ──► POST /agentic-agent
-  │         (SSE text/event-stream)        │
-  │         token │ answer │ done           Flask generator
-  │                                    run_agentic_turn()
-  │
-  └─── WebSocket / Socket.IO ◄─────────────┘
-            tool_call │ tool_result │ diff_block
-            permission_request │ compaction
-            model_resolved │ agent_thinking</code></pre>
+    <p>AgenticCode splits cleanly into a Python backend and a JavaScript frontend. They communicate over <strong>two simultaneous real-time channels</strong>: SSE for answer tokens, WebSocket for structured tool progress, diffs, permissions, and shell streams.</p>
+
+    <div class="diagram-wrap" data-diagram-title="AgenticCode system architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart LR
+  classDef ui fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef api fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef core fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef disk fill:#ccfbf1,stroke:#0d9488,color:#115e59
+
+  BR["Browser IDE
+Monaco · xterm · chat"]:::ui
+  SSE["SSE stream
+token · answer · done"]:::api
+  WS["WebSocket
+ tool · diff · permission"]:::api
+  FL["Flask routes
+/agentic-agent"]:::api
+  HN["run_agentic_turn()
+generator loop"]:::core
+  TL["14 tools
+grep · edit · shell"]:::core
+  LLM["Azure OpenAI
+tool calling"]:::core
+  SS["JSONL sessions
+compaction sidecar"]:::disk
+  IX["File + symbol
+index cache"]:::disk
+
+  BR -->|"fetch POST"| FL
+  FL --> HN
+  HN --> LLM
+  HN --> TL
+  HN --> SS
+  HN --> IX
+  HN -->|"yield SSE"| SSE
+  SSE --> BR
+  HN -->|"emit events"| WS
+  WS --> BR</div>
+      </div>
+      <p class="diagram-caption">Browser UI talks to Flask over SSE (answer text) and WebSocket (tool activity) in parallel</p>
+    </div>
     <p><strong>SSE</strong> (<code>text/event-stream</code>) streams the model's final answer text — token by token. It is a simple unidirectional pipe.</p>
     <p><strong>WebSocket</strong> (implemented with Socket.IO in my stack) carries everything else: tool-call progress, streamed shell output, diff blocks, permission prompts, and thinking indicators. These payloads have rich, differently-shaped JSON structures that would be painful to shoehorn into a flat SSE text stream.</p>
 
@@ -207,6 +244,150 @@
         },
     )</code></pre>
     <p>After the generator exhausts, the route persists the turn to disk via append-only JSONL writes.</p>
+
+    
+    <h2 id="diagrams">Architecture diagrams</h2>
+    <p>The following diagrams show how a single user turn flows through the stack — from browser POST to tool dispatch, persistence, and streamed UI updates.</p>
+
+    <div class="diagram-wrap" data-diagram-title="Single turn sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant U as Browser
+  participant F as Flask /agentic-agent
+  participant H as Harness loop
+  participant L as LLM
+  participant T as Tools
+  participant W as WebSocket
+
+  U->>F: POST question + session_id
+  F->>H: run_agentic_turn()
+  H->>H: classify · index · compact
+  loop up to 20 iterations
+    H->>L: messages + tool schemas
+    L-->>H: tool_calls or content
+    alt tool calls
+      H->>W: tool_call progress
+      H->>T: dispatch parallel/serial
+      T-->>H: tool results
+      H->>W: diff_block if edit
+    else plain answer
+      H-->>F: SSE tokens
+      F-->>U: data answer chunks
+    end
+  end
+  H->>H: append JSONL
+  H-->>F: SSE done
+  F-->>U: turn complete</div>
+      </div>
+      <p class="diagram-caption">One turn: classification, iteration loop, tool dispatch, and dual-channel streaming back to the browser</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Harness iteration loop">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TD
+  classDef step fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef gate fill:#fef3c7,stroke:#d97706,color:#92400e
+  classDef end fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+  A([Start turn]):::step
+  B[Stationarity check]:::gate
+  C[In-turn compaction]:::step
+  D[LLM call with tools]:::step
+  E{Tool calls?}:::gate
+  F[Dispatch tools]:::step
+  G{attempt_completion?}:::gate
+  H[Stream answer SSE]:::end
+  I[Codebase recovery nudge]:::gate
+  J[Exhaustion summarizer]:::end
+
+  A --> B --> C --> D --> E
+  E -->|yes| F --> G
+  G -->|yes| H
+  G -->|no| B
+  E -->|no prose iter 1| I --> B
+  E -->|no final text| H
+  B -->|16 repeats| J</div>
+      </div>
+      <p class="diagram-caption">Harness loop with stationarity gate, in-turn compaction, tool dispatch, and graceful exhaustion exit</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Permission gate">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  participant H as Harness thread
+  participant W as WebSocket
+  participant U as Browser UI
+  participant P as POST /agentic/permission
+
+  H->>H: sensitive tool write edit shell
+  H->>W: permission_request
+  W->>U: show approve deny modal
+  H->>H: block on threading Event
+  U->>P: approved or denied
+  P->>H: resolve_permission
+  H->>H: unblock and dispatch or skip</div>
+      </div>
+      <p class="diagram-caption">Sensitive tools block the worker thread until the user approves via REST</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Session storage layout">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef file fill:#f8fafc,stroke:#475569,color:#334155
+
+  ROOT["~/.agenticcode/sessions/project_hash/session_id/"]:::file
+  J["chat_history.jsonl
+append-only messages"]:::file
+  S["summary.json
+metadata reminders"]:::file
+  C["compaction.json
+boundary summary hash"]:::file
+  CP["compaction_checkpoints/
+audit trail"]:::file
+
+  ROOT --> J
+  ROOT --> S
+  ROOT --> C
+  ROOT --> CP</div>
+      </div>
+      <p class="diagram-caption">Disk-backed sessions — no database; hash-verified compaction sidecar</p>
+    </div>
+
+    <h2 id="charts">Metrics and charts</h2>
+    <p>Illustrative breakdowns from the AgenticCode codebase and runtime thresholds. These numbers come from direct line counts and configured constants — not synthetic benchmarks.</p>
+
+    <div class="chart-wrap">
+      <canvas id="codebaseSizeChart" aria-label="Lines of code by subsystem"></canvas>
+      <p class="chart-caption">Approximate size by subsystem — backend package, routes, and frontend JS</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="compactionThresholdChart" aria-label="Context window compaction thresholds"></canvas>
+      <p class="chart-caption">Compaction tiers on a 128k token budget — inter-turn at 65%, in-turn shrink every iteration at 70%, full-replace at 85%</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="toolMixChart" aria-label="Typical tool call mix during coding tasks"></canvas>
+      <p class="chart-caption">Typical tool mix during multi-step coding tasks — read and grep dominate early iterations</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="channelRadarChart" aria-label="SSE vs WebSocket responsibility split"></canvas>
+      <p class="chart-caption">Why two channels — SSE excels at token streaming; WebSocket fits structured JSON events</p>
+    </div>
 
     <h2 id="backend">Backend package structure</h2>
     <p>The <code>agenticcode/</code> package is 19 files. Here is every module and its responsibility:</p>
@@ -314,13 +495,13 @@ yield done(answer=call_llm_no_tools(messages))</code></pre>
     <p>An tracker hashes every tool call as <code>tool_name:json(arguments)</code> and counts consecutive repeats. At 8 identical calls: inject a nudge. At 16: force-terminate. This prevents the model from spinning on a retry loop.</p>
 
     <h3>Parallel tool dispatch</h3>
-    <p>When the model returns multiple independent tool calls, they run concurrently but results are reassembled in original order — the OpenAI function-calling contract requires tool results in the same order as the calls.</p>
-    <pre><code>if len(tool_calls) &gt; 1:
-    with ThreadPoolExecutor(max_workers=min(len(tool_calls), 6)) as pool:
-        futures = {pool.submit(execute_one, tc): i for i, tc in enumerate(tool_calls)}
+    <p>When the model returns multiple independent tool calls, they run concurrently but results are reassembled in original order — the OpenAI function-calling contract requires tool results in the same order as the calls. I cap workers at six to avoid stampeding the filesystem or shell on large parallel batches.</p>
+    <pre><code><span class="kw">if</span> <span class="fn">len</span>(tool_calls) &gt; <span class="num">1</span>:
+    <span class="kw">with</span> ThreadPoolExecutor(max_workers=<span class="fn">min</span>(<span class="fn">len</span>(tool_calls), <span class="num">6</span>)) <span class="kw">as</span> pool:
+        futures = {pool.submit(execute_one, tc): i <span class="kw">for</span> i, tc <span class="kw">in</span> <span class="fn">enumerate</span>(tool_calls)}
         results = reassemble_in_original_order(futures)
-else:
-    results = [execute_one(tool_calls[0])]</code></pre>
+<span class="kw">else</span>:
+    results = [execute_one(tool_calls[<span class="num">0</span>])]</code></pre>
 
     <h2 id="tools">Tool system</h2>
     <p>The tool schemas are standard OpenAI function-calling JSON schema objects. Fourteen core tools:</p>
@@ -455,13 +636,28 @@ else:
 
     <h2 id="compaction">Context compaction — three tiers</h2>
     <p>Long agent sessions are where most agentic systems break down. AgenticCode uses three tiers:</p>
-    <pre><code>Token usage:    0%      65%     70%     85%     100%
-                │        │       │        │
-                │    Inter-turn  │    Full-replace
-                │   compaction  │    compaction
-                │               │
-                │        In-turn compaction
-                │        (runs EVERY iteration)</code></pre>
+    <div class="diagram-wrap" data-diagram-title="Three-tier compaction">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart LR
+  classDef tier fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef hot fill:#fee2e2,stroke:#dc2626,color:#991b1b
+
+  P0["0% tokens"]:::tier
+  P65["65% inter-turn
+summarize older half"]:::tier
+  P70["70% in-turn shrink
+every iteration"]:::tier
+  P85["85% full-replace
+LLM 7-section summary"]:::hot
+  P100["100% context limit"]:::hot
+
+  P0 --> P65 --> P70 --> P85 --> P100</div>
+      </div>
+      <p class="diagram-caption">Three compaction tiers — cheap passes first, LLM summarization only at the hard threshold</p>
+    </div>
 
     <h3>Tier 1: In-turn compaction (no LLM)</h3>
     <p>Runs every iteration unconditionally. Budget: 89,600 tokens. Pass 1 dedupes stale file reads and grep results — keep only the most recent. Pass 2 degrades all but the last 6 tool messages through fitted (2k chars) → lossy (stub JSON) shrink tiers.</p>
@@ -575,20 +771,23 @@ let buffer = <span class="str">""</span>;
 }</code></pre>
 
     <h3>WebSocket progress events</h3>
-    <pre><code>socket.on("agentic_progress", (event) =&gt; {
+    <pre><code>socket.on(<span class="str">"agentic_progress"</span>, (event) =&gt; {
   switch (event.type) {
-    case "agent_thinking": showThinkingIndicator(); break;
-    case "tool_call": appendActivityChip(event.label, "running"); break;
-    case "tool_result": finalizeActivityChip(event.tool_name); break;
-    case "diff_block": renderDiffBlock(event.diff_html); break;
-    case "permission_request": showPermissionPrompt(event); break;
-    case "compaction": showCompactionNotice(); break;
-    case "model_resolved": updateModelBadge(event.model); break;
+    case <span class="str">"agent_thinking"</span>: showThinkingIndicator(); break;
+    case <span class="str">"tool_call"</span>: appendActivityChip(event.label, <span class="str">"running"</span>); break;
+    case <span class="str">"tool_result"</span>: finalizeActivityChip(event.tool_name); break;
+    case <span class="str">"diff_block"</span>: renderDiffBlock(event.diff_html); break;
+    case <span class="str">"permission_request"</span>: showPermissionPrompt(event); break;
+    case <span class="str">"compaction"</span>: showCompactionNotice(); break;
+    case <span class="str">"model_resolved"</span>: updateModelBadge(event.model); break;
   }
 });</code></pre>
 
     <h3>Mid-turn interjection</h3>
-    <p>While the agent loop runs, the user can POST a follow-up message to <code>/agentic/interject</code>. A thread-safe queue drains at the start of every iteration before the next LLM call.</p>
+    <p>While the agent loop runs, the user can POST a follow-up message to <code>/agentic/interject</code>. A thread-safe queue drains at the start of every iteration before the next LLM call — so you can redirect a long-running task without waiting for all 20 iterations to finish.</p>
+
+    <h3>Activity chip state machine</h3>
+    <p>Tool progress uses a simple three-state UI model: <em>running</em> (spinner + human label from <code>human_tool_label()</code>), <em>success</em> (checkmark), or <em>error</em> (red badge). Chips collapse into a single row per iteration, matching Cursor's activity feed density.</p>
 
     <h2 id="frontend">Frontend architecture</h2>
     <p><code>agenticcode.js</code> — 3,658 lines, plain JavaScript, no build step, no npm. Global functions and global state. Major clusters:</p>
@@ -655,6 +854,37 @@ require([<span class="str">"vs/editor/editor.main"</span>], <span class="kw">fun
     <span class="kw">return</span> <span class="str">""</span>.join(diff_html_parts), diff_text, additions, deletions</code></pre>
     <p>Each line renders with gutter bar, line number, +/- sign, and content span. <code>data-start-line</code> and <code>data-end-line</code> on block wrappers power "jump to line" links in the diff header.</p>
     <p>Small diffs (≤ 8 changed lines) render expanded by default. Larger diffs collapse behind a chevron toggle bound via event delegation — not re-bound per diff block.</p>
+
+    <h3>Frontend diff block builder (JavaScript)</h3>
+    <p>The browser wraps server-generated diff HTML in a collapsible card with filename, +/- counts, and a copy button:</p>
+    <pre><code><span class="kw">const</span> DIFF_SMALL_LINE_THRESHOLD = <span class="num">8</span>;
+
+<span class="kw">function</span> buildDiffBlockHtml(diffEvent) {
+  <span class="kw">const</span> { diff_html, diff_text, additions, deletions, file_path } = diffEvent;
+  <span class="kw">const</span> changedLines = additions + deletions;
+  <span class="kw">const</span> isSmall = changedLines &lt;= DIFF_SMALL_LINE_THRESHOLD;
+
+  <span class="kw">return</span> <span class="str">`
+    &lt;div class="agentic-diff-block"&gt;
+      &lt;div class="diff-header"&gt;
+        &lt;span class="diff-filename"&gt;${file_path}&lt;/span&gt;
+        &lt;span class="diff-additions"&gt;+${additions}&lt;/span&gt;
+        &lt;span class="diff-deletions"&gt;-${deletions}&lt;/span&gt;
+        ${isSmall ? "" : '&lt;button class="diff-chevron-toggle"&gt;▼&lt;/button&gt;'}
+        &lt;button class="diff-copy-btn" data-diff="${escapeHtml(diff_text)}"&gt;Copy&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class="diff-content ${isSmall ? "is-expanded" : "is-collapsed"}"&gt;
+        ${diff_html}
+      &lt;/div&gt;
+    &lt;/div&gt;`</span>;
+}
+
+document.addEventListener(<span class="str">"click"</span>, (event) =&gt; {
+  <span class="kw">if</span> (!event.target.matches(<span class="str">".diff-chevron-toggle"</span>)) <span class="kw">return</span>;
+  <span class="kw">const</span> content = event.target.closest(<span class="str">".agentic-diff-block"</span>).querySelector(<span class="str">".diff-content"</span>);
+  content.classList.toggle(<span class="str">"is-expanded"</span>);
+  content.classList.toggle(<span class="str">"is-collapsed"</span>);
+});</code></pre>
 
     <h2 id="rules">Project rules discovery</h2>
     <pre><code>RULES_FILES = [<span class="str">"AGENTS.md"</span>, <span class="str">"CLAUDE.md"</span>, <span class="str">".cursor/rules"</span>, <span class="str">".claude/rules"</span>]
@@ -758,8 +988,82 @@ require([<span class="str">"vs/editor/editor.main"</span>], <span class="kw">fun
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=12"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/script.js" defer></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+
+    new Chart(document.getElementById('codebaseSizeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['harness.py', 'tools.py', 'session.py', 'frontend JS', 'other backend'],
+        datasets: [{
+          label: 'Lines of code',
+          data: [1072, 864, 509, 3658, 901],
+          backgroundColor: ['#2563eb', '#7c3aed', '#0d9488', '#ea580c', '#64748b'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Lines' } } }
+      }
+    });
+
+    new Chart(document.getElementById('compactionThresholdChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Inter-turn (65%)', 'In-turn budget (70%)', 'Full-replace (85%)', 'Context window'],
+        datasets: [{
+          label: 'Token threshold',
+          data: [83200, 89600, 108800, 128000],
+          backgroundColor: ['#16a34a', '#2563eb', '#ea580c', '#64748b'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Estimated tokens' } } }
+      }
+    });
+
+    new Chart(document.getElementById('toolMixChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['grep_repo / read_file', 'edit_file / write_file', 'run_command', 'find_symbol / list_symbols', 'git_log / other'],
+        datasets: [{
+          data: [42, 22, 14, 12, 10],
+          backgroundColor: ['#2563eb', '#16a34a', '#ea580c', '#7c3aed', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    new Chart(document.getElementById('channelRadarChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Token streaming', 'Structured JSON', 'Bidirectional', 'CDN friendly', 'Permission UX', 'Shell streams'],
+        datasets: [
+          { label: 'SSE', data: [10, 3, 2, 9, 2, 1], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.15)' },
+          { label: 'WebSocket', data: [4, 10, 9, 6, 10, 10], borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.1)' }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: { r: { beginAtZero: true, max: 10 } }
+      }
+    });
+  </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>
 </body>

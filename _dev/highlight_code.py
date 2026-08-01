@@ -531,8 +531,12 @@ def detect_lang(code: str, hinted: str | None) -> str:
         r"^[a-z_]+:\s*[\^~]?\d", s, re.M
     ):
         return "yaml"
+    if re.search(r"^(const|let|var)\s", s, re.M) or "socket.on" in s or "=>" in s:
+        return "javascript"
     if re.search(r"\bfunction\b", s):
         return "javascript"
+    if re.search(r"^if len\(", s, re.M) or "ThreadPoolExecutor" in s:
+        return "python"
     if re.match(r"^name:\s", s) or re.match(r"^on:\s", s) or re.search(r"^jobs:\s*$", s, re.M):
         return "yaml"
     if s.startswith("---") or re.match(r"^#{1,6}\s", s) or re.search(r"^#{1,6}\s", s, re.M):
