@@ -12,7 +12,7 @@ POSTS_JSON = ROOT / "blog" / "posts.json"
 POSTS_DIR = ROOT / "blog" / "posts"
 SITEMAP = ROOT / "sitemap.xml"
 BLOG_INDEX = ROOT / "blog" / "index.html"
-DATE_MODIFIED = "2026-07-28"
+DATE_MODIFIED = "2026-08-17"
 
 # Per-post SEO: title (page title without " | stackcone"), h1, description, keywords
 SEO: dict[str, dict[str, str | list[str]]] = {
