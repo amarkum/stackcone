@@ -54,13 +54,15 @@
     return { svg: "", bindFunctions: null };
   }
 
+  var INLINE_MAX_HEIGHT = 440;
+
   window.StackconeMermaidConfig = {
     startOnLoad: false,
     securityLevel: "loose",
     theme: "base",
     themeVariables: {
       fontFamily: "DM Sans, system-ui, sans-serif",
-      fontSize: "12px",
+      fontSize: "11px",
       mainBkg: "#ffffff",
       background: "#ffffff",
       primaryColor: "#f5f5f5",
@@ -77,16 +79,16 @@
       labelTextColor: "#1a1a1a"
     },
     flowchart: {
-      useMaxWidth: false,
+      useMaxWidth: true,
       curve: "basis",
-      padding: 20,
+      padding: 12,
       htmlLabels: true,
-      nodeSpacing: 48,
-      rankSpacing: 52,
-      wrappingWidth: 220
+      nodeSpacing: 36,
+      rankSpacing: 40,
+      wrappingWidth: 180
     },
     sequence: {
-      useMaxWidth: false,
+      useMaxWidth: true,
       actorMargin: 40,
       messageMargin: 32,
       boxMargin: 10,
@@ -309,12 +311,37 @@
     mermaidEl.style.width = "";
     mermaidEl.style.height = "";
     mermaidEl.style.margin = "0 auto";
+    mermaidEl.style.maxWidth = "";
+    svg.style.width = "";
+    svg.style.height = "";
+    svg.style.maxWidth = "";
+    svg.style.transform = "";
+
+    var dims = getSvgDimensions(svg);
+    if (!dims.w || !dims.h) return;
+
+    var containerW = body.clientWidth || body.parentElement.clientWidth || dims.w;
+    if (!containerW) containerW = dims.w;
+
+    var scale = 1;
+    if (dims.w > containerW) scale = containerW / dims.w;
+    if (dims.h * scale > INLINE_MAX_HEIGHT) {
+      scale = Math.min(scale, INLINE_MAX_HEIGHT / dims.h);
+    }
+
+    var displayW = Math.round(dims.w * scale);
+    var displayH = Math.round(dims.h * scale);
+
+    mermaidEl.style.width = displayW + "px";
+    mermaidEl.style.height = displayH + "px";
     mermaidEl.style.maxWidth = "100%";
 
-    svg.style.width = "100%";
-    svg.style.height = "auto";
+    svg.style.width = displayW + "px";
+    svg.style.height = displayH + "px";
     svg.style.maxWidth = "100%";
     svg.style.overflow = "visible";
+
+    body.dataset.diagramScale = String(scale);
   }
 
   function fitAllDiagrams() {
