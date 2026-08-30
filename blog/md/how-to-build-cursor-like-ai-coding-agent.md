@@ -41,8 +41,6 @@ A Cursor-like coding agent is not a chatbot with code snippets. It is a **closed
 
 The minimum viable stack: **one HTTP endpoint**, **one Python generator function**, **a tool dispatch table**, and **JSONL session files on disk**.
 
-![Tech stack](../images/how-to-build-cursor-like-ai-coding-agent/flask.svg)
-
 ## Architecture at a glance
 
 LiveCode splits into a Python backend (`livecode-ai`) and a browser frontend. Runtime data lives in `~/livecode/` — settings, sessions, indexes, and memory — separate from the source repo.
@@ -59,8 +57,6 @@ livecode-ai/                    ~/livecode/  (runtime)
 ├── templates/index.html
 └── static/js/bundle.js
 ```
-
-![Cursor](../images/how-to-build-cursor-like-ai-coding-agent/cursor.svg) ![Python](../images/how-to-build-cursor-like-ai-coding-agent/python.svg) ![OpenAI](../images/how-to-build-cursor-like-ai-coding-agent/openai.png)
 
 ## Phase 1 — HTTP endpoint and SSE streaming
 
