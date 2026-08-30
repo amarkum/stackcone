@@ -31,6 +31,24 @@ CODE_HIGHLIGHT_SCRIPT_RE = re.compile(
     re.MULTILINE,
 )
 
+DOUBLE_ENTITY_RE = re.compile(r"&amp;(gt|lt|amp);")
+
+
+def fix_double_entities(text: str) -> str:
+    """Fix over-escaped entities in prose/tables (not inside code blocks)."""
+    parts: list[str] = []
+    last = 0
+    for m in BLOCK_RE.finditer(text):
+        chunk = text[last : m.start()]
+        chunk = DOUBLE_ENTITY_RE.sub(r"&\1;", chunk)
+        parts.append(chunk)
+        parts.append(m.group(0))
+        last = m.end()
+    chunk = text[last:]
+    chunk = DOUBLE_ENTITY_RE.sub(r"&\1;", chunk)
+    parts.append(chunk)
+    return "".join(parts)
+
 
 def unescape_code(raw: str) -> str:
     code = html.unescape(raw)
@@ -47,6 +65,8 @@ def unescape_code(raw: str) -> str:
 def process_html(path: Path) -> bool:
     text = path.read_text(encoding="utf-8")
     original = text
+
+    text = fix_double_entities(text)
 
     def repl(m: re.Match[str]) -> str:
         hinted = m.group(1)

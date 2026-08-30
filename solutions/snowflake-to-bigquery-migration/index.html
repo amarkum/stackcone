@@ -311,17 +311,17 @@
   cluster_by=['account_id']
 ) }}
 
-<span class="kw">select</span>
+select
   event_id,
   account_id,
   event_ts,
-  <span class="fn">date</span>(event_ts) <span class="kw">as</span> event_date,
+  date(event_ts) as event_date,
   payload
-<span class="kw">from</span> {{ ref('stg_events') }}
-{% <span class="kw">if</span> is_incremental() %}
-<span class="kw">where</span> event_ts &gt; (
-  <span class="kw">select</span> <span class="fn">coalesce</span>(<span class="fn">max</span>(event_ts), <span class="fn">timestamp</span>(<span class="str">'1970-01-01'</span>))
-  <span class="kw">from</span> {{ this }}
+from {{ ref('stg_events') }}
+{% if is_incremental() %}
+where event_ts &gt; (
+  select coalesce(max(event_ts), timestamp('<span class="num">1970</span><span class="num">-01</span><span class="num">-01</span>'))
+  from {{ this }}
 )
 {% endif %}</code></pre>
 

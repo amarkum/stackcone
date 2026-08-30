@@ -314,16 +314,16 @@
     </ul>
 
     <p>Core reconciliation event schema — merge actions are explicit and auditable:</p>
-    <pre><code><span class="kw">from</span> enum <span class="kw">import</span> Enum
-<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+    <pre><code><span class="kw">from</span> enum import Enum
+<span class="kw">from</span> pydantic import BaseModel
 
-<span class="kw">class</span> MergeAction(str, Enum):
-    CREATE = <span class="str">"create"</span>
-    UPDATE = <span class="str">"update"</span>
-    SUPERSEDE = <span class="str">"supersede"</span>
-    RETIRE = <span class="str">"retire"</span>
+class MergeAction(str, Enum):
+    <span class="kw">CREATE</span> = "<span class="kw">create</span>"
+    <span class="kw">UPDATE</span> = "<span class="kw">update</span>"
+    SUPERSEDE = "supersede"
+    RETIRE = "retire"
 
-<span class="kw">class</span> ReconciliationEvent(BaseModel):
+class ReconciliationEvent(BaseModel):
     object_id: str
     category: str
     action: MergeAction

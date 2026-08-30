@@ -188,12 +188,12 @@
     <h2 id="hit-at-k">Run hit@k eval</h2>
     <p><strong>hit@k</strong> = fraction of questions where the expected doc appears in the top-k retrieved results.</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">hit_at_k</span>(results: list[list[str]], expected: list[str], k: int = <span class="num">10</span>) -> float:
+    <pre><code><span class="kw">def</span> <span class="fn">hit_at_k</span>(results: <span class="fn">list</span>[<span class="fn">list</span>[<span class="fn">str</span>]], expected: <span class="fn">list</span>[<span class="fn">str</span>], k: <span class="fn">int</span> = <span class="num">10</span>) -&gt; <span class="fn">float</span>:
     hits = <span class="num">0</span>
-    <span class="kw">for</span> retrieved, gold <span class="kw">in</span> zip(results, expected):
+    <span class="kw">for</span> retrieved, gold <span class="kw">in</span> <span class="fn">zip</span>(results, expected):
         <span class="kw">if</span> gold <span class="kw">in</span> retrieved[:k]:
             hits += <span class="num">1</span>
-    <span class="kw">return</span> hits / len(expected) <span class="kw">if</span> expected <span class="kw">else</span> <span class="num">0.0</span></code></pre>
+    <span class="kw">return</span> hits / <span class="fn">len</span>(expected) <span class="kw">if</span> expected <span class="kw">else</span> <span class="num">0.0</span></code></pre>
 
     <p>Run eval after every KB sync, after chunk/embedding changes, and before vs after adding a reranker.</p>
 
@@ -265,10 +265,10 @@
     </div>
 
     <h2 id="eval-script">Sample eval script</h2>
-    <pre><code><span class="kw">import</span> json
+    <pre><code><span class="kw">import</span> <span class="fn">json</span>
 <span class="kw">from</span> your_app.retrieve <span class="kw">import</span> retrieve
 
-<span class="kw">def</span> <span class="fn">eval_retrieval</span>(cases: list[dict], k: int = <span class="num">10</span>) -> dict:
+<span class="kw">def</span> <span class="fn">eval_retrieval</span>(cases: <span class="fn">list</span>[<span class="fn">dict</span>], k: <span class="fn">int</span> = <span class="num">10</span>) -&gt; <span class="fn">dict</span>:
     hits, mrr_sum = <span class="num">0</span>, <span class="num">0.0</span>
     <span class="kw">for</span> case <span class="kw">in</span> cases:
         docs = retrieve(case[<span class="str">"question"</span>], top_k=k)
@@ -277,12 +277,12 @@
         <span class="kw">if</span> gold <span class="kw">in</span> doc_ids:
             hits += <span class="num">1</span>
             mrr_sum += <span class="num">1.0</span> / (doc_ids.index(gold) + <span class="num">1</span>)
-    n = len(cases)
+    n = <span class="fn">len</span>(cases)
     <span class="kw">return</span> {<span class="str">"hit@k"</span>: hits / n, <span class="str">"mrr"</span>: mrr_sum / n, <span class="str">"n"</span>: n}
 
 <span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
-    cases = json.load(open(<span class="str">"eval/golden.json"</span>))
-    print(eval_retrieval(cases, k=<span class="num">10</span>))</code></pre>
+    cases = <span class="fn">json</span>.load(<span class="fn">open</span>(<span class="str">"eval/golden.json"</span>))
+    <span class="fn">print</span>(eval_retrieval(cases, k=<span class="num">10</span>))</code></pre>
     <p>Wire into CI: fail the build if hit@k drops more than 2 points vs baseline.</p>
 
     <h2 id="checklist">Checklist</h2>

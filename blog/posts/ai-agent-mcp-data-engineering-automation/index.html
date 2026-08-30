@@ -278,33 +278,33 @@ Follow <span class="str">`ai-engineer.md`</span> for the full fix-and-verify loo
 
     <h2 id="ai-engineer">The ai-engineer.md playbook</h2>
     <p><code>ai-engineer.md</code> lives at the repo root (or alongside your agent rules). It is the <strong>retry contract</strong> — what “done” means and which MCP tools to use in order.</p>
-    <pre><code><span class="kw">#</span> AI Engineer — data pipeline fix loop
+    <pre><code># AI Engineer — data pipeline fix loop
 
-<span class="kw">##</span> Done criteria (ALL required)
+## Done criteria (<span class="kw">ALL</span> required)
 
-1. GitHub CI: flake8, pylint, and SonarQube checks green on the PR branch.
-2. Airflow: target DAG run <span class="str">`success`</span> for the environment under test.
-3. Data: validation query returns expected row counts or schema per Jira/Confluence.
-4. No new Sonar BLOCKER/CRITICAL issues on touched files.
+<span class="num">1.</span> GitHub CI: flake8, pylint, <span class="kw">and</span> SonarQube checks green <span class="kw">on</span> the PR branch.
+<span class="num">2.</span> Airflow: target DAG run `success` for the environment under test.
+<span class="num">3.</span> Data: validation query returns expected row counts <span class="kw">or</span> schema per Jira/Confluence.
+<span class="num">4.</span> No new Sonar BLOCKER/CRITICAL issues <span class="kw">on</span> touched files.
 
-<span class="kw">##</span> Tool order
+## Tool <span class="kw">order</span>
 
-1. <span class="str">`jira_get_issue`</span> + <span class="str">`confluence_get_page`</span> — requirements
-2. Edit code locally
-3. <span class="str">`github_get_check_runs`</span> after push — if failed, read logs, fix, recommit
-4. <span class="str">`sonar_list_issues`</span> — fix or justify each BLOCKER/CRITICAL
-5. <span class="str">`airflow_trigger_dag`</span> — note <span class="str">`run_id`</span>
-6. Poll <span class="str">`airflow_get_run_status`</span> until <span class="str">`success`</span> or <span class="str">`failed`</span>
-7. On failure: <span class="str">`airflow_get_task_logs`</span> → locate file/line → fix → back to step 3
-8. <span class="str">`mongodb_find`</span> or warehouse query tool — run validation from ticket
-9. <span class="str">`jira_add_comment`</span> with run_id, PR link, validation summary
+<span class="num">1.</span> `jira_get_issue` + `confluence_get_page` — requirements
+<span class="num">2.</span> Edit code locally
+<span class="num">3.</span> `github_get_check_runs` after push — if failed, read logs, fix, recommit
+<span class="num">4.</span> `sonar_list_issues` — fix <span class="kw">or</span> justify each BLOCKER/CRITICAL
+<span class="num">5.</span> `airflow_trigger_dag` — note `run_id`
+<span class="num">6.</span> Poll `airflow_get_run_status` until `success` <span class="kw">or</span> `failed`
+<span class="num">7.</span> <span class="kw">On</span> failure: `airflow_get_task_logs` → locate file/line → fix → back to step <span class="num">3</span>
+<span class="num">8.</span> `mongodb_find` <span class="kw">or</span> warehouse query tool — run validation <span class="kw">from</span> ticket
+<span class="num">9.</span> `jira_add_comment` <span class="kw">with</span> run_id, PR link, validation summary
 
-<span class="kw">##</span> Retry policy
+## Retry policy
 
-- NEVER stop after a single failed DAG run — read logs and fix root cause.
-- NEVER stop while CI is red — iterate until green unless blocked on secrets/access.
-- Max 5 full loops per session; then summarize blockers for the human.
-- Prefer small commits per fix attempt so CI history is readable.</code></pre>
+- NEVER stop after a single failed DAG run — read logs <span class="kw">and</span> fix root cause.
+- NEVER stop while CI <span class="kw">is</span> red — iterate until green unless blocked <span class="kw">on</span> secrets/access.
+- <span class="fn">Max</span> <span class="num">5</span> <span class="kw">full</span> loops per session; <span class="kw">then</span> summarize blockers for the human.
+- Prefer small commits per fix attempt so CI history <span class="kw">is</span> readable.</code></pre>
     <p>Reference this file from your agent rules so every session shares the same definition of finished.</p>
 
     <h2 id="connect-mcp">Connect your agent via MCP</h2>

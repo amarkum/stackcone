@@ -449,15 +449,15 @@ TOOL_RESULT_MAX_CHARS = 16_000</code></pre>
     </tbody></table>
 
     <h4>Step 2 — Stationarity gate</h4>
-    <pre><code>    <span class="kw">if</span> stationarity.count &gt;= STATIONARITY_HARD_STOP:
-        <span class="kw">yield</span> sse_done(<span class="str">"Stopped: repeated identical tool calls."</span>)
-        <span class="kw">return</span>
-    <span class="kw">if</span> stationarity.count &gt;= STATIONARITY_NUDGE_AFTER:
-        messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: STATIONARITY_NUDGE})</code></pre>
+    <pre><code>    if stationarity.count &gt;= STATIONARITY_HARD_STOP:
+        yield sse_done("Stopped: repeated identical tool calls.")
+        return
+    if stationarity.count &gt;= STATIONARITY_NUDGE_AFTER:
+        messages.append({"role": "user", "content": STATIONARITY_NUDGE})</code></pre>
 
     <h4>Step 3 — Model + context before each LLM call</h4>
     <pre><code>    iteration_model = pick_model(model, classification, iteration, had_tool_errors)
-    messages = compact_stale_tool_messages(messages, budget=<span class="num">89600</span>)
+    messages = compact_stale_tool_messages(messages, budget=89600)
     messages.extend(drain_interjection_queue(session_id))
     messages = sanitize_messages_for_api(messages)</code></pre>
 
@@ -470,27 +470,27 @@ TOOL_RESULT_MAX_CHARS = 16_000</code></pre>
     )</code></pre>
 
     <h4>Step 5 — Dispatch tools or finish</h4>
-    <pre><code>    <span class="kw">if</span> response.tool_calls:
+    <pre><code>    if response.tool_calls:
         results = dispatch_parallel_or_serial(response.tool_calls, session_id)
-        <span class="kw">for</span> tool_call, result <span class="kw">in</span> <span class="fn">zip</span>(response.tool_calls, results):
+        for tool_call, result <span class="kw">in</span> zip(response.tool_calls, results):
             messages.append(tool_message(tool_call, compact_tool_result(result)))
-        <span class="kw">if</span> any(tc.name == <span class="str">"attempt_completion"</span> <span class="kw">for</span> tc <span class="kw">in</span> response.tool_calls):
-            <span class="kw">yield</span> sse_done(answer=extract_completion(results), turn_messages=turn_persist)
-            <span class="kw">return</span>
-        <span class="kw">continue</span>
+        if any(tc.name == "attempt_completion" for tc <span class="kw">in</span> response.tool_calls):
+            yield sse_done(answer=extract_completion(results), turn_messages=turn_persist)
+            return
+        continue
 
-    <span class="kw">if</span> iteration == <span class="num">1</span> <span class="kw">and</span> no_tools_used <span class="kw">and</span> needs_codebase_evidence(question):
-        messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: CODEBASE_RECOVERY_PROMPT})
-        <span class="kw">continue</span>
+    if iteration == <span class="num">1</span> <span class="kw">and</span> no_tools_used <span class="kw">and</span> needs_codebase_evidence(question):
+        messages.append({"role": "user", "content": CODEBASE_RECOVERY_PROMPT})
+        continue
 
-    <span class="kw">if</span> response.content:
-        <span class="kw">yield</span> <span class="kw">from</span> stream_tokens_as_sse(response.content)
-        <span class="kw">yield</span> sse_done(answer=response.content, turn_messages=turn_persist)
-        <span class="kw">return</span></code></pre>
+    if response.content:
+        yield <span class="kw">from</span> stream_tokens_as_sse(response.content)
+        yield sse_done(answer=response.content, turn_messages=turn_persist)
+        return</code></pre>
 
     <h4>Step 6 — Exhaustion fallback</h4>
-    <pre><code>messages.append({<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Summarize without more tools."</span>})
-<span class="kw">yield</span> sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre>
+    <pre><code>messages.append({"role": "user", "content": "Summarize without more tools."})
+yield sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre>
 
     <h4>Full skeleton</h4>
     <pre><code><span class="kw">def</span> <span class="fn">run_livecode_turn</span>(question, project_path, session_id, model=<span class="str">"auto"</span>):

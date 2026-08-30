@@ -104,7 +104,7 @@ Tools hide latency with **speculative prefetch**: they start inference before yo
 | | Tab model | Chat / agent model |
 |---|-----------|-------------------|
 | **Training** | FIM, next-edit prediction | Instruction following, tool use |
-| **Latency target** | &lt;300ms | Seconds to minutes |
+| **Latency target** | <300ms | Seconds to minutes |
 | **Output** | Inline ghost text | Messages, diffs, terminal |
 | **Context use** | Tight, local | Broad, multi-file |
 | **Cost per call** | Fractions of a cent | Cents to dollars |
@@ -487,10 +487,10 @@ Accept rate = Accepted / Shown × 100%
 
 | Accept rate | Interpretation |
 |-------------|----------------|
-| **&gt;40%** | Excellent — Tab is earning its attention cost |
+| **>40%** | Excellent — Tab is earning its attention cost |
 | **25–40%** | Good — typical for experienced users on mixed tasks |
 | **15–25%** | Mediocre — check context, language, or settings |
-| **&lt;15%** | Poor — wrong tool, wrong project, or Tab fighting your style |
+| **<15%** | Poor — wrong tool, wrong project, or Tab fighting your style |
 
 ### What lowers accept rate
 
@@ -595,7 +595,7 @@ Check for keybinding conflicts — Tab bound to snippet expansion and completion
 
 Long Agent sessions inflate context. **Start a new composer/chat tab** or reload window to reset session-scoped context that may slow Tab assembly.
 
-### Continue-specific: local Tab &gt;2s latency
+### Continue-specific: local Tab >2s latency
 
 - Drop to 7B model from 34B
 - Use `debounceDelay: 200` or higher

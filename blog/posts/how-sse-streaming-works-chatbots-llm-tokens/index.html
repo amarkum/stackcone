@@ -247,7 +247,7 @@ data: {"finish_reason":"stop"}</code></pre>
     <p>Providers send <strong>token deltas</strong> (subword pieces), not whole words. Your server normalizes them into one text stream for the UI.</p>
 
     <h3>OpenAI / compatible APIs</h3>
-    <pre><code><span class="kw">stream</span> = client.chat.completions.create(
+    <pre><code>stream = client.chat.completions.create(
     model=<span class="str">"gpt-4o-mini"</span>,
     messages=messages,
     stream=<span class="kw">True</span>,
@@ -259,13 +259,13 @@ data: {"finish_reason":"stop"}</code></pre>
     <p>Wire format: newline-delimited JSON lines, ends with <code>data: [DONE]</code>.</p>
 
     <h3>Anthropic Claude</h3>
-    <pre><code><span class="kw">with</span> client.messages.stream(
-    model=<span class="str">"claude-haiku-4-5"</span>,
+    <pre><code>with client.messages.stream(
+    model="claude-haiku-4-5",
     messages=messages,
-    max_tokens=<span class="num">1024</span>,
-) <span class="kw">as</span> s:
-    <span class="kw">for</span> text <span class="kw">in</span> s.text_stream:
-        <span class="kw">yield</span> text</code></pre>
+    max_tokens=1024,
+) as s:
+    for text in s.text_stream:
+        yield text</code></pre>
     <p>Events include <code>content_block_delta</code> with text fragments.</p>
 
     <h3>Google Gemini</h3>
@@ -281,35 +281,35 @@ data: {"finish_reason":"stop"}</code></pre>
     <h2 id="build-api">Build an SSE streaming API</h2>
 
     <h3>FastAPI (Python)</h3>
-    <pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
-<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
-<span class="kw">import</span> json
+    <pre><code><span class="kw">from</span> fastapi import FastAPI
+<span class="kw">from</span> fastapi.responses import StreamingResponse
+import json
 
 app = FastAPI()
 
-<span class="kw">async def</span> <span class="fn">token_generator</span>(user_message: str):
-    context = retrieve_chunks(user_message)  <span class="cm"># RAG — not streamed</span>
+async def token_generator(user_message: str):
+    context = retrieve_chunks(user_message)  # RAG — <span class="kw">not</span> streamed
 
-    <span class="kw">for</span> token <span class="kw">in</span> stream_llm(user_message, context):
-        payload = json.dumps({<span class="str">"type"</span>: <span class="str">"token"</span>, <span class="str">"content"</span>: token})
-        <span class="kw">yield</span> <span class="str">f"data: {payload}\n\n"</span>
+    for token <span class="kw">in</span> stream_llm(user_message, context):
+        payload = json.dumps({"type": "token", "content": token})
+        yield f"data: {payload}\n\n"
 
-    <span class="kw">yield</span> <span class="str">f"data: {json.dumps({'type': 'done'})}\n\n"</span>
+    yield f"data: {json.dumps({<span class="str">'type'</span>: <span class="str">'done'</span>})}\n\n"
 
-<span class="kw">@app.post</span>(<span class="str">"/api/chat/stream"</span>)
-<span class="kw">async def</span> <span class="fn">chat_stream</span>(body: ChatRequest):
-    <span class="kw">return</span> StreamingResponse(
+<span class="fn">@app</span>.post("/api/chat/stream")
+async def chat_stream(body: ChatRequest):
+    return StreamingResponse(
         token_generator(body.message),
-        media_type=<span class="str">"text/event-stream"</span>,
+        media_type="text/event-stream",
         headers={
-            <span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>,
-            <span class="str">"Connection"</span>: <span class="str">"keep-alive"</span>,
-            <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>,
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
         },
     )</code></pre>
 
     <h3>Node / Express</h3>
-    <pre><code>app.post(<span class="str">"/api/chat/stream"</span>, <span class="kw">async</span> (req, res) => {
+    <pre><code>app.post(<span class="str">"/api/chat/stream"</span>, <span class="kw">async</span> (req, res) =&gt; {
   res.setHeader(<span class="str">"Content-Type"</span>, <span class="str">"text/event-stream"</span>);
   res.setHeader(<span class="str">"Cache-Control"</span>, <span class="str">"no-cache"</span>);
   res.setHeader(<span class="str">"Connection"</span>, <span class="str">"keep-alive"</span>);
@@ -318,10 +318,10 @@ app = FastAPI()
   <span class="kw">const</span> stream = <span class="kw">await</span> openai.chat.completions.create({
     model: <span class="str">"gpt-4o-mini"</span>,
     messages: req.body.messages,
-    stream: <span class="kw">true</span>,
+    stream: true,
   });
 
-  <span class="kw">for await</span> (<span class="kw">const</span> chunk <span class="kw">of</span> stream) {
+  <span class="kw">for</span> <span class="kw">await</span> (<span class="kw">const</span> chunk <span class="kw">of</span> stream) {
     <span class="kw">const</span> text = chunk.choices[<span class="num">0</span>]?.delta?.content ?? <span class="str">""</span>;
     <span class="kw">if</span> (text) res.write(<span class="str">`data: ${JSON.stringify({ content: text })}\n\n`</span>);
   }
@@ -336,7 +336,7 @@ app = FastAPI()
     <h3>fetch + ReadableStream (POST chat — recommended)</h3>
     <p><code>EventSource</code> only supports GET. Chat almost always POSTs the message body, so use <code>fetch</code>:</p>
 
-    <pre><code><span class="kw">async function</span> <span class="fn">streamChat</span>(message, onToken) {
+    <pre><code><span class="kw">async</span> <span class="kw">function</span> streamChat(message, onToken) {
   <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"/api/chat/stream"</span>, {
     method: <span class="str">"POST"</span>,
     headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
@@ -347,16 +347,16 @@ app = FastAPI()
   <span class="kw">const</span> decoder = <span class="kw">new</span> TextDecoder();
   <span class="kw">let</span> buffer = <span class="str">""</span>;
 
-  <span class="kw">while</span> (<span class="kw">true</span>) {
+  <span class="kw">while</span> (true) {
     <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.read();
-    <span class="kw">if</span> (done) <span class="kw">break</span>;
-    buffer += decoder.decode(value, { stream: <span class="kw">true</span> });
+    <span class="kw">if</span> (done) break;
+    buffer += decoder.decode(value, { stream: true });
 
     <span class="kw">const</span> lines = buffer.split(<span class="str">"\n"</span>);
     buffer = lines.pop() ?? <span class="str">""</span>;
 
     <span class="kw">for</span> (<span class="kw">const</span> line <span class="kw">of</span> lines) {
-      <span class="kw">if</span> (!line.startsWith(<span class="str">"data: "</span>)) <span class="kw">continue</span>;
+      <span class="kw">if</span> (!line.startsWith(<span class="str">"data: "</span>)) continue;
       <span class="kw">const</span> data = JSON.parse(line.slice(<span class="num">6</span>));
       <span class="kw">if</span> (data.type === <span class="str">"token"</span>) onToken(data.content);
     }
@@ -366,18 +366,18 @@ app = FastAPI()
     <p>Append tokens immediately — <strong>no <code>setTimeout</code> between characters</strong>:</p>
 
     <pre><code><span class="kw">let</span> text = <span class="str">""</span>;
-streamChat(userMsg, (token) => {
+streamChat(userMsg, (token) =&gt; {
   text += token;
   bubble.textContent = text;
 });</code></pre>
 
     <h3>EventSource (GET progress / live site updates)</h3>
     <pre><code><span class="kw">const</span> es = <span class="kw">new</span> EventSource(<span class="str">"/api/sync/progress"</span>);
-es.addEventListener(<span class="str">"progress"</span>, (e) => {
+es.addEventListener(<span class="str">"progress"</span>, (e) =&gt; {
   <span class="kw">const</span> { pct, stage } = JSON.parse(e.data);
   updateBar(pct, stage);
 });
-es.addEventListener(<span class="str">"complete"</span>, () => es.close());</code></pre>
+es.addEventListener(<span class="str">"complete"</span>, () =&gt; es.close());</code></pre>
 
     <h2 id="rag-streaming">RAG + streaming</h2>
     <p>RAG adds a <strong>retrieval phase</strong> before generation. Only the LLM phase streams.</p>

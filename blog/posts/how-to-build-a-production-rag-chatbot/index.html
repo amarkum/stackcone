@@ -161,9 +161,9 @@
       <li>"Reset password" and "weather forecast" → far apart</li>
     </ul>
     <p>An <strong>embedding model</strong> (separate from your chat LLM) creates these vectors. You embed all docs at ingest time and embed each user question at query time, then find the closest doc vectors.</p>
-    <pre><code><span class="str">"How do I reset my password?"</span>  →  [<span class="num">0.12</span>, <span class="num">-0.45</span>, <span class="num">0.88</span>, ...]
-<span class="str">"Password recovery steps"</span>      →  [<span class="num">0.11</span>, <span class="num">-0.42</span>, <span class="num">0.91</span>, ...]   <span class="cm">← relevant</span>
-<span class="str">"Weather in Tokyo"</span>             →  [<span class="num">-0.67</span>, <span class="num">0.22</span>, <span class="num">-0.11</span>, ...]  <span class="cm">← not relevant</span></code></pre>
+    <pre><code>"How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
+"Password recovery steps"      →  [0.11, -0.42, 0.91, ...]   ← relevant
+"Weather in Tokyo"             →  [-0.67, 0.22, -0.11, ...]  ← not relevant</code></pre>
 
     <h2 id="what-is-a-vector-database">What is a vector database?</h2>
     <p>Stores millions of vectors and returns <strong>nearest neighbors</strong> quickly.</p>
@@ -236,11 +236,11 @@
     </table>
 
     <p><strong>Project layout:</strong></p>
-    <pre><code>docs/           <span class="cm">← your source markdown/PDF exports</span>
-ingest/         <span class="cm">← chunk.py, index.py (run when docs change)</span>
-app/            <span class="cm">← retrieve.py, main.py (chat API)</span>
-frontend/       <span class="cm">← chat UI</span>
-.env            <span class="cm">← API keys (never commit)</span></code></pre>
+    <pre><code>docs/           ← your source markdown/PDF exports
+ingest/         ← chunk.py, index.py (run when docs change)
+app/            ← retrieve.py, main.py (chat API)
+frontend/       ← chat UI
+.env            ← API keys (never commit)</code></pre>
 
     <p><strong>LangChain?</strong> Optional. Plain Python is fine for v1 — you'll see every step clearly.</p>
 
@@ -344,8 +344,8 @@ PINECONE_API_KEY=...
 PINECONE_INDEX=kb-prod
 PINECONE_NAMESPACE=default
 
-RETRIEVAL_TOP_K=<span class="num">30</span>
-MAX_CONTEXT_CHUNKS=<span class="num">8</span></code></pre>
+RETRIEVAL_TOP_K=30
+MAX_CONTEXT_CHUNKS=8</code></pre>
 
     <p><strong>requirements.txt</strong></p>
     <pre><code>fastapi
@@ -358,7 +358,7 @@ tiktoken</code></pre>
 
     <h3>Step 2 — Chunk documents</h3>
     <p><strong>ingest/chunk.py</strong></p>
-    <pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+    <pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
 
 CHUNK_SIZE = <span class="num">1000</span>
 OVERLAP = <span class="num">200</span>
@@ -369,7 +369,7 @@ OVERLAP = <span class="num">200</span>
         piece = text[start : start + CHUNK_SIZE].strip()
         <span class="kw">if</span> piece:
             chunks.append({
-                <span class="str">"id"</span>: <span class="str">f"</span>{doc_id}<span class="str">_{idx}"</span>,
+                <span class="str">"id"</span>: f<span class="str">"{doc_id}_{idx}"</span>,
                 <span class="str">"text"</span>: piece,
                 <span class="str">"metadata"</span>: {<span class="str">"doc_id"</span>: doc_id, <span class="str">"title"</span>: title, <span class="str">"chunk_index"</span>: idx},
             })
@@ -379,8 +379,8 @@ OVERLAP = <span class="num">200</span>
 
 <span class="kw">def</span> <span class="fn">load_docs</span>(folder: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
     out = []
-    <span class="kw">for</span> path <span class="kw">in</span> Path(folder).glob(<span class="str">"**/*.md"</span>):
-        out.extend(<span class="fn">chunk_text</span>(path.read_text(encoding=<span class="str">"utf-8"</span>), path.stem, path.stem))
+    <span class="kw">for</span> path <span class="kw">in</span> <span class="fn">Path</span>(folder).glob(<span class="str">"**/*.md"</span>):
+        out.extend(chunk_text(path.read_text(encoding=<span class="str">"utf-8"</span>), path.stem, path.stem))
     <span class="kw">return</span> out</code></pre>
 
     <h3>Step 3 — Embed and index</h3>
@@ -402,7 +402,7 @@ index = pc.Index(os.environ[<span class="str">"PINECONE_INDEX"</span>])
     ns = os.environ.get(<span class="str">"PINECONE_NAMESPACE"</span>, <span class="str">"default"</span>)
     <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="fn">len</span>(chunks), batch_size):
         batch = chunks[i : i + batch_size]
-        vecs = <span class="fn">embed</span>([c[<span class="str">"text"</span>] <span class="kw">for</span> c <span class="kw">in</span> batch])
+        vecs = embed([c[<span class="str">"text"</span>] <span class="kw">for</span> c <span class="kw">in</span> batch])
         index.upsert(
             vectors=[
                 {<span class="str">"id"</span>: c[<span class="str">"id"</span>], <span class="str">"values"</span>: v, <span class="str">"metadata"</span>: {**c[<span class="str">"metadata"</span>], <span class="str">"text"</span>: c[<span class="str">"text"</span>]}}
@@ -412,7 +412,7 @@ index = pc.Index(os.environ[<span class="str">"PINECONE_INDEX"</span>])
         )
 
 <span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
-    <span class="fn">upsert_chunks</span>(<span class="fn">load_docs</span>(<span class="str">"docs"</span>))
+    upsert_chunks(load_docs(<span class="str">"docs"</span>))
     <span class="fn">print</span>(<span class="str">"Indexed."</span>)</code></pre>
     <p>Run after docs change: <code>python ingest/index.py</code></p>
 
@@ -427,9 +427,9 @@ client = OpenAI()
     r = client.embeddings.create(model=os.environ[<span class="str">"EMBEDDING_MODEL"</span>], input=text)
     <span class="kw">return</span> r.data[<span class="num">0</span>].embedding
 
-<span class="kw">def</span> <span class="fn">retrieve</span>(query: <span class="fn">str</span>, index, top_k: <span class="fn">int</span> | <span class="fn">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+<span class="kw">def</span> <span class="fn">retrieve</span>(query: <span class="fn">str</span>, index, top_k: <span class="fn">int</span> | <span class="kw">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
     k = top_k <span class="kw">or</span> <span class="fn">int</span>(os.environ.get(<span class="str">"RETRIEVAL_TOP_K"</span>, <span class="str">"30"</span>))
-    hits = index.query(vector=<span class="fn">embed_query</span>(query), top_k=k, include_metadata=<span class="kw">True</span>)
+    hits = index.query(vector=embed_query(query), top_k=k, include_metadata=<span class="kw">True</span>)
     <span class="kw">return</span> [{<span class="str">"text"</span>: m.metadata[<span class="str">"text"</span>], **m.metadata} <span class="kw">for</span> m <span class="kw">in</span> hits.matches]</code></pre>
     <p><strong>Optional rerank</strong> (Cohere) — call after vector search, keep top 8. Big quality win for little code.</p>
 
@@ -448,27 +448,27 @@ client = OpenAI()
 SYSTEM = <span class="str">"""You are a helpful assistant. Answer using only the context below.
 If the context does not contain the answer, say so clearly."""</span>
 
-<span class="kw">class</span> <span class="fn">ChatRequest</span>(BaseModel):
+<span class="kw">class</span> ChatRequest(BaseModel):
     message: <span class="fn">str</span>
     conversation_history: <span class="fn">list</span>[<span class="fn">dict</span>] = []
 
 <span class="kw">def</span> <span class="fn">format_context</span>(docs: <span class="fn">list</span>[<span class="fn">dict</span>]) -&gt; <span class="fn">str</span>:
     max_chunks = <span class="fn">int</span>(os.environ.get(<span class="str">"MAX_CONTEXT_CHUNKS"</span>, <span class="str">"8"</span>))
-    parts = [<span class="str">f"Source: {d.get('title', 'doc')}\n{d['text']}"</span> <span class="kw">for</span> d <span class="kw">in</span> docs[:max_chunks]]
+    parts = [f<span class="str">"Source: {d.get('title', 'doc')}\n{d['text']}"</span> <span class="kw">for</span> d <span class="kw">in</span> docs[:max_chunks]]
     <span class="kw">return</span> <span class="str">"\n---\n"</span>.join(parts)
 
 @app.post(<span class="str">"/chat"</span>)
-<span class="kw">async def</span> <span class="fn">chat</span>(req: ChatRequest):
-    docs = <span class="fn">retrieve</span>(req.message, index)
+<span class="kw">async</span> <span class="kw">def</span> <span class="fn">chat</span>(req: ChatRequest):
+    docs = retrieve(req.message, index)
 
-    <span class="kw">if not</span> docs:
+    <span class="kw">if</span> <span class="kw">not</span> docs:
         <span class="kw">return</span> {<span class="str">"response"</span>: <span class="str">"I couldn't find anything relevant in the knowledge base."</span>, <span class="str">"sources"</span>: []}
 
-    ctx = <span class="fn">format_context</span>(docs)
+    ctx = format_context(docs)
     messages = [
         {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: SYSTEM},
         *req.conversation_history,
-        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">f"Context:\n{ctx}\n\nQuestion: {req.message}"</span>},
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: f<span class="str">"Context:\n{ctx}\n\nQuestion: {req.message}"</span>},
     ]
     out = client.chat.completions.create(model=os.environ[<span class="str">"DEFAULT_MODEL"</span>], messages=messages)
     <span class="kw">return</span> {
@@ -479,8 +479,8 @@ If the context does not contain the answer, say so clearly."""</span>
 
     <h3>Step 6 — Chat UI</h3>
     <p><strong>frontend/chat.js</strong></p>
-    <pre><code><span class="kw">async function</span> <span class="fn">sendMessage</span>(message, history = []) {
-  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"/chat"</span>, {
+    <pre><code><span class="kw">async</span> <span class="kw">function</span> sendMessage(message, history = []) {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"/chat"</span>, {
     method: <span class="str">"POST"</span>,
     headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
     body: JSON.stringify({ message, conversation_history: history }),
@@ -580,9 +580,9 @@ If the context does not contain the answer, say so clearly."""</span>
     </div>
 
     <h2 id="api-reference">API reference</h2>
-    <pre><code>curl -X POST http://localhost:8000/chat \
-  -H <span class="str">"Content-Type: application/json"</span> \
-  -d <span class="str">'{"message": "How do I reset my password?"}'</span></code></pre>
+    <pre><code><span class="fn">curl</span> -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "How do I reset my password?"}'</code></pre>
 
     <p><strong>Request</strong></p>
     <pre><code>{

@@ -280,7 +280,12 @@ def highlight_ruby(src: str) -> str:
 def highlight_xml(src: str) -> str:
     parts: list[str] = []
     pos = 0
-    for m in re.finditer(r"(<\!--[\s\S]*?-->|<\/?[\w:-]+>|[^<]+)", src):
+    token_re = re.compile(
+        r"(<!--[\s\S]*?-->|<![\w:-]+(?:\s[^>]*)?>|<\/?[\w:-]+(?:\s[^>]*)?>)"
+    )
+    for m in token_re.finditer(src):
+        if m.start() > pos:
+            parts.append(html.escape(src[pos : m.start()], quote=False))
         token = m.group(0)
         if token.startswith("<!--"):
             parts.append(_span("cm", token))
@@ -488,7 +493,7 @@ def highlight(src: str, lang: str) -> str:
         return highlight_kotlin(src)
     if lang in ("ruby", "rb", "podfile"):
         return highlight_ruby(src)
-    if lang in ("xml", "plist"):
+    if lang in ("xml", "plist", "html"):
         return highlight_xml(src)
     if lang in ("rules", "firestore-rules"):
         return highlight_rules(src)

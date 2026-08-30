@@ -145,12 +145,12 @@
     </table>
 
     <pre><code>docs/
-├── drafts/                 <span class="cm">← staging (not indexed)</span>
-├── published/              <span class="cm">← approved .md — sync source</span>
-├── site/                   <span class="cm">← static site output (generated)</span>
+├── drafts/                 ← staging (not indexed)
+├── published/              ← approved .md — sync source
+├── site/                   ← static site output (generated)
 ├── metadata/
 │   └── sync-state.json
-└── assets/                 <span class="cm">← images and attachments</span></code></pre>
+└── assets/                 ← images and attachments</code></pre>
 
     <h2 id="two-pipelines">Two pipelines: ingest and publish</h2>
     <p>Content enters through human or AI-assisted review. Only the publish pipeline touches the vector index and GitHub.</p>
@@ -222,16 +222,16 @@
     </div>
     <p>Each page should have a clear title, concise body, and optional front matter (status, topic). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new published files automatically.</p>
 
-    <pre><code><span class="cm"># drafts/new-page.md</span>
----
-status: draft
----
+    <pre><code><span class="kw">#</span> drafts/new-page.md
+<span class="kw">---</span>
+<span class="fn">status</span>: draft
+<span class="kw">---</span>
 
-# Page title
+<span class="kw">#</span> Page title
 
 Body text goes here.
 
-<span class="cm"># After review → published/new-page.md</span></code></pre>
+<span class="kw">#</span> After review → published/new-page.md</code></pre>
 
     <h2 id="incremental-sync">Incremental sync</h2>
     <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per published file. Only files whose hash changed (or are new) go through embed + upsert.</p>
@@ -273,12 +273,12 @@ Body text goes here.
 <span class="cm"># One session per sync run — reuse across all storage API calls</span>
 session = requests.Session()
 session.headers.update({
-    <span class="str">"Authorization"</span>: <span class="str">f"Bearer {STORAGE_TOKEN}"</span>,
+    <span class="str">"Authorization"</span>: f<span class="str">"Bearer {STORAGE_TOKEN}"</span>,
     <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
 })
 
-<span class="kw">def</span> <span class="fn">download_file</span>(path: <span class="fn">str</span>) -&gt; <span class="fn">bytes</span>:
-    <span class="kw">return</span> session.get(<span class="str">f"{STORAGE_API_BASE}/files/download"</span>, params={<span class="str">"path"</span>: path}).content</code></pre>
+<span class="kw">def</span> <span class="fn">download_file</span>(path: <span class="fn">str</span>) -&gt; bytes:
+    <span class="kw">return</span> session.get(f<span class="str">"{STORAGE_API_BASE}/files/download"</span>, params={<span class="str">"path"</span>: path}).content</code></pre>
 
     <h2 id="sse-progress">SSE progress streaming</h2>
     <p>Sync jobs can run several minutes. Expose progress via <strong>Server-Sent Events (SSE)</strong> so the admin UI shows live status without polling.</p>
@@ -348,7 +348,7 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
     tracked_paths = <span class="fn">set</span>(tracker.files.keys())
 
     deleted = tracked_paths - remote_paths
-    new = [f <span class="kw">for</span> f <span class="kw">in</span> remote_files <span class="kw">if</span> f.path <span class="kw">not in</span> tracked_paths]
+    new = [f <span class="kw">for</span> f <span class="kw">in</span> remote_files <span class="kw">if</span> f.path <span class="kw">not</span> <span class="kw">in</span> tracked_paths]
     changed = [
         f <span class="kw">for</span> f <span class="kw">in</span> remote_files
         <span class="kw">if</span> f.path <span class="kw">in</span> tracked_paths

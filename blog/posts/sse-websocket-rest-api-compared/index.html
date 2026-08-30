@@ -207,40 +207,40 @@ TASKS: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn
     </ul>
 
     <h3>SSE API example (FastAPI)</h3>
-    <pre><code><span class="kw">import</span> asyncio
-<span class="kw">import</span> <span class="fn">json</span>
-<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
-<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
+    <pre><code>import asyncio
+import json
+<span class="kw">from</span> fastapi import FastAPI
+<span class="kw">from</span> fastapi.responses import StreamingResponse
 
 app = FastAPI()
 
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">task_event_stream</span>(task_id: <span class="fn">str</span>):
-    <span class="str">"""Yield SSE frames as the worker makes progress."""</span>
-    <span class="kw">yield</span> f<span class="str">"event: status\ndata: {json.dumps({'task_id': task_id, 'status': 'running'})}\n\n"</span>
-    <span class="kw">for</span> step <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):
-        <span class="kw">await</span> asyncio.sleep(<span class="num">0.4</span>)
-        payload = {<span class="str">"task_id"</span>: task_id, <span class="str">"progress"</span>: step * <span class="num">20</span>, <span class="str">"message"</span>: f<span class="str">"Step {step}/5"</span>}
-        <span class="kw">yield</span> f<span class="str">"event: progress\ndata: {json.dumps(payload)}\n\n"</span>
-    <span class="kw">yield</span> f<span class="str">"event: done\ndata: {json.dumps({'task_id': task_id, 'result': 'ok'})}\n\n"</span>
+async def task_event_stream(task_id: str):
+    """Yield SSE frames <span class="kw">as</span> the worker makes progress."""
+    yield f"event: status\ndata: {json.dumps({<span class="str">'task_id'</span>: task_id, <span class="str">'status'</span>: <span class="str">'running'</span>})}\n\n"
+    for step <span class="kw">in</span> range(<span class="num">1</span>, <span class="num">6</span>):
+        await asyncio.sleep(<span class="num">0.4</span>)
+        payload = {"task_id": task_id, "progress": step * <span class="num">20</span>, "message": f"Step {step}/<span class="num">5</span>"}
+        yield f"event: progress\ndata: {json.dumps(payload)}\n\n"
+    yield f"event: done\ndata: {json.dumps({<span class="str">'task_id'</span>: task_id, <span class="str">'result'</span>: <span class="str">'ok'</span>})}\n\n"
 
-@app.get(<span class="str">"/api/tasks/{task_id}/stream"</span>)
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">stream_task</span>(task_id: <span class="fn">str</span>):
-    <span class="kw">return</span> StreamingResponse(
+<span class="fn">@app</span>.get("/api/tasks/{task_id}/stream")
+async def stream_task(task_id: str):
+    return StreamingResponse(
         task_event_stream(task_id),
-        media_type=<span class="str">"text/event-stream"</span>,
+        media_type="text/event-stream",
         headers={
-            <span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>,
-            <span class="str">"Connection"</span>: <span class="str">"keep-alive"</span>,
-            <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>,
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
         },
     )</code></pre>
 
     <h3>Browser client — EventSource (GET)</h3>
-    <pre><code><span class="kw">const</span> es = <span class="kw">new</span> EventSource(<span class="str">`/api/tasks/${taskId}/stream`</span>);
+    <pre><code><span class="kw">const</span> es = <span class="kw">new</span> EventSource(`/api/tasks/${taskId}/stream`);
 
 es.addEventListener(<span class="str">"progress"</span>, (e) =&gt; {
   <span class="kw">const</span> data = JSON.parse(e.data);
-  document.getElementById(<span class="str">"bar"</span>).style.width = <span class="str">`${data.progress}%`</span>;
+  document.getElementById(<span class="str">"bar"</span>).style.width = `${data.progress}%`;
   log(data.message);
 });
 
@@ -294,55 +294,55 @@ es.onerror = () =&gt; {
     </ul>
 
     <h3>WebSocket server (FastAPI)</h3>
-    <pre><code><span class="kw">import</span> <span class="fn">json</span>
-<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, WebSocket, WebSocketDisconnect
+    <pre><code>import json
+<span class="kw">from</span> fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 app = FastAPI()
 
-@app.websocket(<span class="str">"/ws/agent/{run_id}"</span>)
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">agent_socket</span>(ws: WebSocket, run_id: <span class="fn">str</span>):
-    <span class="kw">await</span> ws.accept()
-    <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"status"</span>, <span class="str">"run_id"</span>: run_id, <span class="str">"state"</span>: <span class="str">"connected"</span>})
-    <span class="kw">try</span>:
-        <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"tool_call"</span>, <span class="str">"name"</span>: <span class="str">"search_docs"</span>, <span class="str">"args"</span>: {<span class="str">"q"</span>: <span class="str">"pricing"</span>}})
-        <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"progress"</span>, <span class="str">"pct"</span>: <span class="num">40</span>, <span class="str">"message"</span>: <span class="str">"Searching..."</span>})
-        <span class="cm"># Agent needs human approval</span>
-        <span class="kw">await</span> ws.send_json({
-            <span class="str">"type"</span>: <span class="str">"need_input"</span>,
-            <span class="str">"prompt"</span>: <span class="str">"Deploy to production? (yes/no)"</span>,
-            <span class="str">"resume_token"</span>: <span class="str">"step-7"</span>,
+<span class="fn">@app</span>.websocket("/ws/agent/{run_id}")
+async def agent_socket(ws: WebSocket, run_id: str):
+    await ws.accept()
+    await ws.send_json({"type": "status", "run_id": run_id, "state": "connected"})
+    try:
+        await ws.send_json({"type": "tool_call", "name": "search_docs", "args": {"q": "pricing"}})
+        await ws.send_json({"type": "progress", "pct": <span class="num">40</span>, "message": "Searching..."})
+        # Agent needs human approval
+        await ws.send_json({
+            "type": "need_input",
+            "prompt": "Deploy to production? (yes/no)",
+            "resume_token": "step-<span class="num">7</span>",
         })
-        <span class="kw">while</span> <span class="kw">True</span>:
-            msg = <span class="kw">await</span> ws.receive_json()
-            <span class="kw">if</span> msg.get(<span class="str">"type"</span>) == <span class="str">"user_reply"</span>:
-                answer = msg.get(<span class="str">"text"</span>, <span class="str">""</span>).strip().lower()
-                <span class="kw">if</span> answer == <span class="str">"yes"</span>:
-                    <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"progress"</span>, <span class="str">"pct"</span>: <span class="num">90</span>, <span class="str">"message"</span>: <span class="str">"Deploying..."</span>})
-                    <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"done"</span>, <span class="str">"result"</span>: <span class="str">"deployed"</span>})
+        while True:
+            msg = await ws.receive_json()
+            if msg.get("type") == "user_reply":
+                answer = msg.get("text", "").strip().lower()
+                if answer == "yes":
+                    await ws.send_json({"type": "progress", "pct": <span class="num">90</span>, "message": "Deploying..."})
+                    await ws.send_json({"type": "done", "result": "deployed"})
                 <span class="kw">else</span>:
-                    <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"done"</span>, <span class="str">"result"</span>: <span class="str">"cancelled"</span>})
-                <span class="kw">break</span>
-    <span class="kw">except</span> WebSocketDisconnect:
-        <span class="kw">pass</span></code></pre>
+                    await ws.send_json({"type": "done", "result": "cancelled"})
+                break
+    except WebSocketDisconnect:
+        pass</code></pre>
 
     <h3>WebSocket client (browser)</h3>
-    <pre><code><span class="kw">const</span> ws = <span class="kw">new</span> WebSocket(<span class="str">`wss://api.example.com/ws/agent/${runId}`</span>);
+    <pre><code><span class="kw">const</span> ws = <span class="kw">new</span> WebSocket(`wss:<span class="cm">//api.example.com/ws/agent/${runId}`);</span>
 <span class="kw">const</span> inputBox = document.getElementById(<span class="str">"agent-input"</span>);
 <span class="kw">const</span> logEl = document.getElementById(<span class="str">"log"</span>);
 
 ws.onmessage = (event) =&gt; {
   <span class="kw">const</span> msg = JSON.parse(event.data);
   <span class="kw">if</span> (msg.type === <span class="str">"progress"</span>) {
-    logEl.textContent += <span class="str">`\n[${msg.pct}%] ${msg.message}`</span>;
+    logEl.textContent += `\n[${msg.pct}%] ${msg.message}`;
   }
   <span class="kw">if</span> (msg.type === <span class="str">"need_input"</span>) {
-    inputBox.disabled = false;
+    inputBox.disabled = <span class="kw">false</span>;
     inputBox.placeholder = msg.prompt;
     inputBox.dataset.resumeToken = msg.resume_token;
   }
   <span class="kw">if</span> (msg.type === <span class="str">"done"</span>) {
-    logEl.textContent += <span class="str">`\nDone: ${msg.result}`</span>;
-    inputBox.disabled = true;
+    logEl.textContent += `\nDone: ${msg.result}`;
+    inputBox.disabled = <span class="kw">true</span>;
   }
 };
 
@@ -354,7 +354,7 @@ inputBox.addEventListener(<span class="str">"keydown"</span>, (e) =&gt; {
     resume_token: inputBox.dataset.resumeToken,
   }));
   inputBox.value = <span class="str">""</span>;
-  inputBox.disabled = true;
+  inputBox.disabled = <span class="kw">true</span>;
 });</code></pre>
 
     <h2 id="comparison">Side-by-side comparison</h2>
@@ -410,23 +410,23 @@ es.onmessage = (e) =&gt; appendToken(JSON.parse(e.data).content);</code></pre>
 
     <h2 id="browser-agent">Browser agent: ask input and continue</h2>
     <p>A minimal agent loop on the server:</p>
-    <pre><code><span class="kw">async</span> def run_agent(ws: WebSocket, run_id: str):
-    <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"status"</span>, <span class="str">"state"</span>: <span class="str">"planning"</span>})
-    plan = <span class="kw">await</span> llm_plan(run_id)
-    <span class="kw">for</span> step <span class="kw">in</span> plan.steps:
-        <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"step"</span>, <span class="str">"name"</span>: step.name})
-        <span class="kw">if</span> step.requires_approval:
-            <span class="kw">await</span> ws.send_json({
-                <span class="str">"type"</span>: <span class="str">"need_input"</span>,
-                <span class="str">"prompt"</span>: step.approval_prompt,
+    <pre><code>async def run_agent(ws: WebSocket, run_id: str):
+    await ws.send_json({"type": "status", "state": "planning"})
+    plan = await llm_plan(run_id)
+    for step in plan.steps:
+        await ws.send_json({"type": "step", "name": step.name})
+        if step.requires_approval:
+            await ws.send_json({
+                "type": "need_input",
+                "prompt": step.approval_prompt,
             })
-            reply = <span class="kw">await</span> wait_for_user_reply(ws)
-            <span class="kw">if</span> reply != <span class="str">"yes"</span>:
-                <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"done"</span>, <span class="str">"state"</span>: <span class="str">"cancelled"</span>})
-                <span class="kw">return</span>
-        result = <span class="kw">await</span> execute_tool(step)
-        <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"tool_result"</span>, <span class="str">"summary"</span>: result[:<span class="num">200</span>]})
-    <span class="kw">await</span> ws.send_json({<span class="str">"type"</span>: <span class="str">"done"</span>, <span class="str">"state"</span>: <span class="str">"completed"</span>})</code></pre>
+            reply = await wait_for_user_reply(ws)
+            if reply != "yes":
+                await ws.send_json({"type": "done", "state": "cancelled"})
+                return
+        result = await execute_tool(step)
+        await ws.send_json({"type": "tool_result", "summary": result[:200]})
+    await ws.send_json({"type": "done", "state": "completed"})</code></pre>
     <p>The browser enables the input box only when <code>need_input</code> arrives — not before. That is the UX difference between a chatbot (one message in, stream out) and an <strong>agent</strong> (multi-turn control on one session).</p>
 
     <h2 id="wire-formats">Wire formats</h2>

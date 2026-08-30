@@ -324,7 +324,7 @@ MMR_LAMBDA = <span class="num">0.85</span>
         <span class="kw">return</span> <span class="kw">True</span>
     <span class="kw">return</span> top_cosine &lt; COSINE_SKIP_THRESHOLD
 
-<span class="kw">async def</span> <span class="fn">cohere_rerank</span>(
+<span class="kw">async</span> <span class="kw">def</span> <span class="fn">cohere_rerank</span>(
     query: <span class="fn">str</span>,
     documents: <span class="fn">list</span>[<span class="fn">dict</span>],
     top_n: <span class="fn">int</span> = RERANK_TOP_N,
@@ -337,13 +337,13 @@ MMR_LAMBDA = <span class="num">0.85</span>
         <span class="str">"top_n"</span>: top_n,
     }
     headers = {
-        <span class="str">"Authorization"</span>: <span class="str">f"Bearer {os.environ['COHERE_API_KEY']}"</span>,
+        <span class="str">"Authorization"</span>: f<span class="str">"Bearer {os.environ['COHERE_API_KEY']}"</span>,
         <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
     }
-    <span class="kw">async with</span> aiohttp.ClientSession() <span class="kw">as</span> session:
-        <span class="kw">async with</span> session.post(COHERE_RERANK_URL, json=payload, headers=headers) <span class="kw">as</span> resp:
+    <span class="kw">async</span> <span class="kw">with</span> aiohttp.ClientSession() <span class="kw">as</span> session:
+        <span class="kw">async</span> <span class="kw">with</span> session.post(COHERE_RERANK_URL, <span class="fn">json</span>=payload, headers=headers) <span class="kw">as</span> resp:
             resp.raise_for_status()
-            data = <span class="kw">await</span> resp.json()
+            data = <span class="kw">await</span> resp.<span class="fn">json</span>()
 
     ranked = []
     <span class="kw">for</span> result <span class="kw">in</span> data[<span class="str">"results"</span>]:
@@ -377,11 +377,11 @@ MMR_LAMBDA = <span class="num">0.85</span>
 <span class="kw">def</span> <span class="fn">_text_overlap</span>(a: <span class="fn">str</span>, b: <span class="fn">str</span>) -&gt; <span class="fn">float</span>:
     <span class="str">"""Jaccard similarity on word sets — fast proxy for chunk redundancy."""</span>
     sa, sb = <span class="fn">set</span>(a.lower().split()), <span class="fn">set</span>(b.lower().split())
-    <span class="kw">if not</span> sa <span class="kw">or not</span> sb:
+    <span class="kw">if</span> <span class="kw">not</span> sa <span class="kw">or</span> <span class="kw">not</span> sb:
         <span class="kw">return</span> <span class="num">0.0</span>
     <span class="kw">return</span> <span class="fn">len</span>(sa &amp; sb) / <span class="fn">len</span>(sa | sb)
 
-<span class="kw">async def</span> <span class="fn">retrieve_and_rank</span>(
+<span class="kw">async</span> <span class="kw">def</span> <span class="fn">retrieve_and_rank</span>(
     query: <span class="fn">str</span>,
     vector_hits: <span class="fn">list</span>[<span class="fn">dict</span>],
     is_follow_up: <span class="fn">bool</span> = <span class="kw">False</span>,
@@ -390,8 +390,8 @@ MMR_LAMBDA = <span class="num">0.85</span>
     top_cosine = vector_hits[<span class="num">0</span>][<span class="str">"score"</span>] <span class="kw">if</span> vector_hits <span class="kw">else</span> <span class="num">0.0</span>
     cost = {<span class="str">"cohere_rerank"</span>: <span class="num">0.0</span>}
 
-    <span class="kw">if</span> <span class="fn">should_run_cohere_rerank</span>(top_cosine, is_follow_up, is_multi_query):
-        ranked = <span class="kw">await</span> <span class="fn">cohere_rerank</span>(query, vector_hits)
+    <span class="kw">if</span> should_run_cohere_rerank(top_cosine, is_follow_up, is_multi_query):
+        ranked = <span class="kw">await</span> cohere_rerank(query, vector_hits)
         cost[<span class="str">"cohere_rerank"</span>] = <span class="num">0.002</span>
     <span class="kw">else</span>:
         ranked = vector_hits[:RERANK_TOP_N]
@@ -402,19 +402,19 @@ MMR_LAMBDA = <span class="num">0.85</span>
     <span class="kw">if</span> top_score &lt; RERANK_MIN_SCORE:
         <span class="kw">return</span> {<span class="str">"chunks"</span>: [], <span class="str">"skip_llm"</span>: <span class="kw">True</span>, <span class="str">"cost"</span>: cost}
 
-    final = <span class="fn">mmr_select</span>(ranked) <span class="kw">if</span> cost[<span class="str">"cohere_rerank"</span>] &gt; <span class="num">0</span> <span class="kw">else</span> ranked[:FINAL_TOP_K]
+    final = mmr_select(ranked) <span class="kw">if</span> cost[<span class="str">"cohere_rerank"</span>] &gt; <span class="num">0</span> <span class="kw">else</span> ranked[:FINAL_TOP_K]
     <span class="kw">return</span> {<span class="str">"chunks"</span>: final, <span class="str">"skip_llm"</span>: <span class="kw">False</span>, <span class="str">"top_rerank_score"</span>: top_score, <span class="str">"cost"</span>: cost}</code></pre>
 
     <p><strong>Query rewrite heuristics</strong> — skip Flash Lite on clear first turns:</p>
     <pre><code><span class="kw">import</span> re
 
-PRONOUNS = re.compile(<span class="str">r"\b(it|that|this|they|them|those|these|he|she)\b"</span>, re.I)
-ORDINALS = re.compile(<span class="str">r"\b(step\s+\d|option\s+[a-z]|first|second|third|the\s+other)\b"</span>, re.I)
+PRONOUNS = re.compile(r<span class="str">"\b(it|that|this|they|them|those|these|he|she)\b"</span>, re.I)
+ORDINALS = re.compile(r<span class="str">"\b(step\s+\d|option\s+[a-z]|first|second|third|the\s+other)\b"</span>, re.I)
 
 <span class="kw">def</span> <span class="fn">needs_query_rewrite</span>(message: <span class="fn">str</span>, history: <span class="fn">list</span>) -&gt; <span class="fn">bool</span>:
-    <span class="kw">if not</span> history:
+    <span class="kw">if</span> <span class="kw">not</span> history:
         <span class="kw">return</span> <span class="kw">False</span>  <span class="cm"># first turn — never rewrite</span>
-    <span class="kw">if</span> <span class="fn">len</span>(message.split()) &gt;= <span class="num">8</span> <span class="kw">and not</span> PRONOUNS.search(message) <span class="kw">and not</span> ORDINALS.search(message):
+    <span class="kw">if</span> <span class="fn">len</span>(message.split()) &gt;= <span class="num">8</span> <span class="kw">and</span> <span class="kw">not</span> PRONOUNS.search(message) <span class="kw">and</span> <span class="kw">not</span> ORDINALS.search(message):
         <span class="kw">return</span> <span class="kw">False</span>  <span class="cm"># self-contained despite history</span>
     <span class="kw">return</span> <span class="kw">True</span></code></pre>
 
