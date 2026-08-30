@@ -2,7 +2,7 @@
 
 August 2026 · Published by Amar Kumar
 
-Developers searching for **how to use Claude Code effectively**, **what to put in CLAUDE.md**, or **Claude Code best practices** usually hit the same wall: Claude works great for one session, then forgets everything next time — or ignores instructions buried in a 400-line rules file.
+Claude Code works brilliantly in one session, then forgets everything the next day — or ignores instructions buried in a 400-line rules file. The fix is not more prompts. It is knowing what belongs in `CLAUDE.md`, what goes in `.claude/rules`, and how to wire verification so the agent actually stops when tests pass.
 
 Claude Code is an agent, not a chatbot. It reads files, runs shell commands, and edits your repo autonomously. The difference between a frustrating session and one you can walk away from is **project memory**: what you put in `CLAUDE.md`, how you wire `AGENTS.md`, when to use `.claude/rules/`, and how you prompt with verification loops.
 
