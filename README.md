@@ -65,7 +65,7 @@ This repo is the source for [stackcone.com](https://stackcone.com/), deployed vi
 
 - **Stack:** Static HTML, CSS, JavaScript — no build step required for deploy
 - **Deploy:** Push to `main` → GitHub Actions → GitHub Pages
-- **Dev tooling:** `_dev/` scripts (stripped before deploy; not public)
+- **Dev tooling:** `_dev/apply_highlights.py` + `_dev/highlight_code.py` for code blocks (stripped before deploy)
 
 ```bash
 # Local preview (any static server)

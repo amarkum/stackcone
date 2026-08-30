@@ -5,6 +5,17 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
+# Drop legacy *.html redirect stubs (canonical URLs are slug/index.html only).
+for dir in blog/posts solutions; do
+  [[ -d "$dir" ]] || continue
+  while IFS= read -r -d '' file; do
+    if grep -qE 'location\.replace\(|http-equiv="refresh"' "$file" 2>/dev/null; then
+      rm -f "$file"
+      echo "removed redirect stub $file"
+    fi
+  done < <(find "$dir" -maxdepth 1 -name '*.html' -print0 2>/dev/null || true)
+done
+
 PATHS=(
   _dev
   .cursor

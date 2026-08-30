@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>How to Build a Cursor-Like AI Coding Agent — Complete Guide</title>
+  <meta name="description" content="Step-by-step guide to building a Cursor-like AI coding agent: tool-calling harness loop, SSE streaming, context compaction, permissions, subagents — with full pseudocode from LiveCode.">
+  <meta name="keywords" content="cursor-like agent, AI coding agent, build coding agent, tool calling loop, agent harness, flask AI agent, OpenAI function calling, agentic IDE, SSE streaming agent, self-hosted coding agent, LiveCode">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/how-to-build-cursor-like-ai-coding-agent/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/how-to-build-cursor-like-ai-coding-agent/">
+  <meta property="og:title" content="How to Build a Cursor-Like AI Coding Agent — Complete Guide">
+  <meta property="og:description" content="Step-by-step guide to building a Cursor-like AI coding agent: tool-calling harness loop, SSE streaming, context compaction, permissions, subagents — with full pseudocode from LiveCode.">
+  <meta property="og:image" content="https://stackcone.com/blog/images/how-to-build-cursor-like-ai-coding-agent/flask.svg">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Build a Cursor-Like AI Coding Agent — Complete Guide">
+  <meta name="twitter:description" content="Step-by-step guide to building a Cursor-like AI coding agent: tool-calling harness loop, SSE streaming, context compaction, permissions, subagents — with full pseudocode from LiveCode.">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/how-to-build-cursor-like-ai-coding-agent/flask.svg">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <link rel="stylesheet" href="../../../solutions/solutions.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Build a Cursor-Like AI Coding Agent — Complete Guide",
+    "description": "Step-by-step guide to building a Cursor-like AI coding agent: tool-calling harness loop, SSE streaming, context compaction, permissions, subagents — with full pseudocode from LiveCode.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-08-30",
+    "dateModified": "2026-08-30",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-to-build-cursor-like-ai-coding-agent/" },
+    "image": "https://stackcone.com/blog/images/how-to-build-cursor-like-ai-coding-agent/flask.svg",
+    "keywords": ["cursor-like agent", "AI coding agent", "tool calling loop", "agent harness", "SSE streaming", "OpenAI function calling", "agentic IDE", "self-hosted coding agent"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "Building Cursor-like AI coding agents" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Build a Cursor-Like AI Coding Agent",
+    "description": "Build a self-hosted AI coding agent with tool calling, SSE streaming, context compaction, and permission gates — based on the LiveCode open-source implementation.",
+    "step": [
+      { "@type": "HowToStep", "name": "Create SSE turn endpoint", "text": "Add a Flask POST route that returns text/event-stream from a Python generator running the agent harness in a background thread." },
+      { "@type": "HowToStep", "name": "Implement the harness loop", "text": "Build run_livecode_turn() as a generator with up to 100 iterations, anti-loop nudges, and call_with_tools() for each LLM round." },
+      { "@type": "HowToStep", "name": "Define and dispatch tools", "text": "Register OpenAI function schemas for grep, read, edit, shell, and attempt_completion. Route through dispatch_tool() with path safety and result truncation." },
+      { "@type": "HowToStep", "name": "Add context compaction", "text": "Implement three tiers: intra-turn truncation at 70%, inter-turn at 65%, and LLM full-replace summarization at 85% of the 128k window." },
+      { "@type": "HowToStep", "name": "Wire dual-channel streaming", "text": "Use SSE for turn lifecycle events and Socket.IO for structured tool progress, diffs, permissions, and terminal output." },
+      { "@type": "HowToStep", "name": "Add permission gates", "text": "Block destructive shell commands behind a threading.Event gate until the user approves via POST /livecode/permission." }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do you need LangChain to build a coding agent?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. A Python generator function, OpenAI tool schemas, JSONL session files, and tiered context management are sufficient for production-quality agentic coding."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why use SSE and WebSocket together in a coding agent?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SSE streams the turn lifecycle over a single HTTP POST. WebSocket carries structured tool progress, inline diffs, permission modals, and terminal PTY output without encoding complex JSON into a flat text stream."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you prevent infinite tool loops in a coding agent?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Stationarity detection on identical tool-call fingerprints, escalating nudges at 75%, 90%, and 95% of the iteration budget, a hard 100-iteration cap, and forced attempt_completion-only tools in the last 2 iterations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the main architectural gap between a self-hosted agent and Cursor?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MCP (Model Context Protocol). Cursor supports dynamic tool discovery from external MCP servers. Self-hosted agents typically ship hardcoded tool schemas unless you add an MCP client integration."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Build a Cursor-Like AI Coding Agent", "item": "https://stackcone.com/blog/posts/how-to-build-cursor-like-ai-coding-agent/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+
+    <h1>How to Build a Cursor-Like AI Coding Agent — Complete Guide</h1>
+    <p class="meta">August 2026 · Published by Amar Kumar</p>
+    <p>Cursor Agent mode, Claude Code, and Windsurf share the same core pattern: an LLM in a <strong>tool-calling loop</strong> that reads a real codebase, edits files, runs shell commands, and streams progress back to an IDE. You do not need LangChain, a vector database, or a cloud orchestration platform to build one.</p>
+    <p>I built <strong><a href="https://github.com/amarkum/livecode-ai" rel="noopener noreferrer">LiveCode</a></strong> — a self-hosted browser IDE with Monaco, an integrated terminal, and a full agent harness — entirely in Python and vanilla JavaScript. Runtime data lives in <code>~/livecode/</code>; source code is in the <code>livecode-ai</code> repo. This guide walks through every layer with architecture diagrams, comparison tables, and pseudocode you can adapt to ship your own Cursor-like agent.</p>
+
+    <blockquote>
+      <p><strong>Who is this for?</strong> Engineers who want to understand how Cursor-style agentic coding works under the hood — and who want a step-by-step blueprint, not just a conceptual overview.</p>
+    </blockquote>
+
+    <div class="agent-stack-row" aria-label="Technology stack">
+      <img src="../../images/how-to-build-cursor-like-ai-coding-agent/cursor.svg" alt="Cursor-style agent pattern" width="64" height="64" loading="lazy">
+      <img src="../../images/how-to-build-cursor-like-ai-coding-agent/python.svg" alt="Python backend" width="64" height="64" loading="lazy">
+      <img src="../../images/how-to-build-cursor-like-ai-coding-agent/flask.svg" alt="Flask web server" width="64" height="64" loading="lazy">
+      <img src="../../images/how-to-build-cursor-like-ai-coding-agent/openai.png" alt="OpenAI and Gemini LLM APIs" width="64" height="64" loading="lazy">
+    </div>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#what-makes-cursor-like">What makes an agent Cursor-like</a></li>
+        <li><a href="#architecture">Architecture at a glance</a></li>
+        <li><a href="#phase-1">Phase 1 — HTTP endpoint and SSE streaming</a></li>
+        <li><a href="#phase-2">Phase 2 — The agent harness loop</a></li>
+        <li><a href="#phase-3">Phase 3 — Tool system design</a></li>
+        <li><a href="#phase-4">Phase 4 — Context compaction</a></li>
+        <li><a href="#phase-5">Phase 5 — Dual-channel real-time UI</a></li>
+        <li><a href="#phase-6">Phase 6 — Permissions and safety</a></li>
+        <li><a href="#phase-7">Phase 7 — Agent, Plan, and Ask modes</a></li>
+        <li><a href="#phase-8">Phase 8 — Subagents</a></li>
+        <li><a href="#phase-9">Phase 9 — Sessions, memory, and rules</a></li>
+        <li><a href="#phase-10">Phase 10 — Frontend IDE shell</a></li>
+        <li><a href="#comparison">LiveCode vs Cursor</a></li>
+        <li><a href="#charts">Metrics and charts</a></li>
+        <li><a href="#checklist">Implementation checklist</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="what-makes-cursor-like">What makes an agent Cursor-like</h2>
+    <p>A Cursor-like coding agent is not a chatbot that returns code blocks. It is a <strong>closed loop</strong> between an LLM and a filesystem on disk:</p>
+    <table>
+      <thead><tr><th>Capability</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tool calling</strong></td><td>The model decides <em>when</em> to grep, read, edit, or run commands — not the UI</td></tr>
+        <tr><td><strong>Iteration loop</strong></td><td>One user message may require 5–50 tool rounds before the task is done</td></tr>
+        <tr><td><strong>Streaming progress</strong></td><td>Users see thinking, tool activity, diffs, and shell output in real time</td></tr>
+        <tr><td><strong>Context management</strong></td><td>Long sessions exceed the context window; compaction is mandatory</td></tr>
+        <tr><td><strong>Permission gates</strong></td><td>Destructive shell commands require explicit user approval</td></tr>
+        <tr><td><strong>Modes</strong></td><td>Agent (edit), Plan (draft only), Ask (read-only) filter available tools</td></tr>
+        <tr><td><strong>Project rules</strong></td><td><code>AGENTS.md</code>, <code>.cursor/rules</code>, and similar files steer behavior</td></tr>
+      </tbody>
+    </table>
+    <p>The minimum viable stack: <strong>one HTTP endpoint</strong>, <strong>one Python generator function</strong>, <strong>a tool dispatch table</strong>, and <strong>JSONL session files on disk</strong>.</p>
+
+    <h2 id="architecture">Architecture at a glance</h2>
+    <p>LiveCode splits into a Python backend (<code>livecode-ai</code>) and a browser frontend. Persistent state lives in <code>~/livecode/</code> — settings, sessions, indexes, and memory — separate from the source repo.</p>
+
+    <div class="diagram-wrap" data-diagram-title="LiveCode agent architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart LR
+  classDef ui fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef api fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef core fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef disk fill:#ccfbf1,stroke:#0d9488,color:#115e59
+
+  BR["Browser IDE
+Monaco · xterm · chat"]:::ui
+  SSE["SSE stream
+progress · done"]:::api
+  WS["Socket.IO
+tool · diff · permission"]:::api
+  FL["Flask /livecode-agent"]:::api
+  HN["run_livecode_turn()
+100-iter generator"]:::core
+  TL["18 tools
+grep · edit · shell"]:::core
+  LLM["OpenAI / Gemini
+function calling"]:::core
+  SS["JSONL sessions
+compaction sidecar"]:::disk
+  IX["Symbol + workspace
+index cache"]:::disk
+
+  BR -->|"fetch POST"| FL
+  FL --> HN
+  HN --> LLM
+  HN --> TL
+  HN --> SS
+  HN --> IX
+  HN -->|"yield SSE"| SSE
+  SSE --> BR
+  HN -->|"emit events"| WS
+  WS --> BR</div>
+      </div>
+      <p class="diagram-caption">Browser UI talks to Flask over SSE (turn lifecycle) and Socket.IO (structured progress) in parallel</p>
+    </div>
+
+    <pre><code>livecode-ai/                    ~/livecode/  (runtime)
+├── src/livecode/
+│   ├── server.py               ├── settings.json
+│   ├── harness/turn.py         └── projects/{slug}/
+│   ├── tools.py                    ├── sessions/{id}/chat_history.jsonl
+│   ├── runtime.py                  ├── index/workspace.json
+│   ├── session.py                  ├── symbols/symbols.json
+│   └── memory/                     └── memory/index.sqlite
+├── templates/index.html
+└── static/js/bundle.js</code></pre>
+
+    <div class="diagram-wrap" data-diagram-title="Single turn sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant U as Browser
+  participant F as Flask /livecode-agent
+  participant H as Harness loop
+  participant L as LLM
+  participant T as Tools
+  participant W as Socket.IO
+
+  U->>F: POST question + session_id + mode
+  F->>H: run_livecode_turn() in thread
+  H->>H: classify · index · compact
+  loop up to 100 iterations
+    H->>L: messages + tool schemas
+    L-->>H: tool_calls or content
+    alt tool calls
+      H->>W: tool_call progress
+      H->>T: dispatch batch parallel/serial
+      T-->>H: tool results
+      H->>W: diff_block if edit
+    else plain answer
+      H-->>F: SSE done payload
+      F-->>U: data done answer
+    end
+  end
+  H->>H: append JSONL
+  H-->>F: SSE done
+  F-->>U: turn complete</div>
+      </div>
+      <p class="diagram-caption">One turn: classification, iteration loop, tool dispatch, and dual-channel streaming back to the browser</p>
+    </div>
+
+    <h2 id="phase-1">Phase 1 — HTTP endpoint and SSE streaming</h2>
+    <p>The turn endpoint accepts a POST with the user message, project path, session ID, and mode. It returns <code>text/event-stream</code> — a single long-lived HTTP connection that multiplexes progress events, command output, and the final <code>done</code> payload.</p>
+
+    <pre><code>@app.post(<span class="str">"/livecode-agent"</span>)
+<span class="kw">def</span> <span class="fn">agent_turn</span>():
+    body = request.get_json()
+    question = body[<span class="str">"question"</span>]
+    project_path = body[<span class="str">"project_path"</span>]
+    session_id = body.get(<span class="str">"session_id"</span>) <span class="kw">or</span> uuid.uuid4().hex
+    mode = body.get(<span class="str">"mode"</span>, <span class="str">"agent"</span>)
+
+    <span class="kw">def</span> <span class="fn">generate</span>():
+        bridge = SSEProgressBridge(socketio=socketio, room=socket_id)
+        chunk_queue = queue.Queue()
+        turn_thread = threading.Thread(
+            target=<span class="kw">lambda</span>: run_turn_in_queue(run_livecode_turn(...), chunk_queue),
+            daemon=<span class="kw">True</span>,
+        )
+        turn_thread.start()
+
+        <span class="kw">while</span> <span class="kw">not</span> turn_finished:
+            <span class="kw">yield</span> <span class="kw">from</span> bridge.drain_as_sse()
+            <span class="kw">try</span>:
+                kind, payload = chunk_queue.get(timeout=<span class="num">0.05</span>)
+            <span class="kw">except</span> queue.Empty:
+                <span class="kw">continue</span>
+            <span class="kw">if</span> payload.get(<span class="str">"done"</span>):
+                append_turn_messages(project_path, session_id, payload[<span class="str">"turn_messages"</span>])
+                <span class="kw">yield</span> f<span class="str">"data: {json.dumps(payload)}\n\n"</span>
+                <span class="kw">break</span>
+            <span class="kw">yield</span> payload
+
+    <span class="kw">return</span> Response(
+        stream_with_context(generate()),
+        mimetype=<span class="str">"text/event-stream"</span>,
+        headers={<span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>, <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>},
+    )</code></pre>
+
+    <p><strong>Why not EventSource?</strong> The browser's built-in <code>EventSource</code> only supports GET. The frontend uses <code>fetch()</code> + <code>ReadableStream</code>, decodes SSE <code>data:</code> lines manually, and handles progress, command output, and the final <code>done</code> payload in one loop.</p>
+
+    <table>
+      <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>/livecode-agent</code></td><td>POST</td><td>Main turn — returns <code>text/event-stream</code></td></tr>
+        <tr><td><code>/livecode/permission</code></td><td>POST</td><td>Approve or deny a sensitive tool call</td></tr>
+        <tr><td><code>/livecode/interject</code></td><td>POST</td><td>Inject a mid-turn user message</td></tr>
+        <tr><td><code>/livecode/sessions</code></td><td>GET</td><td>List saved sessions for a project</td></tr>
+        <tr><td><code>/settings</code></td><td>GET/POST</td><td>LLM provider API keys (stored in <code>~/livecode/settings.json</code>)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="phase-2">Phase 2 — The agent harness loop</h2>
+    <p>The harness is a <strong>Python generator</strong> — <code>run_livecode_turn()</code> in <code>harness/turn.py</code> (~2,400 lines) — that yields SSE chunks and emits Socket.IO events. Up to <strong>100 iterations</strong> per user message.</p>
+
+    <pre><code><span class="kw">def</span> <span class="fn">run_livecode_turn</span>(project_path, question, *, mode=<span class="str">"agent"</span>, session_id, ...):
+    classification = classify_turn(question)
+    messages = build_base_messages(project_path, question, session_id)
+    tools = filter_tools_for_mode(get_livecode_tools(), mode)
+
+    <span class="kw">for</span> iteration <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, LIVECODE_MAX_ITERATIONS + <span class="num">1</span>):
+        <span class="kw">if</span> stationarity_detected(tool_history):
+            messages.append(nudge(<span class="str">"same tool+args repeated — try a different approach"</span>))
+        <span class="kw">if</span> search_scatter_detected(tool_history):
+            messages.append(nudge(<span class="str">"broaden grep — use glob or alternation"</span>))
+        <span class="kw">if</span> exploration_streak_without_edit(tool_history):
+            messages.append(nudge(<span class="str">"you have enough context — edit or finish"</span>))
+
+        messages = compact_stale_tool_messages(messages, keep_last=<span class="num">6</span>)
+
+        <span class="kw">if</span> interjection := drain_interjection(session_id):
+            messages.append(format_interjection(interjection))
+
+        iter_tools = tools
+        <span class="kw">if</span> iteration &gt; LIVECODE_MAX_ITERATIONS - CLOSURE_ITERATIONS:
+            iter_tools = attempt_completion_only_tools(tools)
+
+        response = call_with_tools(
+            model=pick_auto_model(classification),
+            messages=messages,
+            tools=iter_tools,
+            on_thought_delta=<span class="kw">lambda</span> d: emit(<span class="str">"agent_thinking_delta"</span>, d),
+        )
+
+        <span class="kw">if</span> <span class="kw">not</span> response.tool_calls:
+            <span class="kw">yield</span> sse_done(answer=response.content)
+            <span class="kw">return</span>
+
+        <span class="kw">for</span> result <span class="kw">in</span> execute_tool_calls_batch(response.tool_calls):
+            messages.append(assistant_tool_message(response))
+            messages.append(tool_result_message(result))
+            emit_progress(result)
+
+            <span class="kw">if</span> result.tool == <span class="str">"attempt_completion"</span>:
+                <span class="kw">if</span> goal_verifier_passed(question, tool_history):
+                    <span class="kw">yield</span> sse_done(answer=result.summary)
+                    <span class="kw">return</span>
+                messages.append(nudge(<span class="str">"user asked for code change but no edit succeeded"</span>))
+
+    <span class="kw">yield</span> sse_done(answer=summarize_exhaustion(messages))</code></pre>
+
+    <h3>Anti-loop guardrails</h3>
+    <p>These are the difference between a demo and something you can leave running on a real repo:</p>
+    <table>
+      <thead><tr><th>Pattern</th><th>Trigger</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Stationarity</strong></td><td>Same tool + identical args 8×</td><td>Inject nudge; hard stop at 16×</td></tr>
+        <tr><td><strong>Search scatter</strong></td><td>6+ narrow greps hunting one thing</td><td>Nudge to broaden (glob, regex alternation)</td></tr>
+        <tr><td><strong>Directory drill</strong></td><td>Sequential <code>list_repo_dir</code></td><td>Nudge to use <code>glob_files</code> / <code>find_files</code></td></tr>
+        <tr><td><strong>Exploration streak</strong></td><td>8 read-only steps, no edit</td><td>Nudge to edit or <code>attempt_completion</code></td></tr>
+        <tr><td><strong>Edit no-match</strong></td><td><code>edit_file</code> old_string not found</td><td>Nudge to re-read file</td></tr>
+        <tr><td><strong>Iteration budget</strong></td><td>75%, 90%, 95% of max iterations</td><td>Escalating urgency nudges</td></tr>
+        <tr><td><strong>Goal verifier</strong></td><td><code>attempt_completion</code> but no successful edit</td><td>Reject completion when user asked for code change</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>LIVECODE_MAX_ITERATIONS = 100
+LIVECODE_CONTEXT_WINDOW = 128_000
+STATIONARITY_NUDGE_AFTER = 8
+STATIONARITY_HARD_STOP = 16
+CLOSURE_ITERATIONS = 2</code></pre>
+
+    <div class="diagram-wrap" data-diagram-title="Harness iteration loop">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TD
+  classDef step fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef gate fill:#fef3c7,stroke:#d97706,color:#92400e
+  classDef finish fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+  A([Start turn]):::step
+  B[Anti-loop nudges]:::gate
+  C[Intra-turn compaction]:::step
+  D[LLM call with tools]:::step
+  E{Tool calls?}:::gate
+  F[Dispatch tools batch]:::step
+  G{attempt_completion?}:::gate
+  H[Stream answer SSE]:::finish
+  I[Goal verifier reject]:::gate
+  J[Exhaustion summarizer]:::finish
+
+  A --> B --> C --> D --> E
+  E -->|yes| F --> G
+  G -->|pass| H
+  G -->|reject| I --> B
+  G -->|no| B
+  E -->|no| H
+  B -->|100 iter exhausted| J</div>
+      </div>
+      <p class="diagram-caption">Per-iteration flow: nudges, compaction, LLM call, tool dispatch, and goal verification</p>
+    </div>
+
+    <h2 id="phase-3">Phase 3 — Tool system design</h2>
+    <p>Tools use <strong>OpenAI function-calling format</strong>. Gemini receives the same schemas translated to <code>functionDeclarations</code> in <code>runtime.py</code>.</p>
+
+    <table>
+      <thead><tr><th>Category</th><th>Tools</th></tr></thead>
+      <tbody>
+        <tr><td>Search / read</td><td><code>grep_repo</code>, <code>read_repo_file</code>, <code>list_repo_dir</code>, <code>glob_files</code>, <code>find_files</code>, <code>git_log</code>, <code>ast_symbols</code></td></tr>
+        <tr><td>Symbol index</td><td><code>find_symbol</code>, <code>find_references</code>, <code>list_symbols</code></td></tr>
+        <tr><td>Edit</td><td><code>write_file</code>, <code>edit_file</code> (exact search-replace)</td></tr>
+        <tr><td>Shell</td><td><code>run_command</code> (PTY streaming)</td></tr>
+        <tr><td>Memory</td><td><code>update_memory</code>, <code>memory_search</code>, <code>memory_get</code></td></tr>
+        <tr><td>Delegation</td><td><code>spawn_subagent</code></td></tr>
+        <tr><td>Web (optional)</td><td><code>web_search</code>, <code>web_fetch</code></td></tr>
+        <tr><td>Plan mode</td><td><code>create_plan</code></td></tr>
+        <tr><td>Termination</td><td><code>attempt_completion</code></td></tr>
+      </tbody>
+    </table>
+
+    <pre><code><span class="kw">def</span> <span class="fn">dispatch_tool</span>(project_path, name, args, *, mode, session_id, ...):
+    <span class="kw">if</span> mode_blocks_tool(mode, name):
+        <span class="kw">return</span> {<span class="str">"error"</span>: mode_rejection_message(mode, name)}
+
+    <span class="kw">if</span> name == <span class="str">"run_command"</span> <span class="kw">and</span> requires_permission(args[<span class="str">"command"</span>]):
+        request_id = create_permission_request(session_id, name, args)
+        emit_permission_prompt(request_id, args)
+        approved = wait_for_permission(request_id)
+        <span class="kw">if</span> <span class="kw">not</span> approved:
+            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"User denied command"</span>}
+
+    <span class="kw">if</span> name == <span class="str">"grep_repo"</span>:
+        <span class="kw">return</span> repo_grep_fn(project_path, pattern=args[<span class="str">"pattern"</span>], ...)
+    <span class="kw">if</span> name == <span class="str">"edit_file"</span>:
+        <span class="kw">return</span> apply_search_replace(
+            project_path, args[<span class="str">"file_path"</span>],
+            old=args[<span class="str">"old_string"</span>], new=args[<span class="str">"new_string"</span>],
+        )</code></pre>
+
+    <h3>Batch execution rules</h3>
+    <ol>
+      <li><strong>Read-only tools</strong> run <strong>in parallel</strong> via <code>ThreadPoolExecutor</code></li>
+      <li><strong>Same-file <code>edit_file</code> calls</strong> are <strong>coalesced</strong> into one search-replace pass</li>
+      <li><strong>Mutating tools</strong> run serially after reads complete</li>
+      <li>Tool results are <strong>truncated</strong> before returning to the LLM (grep → 30 matches, reads → 16k chars)</li>
+    </ol>
+
+    <p><strong>Why exact-match <code>edit_file</code>?</strong> Ambiguous search-replace (multiple occurrences of <code>old_string</code>) is worse than a retry. LiveCode rejects edits where <code>old_string</code> matches more than once — forcing the model to include more surrounding context, exactly like Cursor's apply model.</p>
+
+    <h2 id="phase-4">Phase 4 — Context compaction (three tiers)</h2>
+    <p>Long agent sessions blow past 128k tokens quickly. LiveCode uses three compaction tiers:</p>
+    <table>
+      <thead><tr><th>Tier</th><th>Trigger</th><th>Strategy</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Intra-turn</strong></td><td>&gt;70% of context window during a turn</td><td><code>compact_stale_tool_messages()</code> — truncate old tool results, keep last 6</td></tr>
+        <tr><td><strong>Inter-turn</strong></td><td>&gt;65% between turns</td><td><code>maybe_inter_turn_compact()</code> — shrink before next user message</td></tr>
+        <tr><td><strong>Session (full-replace)</strong></td><td>&gt;85% or forced</td><td>LLM summarizes entire prefix → replaces old messages with one summary block</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>LIVECODE_AUTO_COMPACT_RATIO = 0.85
+LIVECODE_IN_TURN_COMPACT_RATIO = 0.70
+LIVECODE_INTER_COMPACT_RATIO = 0.65
+LIVECODE_KEEP_RECENT_TOOL_MSGS = 6</code></pre>
+
+    <p>Before full-replace compaction, a <strong>memory flush</strong> runs: important facts are written to <code>MEMORY.md</code> and indexed in SQLite (FTS + local embeddings) so they survive summarization.</p>
+
+    <h2 id="phase-5">Phase 5 — Dual-channel real-time UI</h2>
+    <table>
+      <thead><tr><th>Channel</th><th>Carries</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SSE</strong> (HTTP POST response)</td><td><code>progress</code>, <code>command_stream</code>, <code>done</code>, <code>answer</code></td><td>Simple unidirectional pipe; works through proxies</td></tr>
+        <tr><td><strong>Socket.IO</strong> (WebSocket)</td><td>Tool chips, diff blocks, permission modals, terminal PTY</td><td>Rich JSON payloads, bidirectional</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code><span class="kw">const</span> resp = <span class="kw">await</span> fetch(<span class="str">"/livecode-agent"</span>, {
+  method: <span class="str">"POST"</span>,
+  headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>, Accept: <span class="str">"text/event-stream"</span> },
+  body: JSON.stringify({ project_path, question, session_id, mode }),
+});
+
+<span class="kw">const</span> reader = resp.body.getReader();
+<span class="kw">const</span> decoder = <span class="kw">new</span> TextDecoder();
+let buffer = <span class="str">""</span>;
+
+<span class="kw">while</span> (<span class="kw">true</span>) {
+  <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.read();
+  <span class="kw">if</span> (done) <span class="kw">break</span>;
+  buffer += decoder.decode(value, { stream: <span class="kw">true</span> });
+
+  <span class="kw">for</span> (<span class="kw">const</span> line of buffer.split(<span class="str">"\n"</span>)) {
+    <span class="kw">if</span> (!line.startsWith(<span class="str">"data: "</span>)) <span class="kw">continue</span>;
+    <span class="kw">const</span> payload = JSON.parse(line.slice(<span class="num">6</span>));
+    <span class="kw">if</span> (payload.progress) handleProgress(payload.progress);
+    <span class="kw">if</span> (payload.command_stream) appendTerminalOutput(payload.command_stream);
+    <span class="kw">if</span> (payload.done) finalizeTurn(payload);
+  }
+}</code></pre>
+
+    <h2 id="phase-6">Phase 6 — Permissions and safety</h2>
+    <p>Destructive shell patterns (<code>git reset --hard</code>, <code>rm -rf</code>, force push) trigger a <strong>blocking permission gate</strong>:</p>
+
+    <pre><code><span class="kw">def</span> <span class="fn">create_permission_request</span>(session_id, tool_name, tool_args, timeout_s=<span class="num">120</span>):
+    request_id = f<span class="str">"perm_{uuid.uuid4().hex[:16]}"</span>
+    event = threading.Event()
+    _PERMISSIONS[request_id] = {
+        <span class="str">"session_id"</span>: session_id,
+        <span class="str">"tool_name"</span>: tool_name,
+        <span class="str">"tool_args"</span>: tool_args,
+        <span class="str">"event"</span>: event,
+        <span class="str">"approved"</span>: <span class="kw">None</span>,
+    }
+    <span class="kw">return</span> request_id
+
+<span class="kw">def</span> <span class="fn">wait_for_permission</span>(request_id) -&gt; <span class="fn">bool</span> | <span class="kw">None</span>:
+    entry = _PERMISSIONS[request_id]
+    <span class="kw">if</span> <span class="kw">not</span> entry[<span class="str">"event"</span>].wait(timeout=entry[<span class="str">"timeout_s"</span>]):
+        <span class="kw">return</span> <span class="kw">None</span>
+    <span class="kw">return</span> <span class="fn">bool</span>(entry[<span class="str">"approved"</span>])</code></pre>
+
+    <p>The frontend shows a modal; the user POSTs to <code>/livecode/permission</code> with <code>{request_id, approved}</code>; <code>resolve_permission()</code> calls <code>event.set()</code> and unblocks the harness thread. All file operations go through <code>resolve_safe_path()</code> — no traversal outside the project root.</p>
+
+    <h2 id="phase-7">Phase 7 — Agent, Plan, and Ask modes</h2>
+    <pre><code>LIVECODE_MODES = (<span class="str">"agent"</span>, <span class="str">"plan"</span>, <span class="str">"ask"</span>)
+
+<span class="kw">def</span> <span class="fn">filter_tools_for_mode</span>(tools, mode):
+    <span class="kw">if</span> mode == <span class="str">"agent"</span>:
+        <span class="kw">return</span> tools
+    allowed = READ_ONLY_TOOLS | {<span class="str">"attempt_completion"</span>}
+    filtered = [t <span class="kw">for</span> t <span class="kw">in</span> tools <span class="kw">if</span> t[<span class="str">"function"</span>][<span class="str">"name"</span>] <span class="kw">in</span> allowed]
+    <span class="kw">if</span> mode == <span class="str">"plan"</span>:
+        filtered.append(CREATE_PLAN_TOOL)
+    <span class="kw">return</span> filtered</code></pre>
+
+    <table>
+      <thead><tr><th>Mode</th><th>Can edit files</th><th>Can run shell</th><th>Special tool</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Agent</strong></td><td>Yes</td><td>Yes (with permission)</td><td>—</td></tr>
+        <tr><td><strong>Plan</strong></td><td>No</td><td>No</td><td><code>create_plan</code> → writes markdown plan</td></tr>
+        <tr><td><strong>Ask</strong></td><td>No</td><td>No</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="phase-8">Phase 8 — Subagents and delegation</h2>
+    <p><code>spawn_subagent</code> launches a nested mini-loop with its own ephemeral session — useful for "explore the codebase and report back" without polluting the main context.</p>
+
+    <pre><code><span class="kw">def</span> <span class="fn">run_subagent_turn</span>(project_path, goal, parent_session_id, read_only=<span class="kw">True</span>, max_iterations=<span class="num">5</span>):
+    child_session = f<span class="str">"{parent_session_id}_sub_{uuid.uuid4().hex[:8]}"</span>
+    question = (
+        f<span class="str">"[Subagent — read_only={read_only}]\n{goal}\n"</span>
+        <span class="str">"Call attempt_completion when done."</span>
+    )
+
+    <span class="kw">for</span> chunk <span class="kw">in</span> run_livecode_turn(
+        project_path, question,
+        session_id=child_session,
+        max_iterations=max_iterations,
+        mode=<span class="str">"ask"</span> <span class="kw">if</span> read_only <span class="kw">else</span> <span class="str">"agent"</span>,
+    ):
+        collect_answer_from_sse_chunk(chunk)
+
+    <span class="kw">return</span> {<span class="str">"success"</span>: <span class="kw">True</span>, <span class="str">"result"</span>: answer, <span class="str">"child_session_id"</span>: child_session}</code></pre>
+
+    <h2 id="phase-9">Phase 9 — Sessions, memory, and rules</h2>
+    <h3>JSONL session persistence</h3>
+    <p>Each turn appends to <code>chat_history.jsonl</code> under <code>~/livecode/projects/{slug}/sessions/{id}/</code>:</p>
+    <pre><code>{<span class="str">"role"</span>:<span class="str">"user"</span>,<span class="str">"content"</span>:<span class="str">"Add health check endpoint"</span>,<span class="str">"ts"</span>:<span class="num">1725000000</span>}
+{<span class="str">"role"</span>:<span class="str">"assistant"</span>,<span class="str">"content"</span>:<span class="kw">null</span>,<span class="str">"tool_calls"</span>:[{<span class="str">"id"</span>:<span class="str">"call_1"</span>,<span class="str">"function"</span>:{<span class="str">"name"</span>:<span class="str">"grep_repo"</span>,<span class="str">"arguments"</span>:<span class="str">"{\"pattern\":\"router\"}"</span>}}]}
+{<span class="str">"role"</span>:<span class="str">"tool"</span>,<span class="str">"tool_call_id"</span>:<span class="str">"call_1"</span>,<span class="str">"content"</span>:<span class="str">"{\"matches\":[{\"file\":\"app.py\",\"line\":12}]}"</span>}</code></pre>
+
+    <h3>Intelligent classifier</h3>
+    <p>Before the loop, a fast model classifies the turn to drive model routing:</p>
+    <pre><code><span class="kw">class</span> IntelligentClassification(TypedDict):
+    goal_kind: str          # code_change, analysis, research, meta
+    edit_scope: str         # none, single_line, single_file, multi_file, bulk
+    needs_flagship_model: <span class="fn">bool</span>
+    complexity: str         # simple, medium, complex
+    expects_multi_step: <span class="fn">bool</span></code></pre>
+
+    <h3>Project rules discovery</h3>
+    <pre><code>RULES_FILES = [<span class="str">"AGENTS.md"</span>, <span class="str">"CLAUDE.md"</span>, <span class="str">".cursor/rules"</span>, <span class="str">".livecode/rules"</span>]
+
+<span class="kw">def</span> <span class="fn">discover_project_rules</span>(project_path):
+    <span class="kw">for</span> directory <span class="kw">in</span> path_chain(git_root, project_path):
+        <span class="kw">for</span> rules_file <span class="kw">in</span> RULES_FILES:
+            <span class="kw">if</span> exists(join(directory, rules_file)):
+                found.append(read(candidate))
+    <span class="kw">return</span> wrap_in_system_reminder(found)</code></pre>
+    <p>Injected as a follow-up system message — same convention Cursor and Claude Code use for <code>AGENTS.md</code> and <code>.cursor/rules</code>.</p>
+
+    <h2 id="phase-10">Phase 10 — Frontend IDE shell</h2>
+    <p>The browser loads a single-page IDE with no npm build step — one <code>bundle.js</code> (~9k lines) served from Flask static assets:</p>
+    <ul>
+      <li><strong>Left:</strong> file tree (Socket.IO file browser)</li>
+      <li><strong>Center:</strong> Monaco Editor 0.45 (multi-tab, syntax highlighting)</li>
+      <li><strong>Bottom:</strong> xterm.js terminal (PTY via Socket.IO)</li>
+      <li><strong>Right:</strong> agent chat (tool activity chips, inline diffs, permission modals)</li>
+    </ul>
+    <p>Quick start: <code>pip install -e ".[dev]" &amp;&amp; python -m livecode</code> → <a href="http://127.0.0.1:5050/" rel="noopener noreferrer">http://127.0.0.1:5050/</a></p>
+
+    <h2 id="comparison">LiveCode vs Cursor</h2>
+    <table>
+      <thead><tr><th>Aspect</th><th>LiveCode (self-hosted)</th><th>Cursor</th></tr></thead>
+      <tbody>
+        <tr><td>Agent loop</td><td>Python harness, 100 iter max, rich nudges</td><td>Proprietary cloud harness, skills, subagents</td></tr>
+        <tr><td>Tools</td><td>~18 built-in, hardcoded schemas</td><td>Built-in + <strong>MCP</strong> dynamic namespaces</td></tr>
+        <tr><td>MCP</td><td>Flag exists, not implemented yet</td><td>First-class <code>GetDynamicTools</code> / <code>CallDynamicTool</code></td></tr>
+        <tr><td>Streaming</td><td>SSE + Socket.IO dual channel</td><td>SSE throughout, rich step timeline</td></tr>
+        <tr><td>Modes</td><td>Agent / Plan / Ask</td><td>Agent / Plan / Ask / Debug + skills</td></tr>
+        <tr><td>Context</td><td>128k, 3-tier compaction, SQLite memory</td><td>Larger windows, cloud compaction, <code>@</code> attachments</td></tr>
+        <tr><td>Permissions</td><td>In-app approve/deny modal</td><td>Smart mode approval cards, sandbox</td></tr>
+        <tr><td>Subagents</td><td><code>spawn_subagent</code>, max 5 iter</td><td>Task tool with specialized subagents</td></tr>
+        <tr><td>IDE</td><td>Browser Monaco + terminal</td><td>VS Code fork, deep LSP integration</td></tr>
+        <tr><td>Deployment</td><td>Local Flask :5050</td><td>Cloud + desktop app</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Main gap vs Cursor:</strong> MCP. Dynamic tool discovery from external servers is the architectural piece LiveCode does not have yet. The integration point is <code>get_livecode_tools()</code> — append dynamically discovered MCP tool schemas alongside the built-in set.</p>
+
+    <h2 id="charts">Metrics and charts</h2>
+    <div class="chart-wrap">
+      <canvas id="moduleSizeChart" height="280" aria-label="LiveCode module sizes by lines of code"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="compactionThresholdChart" height="280" aria-label="Context compaction thresholds"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="buildPhaseChart" height="280" aria-label="Recommended build order by phase"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="channelRadarChart" height="320" aria-label="SSE vs WebSocket capability comparison"></canvas>
+    </div>
+
+    <h2 id="checklist">Implementation checklist</h2>
+    <p>Use this as a build order for your own Cursor-like agent:</p>
+    <ol>
+      <li>Flask route returning SSE from a generator</li>
+      <li>OpenAI/Gemini <code>call_with_tools()</code> adapter with streaming thoughts</li>
+      <li>Tool schemas: <code>grep</code>, <code>read</code>, <code>edit_file</code>, <code>run_command</code>, <code>attempt_completion</code></li>
+      <li><code>dispatch_tool()</code> with path safety and result truncation</li>
+      <li>Harness loop with iteration cap and stationarity detection</li>
+      <li>JSONL session persistence</li>
+      <li>Intra-turn tool message compaction</li>
+      <li>Permission gate for destructive shell commands</li>
+      <li>Socket.IO progress events + frontend activity feed</li>
+      <li>Mode filtering (Agent / Ask at minimum)</li>
+      <li>Project rules discovery (<code>AGENTS.md</code>, <code>.cursor/rules</code>)</li>
+      <li>Full-replace LLM compaction at 85% threshold</li>
+      <li>Subagent delegation (optional)</li>
+      <li>Monaco + terminal IDE shell (optional but expected)</li>
+    </ol>
+    <p><strong>Reference implementation:</strong> <a href="https://github.com/amarkum/livecode-ai" rel="noopener noreferrer">github.com/amarkum/livecode-ai</a></p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Do you need LangChain to build a coding agent?</h3>
+    <p>No. A generator function, OpenAI tool schemas, JSONL session files, and tiered context management are sufficient for production-quality agentic coding.</p>
+
+    <h3>Why SSE and WebSocket together?</h3>
+    <p>SSE streams the turn lifecycle over a single HTTP POST. WebSocket carries structured tool progress, diffs, permission modals, and terminal PTY output — payloads that would be painful to encode in a flat text stream.</p>
+
+    <h3>How do you stop infinite tool loops?</h3>
+    <p>Stationarity detection on identical tool-call fingerprints, escalating nudges at 75%/90%/95% iteration budget, a hard 100-iteration cap, and forced <code>attempt_completion</code>-only tools in the last 2 iterations.</p>
+
+    <h3>How is this different from the Cursor desktop app?</h3>
+    <p>Same agent pattern — tools, iteration loop, streaming UI. LiveCode is self-hosted: you control tools, permissions, persistence format, model routing, and deployment. Cursor adds MCP, cloud orchestration, LSP integration, and a VS Code fork.</p>
+
+    <h3>What about vector search / RAG for the codebase?</h3>
+    <p>LiveCode uses ripgrep, a symbol index (Python AST + JS/TS regex), and targeted file reads instead of embeddings. For most coding tasks, grep + read beats semantic search on stale indexes — and it is vastly simpler to operate.</p>
+
+    <h3>Can I add MCP later?</h3>
+    <p>Yes. The <code>enable_mcp</code> flag exists in LiveCode as a stub. Append dynamically discovered MCP tool schemas in <code>get_livecode_tools()</code> and route <code>dispatch_tool()</code> calls through an MCP client.</p>
+
+    <h2 id="related">Related guides</h2>
+    <ul>
+      <li><a href="/blog/posts/how-i-built-mini-cursor-agentic-ide-in-browser/">How I Built a Live-Browser AI Coding Agent with Flask and Monaco</a></li>
+      <li><a href="/blog/posts/how-sse-streaming-works-chatbots-llm-tokens/">How SSE Streaming Works in Chatbots</a></li>
+      <li><a href="/blog/posts/sse-websocket-rest-api-compared/">SSE vs WebSocket vs REST API for Live AI</a></li>
+      <li><a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents</a></li>
+    </ul>
+
+    <p class="closing">Generator loop. Tool dispatch. JSONL on disk. That is the whole trick.</p>
+
+    <aside class="blog-cta">
+      <p><strong>Building an agentic coding UI?</strong></p>
+      <p>stackcone ships production agent loops — streaming, tool calling, session persistence, and eval harnesses.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=12"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+
+    new Chart(document.getElementById('moduleSizeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['harness/turn.py', 'tools.py', 'runtime.py', 'frontend bundle.js', 'other backend'],
+        datasets: [{
+          label: 'Lines of code',
+          data: [2400, 1440, 680, 9000, 1200],
+          backgroundColor: ['#2563eb', '#7c3aed', '#0d9488', '#ea580c', '#64748b'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }, title: { display: true, text: 'LiveCode module sizes' } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Lines' } } }
+      }
+    });
+
+    new Chart(document.getElementById('compactionThresholdChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Inter-turn (65%)', 'In-turn (70%)', 'Full-replace (85%)', 'Context window'],
+        datasets: [{
+          label: 'Token threshold (128k window)',
+          data: [83200, 89600, 108800, 128000],
+          backgroundColor: ['#16a34a', '#2563eb', '#ea580c', '#64748b'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }, title: { display: true, text: 'Compaction tier thresholds' } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Estimated tokens' } } }
+      }
+    });
+
+    new Chart(document.getElementById('buildPhaseChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['SSE endpoint', 'Harness loop', 'Tools + dispatch', 'Compaction', 'Permissions', 'Frontend IDE'],
+        datasets: [{
+          data: [10, 30, 20, 15, 10, 15],
+          backgroundColor: ['#2563eb', '#7c3aed', '#0d9488', '#ea580c', '#dc2626', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Relative implementation effort by phase (%)' } }
+      }
+    });
+
+    new Chart(document.getElementById('channelRadarChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Token streaming', 'Structured JSON', 'Bidirectional', 'CDN friendly', 'Permission UX', 'Shell streams'],
+        datasets: [
+          { label: 'SSE', data: [10, 3, 2, 9, 2, 1], borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.15)' },
+          { label: 'WebSocket', data: [4, 10, 9, 6, 10, 10], borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,0.1)' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { title: { display: true, text: 'SSE vs WebSocket for agent UI' } },
+        scales: { r: { beginAtZero: true, max: 10 } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>
