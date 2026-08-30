@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>Ralph Loop Alternatives for Claude Code and Cursor</title>
+  <meta name="description" content="Ralph loop alternatives for Claude Code — /goal, Stop hooks, verification subagents, plan mode, and claude -p CI patterns that keep agents working until done.">
+  <meta name="keywords" content="Ralph loop, Claude Code, Stop hooks, Agent verification, Plan mode, AI coding agent">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/ralph-loop-alternatives-claude-code/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/ralph-loop-alternatives-claude-code/">
+  <meta property="og:title" content="Ralph Loop Alternatives for Claude Code and Cursor">
+  <meta property="og:description" content="Ralph loop alternatives for Claude Code — /goal, Stop hooks, verification subagents, plan mode, and claude -p CI patterns that keep agents working until done.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ralph Loop Alternatives for Claude Code and Cursor">
+  <meta name="twitter:description" content="Ralph loop alternatives for Claude Code — /goal, Stop hooks, verification subagents, plan mode, and claude -p CI patterns that keep agents working until done.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Ralph Loop Alternatives for Claude Code and Cursor",
+    "description": "Ralph loop alternatives for Claude Code — /goal, Stop hooks, verification subagents, plan mode, and claude -p CI patterns that keep agents working until done.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-08-30",
+    "dateModified": "2026-08-30",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/ralph-loop-alternatives-claude-code/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["Ralph loop", "Claude Code", "Stop hooks", "Agent verification", "Plan mode", "AI coding agent"],
+    "articleSection": "Platform"
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Ralph Loop Alternatives for Claude Code and Cursor</h1>
+    <p class="meta">August 2026 · Published by Amar Kumar</p>
+
+    <p>Developers searching for <strong>Ralph loop alternatives</strong>, <strong>Ralph Wiggum loop Claude Code</strong>, or <strong>how to make AI keep working until done</strong> have seen the meme: paste a prompt, let Claude run in a loop, walk away, come back to finished code.</p>
+    <p>The <strong>Ralph loop</strong> (named after Ralph Wiggum from <em>The Simpsons</em>) is an iterative pattern — run the agent, check if done, if not run again with the same or updated prompt until completion. It works, but it is blunt: no verification gates, context bloats, and loops burn tokens on repeated mistakes.</p>
+    <p>This guide covers <strong>better alternatives</strong> built into Claude Code and Cursor — <code>/goal</code>, Stop hooks, PreToolUse and PostToolUse gates, verification subagents, plan mode, and CI headless runs — that achieve &quot;keep working until done&quot; with less waste. Every alternative includes a <strong>full worked example</strong> you can copy into a real repo.</p>
+    <p><strong>Related:</strong> <a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively</a> · <a href="/blog/posts/skills-vs-rules-claude-code-cursor/">Skills vs Rules</a></p>
+    <nav class="toc" aria-label="Table of contents">
+    <h2>Table of contents</h2>
+    <ol>
+    </ol></nav>
+    <ol>
+    <li>1. <a href="#origin">Origin of the Ralph loop</a></li>
+    <li>2. <a href="#when-ralph">When people use Ralph loops</a></li>
+    <li>3. <a href="#why-alternatives">Why alternatives are better</a></li>
+    <li>4. <a href="#verification-prompt">Alternative 1: Verification in the prompt</a></li>
+    <li>5. <a href="#goal">Alternative 2: <code>/goal</code> condition</a></li>
+    <li>6. <a href="#stop-hooks">Alternative 3: Hooks (Stop, PreToolUse, PostToolUse)</a></li>
+    <li>7. <a href="#verification-subagent">Alternative 4: Verification subagent</a></li>
+    <li>8. <a href="#plan-mode">Alternative 5: Plan mode then implement</a></li>
+    <li>9. <a href="#headless">Alternative 6: Headless CI (<code>claude -p</code>)</a></li>
+    <li>10. <a href="#cursor">Cursor-specific patterns</a></li>
+    <li>11. <a href="#failure-modes">Failure modes and debugging stalled loops</a></li>
+    <li>12. <a href="#decision-tree">Decision tree: which alternative to pick</a></li>
+    <li>13. <a href="#comparison">Comparison table</a></li>
+    <li>14. <a href="#faq">FAQ</a></li>
+    </ol>
+    <h2 id="origin-of-the-ralph-loop">Origin of the Ralph loop</h2>
+    <p>The name comes from Ralph Wiggum — the Simpsons character who keeps trying the same thing with cheerful persistence despite obvious failure. In AI coding circles, &quot;Ralph loop&quot; became shorthand for:</p>
+    <ol>
+    <li>1. Give the agent a task</li>
+    <li>2. Let it run until it stops</li>
+    <li>3. If not done, re-prompt with &quot;continue&quot; or the same instructions</li>
+    <li>4. Repeat</li>
+    </ol>
+    <p>The pattern predates any single tool. Early ChatGPT users pasted &quot;keep going&quot; after every truncation. Terminal-agent users wrapped <code>claude</code>, <code>aider</code>, or custom scripts in <code>while</code> loops. The Ralph meme crystallized when developers realized <strong>persistence without verification</strong> looks productive but often re-implements the same bug three times.</p>
+    <p>Core insight the community extracted: <strong>the loop is fine; the missing piece is a machine-checkable done condition.</strong></p>
+    <pre><code>┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Run agent  │────▶│  Looks done? │─No─▶│ Re-prompt   │
+└─────────────┘     └──────┬───────┘     │ (Ralph)     │
+                           │ Yes          └──────┬──────┘
+                           ▼                     │
+                      ┌─────────┐                │
+                      │  Ship?  │◀───────────────┘
+                      └─────────┘</code></pre>
+    <p>Better patterns insert a <strong>verification step</strong> between &quot;agent stopped&quot; and &quot;actually done.&quot;</p>
+    <h2 id="when-people-use-ralph-loops">When people use Ralph loops</h2>
+    <p>Ralph loops appear in predictable situations:</p>
+    <table>
+<thead><tr><th>Situation</th><th>Why Ralph feels tempting</th><th>What goes wrong</th></tr></thead>
+<tbody>
+<tr><td>Long refactor</td><td>Agent stops after 20 files; you want it to finish</td><td>Context fills; later iterations re-read everything</td></tr>
+<tr><td>&quot;Fix until tests pass&quot;</td><td>Simple mental model</td><td>Agent declares victory without running tests</td></tr>
+<tr><td>Overnight runs</td><td>Walk away, check morning</td><td>Unbounded spend; same error looped 40 times</td></tr>
+<tr><td>CI automation</td><td>Shell script is easy</td><td>No exit-code discipline; silent partial fixes</td></tr>
+<tr><td>New tool onboarding</td><td>Fastest thing that &quot;works&quot;</td><td>No project memory; every iteration starts cold</td></tr>
+</tbody></table>
+    <p><strong>Use a Ralph loop when:</strong> you are prototyping, the task is tiny, or you are actively watching and intervening.</p>
+    <p><strong>Stop using Ralph when:</strong> tests must pass, money or time is bounded, or you have walked away from the session.</p>
+    <h2 id="why-alternatives-are-better">Why alternatives are better</h2>
+    <table>
+<thead><tr><th>Ralph loop problem</th><th>Built-in alternative</th></tr></thead>
+<tbody>
+<tr><td>Claude stops when it <em>looks</em> done</td><td>Verification command in prompt or Stop hook</td></tr>
+<tr><td>Same mistakes every iteration</td><td>Plan mode first; fresh subagent for review</td></tr>
+<tr><td>Context window fills</td><td>Subagent isolates exploration; main thread stays clean</td></tr>
+<tr><td>No hard stop condition</td><td><code>/goal</code> with evaluator</td></tr>
+<tr><td>Manual re-prompting</td><td>Stop hook blocks turn until check passes</td></tr>
+<tr><td>Edits land before checks</td><td>PostToolUse hook runs lint on touched files</td></tr>
+<tr><td>Dangerous commands slip through</td><td>PreToolUse hook blocks <code>git push --force</code></td></tr>
+</tbody></table>
+    <p><strong>Rule:</strong> replace &quot;loop until I say stop&quot; with &quot;loop until <strong>check passes</strong>.&quot;</p>
+    <h2 id="alternative-1-verification-in-the-prompt">Alternative 1: Verification in the prompt</h2>
+    <p>Simplest upgrade — no config files. You encode done criteria and the verification command directly in the task.</p>
+    <h3 id="worked-example-rate-limiting-on-login">Worked example: rate limiting on login</h3>
+    <p><strong>Task:</strong> Add rate limiting to <code>POST /api/login</code> in a Node/Express API.</p>
+    <p><strong>Prompt:</strong></p>
+    <pre><code>Add rate limiting to POST /api/login — max 10 requests per minute per IP.
+
+Requirements:
+- Use express-rate-limit (already in package.json)
+- Return 429 with { error: "Too many requests" }
+- Write src/api/login.rate-limit.test.ts that sends 11 requests and expects 429 on the 11th
+
+Verification:
+Run `pnpm test src/api/login.rate-limit.test.ts` and fix until green.
+Do not stop until the test passes.
+Show me the final test output.</code></pre>
+    <p><strong>Why this beats Ralph:</strong> Claude loops internally on test failures within a single session. You are not re-pasting &quot;continue&quot; every five minutes.</p>
+    <p><strong>Soft limit:</strong> Claude can still skip the test or misread output. For hard enforcement, add a Stop hook (Alternative 3).</p>
+    <h3 id="worked-example-claudemd-verification-block">Worked example: <code>CLAUDE.md</code> verification block</h3>
+    <p>Add a standing verification instruction so every session inherits it:</p>
+    <pre><code><span class="kw">#</span> acme-api
+
+<span class="kw">##</span> Commands
+- Test: <span class="str">`pnpm test`</span>
+- Lint: <span class="str">`pnpm lint`</span>
+- Typecheck: <span class="str">`pnpm typecheck`</span>
+
+<span class="kw">##</span> Verification (required before stopping)
+After any code change:
+1. Run <span class="str">`pnpm typecheck`</span>
+2. Run <span class="str">`pnpm test`</span> for the touched package
+3. If either fails, fix and re-run until green
+
+Do not declare the task complete until both commands exit 0.</code></pre>
+    <p>Pair with prompts that reference the verification block:</p>
+    <pre><code>@CLAUDE.md Add OAuth callback handler per issue <span class="cm">#412.</span>
+Follow the Verification section before stopping.</code></pre>
+    <h2 id="alternative-2-goal-condition">Alternative 2: <code>/goal</code> condition</h2>
+    <p>Claude Code <code>/goal</code> sets a <strong>completion condition</strong> evaluated after every turn. A separate evaluator checks whether the goal is met; Claude keeps working until it resolves or hits a stall limit.</p>
+    <h3 id="worked-example-scoped-diff-green-tests">Worked example: scoped diff + green tests</h3>
+    <p><strong>Scenario:</strong> Fix login bug but only touch files under <code>src/api/login/</code>.</p>
+    <pre><code>/goal All tests in `pnpm test` pass AND `git diff --name-only` only lists paths under src/api/login/</code></pre>
+    <p>Then your implementation prompt:</p>
+    <pre><code>Fix the session expiry bug in src/api/login/session.ts (issue <span class="cm">#842).</span>
+The refresh token should rotate on use. Match error handling in session.test.ts.</code></pre>
+    <p><strong>What happens:</strong></p>
+    <ol>
+    <li>1. Claude implements the fix</li>
+    <li>2. Tries to end the turn</li>
+    <li>3. Evaluator checks: tests green? diff scoped?</li>
+    <li>4. If no → Claude continues without you re-prompting</li>
+    <li>5. If yes → turn ends</li>
+    </ol>
+    <h3 id="worked-example-documentation-goal">Worked example: documentation goal</h3>
+    <pre><code>/goal README.md contains a "Rate limiting" section with curl example, and `pnpm test` exits 0</code></pre>
+    <pre><code>Document the new POST /api/login rate limit in README.md.
+Include a curl example that shows a 429 response.</code></pre>
+    <h3 id="when-to-use-goal">When to use <code>/goal</code></h3>
+    <table>
+<thead><tr><th>Use <code>/goal</code></th><th>Skip <code>/goal</code></th></tr></thead>
+<tbody>
+<tr><td>Walking away mid-session</td><td>One-line typo fix</td></tr>
+<tr><td>Diff scope matters (security, billing)</td><td>Exploratory spike</td></tr>
+<tr><td>Multiple criteria (tests + files + docs)</td><td>You are pair-programming live</td></tr>
+</tbody></table>
+    <p><strong>vs Ralph:</strong> Explicit, evaluable done criteria instead of vague &quot;keep going.&quot;</p>
+    <h2 id="alternative-3-hooks-stop-pretooluse-posttooluse">Alternative 3: Hooks (Stop, PreToolUse, PostToolUse)</h2>
+    <p>Claude Code hooks run shell commands at lifecycle points. They are <strong>hard gates</strong> — unlike prompt instructions, a failing hook blocks the action.</p>
+    <table>
+<thead><tr><th>Hook</th><th>Fires when</th><th>Blocks if exit ≠ 0</th></tr></thead>
+<tbody>
+<tr><td><strong>Stop</strong></td><td>Claude tries to end a turn</td><td>Turn continues (max 8 consecutive blocks)</td></tr>
+<tr><td><strong>PreToolUse</strong></td><td>Before a tool runs (Bash, Edit, etc.)</td><td>Tool call is denied</td></tr>
+<tr><td><strong>PostToolUse</strong></td><td>After a tool completes</td><td>Next step blocked until resolved</td></tr>
+</tbody></table>
+    <p>Hooks live in <code>.claude/settings.json</code> (team) or <code>.claude/settings.local.json</code> (personal, gitignored).</p>
+    <h3 id="complete-settingsjson-all-three-hook-types">Complete <code>settings.json</code> — all three hook types</h3>
+    <pre><code>{
+  <span class="str">"permissions"</span>: {
+    <span class="str">"allow"</span>: [
+      <span class="str">"Bash(pnpm test *)"</span>,
+      <span class="str">"Bash(pnpm lint *)"</span>,
+      <span class="str">"Bash(pnpm typecheck)"</span>
+    ],
+    <span class="str">"deny"</span>: [
+      <span class="str">"Read(.env)"</span>,
+      <span class="str">"Read(.env.*)"</span>
+    ]
+  },
+  <span class="str">"hooks"</span>: {
+    <span class="str">"PreToolUse"</span>: [
+      {
+        <span class="str">"matcher"</span>: <span class="str">"Bash"</span>,
+        <span class="str">"hooks"</span>: [
+          {
+            <span class="str">"type"</span>: <span class="str">"command"</span>,
+            <span class="str">"command"</span>: <span class="str">".claude/hooks/prevent-dangerous-git.sh"</span>
+          }
+        ]
+      }
+    ],
+    <span class="str">"PostToolUse"</span>: [
+      {
+        <span class="str">"matcher"</span>: <span class="str">"Edit|Write"</span>,
+        <span class="str">"hooks"</span>: [
+          {
+            <span class="str">"type"</span>: <span class="str">"command"</span>,
+            <span class="str">"command"</span>: <span class="str">".claude/hooks/lint-touched-files.sh"</span>
+          }
+        ]
+      }
+    ],
+    <span class="str">"Stop"</span>: [
+      {
+        <span class="str">"matcher"</span>: <span class="str">""</span>,
+        <span class="str">"hooks"</span>: [
+          {
+            <span class="str">"type"</span>: <span class="str">"command"</span>,
+            <span class="str">"command"</span>: <span class="str">".claude/hooks/verify-before-stop.sh"</span>
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+    <h3 id="hook-script-prevent-dangerous-gitsh-pretooluse">Hook script: <code>prevent-dangerous-git.sh</code> (PreToolUse)</h3>
+    <p>Blocks destructive git commands before they run:</p>
+    <pre><code><span class="cm">#!/usr/bin/env bash</span>
+<span class="cm"># .claude/hooks/prevent-dangerous-git.sh</span>
+<span class="cm"># PreToolUse — reads tool input from stdin (JSON)</span>
+
+<span class="fn">set</span> -euo pipefail
+
+INPUT=$(cat)
+COMMAND=$(echo <span class="str">"$INPUT"</span> | jq -r <span class="str">'.tool_input.command // empty'</span>)
+
+<span class="kw">if</span> [[ -z <span class="str">"$COMMAND"</span> ]]; then
+  exit <span class="num">0</span>
+fi
+
+BLOCKED_PATTERNS=(
+  <span class="str">'git push --force'</span>
+  <span class="str">'git push -f'</span>
+  <span class="str">'git reset --hard'</span>
+  <span class="str">'git clean -fd'</span>
+  <span class="str">'rm -rf /'</span>
+  <span class="str">'rm -rf /*'</span>
+)
+
+<span class="kw">for</span> pattern <span class="kw">in</span> <span class="str">"${BLOCKED_PATTERNS[@]}"</span>; do
+  <span class="kw">if</span> [[ <span class="str">"$COMMAND"</span> == *<span class="str">"$pattern"</span>* ]]; then
+    echo <span class="str">"Blocked by PreToolUse hook: command matches '$pattern'"</span> &gt;&amp;<span class="num">2</span>
+    exit <span class="num">2</span>
+  fi
+done
+
+exit <span class="num">0</span></code></pre>
+    <p>Make executable: <code>chmod +x .claude/hooks/prevent-dangerous-git.sh</code></p>
+    <h3 id="hook-script-lint-touched-filessh-posttooluse">Hook script: <code>lint-touched-files.sh</code> (PostToolUse)</h3>
+    <p>Runs ESLint on edited TypeScript files immediately after each edit:</p>
+    <pre><code>#!/usr/bin/env bash
+<span class="kw">#</span> .claude/hooks/lint-touched-files.sh
+<span class="kw">#</span> PostToolUse — lint files Claude just edited
+
+set -euo pipefail
+
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+if [[ -z "$FILE_PATH" ]]; then
+  exit 0
+fi
+
+<span class="kw">#</span> Only lint TypeScript under src/
+if [[ "$FILE_PATH" == src/*.ts ]] || [[ "$FILE_PATH" == src/*.tsx ]]; then
+  echo "PostToolUse: linting $FILE_PATH" &gt;&amp;2
+  pnpm exec eslint "$FILE_PATH" --max-warnings 0
+fi
+
+exit 0</code></pre>
+    <h3 id="hook-script-verify-before-stopsh-stop">Hook script: <code>verify-before-stop.sh</code> (Stop)</h3>
+    <p>Full verification gate — tests, lint, typecheck — before any turn ends:</p>
+    <pre><code>#!/usr/bin/env bash
+<span class="kw">#</span> .claude/hooks/verify-before-stop.sh
+<span class="kw">#</span> Stop hook — must pass before Claude ends a turn
+
+set -euo pipefail
+
+echo "Stop hook: running verification suite..." &gt;&amp;2
+
+pnpm typecheck || {
+  echo "Stop hook FAILED: typecheck" &gt;&amp;2
+  exit 1
+}
+
+pnpm lint || {
+  echo "Stop hook FAILED: lint" &gt;&amp;2
+  exit 1
+}
+
+pnpm test --passWithNoTests || {
+  echo "Stop hook FAILED: tests" &gt;&amp;2
+  exit 1
+}
+
+echo "Stop hook: all checks passed" &gt;&amp;2
+exit 0</code></pre>
+    <h3 id="stop-hook-minimal-test-only-variant">Stop hook — minimal test-only variant</h3>
+    <p>For repos where full lint on every stop is too slow:</p>
+    <pre><code>{
+  <span class="str">"hooks"</span>: {
+    <span class="str">"Stop"</span>: [
+      {
+        <span class="str">"matcher"</span>: <span class="str">""</span>,
+        <span class="str">"hooks"</span>: [
+          {
+            <span class="str">"type"</span>: <span class="str">"command"</span>,
+            <span class="str">"command"</span>: <span class="str">"pnpm test --passWithNoTests"</span>
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+    <h3 id="stop-hook-scoped-to-api-changes">Stop hook — scoped to API changes</h3>
+    <p>Run heavier checks only when API files changed:</p>
+    <pre><code>#!/usr/bin/env bash
+<span class="kw">#</span> .claude/hooks/verify-api-stop.sh
+
+set -euo pipefail
+
+if git diff --name-only | grep -q '^src/api/'; then
+  echo "API files changed — running api test suite" &gt;&amp;2
+  pnpm test src/api/
+else
+  echo "No api changes — running smoke tests" &gt;&amp;2
+  pnpm test --passWithNoTests --testPathIgnorePatterns=integration
+fi</code></pre>
+    <pre><code>{
+  <span class="str">"hooks"</span>: {
+    <span class="str">"Stop"</span>: [{
+      <span class="str">"matcher"</span>: <span class="str">""</span>,
+      <span class="str">"hooks"</span>: [{
+        <span class="str">"type"</span>: <span class="str">"command"</span>,
+        <span class="str">"command"</span>: <span class="str">".claude/hooks/verify-api-stop.sh"</span>
+      }]
+    }]
+  }
+}</code></pre>
+    <h3 id="posttooluse-format-on-save">PostToolUse — format on save</h3>
+    <p>Auto-format after every write:</p>
+    <pre><code>{
+  <span class="str">"hooks"</span>: {
+    <span class="str">"PostToolUse"</span>: [
+      {
+        <span class="str">"matcher"</span>: <span class="str">"Edit|Write"</span>,
+        <span class="str">"hooks"</span>: [
+          {
+            <span class="str">"type"</span>: <span class="str">"command"</span>,
+            <span class="str">"command"</span>: <span class="str">"pnpm exec prettier --write $(jq -r '.tool_input.file_path')"</span>
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+    <p>For production, prefer a wrapper script that validates <code>file_path</code> exists before formatting.</p>
+    <h3 id="hook-behavior-limits">Hook behavior limits</h3>
+    <ul>
+    <li><strong>Stop hook:</strong> After <strong>8 consecutive blocks</strong>, Claude Code overrides and stops anyway. Design hooks to fail fast with actionable stderr output.</li>
+    <li><strong>PreToolUse:</strong> Exit code <code>2</code> = block with message to Claude. Other non-zero = error.</li>
+    <li><strong>PostToolUse:</strong> Failures force Claude to fix before proceeding — catches drift early instead of at Stop.</li>
+    </ul>
+    <p><strong>vs Ralph:</strong> Deterministic enforcement. Ralph relies on Claude deciding to continue.</p>
+    <p>Claude can also write hooks for you: <em>&quot;Write a Stop hook that runs <code>pnpm test src/billing/</code> when files under <code>src/billing/</code> changed.&quot;</em></p>
+    <h2 id="alternative-4-verification-subagent">Alternative 4: Verification subagent</h2>
+    <p>Spawn a <strong>fresh subagent</strong> to review work the main agent cannot grade itself. The subagent gets a clean context window — no 200k tokens of failed attempts.</p>
+    <h3 id="worked-example-diff-review-against-plan">Worked example: diff review against plan</h3>
+    <p><strong>Phase 1 — plan (main agent or plan mode):</strong></p>
+    <pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
+Output a numbered plan with files to create/modify. Do not edit yet.</code></pre>
+    <p><strong>Phase 2 — implement:</strong></p>
+    <pre><code>Implement the OAuth callback plan. Run pnpm test src/auth/ after.</code></pre>
+    <p><strong>Phase 3 — verification subagent:</strong></p>
+    <pre><code>Use a subagent to review the current git diff against this plan:
+
+1. src/auth/oauth/google.ts — callback handler
+2. src/auth/oauth/google.test.ts — happy path + invalid state
+3. src/api/routes/auth.ts — wire GET /auth/google/callback
+4. All responses use { data, error } envelope
+
+Reject if:
+- Tests are missing for error cases
+- State parameter is not validated
+- Any file outside src/auth/ or src/api/routes/ was modified
+
+Return PASS or a bullet list of blockers.</code></pre>
+    <p>If the subagent returns blockers, the main agent fixes and re-runs review.</p>
+    <h3 id="worked-example-code-review-skill">Worked example: <code>/code-review</code> skill</h3>
+    <p>Claude Code&#x27;s built-in review skill isolates the diff:</p>
+    <pre><code>/code-review
+
+Focus on:
+- SQL injection in new query builders
+- Missing input validation on POST /api/users</code></pre>
+    <h3 id="subagent-prompt-template">Subagent prompt template</h3>
+    <pre><code>Subagent task: verification only — do not edit files.
+
+Context:
+- Plan: [paste plan]
+- Verification command: pnpm test src/feature/
+
+Check:
+1. Run the verification command
+2. Compare diff to plan scope
+3. Return structured result:
+
+VERDICT: PASS | FAIL
+TESTS: pass | fail (paste last 20 lines if fail)
+SCOPE: ok | drift (list extra files)
+BLOCKERS: (empty if PASS)</code></pre>
+    <p><strong>Use when:</strong> Correctness checks need a second opinion; main transcript is already bloated.</p>
+    <p><strong>vs Ralph:</strong> Fresh context for review; Ralph reuses the same bloated thread and re-argues old mistakes.</p>
+    <h2 id="alternative-5-plan-mode-then-implement">Alternative 5: Plan mode then implement</h2>
+    <p>Press <code>Shift+Tab</code> for plan mode (or start with <code>claude --permission-mode plan</code>). Claude explores and plans <strong>without editing</strong>. Approve the plan, switch to implement mode, verify against the plan.</p>
+    <h3 id="worked-example-oauth-callback-two-phase">Worked example: OAuth callback (two-phase)</h3>
+    <p><strong>Phase 1 — plan mode:</strong></p>
+    <pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
+List files to create/modify, error cases, and test strategy.
+Do not edit any files.</code></pre>
+    <p>Example plan output (abbreviated):</p>
+    <pre><code>1. Create src/auth/oauth/google.ts — exchange code, validate state
+2. Create src/auth/oauth/google.test.ts — mock Google token endpoint
+3. Update src/api/routes/auth.ts — add GET /auth/google/callback
+4. Update CLAUDE.md — document env vars GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+5. Tests: pnpm test src/auth/oauth/</code></pre>
+    <p><strong>Phase 2 — implement mode:</strong></p>
+    <pre><code>Implement the OAuth plan above exactly.
+After each file, run pnpm test src/auth/oauth/.
+Do not add files not in the plan without asking.</code></pre>
+    <p><strong>Phase 3 — optional Stop hook or subagent review</strong> (Alternatives 3 and 4).</p>
+    <h3 id="worked-example-plan-mode-for-database-migration">Worked example: plan mode for database migration</h3>
+    <pre><code>Plan mode: Design a migration to add `last_login_at` to users table.
+- Drizzle schema change in src/db/schema/users.ts
+- Migration file naming convention: YYYYMMDD_description.sql
+- Backfill strategy for existing rows
+- Rollback plan
+
+Do not run migrations or edit files.</code></pre>
+    <p>After approval:</p>
+    <pre><code>Implement the migration plan. Run pnpm test src/db/ and pnpm typecheck before stopping.</code></pre>
+    <p><strong>Use when:</strong> Ralph loops fail because Claude solves the wrong problem each iteration.</p>
+    <p><strong>vs Ralph:</strong> Separates exploration from execution — fewer wrong-direction loops.</p>
+    <h2 id="alternative-6-headless-ci-claude--p">Alternative 6: Headless CI (<code>claude -p</code>)</h2>
+    <p><code>claude -p</code> runs a single prompt non-interactively and exits. Pair with <code>CLAUDE.md</code> for project context. Wrap in a shell script for <strong>bounded retries</strong> — the CI-native alternative to infinite Ralph loops.</p>
+    <h3 id="complete-ci-script-with-bounded-retries">Complete CI script with bounded retries</h3>
+    <p>Save as <code>scripts/claude-fix-loop.sh</code>:</p>
+    <pre><code><span class="cm">#!/usr/bin/env bash</span>
+<span class="cm"># scripts/claude-fix-loop.sh</span>
+<span class="cm"># Bounded agent retry loop for CI — NOT an unbounded Ralph loop.</span>
+<span class="cm">#</span>
+<span class="cm"># Usage:</span>
+<span class="cm">#   ./scripts/claude-fix-loop.sh "Fix failing test in src/api/health.test.ts"</span>
+<span class="cm">#   MAX_ATTEMPTS=5 ./scripts/claude-fix-loop.sh "$PROMPT"</span>
+<span class="cm">#</span>
+<span class="cm"># Exit codes:</span>
+<span class="cm">#   0 — verification passed</span>
+<span class="cm">#   1 — exhausted retries or verification failed</span>
+<span class="cm">#   2 — missing dependencies</span>
+
+<span class="fn">set</span> -euo pipefail
+
+PROMPT=<span class="str">"${1:-}"</span>
+MAX_ATTEMPTS=<span class="str">"${MAX_ATTEMPTS:-3}"</span>
+VERIFY_CMD=<span class="str">"${VERIFY_CMD:-pnpm test --passWithNoTests}"</span>
+CLAUDE_TIMEOUT=<span class="str">"${CLAUDE_TIMEOUT:-1800}"</span>
+LOG_DIR=<span class="str">"${LOG_DIR:-./.claude-ci-logs}"</span>
+
+<span class="kw">if</span> [[ -z <span class="str">"$PROMPT"</span> ]]; then
+  echo <span class="str">"Usage: $0 \"&lt;prompt&gt;\""</span> &gt;&amp;<span class="num">2</span>
+  exit <span class="num">2</span>
+fi
+
+<span class="kw">if</span> ! command -v claude &amp;&gt;/dev/null; then
+  echo <span class="str">"claude CLI not found"</span> &gt;&amp;<span class="num">2</span>
+  exit <span class="num">2</span>
+fi
+
+mkdir -p <span class="str">"$LOG_DIR"</span>
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+echo <span class="str">"=== Claude CI fix loop ==="</span>
+echo <span class="str">"Max attempts: $MAX_ATTEMPTS"</span>
+echo <span class="str">"Verify cmd:   $VERIFY_CMD"</span>
+echo <span class="str">"Prompt:       $PROMPT"</span>
+echo <span class="str">""</span>
+
+<span class="kw">for</span> attempt <span class="kw">in</span> $(seq <span class="num">1</span> <span class="str">"$MAX_ATTEMPTS"</span>); do
+  LOG_FILE=<span class="str">"$LOG_DIR/run-${TIMESTAMP}-attempt-${attempt}.log"</span>
+  echo <span class="str">"--- Attempt $attempt / $MAX_ATTEMPTS ---"</span>
+
+  <span class="cm"># Run agent with timeout</span>
+  <span class="kw">if</span> timeout <span class="str">"$CLAUDE_TIMEOUT"</span> claude -p <span class="str">"$PROMPT"</span> <span class="num">2</span>&gt;&amp;<span class="num">1</span> | tee <span class="str">"$LOG_FILE"</span>; then
+    AGENT_EXIT=<span class="num">0</span>
+  <span class="kw">else</span>
+    AGENT_EXIT=$?
+    echo <span class="str">"Agent exited with code $AGENT_EXIT (log: $LOG_FILE)"</span> &gt;&amp;<span class="num">2</span>
+  fi
+
+  <span class="cm"># Always verify — agent may exit 0 without fixing</span>
+  echo <span class="str">"Running verification: $VERIFY_CMD"</span>
+  <span class="kw">if</span> eval <span class="str">"$VERIFY_CMD"</span>; then
+    echo <span class="str">"Verification passed on attempt $attempt"</span>
+    exit <span class="num">0</span>
+  fi
+
+  echo <span class="str">"Verification failed on attempt $attempt"</span> &gt;&amp;<span class="num">2</span>
+
+  <span class="kw">if</span> [[ <span class="str">"$attempt"</span> -lt <span class="str">"$MAX_ATTEMPTS"</span> ]]; then
+    <span class="cm"># Enrich prompt for next attempt with signal, not blind "continue"</span>
+    PROMPT=<span class="str">"Previous attempt failed verification ($VERIFY_CMD).
+
+Read the test/lint output in the repo state. Diagnose root cause.
+Do not repeat the same fix if it already failed.
+
+Original task: ${1}"</span>
+  fi
+done
+
+echo <span class="str">"FAILED: exhausted $MAX_ATTEMPTS attempts"</span> &gt;&amp;<span class="num">2</span>
+echo <span class="str">"Logs in $LOG_DIR"</span> &gt;&amp;<span class="num">2</span>
+exit <span class="num">1</span></code></pre>
+    <p>Make executable: <code>chmod +x scripts/claude-fix-loop.sh</code></p>
+    <h3 id="github-actions-workflow">GitHub Actions workflow</h3>
+    <pre><code><span class="cm"># .github/workflows/claude-fix.yml</span>
+<span class="fn">name</span>: Claude fix loop
+
+<span class="fn">on</span>:
+  <span class="fn">workflow_dispatch</span>:
+    <span class="fn">inputs</span>:
+      <span class="fn">prompt</span>:
+        <span class="fn">description</span>: <span class="str">"Agent prompt"</span>
+        <span class="fn">required</span>: <span class="kw">true</span>
+        <span class="fn">default</span>: <span class="str">"Fix failing CI tests. Run pnpm test after."</span>
+
+<span class="fn">jobs</span>:
+  <span class="fn">claude-fix</span>:
+    <span class="fn">runs-on</span>: ubuntu-latest
+    <span class="fn">timeout-minutes</span>: <span class="num">45</span>
+    <span class="fn">steps</span>:
+      - <span class="fn">uses</span>: actions/checkout@v4
+
+      - <span class="fn">uses</span>: pnpm/action-setup@v4
+        <span class="fn">with</span>:
+          <span class="fn">version</span>: <span class="num">9</span>
+
+      - <span class="fn">uses</span>: actions/setup-node@v4
+        <span class="fn">with</span>:
+          <span class="fn">node-version</span>: <span class="num">22</span>
+          <span class="fn">cache</span>: pnpm
+
+      - <span class="fn">run</span>: pnpm install --frozen-lockfile
+
+      - <span class="fn">name</span>: Run bounded Claude fix loop
+        <span class="fn">env</span>:
+          <span class="fn">ANTHROPIC_API_KEY</span>: ${{ secrets.ANTHROPIC_API_KEY }}
+          <span class="fn">MAX_ATTEMPTS</span>: <span class="num">3</span>
+          <span class="fn">VERIFY_CMD</span>: pnpm test --passWithNoTests
+        <span class="fn">run</span>: ./scripts/claude-fix-loop.sh <span class="str">"${{ github.event.inputs.prompt }}"</span>
+
+      - <span class="fn">name</span>: Upload agent logs on failure
+        <span class="fn">if</span>: failure()
+        <span class="fn">uses</span>: actions/upload-artifact@v4
+        <span class="fn">with</span>:
+          <span class="fn">name</span>: claude-ci-logs
+          <span class="fn">path</span>: .claude-ci-logs/</code></pre>
+    <h3 id="claudemd-for-ci-context"><code>CLAUDE.md</code> for CI context</h3>
+    <p>CI sessions do not have your chat history. Put standing instructions in the repo:</p>
+    <pre><code><span class="kw">#</span> acme-api
+
+<span class="kw">##</span> CI agent instructions
+- Run <span class="str">`pnpm test`</span> after every fix attempt
+- Do not modify .github/workflows/ without explicit instruction
+- Create a branch <span class="str">`claude/ci-fix-*`</span> — never commit directly to main
+- Max scope: fix the failing test, do not refactor unrelated code
+
+<span class="kw">##</span> Commands
+- Test: <span class="str">`pnpm test`</span>
+- Lint: <span class="str">`pnpm lint`</span></code></pre>
+    <h3 id="single-shot-claude--p-no-retry-wrapper">Single-shot <code>claude -p</code> (no retry wrapper)</h3>
+    <p>For simple, bounded tasks:</p>
+    <pre><code>claude -p "Fix failing test in src/api/health.test.ts. Run pnpm test after. Stop when green."</code></pre>
+    <p><strong>Use when:</strong> Scheduled fix loops, PR comment bots, nightly maintenance.</p>
+    <p><strong>vs Ralph:</strong> Bounded retries, explicit exit codes, enriched prompts on failure instead of copy-paste &quot;continue.&quot;</p>
+    <h2 id="cursor-specific-patterns">Cursor-specific patterns</h2>
+    <p>Cursor Agent does not have Claude Code&#x27;s Stop hooks yet. You replicate &quot;keep working until done&quot; with <strong>rules</strong>, <strong>explicit prompts</strong>, <strong>@ file context</strong>, and <strong>CI re-runs</strong>.</p>
+    <h3 id="project-rule-verification-before-finish">Project rule: verification before finish</h3>
+    <p><code>.cursor/rules/verify-before-done.mdc</code>:</p>
+    <pre><code><span class="kw">---</span>
+<span class="fn">description</span>: Require test verification before completing agent tasks
+<span class="fn">alwaysApply</span>: <span class="kw">true</span>
+<span class="kw">---</span>
+
+<span class="kw">#</span> Verification before done
+
+When implementing code changes:
+
+1. Run the project's test command (<span class="str">`pnpm test`</span> or equivalent) before declaring completion
+2. If tests fail, fix and re-run until green — do not stop with failing tests
+3. Run lint on touched files if the project has a linter
+4. Summarize what you ran and paste the final passing output
+
+Never say "done" or "complete" without evidence of passing verification.</code></pre>
+    <h3 id="path-scoped-rule-for-api-work">Path-scoped rule for API work</h3>
+    <p><code>.cursor/rules/api-changes.mdc</code>:</p>
+    <pre><code><span class="kw">---</span>
+<span class="fn">description</span>: API handler conventions and verification
+<span class="fn">globs</span>: src/api/**/*
+<span class="kw">---</span>
+
+<span class="kw">#</span> API rules
+
+- Handlers return <span class="str">`{ data, error }`</span> envelope
+- Add or update tests in <span class="str">`src/api/**/*.test.ts`</span> for every behavior change
+- After edits, run: <span class="str">`pnpm test src/api/`</span>
+- Do not modify files outside <span class="str">`src/api/`</span> unless the user explicitly asks</code></pre>
+    <h3 id="user-rule-global">User rule (global)</h3>
+    <p>Cursor Settings → Rules → User Rules:</p>
+    <pre><code>For multi-file tasks: outline a short plan before editing.
+After implementation, run tests and show output.
+If tests fail, fix without asking permission unless blocked.</code></pre>
+    <h3 id="agent-settings-that-help-persistence">Agent settings that help persistence</h3>
+    <table>
+<thead><tr><th>Setting</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><strong>Agent mode</strong></td><td>Use Agent (not Ask) for implement-until-done tasks</td></tr>
+<tr><td><strong>Auto-run terminal</strong></td><td>Enable for test/lint commands — reduces &quot;may I run?&quot; stalls</td></tr>
+<tr><td><strong>Large context</strong></td><td>Enable when touching many files; disable for small fixes to save cost</td></tr>
+<tr><td><strong>Rules</strong></td><td><code>alwaysApply: true</code> for verification; path globs for domain rules</td></tr>
+<tr><td><strong>@ mentions</strong></td><td><code>@src/foo.test.ts</code> anchors the done condition to a real file</td></tr>
+</tbody></table>
+    <h3 id="cursor-prompt-pattern-verification-loop">Cursor prompt pattern (verification loop)</h3>
+    <pre><code>@src/api/login.ts @src/api/login.test.ts
+
+Fix the 401 on valid refresh tokens (issue <span class="cm">#842).</span>
+
+Done when:
+- pnpm test src/api/login.test.ts exits 0
+- You paste the final test summary
+
+Keep fixing until done. Do not ask me to run tests.</code></pre>
+    <h3 id="cursor-ci-re-run-headless-equivalent">Cursor + CI re-run (headless equivalent)</h3>
+    <p>Cursor does not ship <code>cursor -p</code> for CI the same way Claude Code does. Options:</p>
+    <ol>
+    <li>1. <strong>Cursor CLI / Cloud Agents</strong> — trigger from CI where available</li>
+    <li>2. <strong>Claude Code in CI</strong> — use <code>claude -p</code> for automated fix loops on Cursor repos (both read <code>AGENTS.md</code>)</li>
+    <li>3. <strong>GitHub Action</strong> that comments &quot;tests failed&quot; and triggers a manual agent session</li>
+    </ol>
+    <p>Bridge shared instructions:</p>
+    <pre><code><span class="kw">#</span> CLAUDE.md
+@AGENTS.md
+
+<span class="kw">##</span> Verification
+Run <span class="str">`pnpm test`</span> before stopping.</code></pre>
+    <pre><code><span class="kw">#</span> AGENTS.md (read by Cursor via rules import or manual copy)
+<span class="kw">##</span> Verification
+Run <span class="str">`pnpm test`</span> before stopping.</code></pre>
+    <h3 id="cursor-vs-claude-code-feature-matrix">Cursor vs Claude Code feature matrix</h3>
+    <table>
+<thead><tr><th>Capability</th><th>Claude Code</th><th>Cursor</th></tr></thead>
+<tbody>
+<tr><td>Stop hook (hard gate)</td><td>Yes</td><td>No — use rules + prompt</td></tr>
+<tr><td>PreToolUse / PostToolUse</td><td>Yes</td><td>No</td></tr>
+<tr><td><code>/goal</code></td><td>Yes</td><td>No — encode in prompt</td></tr>
+<tr><td>Plan mode</td><td><code>Shift+Tab</code></td><td>Plan mode in agent</td></tr>
+<tr><td>Subagents</td><td>Yes</td><td>Task/subagent patterns</td></tr>
+<tr><td>Headless <code>-p</code></td><td><code>claude -p</code></td><td>CI / Cloud Agents</td></tr>
+<tr><td>Path-scoped rules</td><td><code>.claude/rules/</code></td><td><code>.cursor/rules/*.mdc</code></td></tr>
+</tbody></table>
+    <h2 id="failure-modes-and-debugging-stalled-loops">Failure modes and debugging stalled loops</h2>
+    <p>Loops stall when the agent cannot satisfy the done condition. Symptoms and fixes:</p>
+    <h3 id="symptom-stop-hook-blocks-8-times-then-gives-up">Symptom: Stop hook blocks 8 times then gives up</h3>
+    <p><strong>Cause:</strong> Verification fails every time; Claude cannot fix the underlying issue (flaky test, missing dependency, wrong architecture).</p>
+    <p><strong>Debug:</strong></p>
+    <pre><code><span class="kw">#</span> Run the hook script manually
+.claude/hooks/verify-before-stop.sh
+echo "exit code: $?"
+
+<span class="kw">#</span> Check what Claude last changed
+git diff --stat
+git diff</code></pre>
+    <p><strong>Fix:</strong></p>
+    <ul>
+    <li>Narrow the Stop hook (scope tests to touched package)</li>
+    <li>Fix flaky tests before agent runs</li>
+    <li>Split task — plan mode first, smaller implement prompt</li>
+    </ul>
+    <h3 id="symptom-agent-declares-done-but-tests-fail">Symptom: Agent declares &quot;done&quot; but tests fail</h3>
+    <p><strong>Cause:</strong> Soft verification (prompt only); no Stop hook.</p>
+    <p><strong>Fix:</strong> Add Stop hook or <code>/goal</code>. Move verification into <code>CLAUDE.md</code>.</p>
+    <h3 id="symptom-same-error-every-ralph-iteration">Symptom: Same error every Ralph iteration</h3>
+    <p><strong>Cause:</strong> Context bloat; agent re-reads failures but repeats the same fix strategy.</p>
+    <p><strong>Fix:</strong></p>
+    <ol>
+    <li>1. <code>/clear</code> or start fresh session</li>
+    <li>2. Plan mode — confirm approach before implement</li>
+    <li>3. Verification subagent — &quot;why did the last three attempts fail?&quot;</li>
+    <li>4. Enrich CI prompt with &quot;do not repeat fix X&quot; (see <code>claude-fix-loop.sh</code>)</li>
+    </ol>
+    <h3 id="symptom-posttooluse-hook-slows-every-edit-to-a-crawl">Symptom: PostToolUse hook slows every edit to a crawl</h3>
+    <p><strong>Cause:</strong> Running full test suite after each file touch.</p>
+    <p><strong>Fix:</strong> Lint single file in PostToolUse; full suite in Stop hook only.</p>
+    <h3 id="symptom-pretooluse-blocks-legitimate-commands">Symptom: PreToolUse blocks legitimate commands</h3>
+    <p><strong>Cause:</strong> Overly broad pattern match in <code>prevent-dangerous-git.sh</code>.</p>
+    <p><strong>Debug:</strong> Log <code>$COMMAND</code> to stderr; test against patterns.</p>
+    <p><strong>Fix:</strong> Tighten patterns; allowlist safe variants.</p>
+    <h3 id="symptom-goal-never-resolves">Symptom: <code>/goal</code> never resolves</h3>
+    <p><strong>Cause:</strong> Goal is ambiguous or impossible (&quot;make code perfect&quot;).</p>
+    <p><strong>Fix:</strong> Goals must be machine-checkable:</p>
+    <table>
+<thead><tr><th>Bad goal</th><th>Good goal</th></tr></thead>
+<tbody>
+<tr><td>Code is clean</td><td><code>pnpm lint</code> exits 0</td></tr>
+<tr><td>Feature works</td><td><code>pnpm test src/feature/</code> exits 0</td></tr>
+<tr><td>Only touched login</td><td><code>git diff --name-only</code> matches <code>^src/api/login/</code></td></tr>
+</tbody></table>
+    <h3 id="symptom-ci-loop-exhausts-retries-logs-show-timeout">Symptom: CI loop exhausts retries, logs show timeout</h3>
+    <p><strong>Cause:</strong> <code>CLAUDE_TIMEOUT</code> too low for task size.</p>
+    <p><strong>Fix:</strong> Increase timeout; reduce scope per prompt; split into multiple CI jobs.</p>
+    <h3 id="debugging-checklist">Debugging checklist</h3>
+    <pre><code>□ Run verification command manually — does it pass on current branch?
+□ Run hook scripts manually — same exit code as in session?
+□ Check /context — is CLAUDE.md overloaded?
+□ git diff — did agent edit unexpected files?
+□ Read .claude-ci-logs/ — what did agent try on each attempt?
+□ Reproduce in plan mode — is the approach wrong, not the implementation?</code></pre>
+    <h2 id="decision-tree-which-alternative-to-pick">Decision tree: which alternative to pick</h2>
+    <pre><code>Start: I want the agent to keep working until done
+│
+├─ Am I watching live?
+│  ├─ Yes → Verification in prompt (+ plan mode if multi-file)
+│  └─ No  → Continue below
+│
+├─ Must tests/lint pass before ANY stop? (hard gate)
+│  ├─ Yes, Claude Code → Stop hook
+│  └─ Yes, Cursor → alwaysApply rule + explicit prompt + CI verify
+│
+├─ Is the task multi-file or easy to get wrong?
+│  ├─ Yes → Plan mode → implement → (optional Stop hook)
+│  └─ No  → Verification prompt may be enough
+│
+├─ Need diff scope enforced? (only certain paths)
+│  └─ /goal with git diff condition (Claude Code)
+│
+├─ Need to block dangerous commands?
+│  └─ PreToolUse hook
+│
+├─ Need fast feedback on each edit?
+│  └─ PostToolUse hook (lint/format)
+│
+├─ Main thread context already huge?
+│  └─ Verification subagent
+│
+├─ Running in CI / scheduled job?
+│  └─ claude -p + bounded retry script (MAX_ATTEMPTS=3)
+│
+└─ Just experimenting?
+   └─ Ralph loop OK — but cap iterations and add a verify command</code></pre>
+    <h3 id="quick-picks-by-scenario">Quick picks by scenario</h3>
+    <table>
+<thead><tr><th>Scenario</th><th>Recommended stack</th></tr></thead>
+<tbody>
+<tr><td>Daily bug fix</td><td>Verification prompt</td></tr>
+<tr><td>Multi-file feature</td><td>Plan mode → implement → verification prompt</td></tr>
+<tr><td>Production repo</td><td>Stop hook + <code>CLAUDE.md</code> verification</td></tr>
+<tr><td>Walk away for lunch</td><td><code>/goal</code> + Stop hook</td></tr>
+<tr><td>Pre-merge on critical path</td><td>Subagent review + Stop hook</td></tr>
+<tr><td>Nightly CI fixer</td><td><code>claude-fix-loop.sh</code> with MAX_ATTEMPTS=3</td></tr>
+<tr><td>Cursor-only team</td><td>Rules (<code>alwaysApply</code>) + @ test files + CI verify</td></tr>
+<tr><td>Prevent force-push</td><td>PreToolUse hook</td></tr>
+</tbody></table>
+    <h2 id="comparison-table">Comparison table</h2>
+    <table>
+<thead><tr><th>Approach</th><th>Setup</th><th>Enforcement</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td>Ralph loop (manual re-prompt)</td><td>None</td><td>Soft</td><td>Quick experiments</td></tr>
+<tr><td>Verification in prompt</td><td>None</td><td>Soft</td><td>Daily tasks</td></tr>
+<tr><td><code>/goal</code></td><td>One command</td><td>Medium</td><td>Unattended sessions</td></tr>
+<tr><td>Stop hooks</td><td>settings.json + scripts</td><td><strong>Hard</strong></td><td>Tests/lint must pass</td></tr>
+<tr><td>PreToolUse hooks</td><td>settings.json + scripts</td><td><strong>Hard</strong></td><td>Block dangerous ops</td></tr>
+<tr><td>PostToolUse hooks</td><td>settings.json + scripts</td><td><strong>Hard</strong></td><td>Per-edit lint/format</td></tr>
+<tr><td>Verification subagent</td><td>Prompt or skill</td><td>Medium</td><td>Code review, plan check</td></tr>
+<tr><td>Plan mode → implement</td><td>Shift+Tab</td><td>Medium</td><td>Multi-file features</td></tr>
+<tr><td><code>claude -p</code> + CI wrapper</td><td>Script + workflow</td><td>Hard (exit code)</td><td>Pipelines</td></tr>
+</tbody></table>
+    <p><strong>Recommended stack:</strong></p>
+    <ol>
+    <li>1. <strong>Plan mode</strong> for multi-file work</li>
+    <li>2. <strong>Verification in prompt</strong> for every task</li>
+    <li>3. <strong>Stop hook</strong> for test suite on production repos</li>
+    <li>4. <strong><code>/goal</code></strong> when walking away mid-session</li>
+    <li>5. <strong>Subagent review</strong> before merge on critical paths</li>
+    <li>6. <strong>Bounded CI script</strong> instead of unbounded shell <code>while</code> loops</li>
+    </ol>
+    <h2 id="faq">FAQ</h2>
+    <h3 id="is-the-ralph-loop-bad">Is the Ralph loop bad?</h3>
+    <p>Not bad — underspecified. It is a valid mental model (&quot;keep going until done&quot;). The failure mode is <strong>implementation</strong>: infinite re-prompts without a check. Add explicit verification and bounded retries instead.</p>
+    <h3 id="where-did-the-name-ralph-loop-come-from">Where did the name &quot;Ralph loop&quot; come from?</h3>
+    <p>From Ralph Wiggum on <em>The Simpsons</em> — persistent, optimistic repetition. The AI community adopted it for &quot;run the agent again until finished&quot; shell loops and manual re-pasting.</p>
+    <h3 id="what-is-the-cursor-equivalent-of-a-stop-hook">What is the Cursor equivalent of a Stop hook?</h3>
+    <p>Cursor does not have Stop hooks. Closest substitutes: <code>alwaysApply</code> rules that require test output before completion, explicit &quot;do not stop until green&quot; prompts, <code>@</code> mentioning test files, and CI that fails if verification does not pass after an agent run.</p>
+    <h3 id="stop-hook-vs-ralph-loop-which-wins">Stop hook vs Ralph loop — which wins?</h3>
+    <p>Stop hook wins on enforcement. The shell script must exit 0 or Claude cannot end the turn. Ralph relies on Claude (or you) deciding to continue. Use Stop hooks when &quot;looks done&quot; is not good enough.</p>
+    <h3 id="pretooluse-vs-posttooluse-vs-stop-when-do-i-use-each">PreToolUse vs PostToolUse vs Stop — when do I use each?</h3>
+    <ul>
+    <li><strong>PreToolUse:</strong> Before an action — block bad commands before they run</li>
+    <li><strong>PostToolUse:</strong> After an action — catch lint/format issues immediately after edits</li>
+    <li><strong>Stop:</strong> Before turn ends — full verification suite (tests, typecheck)</li>
+    </ul>
+    <p>Use all three together for defense in depth on production repos.</p>
+    <h3 id="how-many-loop-iterations-should-i-allow">How many loop iterations should I allow?</h3>
+    <p>Cap at <strong>3–5 in CI</strong> (<code>MAX_ATTEMPTS</code>). Claude Code stops after <strong>8 consecutive Stop hook blocks</strong> per session. Unbounded Ralph loops have no ceiling — that is how overnight jobs burn budget on the same failure.</p>
+    <h3 id="can-i-combine-plan-mode-stop-hook-goal">Can I combine plan mode + Stop hook + <code>/goal</code>?</h3>
+    <p>Yes — that is the strongest unattended pattern:</p>
+    <ol>
+    <li>1. Plan mode → approved plan</li>
+    <li>2. Implement with verification prompt</li>
+    <li>3. <code>/goal</code> for diff scope + test pass</li>
+    <li>4. Stop hook as final hard gate</li>
+    </ol>
+    <h3 id="what-should-i-put-in-the-ci-prompt-vs-claudemd">What should I put in the CI prompt vs CLAUDE.md?</h3>
+    <p><strong>CLAUDE.md:</strong> Standing project context — commands, layout, boundaries, default verification.</p>
+    <p><strong>CI prompt:</strong> Task-specific — which test failed, issue number, scope limits. The retry script should enrich the prompt on failure, not blindly repeat the original.</p>
+    <h3 id="my-agent-keeps-editing-the-wrong-files-what-do-i-do">My agent keeps editing the wrong files — what do I do?</h3>
+    <p>Use <code>/goal</code> with a <code>git diff --name-only</code> condition, path-scoped rules, and plan mode. Add a subagent review step that rejects scope drift.</p>
+    <h3 id="does-goal-work-in-headless-claude--p">Does <code>/goal</code> work in headless <code>claude -p</code>?</h3>
+    <p><code>/goal</code> is an interactive slash command — it applies to interactive sessions. For CI, encode goal conditions in the prompt and enforce with <code>VERIFY_CMD</code> in your retry script.</p>
+    <h3 id="how-do-i-debug-a-hook-that-always-fails">How do I debug a hook that always fails?</h3>
+    <p>Run the hook script manually from repo root with the same environment. Check <code>jq</code> is installed for hooks that parse stdin. Read stderr — Claude sees hook failure messages and uses them to fix issues.</p>
+    <h3 id="is-a-subagent-the-same-as-a-ralph-loop">Is a subagent the same as a Ralph loop?</h3>
+    <p>No. A subagent spawns <strong>fresh context</strong> for a bounded review task. A Ralph loop reuses the same session (or restarts cold) with the same bloated history. Subagents are for verification; Ralph is for persistence without structure.</p>
+    <h2 id="bottom-line">Bottom line</h2>
+    <p>The Ralph loop pattern — <strong>keep working until done</strong> — is right. The implementation — <strong>re-paste the same prompt forever</strong> — is not.</p>
+    <p>Replace it with verification commands, <code>/goal</code>, Stop/PreToolUse/PostToolUse hooks, plan mode, subagent review, and bounded CI scripts. You get the same persistence with fewer token loops, clearer done criteria, and exit codes your pipeline can trust.</p>
+    <h2 id="related-guides">Related guides</h2>
+    <ul>
+    <li><a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules</a></li>
+    <li><a href="/blog/posts/skills-vs-rules-claude-code-cursor/">Skills vs Rules in Claude Code and Cursor</a></li>
+    <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot</a></li>
+    <li><a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">How to Build a Cursor-Like AI Coding Agent</a></li>
+    </ul>
+
+    <aside class="blog-cta">
+      <p><strong>Need help building agent workflows?</strong></p>
+      <p>stackcone designs production agent loops, SEO pipelines, and MCP integrations.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=12"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

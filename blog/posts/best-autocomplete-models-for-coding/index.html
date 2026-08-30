@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>Best Autocomplete Models for Coding</title>
+  <meta name="description" content="Best autocomplete models for coding — Cursor Tab vs Copilot vs Windsurf vs Supermaven compared on latency, context, IDE support, and when to pair with Claude Code.">
+  <meta name="keywords" content="Autocomplete, Cursor Tab, GitHub Copilot, AI code completion, Windsurf, Coding assistants">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/best-autocomplete-models-for-coding/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/best-autocomplete-models-for-coding/">
+  <meta property="og:title" content="Best Autocomplete Models for Coding">
+  <meta property="og:description" content="Best autocomplete models for coding — Cursor Tab vs Copilot vs Windsurf vs Supermaven compared on latency, context, IDE support, and when to pair with Claude Code.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Best Autocomplete Models for Coding">
+  <meta name="twitter:description" content="Best autocomplete models for coding — Cursor Tab vs Copilot vs Windsurf vs Supermaven compared on latency, context, IDE support, and when to pair with Claude Code.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Best Autocomplete Models for Coding",
+    "description": "Best autocomplete models for coding — Cursor Tab vs Copilot vs Windsurf vs Supermaven compared on latency, context, IDE support, and when to pair with Claude Code.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-08-30",
+    "dateModified": "2026-08-30",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/best-autocomplete-models-for-coding/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["Autocomplete", "Cursor Tab", "GitHub Copilot", "AI code completion", "Windsurf", "Coding assistants"],
+    "articleSection": "Platform"
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Best Autocomplete Models for Coding</h1>
+    <p class="meta">August 2026 · Published by Amar Kumar</p>
+
+    <p>Developers searching for <strong>best autocomplete models</strong>, <strong>best AI code completion</strong>, or <strong>Cursor Tab vs Copilot autocomplete</strong> want one thing: suggestions that appear fast enough to keep flow, and predict the next edit correctly enough that you accept them instead of typing.</p>
+    <p><strong>Tab autocomplete</strong> is not the same as <strong>agent mode</strong>. Autocomplete predicts your next lines as you type. Agents read the repo and edit multiple files. Claude Code has no Tab model at all — it is agent-only. This guide compares tools that actually do inline completion, explains how Tab models work under the hood, and gives real configuration snippets you can copy today.</p>
+    <p><strong>Related:</strong> <a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot</a> · <a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">How to Build a Cursor-Like AI Coding Agent</a></p>
+    <nav class="toc" aria-label="Table of contents">
+    <h2>Table of contents</h2>
+    <ol>
+    </ol></nav>
+    <ol>
+    <li>1. <a href="#what-makes-good">What makes good autocomplete</a></li>
+    <li>2. <a href="#how-tab-models-work">How Tab models work technically</a></li>
+    <li>3. <a href="#quick-pick">Quick pick by situation</a></li>
+    <li>4. <a href="#cursor-tab">Cursor Tab — deep dive</a></li>
+    <li>5. <a href="#github-copilot">GitHub Copilot — deep dive</a></li>
+    <li>6. <a href="#windsurf">Windsurf — deep dive</a></li>
+    <li>7. <a href="#supermaven">Supermaven — history and standalone use</a></li>
+    <li>8. <a href="#continue">Continue — bring your own model</a></li>
+    <li>9. <a href="#agent-only">Claude Code and other agent-only tools</a></li>
+    <li>10. <a href="#measuring-accept-rate">Measuring accept rate</a></li>
+    <li>11. <a href="#language-specific">Language-specific performance</a></li>
+    <li>12. <a href="#privacy-enterprise">Privacy and enterprise comparison</a></li>
+    <li>13. <a href="#troubleshooting">Troubleshooting slow Tab</a></li>
+    <li>14. <a href="#when-to-disable">When to disable Tab</a></li>
+    <li>15. <a href="#pairing-with-agents">Pairing Tab with agents</a></li>
+    <li>16. <a href="#team-setup">Team setup recommendations</a></li>
+    <li>17. <a href="#faq">FAQ</a></li>
+    <li>18. <a href="#bottom-line">Bottom line</a></li>
+    </ol>
+    <h2 id="what-makes-good-autocomplete">What makes good autocomplete</h2>
+    <table>
+<thead><tr><th>Signal</th><th>Why it matters</th></tr></thead>
+<tbody>
+<tr><td><strong>Latency</strong></td><td>Over ~300ms and you type ahead of the suggestion</td></tr>
+<tr><td><strong>Accept rate</strong></td><td>High-quality model with low accept rate still wastes attention</td></tr>
+<tr><td><strong>Multi-line edits</strong></td><td>Best tools suggest whole blocks, not single tokens</td></tr>
+<tr><td><strong>Project context</strong></td><td>Imports, types, and nearby files improve accuracy</td></tr>
+<tr><td><strong>Privacy</strong></td><td>Enterprise teams need no-training-on-your-code options</td></tr>
+<tr><td><strong>IDE coverage</strong></td><td>JetBrains vs VS Code vs Neovim — not all tools ship everywhere</td></tr>
+</tbody></table>
+    <p>Autocomplete quality depends on <strong>context window</strong> (how much surrounding code the model sees) and <strong>indexing</strong> (whether the tool understands your whole repo or just the open file). The best Tab experience feels invisible: you think about the logic, and the editor fills in the boilerplate before you finish the thought.</p>
+    <h3 id="the-three-layers-of-a-tab-product">The three layers of a Tab product</h3>
+    <p>Every serious autocomplete tool stacks three layers:</p>
+    <ol>
+    <li>1. <strong>Model</strong> — a code-specialized LLM trained for fill-in-the-middle (FIM) prediction</li>
+    <li>2. <strong>Context assembly</strong> — what gets sent to the model (open file, imports, index hits, recent edits)</li>
+    <li>3. <strong>Client UX</strong> — ghost text rendering, partial accepts, debouncing, and latency masking</li>
+    </ol>
+    <p>Weakness in any layer shows up as wrong suggestions, slow ghost text, or suggestions that ignore your project&#x27;s conventions.</p>
+    <h2 id="how-tab-models-work-technically">How Tab models work technically</h2>
+    <h3 id="fill-in-the-middle-fim">Fill-in-the-middle (FIM)</h3>
+    <p>Most code Tab models are not plain &quot;predict the next token&quot; language models. They use <strong>fill-in-the-middle (FIM)</strong> training: the model sees code <em>before</em> the cursor (prefix), code <em>after</em> the cursor (suffix), and must generate the missing middle.</p>
+    <p>Conceptually:</p>
+    <pre><code>PREFIX:  def calculate_total(items):
+             total = 0
+             for item in items:
+SUFFIX:      return total
+CURSOR:  ↑ (model fills in the loop body)</code></pre>
+    <p>FIM is why Tab models handle function bodies, closing braces, and multi-line blocks better than chat models asked to &quot;complete this code.&quot; The suffix tells the model where the edit must end.</p>
+    <h3 id="context-window-and-what-actually-gets-sent">Context window and what actually gets sent</h3>
+    <p>A typical Tab request includes:</p>
+    <table>
+<thead><tr><th>Context slice</th><th>Typical size</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>Lines above cursor</td><td>100–500 lines</td><td>Local structure, imports, types</td></tr>
+<tr><td>Lines below cursor</td><td>20–100 lines</td><td>FIM suffix for block completion</td></tr>
+<tr><td>Recently edited files</td><td>1–5 files</td><td>Session continuity</td></tr>
+<tr><td>Index hits</td><td>Variable</td><td>Cross-file symbols, definitions</td></tr>
+<tr><td>Language / file path</td><td>Metadata</td><td>Syntax and framework hints</td></tr>
+</tbody></table>
+    <p><strong>Context beats raw speed</strong> on large files. A 150ms suggestion that ignores your project&#x27;s types is worse than a 250ms suggestion that imports correctly.</p>
+    <p>Cursor Tab and Windsurf lean on <strong>repo indexing</strong> — embeddings or symbol graphs that pull relevant definitions without you opening every file. Copilot uses lighter workspace hints (open tabs, related files). Continue lets you configure exactly what goes in.</p>
+    <h3 id="inference-pipeline-simplified">Inference pipeline (simplified)</h3>
+    <pre><code>Keystroke / cursor move
+    → Debounce (~50–150ms)
+    → Context assembly (file + index + session)
+    → Model inference (GPU, often batched)
+    → Post-filter (length, safety, relevance score)
+    → Ghost text render</code></pre>
+    <p>Tools hide latency with <strong>speculative prefetch</strong>: they start inference before you pause typing, then cancel stale requests when you keep typing. That is why Tab feels instant on short pauses but lags when you type continuously.</p>
+    <h3 id="tab-vs-chat-models">Tab vs chat models</h3>
+    <table>
+<thead><tr><th></th><th>Tab model</th><th>Chat / agent model</th></tr></thead>
+<tbody>
+<tr><td><strong>Training</strong></td><td>FIM, next-edit prediction</td><td>Instruction following, tool use</td></tr>
+<tr><td><strong>Latency target</strong></td><td>&amp;lt;300ms</td><td>Seconds to minutes</td></tr>
+<tr><td><strong>Output</strong></td><td>Inline ghost text</td><td>Messages, diffs, terminal</td></tr>
+<tr><td><strong>Context use</strong></td><td>Tight, local</td><td>Broad, multi-file</td></tr>
+<tr><td><strong>Cost per call</strong></td><td>Fractions of a cent</td><td>Cents to dollars</td></tr>
+</tbody></table>
+    <p>Do not route Tab through a frontier chat model on every keystroke — cost and latency explode. Products use smaller, fast models (or distilled Tab specialists) for inline completion and reserve large models for agents.</p>
+    <h2 id="quick-pick-by-situation">Quick pick by situation</h2>
+    <table>
+<thead><tr><th>If you…</th><th>Best autocomplete</th></tr></thead>
+<tbody>
+<tr><td>Live in VS Code and want the fastest Tab</td><td><strong>Cursor Tab</strong> (Supermaven-derived engine)</td></tr>
+<tr><td>Need Copilot in JetBrains, Xcode, or Neovim</td><td><strong>GitHub Copilot</strong></td></tr>
+<tr><td>Want free unlimited completions</td><td><strong>Windsurf</strong> free tier or <strong>Copilot Free</strong></td></tr>
+<tr><td>Work in a large monorepo with unfamiliar code</td><td><strong>Windsurf Cascade</strong> autocomplete + auto-index</td></tr>
+<tr><td>Care about privacy / no training on code</td><td><strong>Supermaven</strong> (standalone) or enterprise Copilot/Cursor plans</td></tr>
+<tr><td>Only use terminal agents (Claude Code)</td><td><strong>No Tab model</strong> — pair with Cursor or Copilot for typing</td></tr>
+<tr><td>Need air-gapped / local inference</td><td><strong>Continue</strong> + Ollama or vLLM</td></tr>
+<tr><td>Want next-edit prediction across files</td><td><strong>Copilot NES</strong> or <strong>Cursor Tab</strong> multi-line</td></tr>
+</tbody></table>
+    <h2 id="cursor-tab-deep-dive">Cursor Tab — deep dive</h2>
+    <p>Cursor acquired Supermaven specifically for Tab completion speed. Tab suggests multi-line edits, understands recent changes in the session, and learns from accepts/rejects within the project.</p>
+    <p><strong>Strengths:</strong> Fastest mainstream Tab on VS Code; multi-line predictions; same editor as Composer/Agent</p>
+    <p><strong>Weaknesses:</strong> VS Code only; Tab quality drops on obscure languages; Pro plan for heavy use</p>
+    <h3 id="enabling-and-configuring-cursor-tab">Enabling and configuring Cursor Tab</h3>
+    <p>Open <strong>Cursor Settings</strong> (<code>Cmd+,</code> on Mac, <code>Ctrl+,</code> on Windows/Linux) → <strong>Features</strong> → <strong>Cursor Tab</strong>.</p>
+    <p>Key settings:</p>
+    <table>
+<thead><tr><th>Setting</th><th>What it does</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><strong>Cursor Tab</strong></td><td>Master on/off for inline completion</td><td>On for daily coding</td></tr>
+<tr><td><strong>Partial Accepts</strong></td><td>Accept suggestion line-by-line (<code>Cmd+→</code> / <code>Ctrl+→</code>)</td><td>On — essential for half-right suggestions</td></tr>
+<tr><td><strong>Suggestions in Comments</strong></td><td>Tab inside <code>#</code> and <code>//</code> blocks</td><td>Off unless you write lots of docstrings</td></tr>
+<tr><td><strong>Auto Import</strong></td><td>Tab can add missing imports</td><td>On for TypeScript/Python; review in strict codebases</td></tr>
+</tbody></table>
+    <h3 id="cursor-tab-settings-json">Cursor Tab settings JSON</h3>
+    <p>You can also tune Tab via <code>settings.json</code> in Cursor (same format as VS Code):</p>
+    <pre><code>{
+  <span class="str">"cursor.cpp.enablePartialAccepts"</span>: <span class="kw">true</span>,
+  <span class="str">"cursor.chat.showSuggestedFiles"</span>: <span class="kw">true</span>,
+  <span class="str">"editor.inlineSuggest.enabled"</span>: <span class="kw">true</span>,
+  <span class="str">"editor.suggest.preview"</span>: <span class="kw">true</span>,
+  <span class="str">"editor.quickSuggestions"</span>: {
+    <span class="str">"other"</span>: <span class="kw">true</span>,
+    <span class="str">"comments"</span>: <span class="kw">false</span>,
+    <span class="str">"strings"</span>: <span class="kw">false</span>
+  }
+}</code></pre>
+    <p><code>editor.inlineSuggest.enabled</code> must stay <code>true</code> — disabling it kills ghost text for all inline providers, not just Cursor.</p>
+    <h3 id="partial-accepts-workflow">Partial Accepts workflow</h3>
+    <p>Partial Accepts is the feature power users rely on most. When Tab suggests a 12-line block and only the first 4 lines are correct:</p>
+    <ol>
+    <li>1. Ghost text appears for the full suggestion</li>
+    <li>2. Press <strong>Partial Accept</strong> (<code>Cmd+→</code> on Mac, <code>Ctrl+→</code> on Windows/Linux) to accept one line</li>
+    <li>3. Repeat until the suggestion diverges, then keep typing</li>
+    </ol>
+    <p>Without Partial Accepts, you either accept the whole block (and undo) or reject everything and type manually. On multi-line Tab, Partial Accepts often doubles effective accept rate.</p>
+    <h3 id="what-cursor-tab-sees">What Cursor Tab sees</h3>
+    <p>Cursor Tab context typically includes:</p>
+    <ul>
+    <li>Current file (prefix + suffix around cursor)</li>
+    <li>Recently viewed and edited files in the session</li>
+    <li>Indexed symbols from the workspace (<code>.cursorignore</code> respected)</li>
+    <li>Linter diagnostics (sometimes used to avoid suggesting broken code)</li>
+    </ul>
+    <p>Add a <code>.cursorignore</code> to exclude <code>node_modules/</code>, build artifacts, and generated code — noisy index hits hurt Tab quality:</p>
+    <pre><code>node_modules/
+dist/
+build/
+*.min.js
+.next/
+__pycache__/</code></pre>
+    <h3 id="cursor-tab-agent-in-the-same-session">Cursor Tab + Agent in the same session</h3>
+    <p>Cursor Tab and Agent share the same index and rules (<code>.cursor/rules</code>, <code>AGENTS.md</code>). After Agent edits a file, Tab often suggests continuations that match the Agent&#x27;s style — useful for filling in repetitive patterns the Agent started.</p>
+    <p><strong>Tip:</strong> Run Agent for scaffolding, then Tab for the remaining boilerplate in the same file. Tab is faster for the 20th similar function; Agent is faster for &quot;add auth across 8 files.&quot;</p>
+    <h2 id="github-copilot-deep-dive">GitHub Copilot — deep dive</h2>
+    <p>The default autocomplete for millions of developers. <strong>Copilot Inline</strong> completes as you type; <strong>Copilot Next Edit Suggestions (NES)</strong> predicts the <em>next place</em> you will edit, not just the cursor position.</p>
+    <p><strong>Strengths:</strong> Works in VS Code, Visual Studio, JetBrains, Neovim, Xcode; enterprise compliance; lowest Pro entry at ~$10/mo</p>
+    <p><strong>Weaknesses:</strong> Weaker whole-repo context than Cursor/Windsurf; agent mode newer and less integrated than Cursor Agent</p>
+    <h3 id="copilot-inline-settings-vs-code">Copilot Inline settings (VS Code)</h3>
+    <pre><code>{
+  <span class="str">"github.copilot.enable"</span>: {
+    <span class="str">"*"</span>: <span class="kw">true</span>,
+    <span class="str">"yaml"</span>: <span class="kw">false</span>,
+    <span class="str">"plaintext"</span>: <span class="kw">false</span>
+  },
+  <span class="str">"editor.inlineSuggest.enabled"</span>: <span class="kw">true</span>,
+  <span class="str">"github.copilot.editor.enableAutoCompletions"</span>: <span class="kw">true</span>,
+  <span class="str">"github.copilot.editor.enableCodeActions"</span>: <span class="kw">true</span>
+}</code></pre>
+    <p>Disable Copilot on file types where suggestions are noise (<code>yaml</code>, <code>json</code> config, markdown) via the <code>enable</code> map.</p>
+    <h3 id="copilot-next-edit-suggestions-nes">Copilot Next Edit Suggestions (NES)</h3>
+    <p>NES is Copilot&#x27;s answer to multi-line and cross-location Tab. Instead of only completing at the cursor, NES:</p>
+    <ol>
+    <li>1. Watches your recent edits and cursor movement</li>
+    <li>2. Predicts the <strong>next logical edit location</strong> (another line, another function, even another file)</li>
+    <li>3. Shows a <strong>jump suggestion</strong> — press Tab to jump there and see the completion</li>
+    </ol>
+    <p>Enable NES in VS Code:</p>
+    <pre><code>{
+  <span class="str">"github.copilot.nextEditSuggestions.enabled"</span>: <span class="kw">true</span>
+}</code></pre>
+    <p>NES shines when you rename a variable and Copilot suggests updating all references, or when you add a field and it jumps to the constructor, serializer, and tests. It is less magical on greenfield files with no edit pattern yet.</p>
+    <h3 id="jetbrains-copilot-setup">JetBrains Copilot setup</h3>
+    <p>In IntelliJ / Android Studio / PyCharm:</p>
+    <ol>
+    <li>1. <strong>Settings</strong> → <strong>Plugins</strong> → install <strong>GitHub Copilot</strong></li>
+    <li>2. Sign in with GitHub account (or enterprise SSO)</li>
+    <li>3. <strong>Settings</strong> → <strong>Languages &amp; Frameworks</strong> → <strong>GitHub Copilot</strong> → enable per-language</li>
+    </ol>
+    <p>JetBrains Copilot does not yet mirror every VS Code NES feature — check release notes for your IDE version. Inline completion is stable; NES rollout varies by platform.</p>
+    <h3 id="copilot-business-enterprise">Copilot Business / Enterprise</h3>
+    <p>For teams needing policy controls:</p>
+    <table>
+<thead><tr><th>Feature</th><th>Copilot Individual</th><th>Copilot Business</th></tr></thead>
+<tbody>
+<tr><td>IP indemnity</td><td>Limited</td><td>Yes (enterprise terms)</td></tr>
+<tr><td>Org-wide policy</td><td>No</td><td>Seat management, audit logs</td></tr>
+<tr><td>Code excluded from training</td><td>Public code only</td><td>Private code not used for training (with policy)</td></tr>
+<tr><td>SSO / SAML</td><td>No</td><td>Yes</td></tr>
+</tbody></table>
+    <p>Best when your team uses mixed IDEs or needs Microsoft/GitHub enterprise agreements.</p>
+    <h2 id="windsurf-deep-dive">Windsurf — deep dive</h2>
+    <p>Windsurf (formerly Codeium) ships autocomplete in its own editor and in <strong>40+ IDE plugins</strong>. Cascade auto-indexes the codebase — autocomplete benefits from broader context without manual <code>@</code> file references.</p>
+    <p><strong>Strengths:</strong> JetBrains/Neovim autocomplete where Cursor has none; free tier; strong on large repos</p>
+    <p><strong>Weaknesses:</strong> Full agentic Cascade lives in Windsurf editor only; plugins get autocomplete + chat but not full agent on all IDEs</p>
+    <h3 id="windsurf-editor-vs-plugins">Windsurf editor vs plugins</h3>
+    <table>
+<thead><tr><th>Surface</th><th>Tab autocomplete</th><th>Cascade agent</th><th>Auto-index</th></tr></thead>
+<tbody>
+<tr><td>Windsurf editor</td><td>Yes</td><td>Yes (full)</td><td>Yes</td></tr>
+<tr><td>VS Code plugin</td><td>Yes</td><td>Chat only</td><td>Yes</td></tr>
+<tr><td>JetBrains plugin</td><td>Yes</td><td>Chat only</td><td>Yes</td></tr>
+<tr><td>Neovim plugin</td><td>Yes</td><td>Limited</td><td>Yes</td></tr>
+<tr><td>Vim plugin</td><td>Yes</td><td>No</td><td>Partial</td></tr>
+</tbody></table>
+    <p>Good for JVM/Android teams on IntelliJ who still want AI Tab without switching editors.</p>
+    <h3 id="windsurf-plugin-install-vs-code">Windsurf plugin install (VS Code)</h3>
+    <pre><code># Install <span class="kw">from</span> VS Code Marketplace: "Windsurf" (publisher: Codeium)
+# <span class="kw">Or</span> via CLI:
+code <span class="cm">--install-extension Codeium.codeium</span></code></pre>
+    <p>Sign in, then configure:</p>
+    <pre><code>{
+  <span class="str">"codeium.enableCodeium"</span>: <span class="kw">true</span>,
+  <span class="str">"codeium.enableConfig"</span>: {
+    <span class="str">"*"</span>: <span class="kw">true</span>
+  }
+}</code></pre>
+    <h3 id="windsurf-plugin-install-jetbrains">Windsurf plugin install (JetBrains)</h3>
+    <ol>
+    <li>1. <strong>Settings</strong> → <strong>Plugins</strong> → Marketplace → search <strong>Windsurf</strong> (or Codeium legacy name in older builds)</li>
+    <li>2. Restart IDE</li>
+    <li>3. <strong>Tools</strong> → <strong>Windsurf</strong> → <strong>Login</strong></li>
+    </ol>
+    <h3 id="windsurf-plugin-install-neovim">Windsurf plugin install (Neovim)</h3>
+    <p>Using <code>lazy.nvim</code>:</p>
+    <pre><code><span class="kw">return</span> {
+  <span class="str">"Exafunction/codeium.nvim"</span>,
+  dependencies = {
+    <span class="str">"nvim-lua/plenary.nvim"</span>,
+    <span class="str">"hrsh7th/nvim-cmp"</span>,
+  },
+  config = <span class="kw">function</span>()
+    require(<span class="str">"codeium"</span>).setup({})
+  end,
+}</code></pre>
+    <p>Bind accept to your preferred keymap (often Tab, but conflict with snippet expansion — many users use <code>Ctrl+]</code> or <code>&lt;C-y&gt;</code>).</p>
+    <h3 id="indexing-and-large-monorepos">Indexing and large monorepos</h3>
+    <p>Windsurf indexes on project open. For monorepos:</p>
+    <ul>
+    <li>Open the <strong>repo root</strong>, not a subfolder — index misses sibling packages otherwise</li>
+    <li>Add <code>.codeiumignore</code> (same syntax as <code>.gitignore</code>) to skip generated trees</li>
+    <li>First index on a 500k-line repo can take minutes; Tab improves after index completes</li>
+    </ul>
+    <h2 id="supermaven-history-and-standalone-use">Supermaven — history and standalone use</h2>
+    <h3 id="history">History</h3>
+    <p>Supermaven was founded by <strong>Jacob Jackson</strong>, who previously created <strong>TabNine</strong> — one of the first widely used AI code completion tools. Supermaven&#x27;s pitch was pure speed: sub-200ms completions with a <strong>1 million token context window</strong> (marketing claim for the context <em>budget</em>, not a single inference pass).</p>
+    <p>In late 2024, <strong>Cursor acquired Supermaven</strong>. The Supermaven engine was integrated into <strong>Cursor Tab</strong>, which is why Cursor Tab latency improved sharply for VS Code users. The standalone Supermaven extension still exists for developers outside the Cursor ecosystem.</p>
+    <h3 id="standalone-supermaven-today">Standalone Supermaven today</h3>
+    <p><strong>Strengths:</strong> Sub-200ms latency focus; privacy-oriented policies; no agent bloat</p>
+    <p><strong>Weaknesses:</strong> Autocomplete only — no agent, no chat; long-term roadmap unclear post-acquisition</p>
+    <p>Install (VS Code):</p>
+    <pre><code>code --install-extension supermaven.supermaven</code></pre>
+    <p>Sign in at <a href="https://supermaven.com">supermaven.com</a>. Free tier covers individual use; Pro unlocks longer context and priority inference.</p>
+    <h3 id="when-supermaven-still-makes-sense">When Supermaven still makes sense</h3>
+    <table>
+<thead><tr><th>Scenario</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td>You use VS Code + Cursor</td><td>Skip standalone — use Cursor Tab</td></tr>
+<tr><td>You use JetBrains and want Supermaven speed</td><td>Consider Supermaven plugin OR Windsurf</td></tr>
+<tr><td>You want Tab without Cursor&#x27;s agent/subscription bundle</td><td>Supermaven standalone</td></tr>
+<tr><td>You need acquisition stability</td><td>Prefer Copilot or Windsurf with enterprise contracts</td></tr>
+</tbody></table>
+    <h3 id="supermaven-vs-cursor-tab-same-lineage">Supermaven vs Cursor Tab (same lineage)</h3>
+    <p>Both share engineering DNA post-acquisition. Cursor Tab adds Cursor&#x27;s index, rules, and session awareness. Standalone Supermaven may feel slightly faster on cold open files but lacks Cursor&#x27;s project rules and Agent integration.</p>
+    <h2 id="continue-bring-your-own-model">Continue — bring your own model</h2>
+    <p>Open-source extension for VS Code and JetBrains. Autocomplete uses models <strong>you</strong> configure — local Ollama, OpenAI, Anthropic, Mistral, or any OpenAI-compatible endpoint.</p>
+    <p><strong>Strengths:</strong> Full control; air-gapped/local models; no vendor lock-in</p>
+    <p><strong>Weaknesses:</strong> You tune context and prompts yourself; latency depends on your model/hardware</p>
+    <h3 id="continue-config-example-continueconfigyaml">Continue config example (<code>~/.continue/config.yaml</code>)</h3>
+    <pre><code><span class="fn">name</span>: Local Tab Setup
+<span class="fn">version</span>: <span class="num">1.0</span>.0
+<span class="fn">schema</span>: v1
+
+<span class="fn">models</span>:
+  - <span class="fn">name</span>: Qwen2.5 Coder 7B
+    <span class="fn">provider</span>: ollama
+    <span class="fn">model</span>: qwen2.5-coder:7b
+    <span class="fn">roles</span>:
+      - autocomplete
+    <span class="fn">autocompleteOptions</span>:
+      <span class="fn">disable</span>: <span class="kw">false</span>
+      <span class="fn">maxPromptTokens</span>: <span class="num">1024</span>
+      <span class="fn">debounceDelay</span>: <span class="num">150</span>
+      <span class="fn">modelTimeout</span>: <span class="num">500</span>
+      <span class="fn">onlyMyCode</span>: <span class="kw">true</span>
+
+  - <span class="fn">name</span>: GPT-4o (chat)
+    <span class="fn">provider</span>: openai
+    <span class="fn">model</span>: gpt-4o
+    <span class="fn">apiKey</span>: ${{ secrets.OPENAI_API_KEY }}
+    <span class="fn">roles</span>:
+      - chat
+      - edit
+
+<span class="fn">tabAutocompleteModel</span>:
+  <span class="fn">title</span>: Qwen2.5 Coder 7B
+  <span class="fn">provider</span>: ollama
+  <span class="fn">model</span>: qwen2.5-coder:7b
+
+<span class="fn">context</span>:
+  - <span class="fn">provider</span>: code
+  - <span class="fn">provider</span>: diff
+  - <span class="fn">provider</span>: folder
+  - <span class="fn">provider</span>: codebase</code></pre>
+    <h3 id="local-model-setup-ollama">Local model setup (Ollama)</h3>
+    <pre><code><span class="kw">#</span> Install Ollama, pull a code model
+ollama pull qwen2.5-coder:7b
+
+<span class="kw">#</span> Verify inference works
+ollama run qwen2.5-coder:7b "def hello():"</code></pre>
+    <p>For acceptable Tab latency locally you generally need:</p>
+    <ul>
+    <li><strong>7B–14B models</strong> on Apple Silicon (M1/M2/M3) or a GPU with 8GB+ VRAM</li>
+    <li><strong>Quantized weights</strong> (Q4/Q5) for speed; full precision is slower with marginal Tab quality gain</li>
+    <li><strong>Debouncing</strong> at 150ms+ so you are not firing inference on every keystroke</li>
+    </ul>
+    <h3 id="continue-autocomplete-only-minimal-config">Continue autocomplete-only minimal config</h3>
+    <p>If you only want Tab, not chat:</p>
+    <pre><code>models:
+  - name: DeepSeek Coder
+    provider: ollama
+    model: deepseek-coder-v2:16b
+    roles:
+      - autocomplete
+
+tabAutocompleteModel:
+  title: DeepSeek Coder
+  provider: ollama
+  model: deepseek-coder-v2:16b</code></pre>
+    <h3 id="when-continue-wins">When Continue wins</h3>
+    <ul>
+    <li><strong>Air-gapped</strong> environments with no outbound API calls</li>
+    <li><strong>Custom models</strong> fine-tuned on your internal DSL or framework</li>
+    <li><strong>Cost control</strong> — unlimited Tab for hardware you already own</li>
+    <li><strong>Compliance</strong> — data never leaves your network</li>
+    </ul>
+    <h2 id="claude-code-and-other-agent-only-tools">Claude Code and other agent-only tools</h2>
+    <table>
+<thead><tr><th>Tool</th><th>Tab autocomplete</th><th>Primary mode</th></tr></thead>
+<tbody>
+<tr><td><strong>Claude Code</strong></td><td>No</td><td>Terminal agent</td></tr>
+<tr><td><strong>Aider</strong></td><td>No</td><td>Terminal pair programmer</td></tr>
+<tr><td><strong>OpenAI Codex CLI</strong></td><td>No</td><td>Terminal agent</td></tr>
+<tr><td><strong>Cursor Agent</strong></td><td>No (use Tab separately)</td><td>IDE agent</td></tr>
+</tbody></table>
+    <p>Claude Code excels at multi-file refactors, test runs, and CI integration (<code>claude -p</code>). It does not show ghost text while you type. <strong>Pair it with Cursor Tab or Copilot</strong> in your editor for the typing layer.</p>
+    <h2 id="measuring-accept-rate">Measuring accept rate</h2>
+    <p>Accept rate is the percentage of shown Tab suggestions you accept (fully or via Partial Accept). It is the closest thing to a real-world quality metric — better than benchmark scores on HumanEval.</p>
+    <h3 id="how-to-estimate-accept-rate-manually">How to estimate accept rate manually</h3>
+    <p>Over a 30-minute coding session, track:</p>
+    <ul>
+    <li><strong>Shown</strong> — ghost text appeared</li>
+    <li><strong>Accepted</strong> — Tab, Partial Accept, or NES jump accepted</li>
+    <li><strong>Rejected</strong> — kept typing, Esc, or suggestion expired</li>
+    </ul>
+    <pre><code>Accept rate = Accepted / Shown × 100%</code></pre>
+    <table>
+<thead><tr><th>Accept rate</th><th>Interpretation</th></tr></thead>
+<tbody>
+<tr><td><strong>&amp;gt;40%</strong></td><td>Excellent — Tab is earning its attention cost</td></tr>
+<tr><td><strong>25–40%</strong></td><td>Good — typical for experienced users on mixed tasks</td></tr>
+<tr><td><strong>15–25%</strong></td><td>Mediocre — check context, language, or settings</td></tr>
+<tr><td><strong>&amp;lt;15%</strong></td><td>Poor — wrong tool, wrong project, or Tab fighting your style</td></tr>
+</tbody></table>
+    <h3 id="what-lowers-accept-rate">What lowers accept rate</h3>
+    <ul>
+    <li><strong>Novel code</strong> — greenfield algorithms Tab has not seen in your repo</li>
+    <li><strong>Heavy metaprogramming</strong> — macros, codegen, reflection</li>
+    <li><strong>Wrong context</strong> — index polluted by generated files</li>
+    <li><strong>Typing speed</strong> — fast typists outrun ghost text and reject by default</li>
+    <li><strong>Suggestion overload</strong> — ghost text on every line is distracting even when correct</li>
+    </ul>
+    <h3 id="improving-accept-rate-without-switching-tools">Improving accept rate without switching tools</h3>
+    <ol>
+    <li>1. Clean <code>.cursorignore</code> / <code>.codeiumignore</code> / <code>.gitignore</code> for index tools</li>
+    <li>2. Enable Partial Accepts (Cursor) or NES (Copilot)</li>
+    <li>3. Disable Tab in comments and string literals</li>
+    <li>4. Keep related files open (Copilot uses open tabs as context)</li>
+    <li>5. Add project rules so Agent <em>and</em> Tab share conventions (<code>AGENTS.md</code>, <code>.cursor/rules</code>)</li>
+    </ol>
+    <h2 id="language-specific-performance">Language-specific performance</h2>
+    <p>Tab models train heavily on Python, JavaScript/TypeScript, Java, C#, Go, and Rust. Expect the best accept rates there.</p>
+    <table>
+<thead><tr><th>Language / ecosystem</th><th>Typical Tab quality</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><strong>TypeScript / React</strong></td><td>Excellent</td><td>Types help the model; enable auto-import</td></tr>
+<tr><td><strong>Python</strong></td><td>Excellent</td><td>Strong training data; docstrings sometimes noisy</td></tr>
+<tr><td><strong>Java / Kotlin</strong></td><td>Very good</td><td>Better with Windsurf/Copilot in JetBrains</td></tr>
+<tr><td><strong>Go</strong></td><td>Very good</td><td>Simple syntax = high accept rate</td></tr>
+<tr><td><strong>Rust</strong></td><td>Good</td><td>Borrow checker errors confuse suggestions</td></tr>
+<tr><td><strong>C / C++</strong></td><td>Good</td><td>Header/impl split reduces cross-file context</td></tr>
+<tr><td><strong>Ruby / PHP</strong></td><td>Good</td><td>Dynamic typing = more wrong guesses</td></tr>
+<tr><td><strong>Swift / Objective-C</strong></td><td>Moderate</td><td>Xcode Copilot improving; smaller training share</td></tr>
+<tr><td><strong>Haskell / Elixir / niche DSLs</strong></td><td>Weak</td><td>Consider disabling Tab or using Continue + fine-tune</td></tr>
+<tr><td><strong>SQL</strong></td><td>Mixed</td><td>Great for boilerplate SELECTs; poor for complex analytics</td></tr>
+<tr><td><strong>Terraform / HCL</strong></td><td>Moderate</td><td>Repetitive modules work well</td></tr>
+<tr><td><strong>LaTeX / Markdown</strong></td><td>Poor</td><td>Disable Tab in those file types</td></tr>
+</tbody></table>
+    <h3 id="per-language-disable-copilot-example">Per-language disable (Copilot example)</h3>
+    <pre><code>{
+  <span class="str">"github.copilot.enable"</span>: {
+    <span class="str">"*"</span>: <span class="kw">true</span>,
+    <span class="str">"latex"</span>: <span class="kw">false</span>,
+    <span class="str">"markdown"</span>: <span class="kw">false</span>,
+    <span class="str">"scminput"</span>: <span class="kw">false</span>,
+    <span class="str">"plaintext"</span>: <span class="kw">false</span>
+  }
+}</code></pre>
+    <h2 id="privacy-and-enterprise-comparison">Privacy and enterprise comparison</h2>
+    <table>
+<thead><tr><th></th><th><strong>Cursor Tab</strong></th><th><strong>GitHub Copilot</strong></th><th><strong>Windsurf</strong></th><th><strong>Supermaven</strong></th><th><strong>Continue</strong></th></tr></thead>
+<tbody>
+<tr><td><strong>Default data use</strong></td><td>Privacy mode available; see Cursor docs</td><td>Public code training; private excluded on Business</td><td>Opt-out available; see policy</td><td>Strong privacy marketing</td><td>You control — local = none</td></tr>
+<tr><td><strong>Enterprise SSO</strong></td><td>Teams plans</td><td>Business / Enterprise</td><td>Enterprise</td><td>Limited</td><td>N/A (self-managed)</td></tr>
+<tr><td><strong>No training on your code</strong></td><td>Privacy Mode + team policies</td><td>Copilot Business policy</td><td>Enterprise agreement</td><td>Yes (standalone policy)</td><td>Inherent if local</td></tr>
+<tr><td><strong>Audit / admin logs</strong></td><td>Team dashboard</td><td>GitHub org audit</td><td>Enterprise console</td><td>Minimal</td><td>Your infrastructure</td></tr>
+<tr><td><strong>Air-gapped deploy</strong></td><td>No</td><td>No (Copilot for Azure partial)</td><td>No</td><td>No</td><td><strong>Yes</strong> (Ollama/vLLM)</td></tr>
+<tr><td><strong>IP indemnity</strong></td><td>Check enterprise terms</td><td>Enterprise offering</td><td>Enterprise offering</td><td>Limited</td><td>Your responsibility</td></tr>
+<tr><td><strong>SOC 2 / compliance</strong></td><td>Cursor enterprise</td><td>GitHub enterprise</td><td>Windsurf enterprise</td><td>Varies</td><td>Self-attest</td></tr>
+</tbody></table>
+    <p><strong>Practical guidance:</strong></p>
+    <ul>
+    <li><strong>Regulated industry (finance, health):</strong> Copilot Business or Cursor Teams with written DPA; document which files are indexed</li>
+    <li><strong>Secrets paranoia:</strong> Never rely on Tab in <code>.env</code> files — add to ignore lists; Tab can leak patterns into logs on some providers</li>
+    <li><strong>True air-gap:</strong> Continue + local model only; no cloud Tab</li>
+    </ul>
+    <h2 id="troubleshooting-slow-tab">Troubleshooting slow Tab</h2>
+    <h3 id="symptom-ghost-text-appears-after-youve-already-typed-the-line">Symptom: ghost text appears after you&#x27;ve already typed the line</h3>
+    <p><strong>Causes and fixes:</strong></p>
+    <table>
+<thead><tr><th>Cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>Network latency to inference API</td><td>Check VPN; try wired connection; compare off-VPN</td></tr>
+<tr><td>Large repo index still building</td><td>Wait for index complete; check status in tool settings</td></tr>
+<tr><td>CPU-heavy project (huge TS project)</td><td>Exclude <code>node_modules</code>, increase debounce</td></tr>
+<tr><td>Too many extensions competing</td><td>Disable other inline suggest providers</td></tr>
+<tr><td>Local model on CPU only</td><td>Use smaller quant model or GPU</td></tr>
+</tbody></table>
+    <h3 id="symptom-tab-worked-yesterday-slow-today">Symptom: Tab worked yesterday, slow today</h3>
+    <ol>
+    <li>1. Restart the editor (stale language server + Tab conflict)</li>
+    <li>2. Clear extension cache (Cursor: reload window; Copilot: sign out/in)</li>
+    <li>3. Check provider status pages (outages happen)</li>
+    <li>4. Verify you did not open the monorepo root vs subpackage (re-index)</li>
+    </ol>
+    <h3 id="symptom-suggestions-freeze-entirely">Symptom: suggestions freeze entirely</h3>
+    <pre><code><span class="cm">// Ensure inline suggest is not disabled globally</span>
+{
+  "editor.inlineSuggest.enabled": true
+}</code></pre>
+    <p>Check for keybinding conflicts — Tab bound to snippet expansion and completion simultaneously in Neovim/Vim.</p>
+    <h3 id="cursor-specific-tab-slow-after-agent-session">Cursor-specific: Tab slow after Agent session</h3>
+    <p>Long Agent sessions inflate context. <strong>Start a new composer/chat tab</strong> or reload window to reset session-scoped context that may slow Tab assembly.</p>
+    <h3 id="continue-specific-local-tab-gt2s-latency">Continue-specific: local Tab &amp;gt;2s latency</h3>
+    <ul>
+    <li>Drop to 7B model from 34B</li>
+    <li>Use <code>debounceDelay: 200</code> or higher</li>
+    <li>Reduce <code>maxPromptTokens</code> to 512</li>
+    <li>Confirm Ollama is using GPU: <code>ollama ps</code> should show GPU layer offload</li>
+    </ul>
+    <h2 id="when-to-disable-tab">When to disable Tab</h2>
+    <p>Tab is not always net-positive. Disable or scope it down when:</p>
+    <table>
+<thead><tr><th>Situation</th><th>Why disable</th></tr></thead>
+<tbody>
+<tr><td><strong>Learning a new language</strong></td><td>Tab shortcuts muscle memory you need to build</td></tr>
+<tr><td><strong>Interview / assessment coding</strong></td><td>Policy violation; also hurts learning</td></tr>
+<tr><td><strong>Novel algorithm design</strong></td><td>Suggestions anchor you to mediocre patterns</td></tr>
+<tr><td><strong>Security-sensitive code</strong></td><td>Crypto, auth, secrets — typing deliberately is safer</td></tr>
+<tr><td><strong>Code review / reading</strong></td><td>Ghost text distracts from comprehension</td></tr>
+<tr><td><strong>Pair programming (driver)</strong></td><td>Driver&#x27;s Tab can confuse navigator</td></tr>
+<tr><td><strong>Writing prose in comments/docs</strong></td><td>Unless you want prose completion</td></tr>
+<tr><td><strong>Vim snippet-heavy workflows</strong></td><td>Tab key conflicts with snippet jump</td></tr>
+</tbody></table>
+    <h3 id="scoped-disable">Scoped disable</h3>
+    <p>Rather than global off, disable per-language or per-file-type (see Copilot <code>enable</code> map above). In Cursor, toggle Tab off temporarily via the status bar Tab indicator when reading unfamiliar code.</p>
+    <h2 id="pairing-tab-with-agents">Pairing Tab with agents</h2>
+    <p>The highest-productivity setup uses <strong>Tab for typing</strong> and <strong>agents for tasks</strong>:</p>
+    <pre><code>┌─────────────────────────────────────────────────────────┐
+│  Editor (VS Code / Cursor / JetBrains)                  │
+│  ┌─────────────────┐    ┌──────────────────────────┐   │
+│  │  Tab autocomplete │    │  Agent / Composer        │   │
+│  │  (milliseconds)   │    │  (multi-file, minutes)   │   │
+│  └─────────────────┘    └──────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+         │                              │
+         │  boilerplate,               │  refactors, features,
+         │  signatures, loops          │  tests, debugging
+         ▼                              ▼
+┌─────────────────┐            ┌─────────────────┐
+│  Cursor Tab /   │            │  Cursor Agent / │
+│  Copilot /      │            │  Claude Code /  │
+│  Windsurf       │            │  Windsurf Cascade│
+└─────────────────┘            └─────────────────┘</code></pre>
+    <h3 id="recommended-pairings">Recommended pairings</h3>
+    <table>
+<thead><tr><th>Your agent</th><th>Pair with Tab</th></tr></thead>
+<tbody>
+<tr><td><strong>Claude Code</strong> (terminal)</td><td>Cursor Tab or Copilot in VS Code side-by-side</td></tr>
+<tr><td><strong>Cursor Agent</strong></td><td>Cursor Tab (built-in, shared index)</td></tr>
+<tr><td><strong>Windsurf Cascade</strong></td><td>Windsurf Tab (same editor)</td></tr>
+<tr><td><strong>Aider</strong></td><td>Copilot in VS Code while Aider runs in terminal</td></tr>
+<tr><td><strong>Custom agent</strong> (<a href="https://github.com/amarkum/livecode-ai">LiveCode</a>, etc.)</td><td>Continue Tab + your harness</td></tr>
+</tbody></table>
+    <h3 id="handoff-workflow">Handoff workflow</h3>
+    <ol>
+    <li>1. <strong>Agent</strong> scaffolds feature across files (routes, types, tests)</li>
+    <li>2. You open the main implementation file</li>
+    <li>3. <strong>Tab</strong> fills repetitive CRUD, mapping code, test cases</li>
+    <li>4. <strong>Agent</strong> runs tests, fixes failures Tab cannot see</li>
+    <li>5. <strong>Tab</strong> polishes remaining boilerplate</li>
+    </ol>
+    <p>Avoid running two agents on the same task simultaneously — Tab + Agent in the same file is fine; Agent + Agent is chaos.</p>
+    <h2 id="team-setup-recommendations">Team setup recommendations</h2>
+    <h3 id="startup-520-devs-vs-code">Startup (5–20 devs, VS Code)</h3>
+    <p>Cursor Pro for Tab + Agent. One <code>AGENTS.md</code> for shared rules. Claude Code optional for CI (<code>claude -p</code>).</p>
+    <pre><code><span class="kw">#</span> AGENTS.md (excerpt)
+- Use TypeScript strict mode
+- Prefer functional React components
+- Test files colocated as <span class="str">`*.test.ts`</span></code></pre>
+    <h3 id="enterprise-mixed-ides-compliance">Enterprise (mixed IDEs, compliance)</h3>
+    <p>GitHub Copilot Business — broad IDE support, policy controls, no-training options. Claude Code or Cursor Agent for teams that want terminal agents separately.</p>
+    <h3 id="jetbrains-heavy-javakotlinandroid">JetBrains-heavy (Java/Kotlin/Android)</h3>
+    <p>Windsurf plugins for Tab in IntelliJ/Android Studio. Cursor or Claude Code for developers on VS Code side services.</p>
+    <h3 id="privacy-first-air-gapped">Privacy-first / air-gapped</h3>
+    <p>Continue + local model (Ollama, vLLM) for autocomplete. Self-hosted agent harness for multi-file work — see <a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">build a Cursor-like agent</a>.</p>
+    <h3 id="measuring-rollout-success">Measuring rollout success</h3>
+    <p>After a 2-week pilot, survey developers on:</p>
+    <ul>
+    <li>Accept rate (self-estimated)</li>
+    <li>&quot;Tab slowed me down&quot; vs &quot;Tab sped me up&quot;</li>
+    <li>Incidents of wrong suggestions causing bugs (should be near zero with review)</li>
+    </ul>
+    <p>Do not mandate Tab in code review — mandate tests and review instead.</p>
+    <h2 id="faq">FAQ</h2>
+    <h3 id="is-cursor-tab-better-than-copilot">Is Cursor Tab better than Copilot?</h3>
+    <p>For VS Code users doing multi-line Tab, usually yes — especially after the Supermaven integration. Copilot wins on IDE breadth, enterprise compliance, and price (~$10 vs ~$20).</p>
+    <h3 id="does-claude-code-have-autocomplete">Does Claude Code have autocomplete?</h3>
+    <p>No. Claude Code is a terminal agent. Use Cursor or Copilot alongside it for Tab completion.</p>
+    <h3 id="is-supermaven-still-worth-installing-separately">Is Supermaven still worth installing separately?</h3>
+    <p>Only if you want its Tab engine outside Cursor. Most VS Code users get the same technology through Cursor Tab now.</p>
+    <h3 id="what-is-fill-in-the-middle-fim">What is fill-in-the-middle (FIM)?</h3>
+    <p>FIM is a training method where the model sees code before and after the cursor and predicts the missing middle. It powers modern Tab models and is why they complete whole blocks better than chat models.</p>
+    <h3 id="how-do-i-measure-tab-accept-rate">How do I measure Tab accept rate?</h3>
+    <p>Count suggestions shown vs accepted over a session. Above 25% is workable; above 40% is excellent. Use Partial Accepts to count line-by-line accepts.</p>
+    <h3 id="why-is-my-tab-slow-in-a-monorepo">Why is my Tab slow in a monorepo?</h3>
+    <p>Index still building, too much context being assembled, or network latency to the inference API. Add ignore files, wait for index completion, and exclude <code>node_modules</code> and build output.</p>
+    <h3 id="can-i-use-local-models-for-tab">Can I use local models for Tab?</h3>
+    <p>Yes — <strong>Continue</strong> with Ollama or vLLM. Expect 7B–14B models on GPU for sub-300ms; CPU-only is usually too slow for fluid Tab.</p>
+    <h3 id="does-copilot-nes-work-in-jetbrains">Does Copilot NES work in JetBrains?</h3>
+    <p>NES rollout varies by IDE. Check your Copilot plugin version and JetBrains release notes — inline completion is widely available; NES is newer on non-VS Code platforms.</p>
+    <h3 id="should-i-disable-tab-when-learning">Should I disable Tab when learning?</h3>
+    <p>Many developers disable Tab when learning a new language or framework so they build syntax muscle memory. Re-enable once basics are automatic.</p>
+    <h3 id="free-options">Free options?</h3>
+    <p>Copilot Free (limited completions), Windsurf free tier, Supermaven free tier, Continue (pay only for API/local compute).</p>
+    <h3 id="autocomplete-vs-copilot-chat">Autocomplete vs Copilot Chat?</h3>
+    <p>Chat answers questions. Tab completes code as you type. Use both — Tab for flow, Chat/Agent for tasks Tab cannot reach.</p>
+    <h3 id="which-tool-is-best-for-privacy">Which tool is best for privacy?</h3>
+    <p>Continue + local model for maximum control. Among cloud tools, Copilot Business and Cursor Teams offer enterprise no-training policies — verify contracts match your compliance needs.</p>
+    <h2 id="bottom-line">Bottom line</h2>
+    <ul>
+    <li><strong>Best Tab on VS Code:</strong> Cursor Tab</li>
+    <li><strong>Best Tab across many IDEs:</strong> GitHub Copilot</li>
+    <li><strong>Best Tab on JetBrains/Neovim:</strong> Windsurf plugins</li>
+    <li><strong>Best bring-your-own-model:</strong> Continue</li>
+    <li><strong>No Tab at all:</strong> Claude Code — pair with an editor that has autocomplete</li>
+    </ul>
+    <p>Autocomplete saves seconds per minute. Agents save hours per task. Pick both layers deliberately: Tab for flow state, agents for scope. Measure accept rate, tune ignore files, use Partial Accepts, and disable Tab where it fights you.</p>
+    <h2 id="related-guides">Related guides</h2>
+    <ul>
+    <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot: Which Should You Use?</a></li>
+    <li><a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively</a></li>
+    <li><a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">How to Build a Cursor-Like AI Coding Agent</a></li>
+    </ul>
+
+    <aside class="blog-cta">
+      <p><strong>Need help building agent workflows?</strong></p>
+      <p>stackcone designs production agent loops, SEO pipelines, and MCP integrations.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=12"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>
