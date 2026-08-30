@@ -625,23 +625,19 @@ Rather than global off, disable per-language or per-file-type (see Copilot `enab
 
 The highest-productivity setup uses **Tab for typing** and **agents for tasks**:
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  Editor (VS Code / Cursor / JetBrains)                  │
-│  ┌─────────────────┐    ┌──────────────────────────┐   │
-│  │  Tab autocomplete │    │  Agent / Composer        │   │
-│  │  (milliseconds)   │    │  (multi-file, minutes)   │   │
-│  └─────────────────┘    └──────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-         │                              │
-         │  boilerplate,               │  refactors, features,
-         │  signatures, loops          │  tests, debugging
-         ▼                              ▼
-┌─────────────────┐            ┌─────────────────┐
-│  Cursor Tab /   │            │  Cursor Agent / │
-│  Copilot /      │            │  Claude Code /  │
-│  Windsurf       │            │  Windsurf Cascade│
-└─────────────────┘            └─────────────────┘
+```mermaid
+flowchart TB
+  classDef editor fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef lane fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef tool fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+
+  subgraph ED["Editor (VS Code / Cursor / JetBrains)"]
+    TAB["Tab autocomplete\n(milliseconds)"]:::lane
+    AGT["Agent / Composer\n(multi-file, minutes)"]:::lane
+  end
+
+  TAB -->|"boilerplate, signatures, loops"| TABT["Cursor Tab / Copilot / Windsurf"]:::tool
+  AGT -->|"refactors, features, tests, debugging"| AGTT["Cursor Agent / Claude Code\nWindsurf Cascade"]:::tool
 ```
 
 ### Recommended pairings

@@ -100,6 +100,14 @@ Follow `.cursor/rules/seo-google.mdc`. Unique title, meta description, canonical
 - Past tense OK for real experience; avoid fake metrics
 - Upwork/freelance topics: actionable advice, not job-board provenance labels
 
+## Diagrams (flowcharts, architecture, decision trees)
+
+Use **Mermaid** in published HTML — not ASCII box art in `<pre><code>`. See `.cursor/rules/solution-posts.mdc` for the `diagram-wrap` + `mermaid-pending` pattern, footer script order (`mermaid.min.js` → `../../../solutions/diagrams.js`), and node styling.
+
+- **Flowcharts / decision trees / pipeline graphs** → Mermaid `flowchart TB` or `flowchart TD`
+- **Directory trees / file listings** → plain `<pre><code>` (not Mermaid)
+- Mirror Mermaid source in `blog/md/{slug}.md` as fenced ` ```mermaid ` blocks
+
 ## Syntax highlighting (required for code blocks)
 
 Blog code uses **static span classes** in published HTML — same style as `blog/posts/how-to-build-a-production-rag-chatbot.html`. **Do not** use highlight.js, Prism, hljs CDN, or client-side highlighters.

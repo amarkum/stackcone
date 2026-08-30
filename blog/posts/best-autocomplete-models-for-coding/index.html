@@ -561,22 +561,25 @@ tabAutocompleteModel:
     <p>Rather than global off, disable per-language or per-file-type (see Copilot <code>enable</code> map above). In Cursor, toggle Tab off temporarily via the status bar Tab indicator when reading unfamiliar code.</p>
     <h2 id="pairing-tab-with-agents">Pairing Tab with agents</h2>
     <p>The highest-productivity setup uses <strong>Tab for typing</strong> and <strong>agents for tasks</strong>:</p>
-    <pre><code>┌─────────────────────────────────────────────────────────┐
-│  Editor (VS Code / Cursor / JetBrains)                  │
-│  ┌─────────────────┐    ┌──────────────────────────┐   │
-│  │  Tab autocomplete │    │  Agent / Composer        │   │
-│  │  (milliseconds)   │    │  (multi-file, minutes)   │   │
-│  └─────────────────┘    └──────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
-         │                              │
-         │  boilerplate,               │  refactors, features,
-         │  signatures, loops          │  tests, debugging
-         ▼                              ▼
-┌─────────────────┐            ┌─────────────────┐
-│  Cursor Tab /   │            │  Cursor Agent / │
-│  Copilot /      │            │  Claude Code /  │
-│  Windsurf       │            │  Windsurf Cascade│
-└─────────────────┘            └─────────────────┘</code></pre>
+    <div class="diagram-wrap" data-diagram-title="Tab autocomplete vs agents">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef lane fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef tool fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+
+  subgraph ED["Editor (VS Code / Cursor / JetBrains)"]
+    TAB["Tab autocomplete\n(milliseconds)"]:::lane
+    AGT["Agent / Composer\n(multi-file, minutes)"]:::lane
+  end
+
+  TAB -->|"boilerplate, signatures, loops"| TABT["Cursor Tab / Copilot / Windsurf"]:::tool
+  AGT -->|"refactors, features, tests, debugging"| AGTT["Cursor Agent / Claude Code\nWindsurf Cascade"]:::tool</div>
+      </div>
+      <p class="diagram-caption">Use Tab for keystroke-level speed; use agents for multi-file tasks that need reasoning.</p>
+    </div>
     <h3 id="recommended-pairings">Recommended pairings</h3>
     <table>
 <thead><tr><th>Your agent</th><th>Pair with Tab</th></tr></thead>

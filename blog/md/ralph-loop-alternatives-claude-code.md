@@ -40,15 +40,17 @@ The pattern predates any single tool. Early ChatGPT users pasted "keep going" af
 
 Core insight the community extracted: **the loop is fine; the missing piece is a machine-checkable done condition.**
 
-```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Run agent  │────▶│  Looks done? │─No─▶│ Re-prompt   │
-└─────────────┘     └──────┬───────┘     │ (Ralph)     │
-                           │ Yes          └──────┬──────┘
-                           ▼                     │
-                      ┌─────────┐                │
-                      │  Ship?  │◀───────────────┘
-                      └─────────┘
+```mermaid
+flowchart TB
+  classDef step fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef decision fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+
+  A["Run agent"]:::step --> B{"Looks done?"}:::decision
+  B -->|No| C["Re-prompt (Ralph)"]:::step
+  C --> A
+  B -->|Yes| D{"Ship?"}:::decision
+  D -->|No| C
+  D -->|Yes| E["Done"]:::step
 ```
 
 Better patterns insert a **verification step** between "agent stopped" and "actually done."
@@ -955,38 +957,32 @@ git diff
 
 ## Decision tree: which alternative to pick
 
-```
-Start: I want the agent to keep working until done
-│
-├─ Am I watching live?
-│  ├─ Yes → Verification in prompt (+ plan mode if multi-file)
-│  └─ No  → Continue below
-│
-├─ Must tests/lint pass before ANY stop? (hard gate)
-│  ├─ Yes, Claude Code → Stop hook
-│  └─ Yes, Cursor → alwaysApply rule + explicit prompt + CI verify
-│
-├─ Is the task multi-file or easy to get wrong?
-│  ├─ Yes → Plan mode → implement → (optional Stop hook)
-│  └─ No  → Verification prompt may be enough
-│
-├─ Need diff scope enforced? (only certain paths)
-│  └─ /goal with git diff condition (Claude Code)
-│
-├─ Need to block dangerous commands?
-│  └─ PreToolUse hook
-│
-├─ Need fast feedback on each edit?
-│  └─ PostToolUse hook (lint/format)
-│
-├─ Main thread context already huge?
-│  └─ Verification subagent
-│
-├─ Running in CI / scheduled job?
-│  └─ claude -p + bounded retry script (MAX_ATTEMPTS=3)
-│
-└─ Just experimenting?
-   └─ Ralph loop OK — but cap iterations and add a verify command
+```mermaid
+flowchart TD
+  classDef start fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef decision fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef action fill:#f1f5f9,stroke:#64748b,color:#334155
+
+  S(["Keep working until done"]):::start --> W{"Watching live?"}:::decision
+  W -->|Yes| V["Verification in prompt\n+ plan mode if multi-file"]:::action
+  W -->|No| G{"Tests/lint must pass\nbefore ANY stop?"}:::decision
+  G -->|Yes, Claude Code| SH["Stop hook"]:::action
+  G -->|Yes, Cursor| CR["alwaysApply rule\n+ explicit prompt + CI verify"]:::action
+  G -->|No| M{"Multi-file or\neasy to get wrong?"}:::decision
+  M -->|Yes| PM["Plan mode → implement\n→ optional Stop hook"]:::action
+  M -->|No| VP["Verification prompt\nmay be enough"]:::action
+  PM --> D1{"Need diff scope\nenforced?"}:::decision
+  VP --> D1
+  D1 -->|Yes| GO["/goal with git diff condition"]:::action
+  D1 -->|No| D2{"Block dangerous\ncommands?"}:::decision
+  D2 -->|Yes| PRE["PreToolUse hook"]:::action
+  D2 -->|No| D3{"Fast feedback\non each edit?"}:::decision
+  D3 -->|Yes| POST["PostToolUse hook\n(lint/format)"]:::action
+  D3 -->|No| D4{"Context already\nhuge?"}:::decision
+  D4 -->|Yes| SUB["Verification subagent"]:::action
+  D4 -->|No| D5{"Running in CI\n/ scheduled job?"}:::decision
+  D5 -->|Yes| CI["claude -p + bounded retry\n(MAX_ATTEMPTS=3)"]:::action
+  D5 -->|No| RL["Ralph loop OK — cap iterations\n+ add verify command"]:::action
 ```
 
 ### Quick picks by scenario

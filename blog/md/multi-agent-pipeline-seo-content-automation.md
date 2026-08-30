@@ -404,31 +404,27 @@ For high-stakes topics, stop after outline and approve in GitHub issue or Slack 
 
 ## Pipeline flow
 
-```text
-GSC / keyword data
-       │
-       ▼
-┌──────────────┐
-│ Intent agent │ → _pipeline/queue/{slug}-brief.json
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ SERP +       │ → _pipeline/serp/{slug}-serp.md
-│Outline agent │ → _pipeline/outlines/{slug}-outline.md
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│Writer agent  │ → blog/md/{slug}.md
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│ SEO metadata │ → blog/posts/{slug}/index.html
-│    agent     │   + posts.json + sitemap.xml + blog/index.html
-└──────┬───────┘
-       ▼
-┌──────────────┐
-│  QA agent    │ → pass → git commit → deploy
-└──────────────┘   fail → loop back (see error handling)
+```mermaid
+flowchart TB
+  classDef data fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef agent fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef out fill:#ccfbf1,stroke:#0d9488,color:#115e59
+
+  GSC["GSC / keyword data"]:::data
+  I["Intent agent"]:::agent
+  O["SERP + Outline agent"]:::agent
+  W["Writer agent"]:::agent
+  S["SEO metadata agent"]:::agent
+  Q["QA agent"]:::agent
+  DEP["git commit → deploy"]:::out
+
+  GSC --> I
+  I -->|"_pipeline/queue/{slug}-brief.json"| O
+  O -->|"_pipeline/serp/ + outlines/"| W
+  W -->|"blog/md/{slug}.md"| S
+  S -->|"posts/{slug}/index.html\n+ posts.json + sitemap"| Q
+  Q -->|pass| DEP
+  Q -->|fail| W
 ```
 
 Orchestration options:

@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Page not found | stackcone</title>
-  <meta name="description" content="That page is missing. Browse stackcone solutions, portfolio, blog, or contact.">
+  <meta name="description" content="That page is missing. Search stackcone blog guides or browse solutions, portfolio, and contact.">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
-<script src="assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/styles.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
 </head>
 <body>
   <header class="header">
@@ -30,17 +31,79 @@
     </div>
   </header>
 
-  <main>
-    <section class="page-hero">
+  <main class="not-found-main">
+    <section class="page-hero not-found-hero">
       <p class="hero-trust">404</p>
       <h1 class="page-hero-title">Page not found</h1>
-      <p class="page-hero-desc">That URL is not on this site. Try one of these instead.</p>
+      <p class="page-hero-desc">That URL is not on this site. Search our guides below, or pick a destination.</p>
+
+      <form class="not-found-search" id="not-found-search-form" role="search">
+        <label for="not-found-search">Search blog guides</label>
+        <div class="not-found-search-row">
+          <input type="search" id="not-found-search" class="not-found-search-input" placeholder="e.g. Claude Code, RAG, MCP…" autocomplete="off">
+          <button type="submit" class="cta cta--primary">Search</button>
+        </div>
+      </form>
+      <div id="not-found-results" class="not-found-results" hidden></div>
+
       <div class="hero-ctas">
         <a href="/" class="cta cta--primary">Home</a>
-        <a href="/solutions/" class="cta cta--secondary">Solutions</a>
+        <a href="/blog/" class="cta cta--secondary">Blog</a>
         <a href="/contact/" class="cta cta--secondary">Contact</a>
       </div>
     </section>
+
+    <section class="not-found-section" aria-labelledby="not-found-popular">
+      <h2 id="not-found-popular">Popular guides</h2>
+      <ul class="not-found-guides">
+        <li>
+          <a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">
+            <strong>Claude Code vs Cursor vs Copilot</strong>
+            <span>Which AI coding tool to use for your daily workflow</span>
+          </a>
+        </li>
+        <li>
+          <a href="/blog/posts/how-to-use-claude-code-effectively/">
+            <strong>How to Use Claude Code Effectively</strong>
+            <span>CLAUDE.md, AGENTS.md, rules, and verification loops</span>
+          </a>
+        </li>
+        <li>
+          <a href="/blog/posts/multi-agent-pipeline-seo-content-automation/">
+            <strong>Multi-Agent Pipeline for SEO</strong>
+            <span>Agent roles, metadata checklist, and GSC feedback loop</span>
+          </a>
+        </li>
+        <li>
+          <a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">
+            <strong>How to Build a Cursor-Like AI Coding Agent</strong>
+            <span>Tool-calling harness, streaming, and agent loop pseudocode</span>
+          </a>
+        </li>
+        <li>
+          <a href="/blog/posts/how-to-build-a-production-rag-chatbot/">
+            <strong>How to Build a Production RAG Chatbot</strong>
+            <span>Retrieval, reranking, evals, and deployment patterns</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="not-found-section" aria-labelledby="not-found-browse">
+      <h2 id="not-found-browse">Browse the site</h2>
+      <div class="not-found-grid">
+        <a href="/blog/">Blog</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/work/">Portfolio</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </div>
+    </section>
+
+    <aside class="not-found-tip">
+      <p>Looking for a blog post? URLs look like <code>/blog/posts/{slug}/</code> — not <code>/{slug}.html</code> at the site root. Old bookmarked paths may 404 after we cleaned up legacy redirects.</p>
+    </aside>
   </main>
 
   <footer class="footer">
@@ -60,5 +123,6 @@
 
   <script src="/site-nav.js" defer></script>
   <script src="/script.js" defer></script>
+  <script src="/assets/404-search.js" defer></script>
 </body>
 </html>
