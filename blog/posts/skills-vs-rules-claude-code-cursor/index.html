@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>Skills vs Rules in Claude Code and Cursor: When to Use Each</title>
+  <meta name="description" content="Skills vs rules explained for Claude Code and Cursor — when to use CLAUDE.md, .claude/rules, or SKILL.md, with copy-paste examples and a decision flowchart.">
+  <meta name="keywords" content="Claude Code skills vs rules, Cursor skills vs rules, SKILL.md, .claude/rules, when to use skills, agent rules">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/skills-vs-rules-claude-code-cursor/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/skills-vs-rules-claude-code-cursor/">
+  <meta property="og:title" content="Skills vs Rules in Claude Code and Cursor: When to Use Each">
+  <meta property="og:description" content="Skills vs rules with examples — path-scoped rules, SKILL.md workflows, and when to put instructions in CLAUDE.md instead.">
+  <meta property="og:image" content="https://stackcone.com/blog/images/skills-vs-rules-claude-code-cursor/claude.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Skills vs Rules in Claude Code and Cursor: When to Use Each">
+  <meta name="twitter:description" content="Detailed guide: rules for conventions, skills for workflows — with copy-paste examples for Claude Code and Cursor.">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/skills-vs-rules-claude-code-cursor/claude.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Skills vs Rules in Claude Code and Cursor: When to Use Each",
+    "description": "Skills vs rules explained for Claude Code and Cursor — when to use CLAUDE.md, .claude/rules, or SKILL.md, with copy-paste examples.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-08-30",
+    "dateModified": "2026-08-30",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/skills-vs-rules-claude-code-cursor/" },
+    "image": "https://stackcone.com/blog/images/skills-vs-rules-claude-code-cursor/claude.png",
+    "keywords": ["Claude Code skills", "Claude Code rules", "SKILL.md", "Cursor rules", "AI coding agent"],
+    "articleSection": "Platform"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the difference between skills and rules in Claude Code?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Rules are persistent instructions loaded every session or when matching files are read — use them for conventions and constraints. Skills are on-demand playbooks loaded when invoked or when the task matches — use them for multi-step workflows."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should a release checklist be a rule or a skill?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A skill. Multi-step procedures with 5+ ordered steps belong in SKILL.md, not CLAUDE.md or rules, because they only apply sometimes and would bloat every session if loaded as rules."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can a skill reference a rule?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. A skill can instruct the agent to follow conventions defined in .claude/rules/ or .cursor/rules/. Rules set defaults; skills orchestrate workflows that respect them."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Skills vs Rules", "item": "https://stackcone.com/blog/posts/skills-vs-rules-claude-code-cursor/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Skills vs Rules in Claude Code and Cursor: When to Use Each</h1>
+    <p class="meta">August 2026 · Published by Amar Kumar</p>
+
+    <div class="model-logo-row" role="img" aria-label="Claude Code and Cursor">
+      <figure>
+        <img src="../../images/skills-vs-rules-claude-code-cursor/claude.png" alt="Claude Code" width="80" height="80" loading="lazy">
+        <figcaption>Claude Code</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/skills-vs-rules-claude-code-cursor/cursor.svg" alt="Cursor" width="80" height="80" loading="lazy">
+        <figcaption>Cursor</figcaption>
+      </figure>
+    </div>
+
+    <p>Developers setting up Claude Code or Cursor often ask: <strong>should this go in a rule or a skill?</strong> They paste a 40-step release checklist into <code>CLAUDE.md</code>, then wonder why Claude ignores half of it. Or they create a skill for "use 2-space indent" and it never loads.</p>
+    <p><strong>Rules</strong> are persistent instructions — loaded every session or when matching files are read. They shape <em>how Claude behaves while editing</em>.</p>
+    <p><strong>Skills</strong> are on-demand playbooks — loaded when you invoke them or when the task clearly matches. They shape <em>how Claude completes a specific workflow</em>.</p>
+    <p><strong>Related:</strong> <a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively</a> · <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents</a></p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#one-line-definitions">One-line definitions</a></li>
+        <li><a href="#locations">Where rules and skills live</a></li>
+        <li><a href="#comparison">Side-by-side comparison</a></li>
+        <li><a href="#when-rules">When to use rules</a></li>
+        <li><a href="#when-skills">When to use skills</a></li>
+        <li><a href="#example-rule">Example: a rule file</a></li>
+        <li><a href="#example-skill">Example: a skill file</a></li>
+        <li><a href="#wrong-vs-right">Same task — wrong vs right</a></li>
+        <li><a href="#compose">How they compose with CLAUDE.md</a></li>
+        <li><a href="#flowchart">Decision flowchart</a></li>
+        <li><a href="#mistakes">Common mistakes</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="one-line-definitions">One-line definitions</h2>
+    <table>
+      <thead><tr><th></th><th>Rules</th><th>Skills</th></tr></thead>
+      <tbody>
+        <tr><td><strong>What it is</strong></td><td>Persistent instruction file</td><td>On-demand workflow playbook</td></tr>
+        <tr><td><strong>Analogy</strong></td><td>House rules on the wall</td><td>Recipe card you pull out when cooking</td></tr>
+        <tr><td><strong>Loaded</strong></td><td>Every session, or when matching files are read</td><td>When invoked (<code>/skill-name</code>) or task matches description</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Conventions, constraints, "always do X"</td><td>Multi-step procedures, checklists, domain workflows</td></tr>
+        <tr><td><strong>Context cost</strong></td><td>Paid upfront (or on file read)</td><td>Paid only when used</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Rules = always-on behavior. Skills = sometimes-on procedure.</strong></p>
+
+    <h2 id="locations">Where rules and skills live</h2>
+    <h3>Claude Code</h3>
+    <table>
+      <thead><tr><th>Type</th><th>Path</th><th>Scope</th></tr></thead>
+      <tbody>
+        <tr><td>Root rules</td><td><code>CLAUDE.md</code> or <code>.claude/CLAUDE.md</code></td><td>Every session</td></tr>
+        <tr><td>Modular rules</td><td><code>.claude/rules/*.md</code></td><td>Every session, or on demand if path-scoped</td></tr>
+        <tr><td>Path-scoped rules</td><td><code>.claude/rules/api.md</code> with <code>paths:</code></td><td>When Claude reads matching files</td></tr>
+        <tr><td>Skills</td><td><code>.claude/skills/{name}/SKILL.md</code></td><td>On invoke or auto when relevant</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cursor</h3>
+    <table>
+      <thead><tr><th>Type</th><th>Path</th><th>Scope</th></tr></thead>
+      <tbody>
+        <tr><td>Project rules</td><td><code>.cursor/rules/*.mdc</code></td><td>When rule's glob/trigger matches</td></tr>
+        <tr><td>Skills</td><td><code>.cursor/skills/{name}/SKILL.md</code></td><td>On invoke or auto when relevant</td></tr>
+      </tbody>
+    </table>
+    <p>Cursor rules use <code>.mdc</code> with optional <code>globs</code> / <code>alwaysApply</code>. Claude Code rules use plain <code>.md</code> with optional <code>paths:</code> frontmatter. The concept is the same.</p>
+
+    <h2 id="comparison">Side-by-side comparison</h2>
+    <table>
+      <thead><tr><th>Dimension</th><th>Rules</th><th>Skills</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Primary job</strong></td><td>Tell agent how to behave</td><td>Tell agent how to complete a task</td></tr>
+        <tr><td><strong>Typical content</strong></td><td>Style, conventions, boundaries</td><td>Step-by-step checklist, scripts</td></tr>
+        <tr><td><strong>Length</strong></td><td>Short — bullets and constraints</td><td>Can be longer — procedures OK</td></tr>
+        <tr><td><strong>Trigger</strong></td><td>Session start or file path match</td><td><code>/release</code> or description match</td></tr>
+        <tr><td><strong>Good example</strong></td><td>"API handlers return <code>{ data, error }</code>"</td><td>"Ship a release: bump version, changelog, tag, deploy"</td></tr>
+        <tr><td><strong>Bad example</strong></td><td>30-step deploy checklist</td><td>"Use TypeScript strict mode"</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="when-rules">When to use rules</h2>
+    <p>Put content in <strong>rules</strong> when:</p>
+    <ul>
+      <li>It applies <strong>every time</strong> Claude touches certain files</li>
+      <li>It's a <strong>constraint</strong> or convention, not a procedure</li>
+      <li>Removing it would cause Claude to make <strong>repeated mistakes</strong></li>
+      <li>It's <strong>short</strong> — a few bullets, not a runbook</li>
+    </ul>
+    <h3>Good rule topics</h3>
+    <ul>
+      <li>Build and test commands</li>
+      <li>Code style (indent, naming, error envelope format)</li>
+      <li>Project layout</li>
+      <li>Security boundaries</li>
+      <li>File-type conventions</li>
+    </ul>
+
+    <h2 id="when-skills">When to use skills</h2>
+    <p>Put content in a <strong>skill</strong> when:</p>
+    <ul>
+      <li>It's a <strong>multi-step workflow</strong> (5+ steps with order)</li>
+      <li>It only applies <strong>sometimes</strong></li>
+      <li>It includes <strong>scripts, templates, or reference files</strong></li>
+      <li>You want to <strong>invoke it explicitly</strong> (<code>/ship-blog-post</code>)</li>
+      <li>It would <strong>bloat CLAUDE.md</strong> if pasted there</li>
+    </ul>
+    <h3>Good skill topics</h3>
+    <ul>
+      <li>Ship a blog post</li>
+      <li>Run a production database migration safely</li>
+      <li>Triage a failing CI check</li>
+      <li>Create a pull request with team template</li>
+    </ul>
+    <p>Write the <code>description</code> field like a search query — vague descriptions mean the skill never auto-loads.</p>
+
+    <h2 id="example-rule">Example: a rule file</h2>
+    <p><strong>File:</strong> <code>.claude/rules/testing.md</code></p>
+    <pre><code>---
+paths:
+  - <span class="str">"**/*.test.ts"</span>
+  - <span class="str">"**/*.spec.ts"</span>
+  - <span class="str">"tests/**/*"</span>
+---
+
+# Testing conventions
+
+- Use Vitest, not Jest
+- One <span class="str">`describe`</span> block per exported <span class="kw">function</span>
+- Mock external HTTP at the boundary, not internal helpers
+- Run <span class="str">`pnpm test path/to/file.test.ts`</span> after editing a test file
+- Never skip tests without a comment explaining why</code></pre>
+    <p><strong>Why this is a rule:</strong> Constraints that apply whenever Claude edits test files — no multi-step workflow.</p>
+
+    <h3>Cursor equivalent</h3>
+    <pre><code><span class="kw">---</span>
+<span class="fn">globs</span>: <span class="str">"**/*.{test,spec}.ts,tests/**"</span>
+<span class="kw">---</span>
+
+<span class="kw">#</span> Testing conventions
+(same bullets)</code></pre>
+
+    <h2 id="example-skill">Example: a skill file</h2>
+    <p><strong>File:</strong> <code>.claude/skills/ship-blog-post/SKILL.md</code></p>
+    <pre><code><span class="kw">---</span>
+<span class="fn">name</span>: ship-blog-post
+<span class="fn">description</span>: &gt;-
+  Publish a stackcone blog post — md source, HTML page, posts.json,
+  sitemap.xml, syntax highlighting. Use when user asks to ship or
+  publish a blog post.
+<span class="kw">---</span>
+
+<span class="kw">#</span> Ship a blog post
+
+<span class="kw">##</span> Steps
+
+1. Write <span class="str">`blog/md/{slug}.md`</span> (markdown source, not public URL).
+2. Write <span class="str">`blog/posts/{slug}/index.html`</span> (canonical published page).
+3. Download hero images to <span class="str">`blog/images/{slug}/`</span> — no hotlinks.
+4. Add entry to <span class="str">`blog/posts.json`</span> with author "Amar Kumar".
+5. Add URL to <span class="str">`sitemap.xml`</span>.
+6. Update static listing in <span class="str">`blog/index.html`</span>.
+7. Run <span class="str">`python3 _dev/apply_highlights.py blog/posts/{slug}/index.html`</span>.
+
+<span class="kw">##</span> Do not
+
+- Create redirect stub files
+- Generate AI hero images when real logos exist</code></pre>
+    <p><strong>Optional supporting files:</strong></p>
+    <pre><code>.claude/skills/ship-blog-post/
+├── SKILL.md
+├── template-snippet.md
+└── scripts/check-sitemap.sh</code></pre>
+    <p>Invoke manually: <code>/ship-blog-post my-new-slug</code></p>
+
+    <h2 id="wrong-vs-right">Same task — wrong vs right</h2>
+    <table>
+      <thead><tr><th>Task</th><th>Wrong</th><th>Right</th></tr></thead>
+      <tbody>
+        <tr><td>Always run tests before committing</td><td>Skill with one bullet</td><td>Rule in <code>CLAUDE.md</code></td></tr>
+        <tr><td>How we deploy to production</td><td>25-step deploy in <code>CLAUDE.md</code></td><td>Skill <code>deploy-production/SKILL.md</code></td></tr>
+        <tr><td>React components use named exports</td><td>Skill with vague description</td><td>Path-scoped rule for <code>src/components/**</code></td></tr>
+        <tr><td>Fix GitHub issue #842</td><td>Rule in CLAUDE.md</td><td>Skill with <code>disable-model-invocation: true</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="compose">How they compose with CLAUDE.md</h2>
+    <pre><code>CLAUDE.md          → facts true everywhere (build cmd, layout, git rules)
+.claude/rules/     → conventions scoped by topic or file path
+.claude/skills/    → procedures you run on demand</code></pre>
+    <p><strong>Example stack:</strong></p>
+    <pre><code>CLAUDE.md                    <span class="cm"># pnpm test, never push main, project map</span>
+.claude/rules/
+  ├── python-style.md        <span class="cm"># no paths → loads every session</span>
+  ├── api-design.md          <span class="cm"># paths: src/api/**</span>
+  └── database.md            <span class="cm"># paths: src/db/**</span>
+.claude/skills/
+  ├── add-endpoint/SKILL.md
+  ├── run-migration/SKILL.md
+  └── incident/SKILL.md</code></pre>
+    <p>Run <code>/context</code> to see what's loaded. If the list is huge, move procedures to skills and narrow rules with <code>paths</code>.</p>
+
+    <h2 id="flowchart">Decision flowchart</h2>
+    <pre><code>Is this a multi-step procedure (5+ ordered steps)?
+  YES → Skill
+  NO  → Does it apply every session regardless of task?
+          YES → CLAUDE.md or unconditional .claude/rules/*.md
+          NO  → Does it apply only when editing certain files?
+                  YES → Path-scoped rule (paths: or globs:)
+                  NO  → CLAUDE.md if short; skill if rare workflow</code></pre>
+
+    <h2 id="mistakes">Common mistakes</h2>
+    <ol>
+      <li><strong>Release checklist in CLAUDE.md</strong> — move to a skill.</li>
+      <li><strong>Style rules in a skill</strong> — belongs in a rule.</li>
+      <li><strong>Vague skill description</strong> — write like a search query.</li>
+      <li><strong>Duplicate content</strong> — same instruction in three places.</li>
+      <li><strong>Giant skill</strong> — split by trigger.</li>
+      <li><strong>Rules without paths in monorepos</strong> — frontend rules loading during backend work.</li>
+      <li><strong>Expecting rules to enforce</strong> — use <code>settings.json</code> or hooks for hard blocks.</li>
+    </ol>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>What is the difference between skills and rules in Claude Code?</h3>
+    <p>Rules are persistent instructions for conventions and constraints. Skills are on-demand playbooks for multi-step workflows.</p>
+    <h3>Should a release checklist be a rule or a skill?</h3>
+    <p>A skill. Multi-step procedures belong in <code>SKILL.md</code>, not <code>CLAUDE.md</code>.</p>
+    <h3>Can a skill reference a rule?</h3>
+    <p>Yes. Rules set defaults; skills orchestrate workflows that respect them.</p>
+    <h3>Rules vs CLAUDE.md?</h3>
+    <p><code>CLAUDE.md</code> is the root rules file. <code>.claude/rules/</code> splits it into modules. Use <code>paths:</code> to defer loading.</p>
+    <h3>Skills vs MCP?</h3>
+    <p>Rules and skills are instructions. MCP is plumbing to external systems. See <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents</a>.</p>
+
+    <h2 id="bottom-line">Bottom line</h2>
+    <ul>
+      <li><strong>Rules</strong> — how Claude should behave (constraints, conventions, always-on facts)</li>
+      <li><strong>Skills</strong> — how Claude should complete a task (checklists, workflows, on demand)</li>
+    </ul>
+    <p>Sticky note on your monitor → rule. Runbook in a drawer → skill.</p>
+
+    <h2 id="related">Related guides</h2>
+    <ul>
+      <li><a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules</a></li>
+      <li><a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents: When to Use Each</a></li>
+      <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot: Which Should You Use?</a></li>
+    </ul>
+
+    <aside class="blog-cta">
+      <p><strong>Building agent workflows for your team?</strong></p>
+      <p>stackcone designs skills, rules, MCP integrations, and production agent harnesses.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>

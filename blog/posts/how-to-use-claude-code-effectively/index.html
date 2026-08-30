@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules</title>
+  <meta name="description" content="How to use Claude Code effectively — what CLAUDE.md should contain, how to wire AGENTS.md, path-scoped .claude/rules, settings.json, and verification workflows.">
+  <meta name="keywords" content="Claude Code best practices, CLAUDE.md, AGENTS.md, Claude Code rules, how to use Claude Code, Claude Code setup">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/how-to-use-claude-code-effectively/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/how-to-use-claude-code-effectively/">
+  <meta property="og:title" content="How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules">
+  <meta property="og:description" content="What CLAUDE.md should contain, how to wire AGENTS.md, path-scoped rules, settings.json, and session workflows that stick.">
+  <meta property="og:image" content="https://stackcone.com/blog/images/how-to-use-claude-code-effectively/claude.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules">
+  <meta name="twitter:description" content="Practical Claude Code setup — CLAUDE.md templates, AGENTS.md bridging, .claude/rules, and verification loops.">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/how-to-use-claude-code-effectively/claude.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules",
+    "description": "How to use Claude Code effectively — what CLAUDE.md should contain, how to wire AGENTS.md, path-scoped .claude/rules, settings.json, and verification workflows.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-08-30",
+    "dateModified": "2026-08-30",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-to-use-claude-code-effectively/" },
+    "image": "https://stackcone.com/blog/images/how-to-use-claude-code-effectively/claude.png",
+    "keywords": ["Claude Code", "CLAUDE.md", "AGENTS.md", "AI coding agent", "Claude Code best practices"],
+    "articleSection": "Platform"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Set up Claude Code project memory",
+    "description": "Configure CLAUDE.md, AGENTS.md, and .claude/rules for efficient Claude Code sessions.",
+    "step": [
+      { "@type": "HowToStep", "name": "Create CLAUDE.md", "text": "Add build/test commands, project layout, and verification steps. Keep under 200 lines." },
+      { "@type": "HowToStep", "name": "Bridge AGENTS.md", "text": "Import shared AGENTS.md with @AGENTS.md at the top of CLAUDE.md instead of duplicating." },
+      { "@type": "HowToStep", "name": "Add path-scoped rules", "text": "Split domain-specific instructions into .claude/rules/ with paths frontmatter." },
+      { "@type": "HowToStep", "name": "Verify loading", "text": "Run /context in a session to confirm memory files loaded correctly." }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long should CLAUDE.md be?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Target under 200 lines. Move domain-specific content to path-scoped rules in .claude/rules/ or skills."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Claude Code read AGENTS.md?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Not directly. Create CLAUDE.md with @AGENTS.md at the top, use a symlink, or run /import to bridge them."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between CLAUDE.md and .claude/rules/?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Root CLAUDE.md loads every session. Rules split instructions by topic; path-scoped rules load only when Claude reads matching files."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Use Claude Code Effectively", "item": "https://stackcone.com/blog/posts/how-to-use-claude-code-effectively/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules</h1>
+    <p class="meta">August 2026 · Published by Amar Kumar</p>
+
+    <figure class="blog-figure">
+      <img src="../../images/how-to-use-claude-code-effectively/claude.png" alt="Anthropic Claude Code" width="120" height="120" loading="eager">
+    </figure>
+
+    <p>Developers searching for <strong>how to use Claude Code effectively</strong>, <strong>what to put in CLAUDE.md</strong>, or <strong>Claude Code best practices</strong> usually hit the same wall: Claude works great for one session, then forgets everything next time — or ignores instructions buried in a 400-line rules file.</p>
+    <p>Claude Code is an agent, not a chatbot. It reads files, runs shell commands, and edits your repo autonomously. The difference between a frustrating session and one you can walk away from is <strong>project memory</strong>: what you put in <code>CLAUDE.md</code>, how you wire <code>AGENTS.md</code>, when to use <code>.claude/rules/</code>, and how you prompt with verification loops.</p>
+    <p>This guide is a practical setup reference — file templates, what belongs where, and workflow habits that actually stick.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#memory-stack">The memory stack</a></li>
+        <li><a href="#claude-md">What CLAUDE.md should contain</a></li>
+        <li><a href="#agents-md">What AGENTS.md should contain</a></li>
+        <li><a href="#rules">Path-scoped rules in .claude/rules/</a></li>
+        <li><a href="#personal">Personal and user-level config</a></li>
+        <li><a href="#settings">Essential settings.json</a></li>
+        <li><a href="#workflow">Session workflow that works</a></li>
+        <li><a href="#layout">Example repo layout</a></li>
+        <li><a href="#mistakes">Common mistakes</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="memory-stack">The memory stack</h2>
+    <p>Claude Code loads instructions at session start. Think of it as layers — broadest first, most specific last:</p>
+    <table>
+      <thead><tr><th>Layer</th><th>File / path</th><th>Who reads it</th><th>Loaded when</th></tr></thead>
+      <tbody>
+        <tr><td>Org policy</td><td><code>/etc/claude-code/CLAUDE.md</code></td><td>Everyone in org</td><td>Every session</td></tr>
+        <tr><td>User prefs</td><td><code>~/.claude/CLAUDE.md</code></td><td>You, all projects</td><td>Every session</td></tr>
+        <tr><td>User rules</td><td><code>~/.claude/rules/*.md</code></td><td>You, all projects</td><td>Every session</td></tr>
+        <tr><td>Project root</td><td><code>./CLAUDE.md</code> or <code>./.claude/CLAUDE.md</code></td><td>Team via git</td><td>Every session</td></tr>
+        <tr><td>Personal project</td><td><code>./CLAUDE.local.md</code> (gitignored)</td><td>Just you</td><td>Every session</td></tr>
+        <tr><td>Modular rules</td><td><code>.claude/rules/*.md</code></td><td>Team via git</td><td>Every session, or on demand if path-scoped</td></tr>
+        <tr><td>Subdirectory</td><td><code>src/api/CLAUDE.md</code></td><td>Team</td><td>When Claude reads files in that folder</td></tr>
+        <tr><td>Auto memory</td><td><code>.claude/memory/</code></td><td>Claude writes it</td><td>First 200 lines / 25KB per session</td></tr>
+        <tr><td>Skills</td><td><code>.claude/skills/</code></td><td>On invoke</td><td>Only when relevant</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Key distinction:</strong> <code>CLAUDE.md</code> and rules are <strong>instructions you write</strong>. Auto memory is <strong>notes Claude writes</strong> from corrections. Skills are <strong>procedures</strong> that load on demand.</p>
+    <p>Run <code>/context</code> after starting a session to confirm what loaded. Run <code>/memory</code> to inspect auto memory.</p>
+
+    <h2 id="claude-md">What CLAUDE.md should contain</h2>
+    <p>Target <strong>under 200 lines</strong>. Everything in root <code>CLAUDE.md</code> loads into every session and burns context. If removing a line wouldn't cause Claude to make mistakes, cut it.</p>
+
+    <h3>Include</h3>
+    <ul>
+      <li><strong>Build and test commands</strong> — exact strings, not "run the tests"</li>
+      <li><strong>Project layout</strong> — where API handlers, migrations, and configs live</li>
+      <li><strong>Non-obvious conventions</strong> — things Claude can't infer from code alone</li>
+      <li><strong>Git workflow</strong> — branch naming, commit style, never push to main</li>
+      <li><strong>Verification command</strong> — the one check Claude should run before stopping</li>
+      <li><strong>Security boundaries</strong> — no prod credentials, ask before destructive ops</li>
+    </ul>
+
+    <h3>Exclude</h3>
+    <ul>
+      <li>Generic advice ("write clean code")</li>
+      <li>Full API docs (link to docs instead)</li>
+      <li>File-by-file codebase tour (Claude can grep)</li>
+      <li>Long tutorials (use a skill)</li>
+      <li>Info that changes weekly (put in a path-scoped rule)</li>
+    </ul>
+
+    <h3>Starter template</h3>
+    <pre><code><span class="kw">#</span> Project: acme-api
+
+<span class="kw">##</span> Commands
+- Install: <span class="str">`pnpm install`</span>
+- Dev server: <span class="str">`pnpm dev`</span> (port 3000)
+- Test: <span class="str">`pnpm test`</span>
+- Lint: <span class="str">`pnpm lint`</span>
+- Typecheck: <span class="str">`pnpm typecheck`</span>
+
+<span class="kw">##</span> Layout
+- <span class="str">`src/api/handlers/`</span> — HTTP route handlers
+- <span class="str">`src/db/`</span> — Drizzle schema and migrations
+- <span class="str">`src/lib/`</span> — shared utilities (no business logic)
+
+<span class="kw">##</span> Code style
+- TypeScript strict mode; no <span class="str">`any`</span> without a comment
+- 2-space indent
+
+<span class="kw">##</span> Workflow
+- Create a feature branch before edits
+- Run <span class="str">`pnpm test &amp;&amp; pnpm lint`</span> before committing
+- IMPORTANT: never commit <span class="str">`.env`</span> or secrets
+
+<span class="kw">##</span> Verification
+After any change under <span class="str">`src/api/`</span>, run:
+<span class="str">`pnpm test src/api/`</span></code></pre>
+
+    <h3>Generate a first draft</h3>
+    <pre><code><span class="fn">cd</span> your-repo
+claude
+<span class="cm"># then inside Claude Code:</span>
+/init</code></pre>
+    <p><code>/init</code> scans your repo and proposes a starter <code>CLAUDE.md</code>. Refine from there — add only what Claude got wrong twice.</p>
+
+    <p>Use <code>@path/to/file</code> imports to pull in shared docs without duplicating:</p>
+    <pre><code>@AGENTS.md
+
+<span class="kw">##</span> Claude-specific
+- Use plan mode for changes under <span class="str">`src/billing/`</span>
+- Run <span class="str">`pnpm test src/billing/`</span> after billing edits</code></pre>
+
+    <h2 id="agents-md">What AGENTS.md should contain</h2>
+    <p><code>AGENTS.md</code> is an <strong>open standard</strong> used by Cursor, Codex, Devin, and other agents. <strong>Claude Code does not read <code>AGENTS.md</code> automatically</strong> — it reads <code>CLAUDE.md</code>.</p>
+    <p>If your team already maintains <code>AGENTS.md</code>, don't duplicate. Bridge them:</p>
+
+    <h3>Option A — import (recommended)</h3>
+    <pre><code>@AGENTS.md
+
+<span class="kw">##</span> Claude Code
+- Prefer plan mode for database migrations
+- Use <span class="str">`claude -p`</span> in CI for automated fix loops</code></pre>
+
+    <h3>Option B — symlink (macOS/Linux)</h3>
+    <pre><code>ln -s AGENTS.md CLAUDE.md</code></pre>
+
+    <h3>Option C — one-time import</h3>
+    <p>Run <code>/import</code> inside Claude Code (v2.1.213+) to copy supported agent configs including <code>AGENTS.md</code>, <code>.cursor/rules/</code>, MCP servers, and skills.</p>
+
+    <h3>What belongs in AGENTS.md</h3>
+    <p>Write <strong>agent-agnostic</strong> instructions any coding agent should follow:</p>
+    <table>
+      <thead><tr><th>Section</th><th>Example content</th></tr></thead>
+      <tbody>
+        <tr><td>Project overview</td><td>One paragraph: what the repo does</td></tr>
+        <tr><td>Setup</td><td>Install, env vars, first-run commands</td></tr>
+        <tr><td>Architecture</td><td>High-level module map, data flow</td></tr>
+        <tr><td>Conventions</td><td>Naming, error handling, logging</td></tr>
+        <tr><td>Testing</td><td>How to run tests, coverage expectations</td></tr>
+        <tr><td>PR checklist</td><td>What must pass before merge</td></tr>
+        <tr><td>Boundaries</td><td>Files never to edit, secrets handling</td></tr>
+      </tbody>
+    </table>
+    <p>Keep Claude-only or Cursor-only quirks in <code>CLAUDE.md</code> or <code>.cursor/rules/</code> — not in <code>AGENTS.md</code>.</p>
+
+    <h3>Mirror with Cursor</h3>
+    <pre><code>AGENTS.md              ← shared team rules (committed)
+CLAUDE.md              ← @AGENTS.md + Claude-specific notes
+.cursor/rules/*.mdc    ← Cursor-specific (Tab, Composer hints)</code></pre>
+
+    <h2 id="rules">Path-scoped rules in <code>.claude/rules/</code></h2>
+    <p>When <code>CLAUDE.md</code> grows past ~150 lines, split topic-specific instructions into <code>.claude/rules/</code>. One file per topic:</p>
+    <pre><code>.claude/
+├── CLAUDE.md
+└── rules/
+    ├── testing.md
+    ├── api-design.md
+    ├── frontend/
+    │   └── react.md
+    └── backend/
+        └── database.md</code></pre>
+
+    <p>Rules <strong>without</strong> frontmatter load every session. Rules <strong>with</strong> <code>paths</code> load only when Claude reads matching files — saving context.</p>
+
+    <h3>Path-scoped example</h3>
+    <pre><code><span class="kw">---</span>
+<span class="fn">paths</span>:
+  - "src/api/**/*.ts"
+  - "src/api/**/*.tsx"
+<span class="kw">---</span>
+
+<span class="kw">#</span> API rules
+
+- All endpoints return <span class="str">`{ data, error }`</span> envelope
+- Validate input with Zod schemas in <span class="str">`src/api/schemas/`</span>
+- Add OpenAPI comments on every exported handler</code></pre>
+
+    <h3>When to use rules vs skills</h3>
+    <table>
+      <thead><tr><th>Use <code>.claude/rules/</code></th><th>Use skills (<code>.claude/skills/</code>)</th></tr></thead>
+      <tbody>
+        <tr><td>Conventions while editing certain files</td><td>Multi-step procedures (deploy, release)</td></tr>
+        <tr><td>"Always do X when touching Y"</td><td>"Run this checklist when I say /release"</td></tr>
+        <tr><td>Loaded when matching files are read</td><td>Loaded on invoke or when relevant</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="personal">Personal and user-level config</h2>
+    <h3><code>CLAUDE.local.md</code> (project, gitignored)</h3>
+    <p>Personal sandbox URLs, test accounts, local DB names. Add to <code>.gitignore</code>:</p>
+    <pre><code>CLAUDE.local.md</code></pre>
+
+    <h3><code>~/.claude/CLAUDE.md</code> (user, all projects)</h3>
+    <pre><code><span class="kw">#</span> Personal preferences
+- Prefer concise commit messages
+- Always show git diff summary before committing</code></pre>
+
+    <h3><code>~/.claude/rules/</code> (user, all projects)</h3>
+    <p>Same format as project rules. Loaded before project rules — project wins on conflict.</p>
+
+    <h2 id="settings">Essential <code>settings.json</code></h2>
+    <p>Project settings live in <code>.claude/settings.json</code>. Local overrides in <code>.claude/settings.local.json</code> (usually gitignored).</p>
+    <pre><code>{
+  <span class="str">"permissions"</span>: {
+    <span class="str">"allow"</span>: [
+      <span class="str">"Bash(pnpm test *)"</span>,
+      <span class="str">"Bash(pnpm lint)"</span>
+    ],
+    <span class="str">"deny"</span>: [
+      <span class="str">"Bash(git push --force *)"</span>,
+      <span class="str">"Read(.env)"</span>
+    ]
+  },
+  <span class="str">"env"</span>: {
+    <span class="str">"NODE_ENV"</span>: <span class="str">"development"</span>
+  }
+}</code></pre>
+    <table>
+      <thead><tr><th>Key</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>permissions.allow</code> / <code>deny</code></td><td>Hard gates — unlike CLAUDE.md, these are enforced</td></tr>
+        <tr><td><code>claudeMdExcludes</code></td><td>Skip irrelevant ancestor CLAUDE.md files in monorepos</td></tr>
+        <tr><td><code>cleanupPeriodDays</code></td><td>How long session transcripts are kept (default 30)</td></tr>
+        <tr><td><code>sandbox.enabled</code></td><td>Isolate bash from your real filesystem</td></tr>
+      </tbody>
+    </table>
+    <p><strong>CLAUDE.md = soft guidance. Settings permissions = hard enforcement.</strong> Use PreToolUse hooks when you need to block actions regardless of what Claude decides.</p>
+
+    <h2 id="workflow">Session workflow that works</h2>
+    <h3>1. Explore → plan → implement</h3>
+    <p>Press <code>Shift+Tab</code> for plan mode (or <code>claude --permission-mode plan</code>). Claude reads and plans without editing. Approve the plan, then implement. Skip planning for one-line fixes.</p>
+
+    <h3>2. Give Claude a verification loop</h3>
+    <pre><code>Add rate limiting to POST /api/login.
+Write a test that sends 11 requests and expects 429 on the 11th.
+Run pnpm test src/api/login.test.ts and fix until green.</code></pre>
+    <p>Without a check, you become the verification loop.</p>
+
+    <h3>3. Scope prompts with <code>@</code> files</h3>
+    <pre><code>@src/auth/session.ts fix the token refresh bug described in <span class="cm">#842.</span>
+Match error handling in @src/auth/login.ts.</code></pre>
+
+    <h3>4. Use <code>/doctor</code> on bloated CLAUDE.md</h3>
+    <p>Claude proposes cuts for content it can derive from the codebase. Treat <code>CLAUDE.md</code> like code — review when behavior drifts.</p>
+
+    <h3>5. Headless CI with <code>claude -p</code></h3>
+    <pre><code>claude -p "Fix the failing test in src/api/health.test.ts. Run pnpm test after."</code></pre>
+
+    <h2 id="layout">Example repo layout</h2>
+    <pre><code>my-app/
+├── AGENTS.md                 <span class="cm"># Shared agent instructions (team)</span>
+├── CLAUDE.md                 <span class="cm"># @AGENTS.md + Claude-specific</span>
+├── CLAUDE.local.md           <span class="cm"># Personal (gitignored)</span>
+├── .gitignore
+├── .claude/
+│   ├── settings.json
+│   ├── settings.local.json
+│   ├── rules/
+│   │   ├── testing.md
+│   │   └── api-design.md
+│   ├── skills/
+│   │   └── release/SKILL.md
+│   └── commands/review.md
+├── src/billing/CLAUDE.md     <span class="cm"># Loads when editing billing/</span>
+└── .cursor/rules/            <span class="cm"># Cursor-only (optional)</span></code></pre>
+
+    <h2 id="mistakes">Common mistakes</h2>
+    <ol>
+      <li><strong>500-line CLAUDE.md</strong> — Claude ignores buried rules. Split into path-scoped <code>.claude/rules/</code>.</li>
+      <li><strong>Duplicating AGENTS.md in CLAUDE.md</strong> — use <code>@AGENTS.md</code> import instead.</li>
+      <li><strong>No test command</strong> — Claude stops when code "looks done" instead of when tests pass.</li>
+      <li><strong>Contradicting rules</strong> — Claude picks one arbitrarily.</li>
+      <li><strong>Skills for static facts</strong> — belongs in CLAUDE.md or a rule, not a skill.</li>
+      <li><strong>Two agents editing at once</strong> — Cursor and Claude Code on the same branch causes conflicts.</li>
+      <li><strong>Never pruning</strong> — outdated instructions cause more harm than none.</li>
+    </ol>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>How long should CLAUDE.md be?</h3>
+    <p>Under 200 lines. Move domain-specific content to path-scoped rules or skills.</p>
+    <h3>Does Claude Code read AGENTS.md?</h3>
+    <p>Not directly. Create <code>CLAUDE.md</code> with <code>@AGENTS.md</code> at the top, symlink, or run <code>/import</code>.</p>
+    <h3>What's the difference between CLAUDE.md and .claude/rules/?</h3>
+    <p>Root <code>CLAUDE.md</code> loads every session. Rules split instructions by topic; path-scoped rules load only when relevant files are read.</p>
+    <h3>Should I commit CLAUDE.local.md?</h3>
+    <p>No. Add it to <code>.gitignore</code>.</p>
+    <h3>How do I check if instructions loaded?</h3>
+    <p>Run <code>/context</code> in a Claude Code session.</p>
+    <h3>CLAUDE.md vs auto memory?</h3>
+    <p>You write CLAUDE.md. Claude writes auto memory from your corrections.</p>
+
+    <h2 id="related">Related guides</h2>
+    <ul>
+      <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot: Which Should You Use?</a></li>
+      <li><a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents: When to Use Each</a></li>
+      <li><a href="/blog/posts/migrate-cursor-chat-to-claude-code/">How to Migrate Cursor Chat to Claude Code</a></li>
+      <li><a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">How to Build a Cursor-Like AI Coding Agent</a></li>
+    </ul>
+
+    <aside class="blog-cta">
+      <p><strong>Setting up Claude Code for your team?</strong></p>
+      <p>stackcone builds production agent loops, MCP integrations, and custom coding harnesses.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="../../contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>
