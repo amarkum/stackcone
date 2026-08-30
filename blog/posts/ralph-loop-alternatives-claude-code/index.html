@@ -77,30 +77,29 @@
     <nav class="toc" aria-label="Table of contents">
     <h2>Table of contents</h2>
     <ol>
-    </ol></nav>
-    <ol>
-    <li>1. <a href="#origin">Origin of the Ralph loop</a></li>
-    <li>2. <a href="#when-ralph">When people use Ralph loops</a></li>
-    <li>3. <a href="#why-alternatives">Why alternatives are better</a></li>
-    <li>4. <a href="#verification-prompt">Alternative 1: Verification in the prompt</a></li>
-    <li>5. <a href="#goal">Alternative 2: <code>/goal</code> condition</a></li>
-    <li>6. <a href="#stop-hooks">Alternative 3: Hooks (Stop, PreToolUse, PostToolUse)</a></li>
-    <li>7. <a href="#verification-subagent">Alternative 4: Verification subagent</a></li>
-    <li>8. <a href="#plan-mode">Alternative 5: Plan mode then implement</a></li>
-    <li>9. <a href="#headless">Alternative 6: Headless CI (<code>claude -p</code>)</a></li>
-    <li>10. <a href="#cursor">Cursor-specific patterns</a></li>
-    <li>11. <a href="#failure-modes">Failure modes and debugging stalled loops</a></li>
-    <li>12. <a href="#decision-tree">Decision tree: which alternative to pick</a></li>
-    <li>13. <a href="#comparison">Comparison table</a></li>
-    <li>14. <a href="#faq">FAQ</a></li>
+    <li><a href="#origin">Origin of the Ralph loop</a></li>
+    <li><a href="#when-ralph">When people use Ralph loops</a></li>
+    <li><a href="#why-alternatives">Why alternatives are better</a></li>
+    <li><a href="#verification-prompt">Alternative 1: Verification in the prompt</a></li>
+    <li><a href="#goal">Alternative 2: <code>/goal</code> condition</a></li>
+    <li><a href="#stop-hooks">Alternative 3: Hooks (Stop, PreToolUse, PostToolUse)</a></li>
+    <li><a href="#verification-subagent">Alternative 4: Verification subagent</a></li>
+    <li><a href="#plan-mode">Alternative 5: Plan mode then implement</a></li>
+    <li><a href="#headless">Alternative 6: Headless CI (<code>claude -p</code>)</a></li>
+    <li><a href="#cursor">Cursor-specific patterns</a></li>
+    <li><a href="#failure-modes">Failure modes and debugging stalled loops</a></li>
+    <li><a href="#decision-tree">Decision tree: which alternative to pick</a></li>
+    <li><a href="#comparison">Comparison table</a></li>
+    <li><a href="#faq">FAQ</a></li>
     </ol>
+    </nav>
     <h2 id="origin-of-the-ralph-loop">Origin of the Ralph loop</h2>
     <p>The name comes from Ralph Wiggum — the Simpsons character who keeps trying the same thing with cheerful persistence despite obvious failure. In AI coding circles, &quot;Ralph loop&quot; became shorthand for:</p>
     <ol>
-    <li>1. Give the agent a task</li>
-    <li>2. Let it run until it stops</li>
-    <li>3. If not done, re-prompt with &quot;continue&quot; or the same instructions</li>
-    <li>4. Repeat</li>
+    <li>Give the agent a task</li>
+    <li>Let it run until it stops</li>
+    <li>If not done, re-prompt with &quot;continue&quot; or the same instructions</li>
+    <li>Repeat</li>
     </ol>
     <p>The pattern predates any single tool. Early ChatGPT users pasted &quot;keep going&quot; after every truncation. Terminal-agent users wrapped <code>claude</code>, <code>aider</code>, or custom scripts in <code>while</code> loops. The Ralph meme crystallized when developers realized <strong>persistence without verification</strong> looks productive but often re-implements the same bug three times.</p>
     <p>Core insight the community extracted: <strong>the loop is fine; the missing piece is a machine-checkable done condition.</strong></p>
@@ -196,11 +195,11 @@ Follow the Verification section before stopping.</code></pre>
 The refresh token should rotate on use. Match error handling in session.test.ts.</code></pre>
     <p><strong>What happens:</strong></p>
     <ol>
-    <li>1. Claude implements the fix</li>
-    <li>2. Tries to end the turn</li>
-    <li>3. Evaluator checks: tests green? diff scoped?</li>
-    <li>4. If no → Claude continues without you re-prompting</li>
-    <li>5. If yes → turn ends</li>
+    <li>Claude implements the fix</li>
+    <li>Tries to end the turn</li>
+    <li>Evaluator checks: tests green? diff scoped?</li>
+    <li>If no → Claude continues without you re-prompting</li>
+    <li>If yes → turn ends</li>
     </ol>
     <h3 id="worked-example-documentation-goal">Worked example: documentation goal</h3>
     <pre><code>/goal README.md contains a "Rate limiting" section with curl example, and `pnpm test` exits 0</code></pre>
@@ -703,9 +702,9 @@ Keep fixing until done. Do not ask me to run tests.</code></pre>
     <h3 id="cursor-ci-re-run-headless-equivalent">Cursor + CI re-run (headless equivalent)</h3>
     <p>Cursor does not ship <code>cursor -p</code> for CI the same way Claude Code does. Options:</p>
     <ol>
-    <li>1. <strong>Cursor CLI / Cloud Agents</strong> — trigger from CI where available</li>
-    <li>2. <strong>Claude Code in CI</strong> — use <code>claude -p</code> for automated fix loops on Cursor repos (both read <code>AGENTS.md</code>)</li>
-    <li>3. <strong>GitHub Action</strong> that comments &quot;tests failed&quot; and triggers a manual agent session</li>
+    <li><strong>Cursor CLI / Cloud Agents</strong> — trigger from CI where available</li>
+    <li><strong>Claude Code in CI</strong> — use <code>claude -p</code> for automated fix loops on Cursor repos (both read <code>AGENTS.md</code>)</li>
+    <li><strong>GitHub Action</strong> that comments &quot;tests failed&quot; and triggers a manual agent session</li>
     </ol>
     <p>Bridge shared instructions:</p>
     <pre><code><span class="kw">#</span> CLAUDE.md
@@ -753,10 +752,10 @@ git diff</code></pre>
     <p><strong>Cause:</strong> Context bloat; agent re-reads failures but repeats the same fix strategy.</p>
     <p><strong>Fix:</strong></p>
     <ol>
-    <li>1. <code>/clear</code> or start fresh session</li>
-    <li>2. Plan mode — confirm approach before implement</li>
-    <li>3. Verification subagent — &quot;why did the last three attempts fail?&quot;</li>
-    <li>4. Enrich CI prompt with &quot;do not repeat fix X&quot; (see <code>claude-fix-loop.sh</code>)</li>
+    <li><code>/clear</code> or start fresh session</li>
+    <li>Plan mode — confirm approach before implement</li>
+    <li>Verification subagent — &quot;why did the last three attempts fail?&quot;</li>
+    <li>Enrich CI prompt with &quot;do not repeat fix X&quot; (see <code>claude-fix-loop.sh</code>)</li>
     </ol>
     <h3 id="symptom-posttooluse-hook-slows-every-edit-to-a-crawl">Symptom: PostToolUse hook slows every edit to a crawl</h3>
     <p><strong>Cause:</strong> Running full test suite after each file touch.</p>
@@ -848,12 +847,12 @@ git diff</code></pre>
 </tbody></table>
     <p><strong>Recommended stack:</strong></p>
     <ol>
-    <li>1. <strong>Plan mode</strong> for multi-file work</li>
-    <li>2. <strong>Verification in prompt</strong> for every task</li>
-    <li>3. <strong>Stop hook</strong> for test suite on production repos</li>
-    <li>4. <strong><code>/goal</code></strong> when walking away mid-session</li>
-    <li>5. <strong>Subagent review</strong> before merge on critical paths</li>
-    <li>6. <strong>Bounded CI script</strong> instead of unbounded shell <code>while</code> loops</li>
+    <li><strong>Plan mode</strong> for multi-file work</li>
+    <li><strong>Verification in prompt</strong> for every task</li>
+    <li><strong>Stop hook</strong> for test suite on production repos</li>
+    <li><strong><code>/goal</code></strong> when walking away mid-session</li>
+    <li><strong>Subagent review</strong> before merge on critical paths</li>
+    <li><strong>Bounded CI script</strong> instead of unbounded shell <code>while</code> loops</li>
     </ol>
     <h2 id="faq">FAQ</h2>
     <h3 id="is-the-ralph-loop-bad">Is the Ralph loop bad?</h3>
@@ -876,10 +875,10 @@ git diff</code></pre>
     <h3 id="can-i-combine-plan-mode-stop-hook-goal">Can I combine plan mode + Stop hook + <code>/goal</code>?</h3>
     <p>Yes — that is the strongest unattended pattern:</p>
     <ol>
-    <li>1. Plan mode → approved plan</li>
-    <li>2. Implement with verification prompt</li>
-    <li>3. <code>/goal</code> for diff scope + test pass</li>
-    <li>4. Stop hook as final hard gate</li>
+    <li>Plan mode → approved plan</li>
+    <li>Implement with verification prompt</li>
+    <li><code>/goal</code> for diff scope + test pass</li>
+    <li>Stop hook as final hard gate</li>
     </ol>
     <h3 id="what-should-i-put-in-the-ci-prompt-vs-claudemd">What should I put in the CI prompt vs CLAUDE.md?</h3>
     <p><strong>CLAUDE.md:</strong> Standing project context — commands, layout, boundaries, default verification.</p>

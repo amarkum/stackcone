@@ -76,27 +76,26 @@
     <nav class="toc" aria-label="Table of contents">
     <h2>Table of contents</h2>
     <ol>
-    </ol></nav>
-    <ol>
-    <li>1. <a href="#what-makes-good">What makes good autocomplete</a></li>
-    <li>2. <a href="#how-tab-models-work">How Tab models work technically</a></li>
-    <li>3. <a href="#quick-pick">Quick pick by situation</a></li>
-    <li>4. <a href="#cursor-tab">Cursor Tab — deep dive</a></li>
-    <li>5. <a href="#github-copilot">GitHub Copilot — deep dive</a></li>
-    <li>6. <a href="#windsurf">Windsurf — deep dive</a></li>
-    <li>7. <a href="#supermaven">Supermaven — history and standalone use</a></li>
-    <li>8. <a href="#continue">Continue — bring your own model</a></li>
-    <li>9. <a href="#agent-only">Claude Code and other agent-only tools</a></li>
-    <li>10. <a href="#measuring-accept-rate">Measuring accept rate</a></li>
-    <li>11. <a href="#language-specific">Language-specific performance</a></li>
-    <li>12. <a href="#privacy-enterprise">Privacy and enterprise comparison</a></li>
-    <li>13. <a href="#troubleshooting">Troubleshooting slow Tab</a></li>
-    <li>14. <a href="#when-to-disable">When to disable Tab</a></li>
-    <li>15. <a href="#pairing-with-agents">Pairing Tab with agents</a></li>
-    <li>16. <a href="#team-setup">Team setup recommendations</a></li>
-    <li>17. <a href="#faq">FAQ</a></li>
-    <li>18. <a href="#bottom-line">Bottom line</a></li>
+    <li><a href="#what-makes-good">What makes good autocomplete</a></li>
+    <li><a href="#how-tab-models-work">How Tab models work technically</a></li>
+    <li><a href="#quick-pick">Quick pick by situation</a></li>
+    <li><a href="#cursor-tab">Cursor Tab — deep dive</a></li>
+    <li><a href="#github-copilot">GitHub Copilot — deep dive</a></li>
+    <li><a href="#windsurf">Windsurf — deep dive</a></li>
+    <li><a href="#supermaven">Supermaven — history and standalone use</a></li>
+    <li><a href="#continue">Continue — bring your own model</a></li>
+    <li><a href="#agent-only">Claude Code and other agent-only tools</a></li>
+    <li><a href="#measuring-accept-rate">Measuring accept rate</a></li>
+    <li><a href="#language-specific">Language-specific performance</a></li>
+    <li><a href="#privacy-enterprise">Privacy and enterprise comparison</a></li>
+    <li><a href="#troubleshooting">Troubleshooting slow Tab</a></li>
+    <li><a href="#when-to-disable">When to disable Tab</a></li>
+    <li><a href="#pairing-with-agents">Pairing Tab with agents</a></li>
+    <li><a href="#team-setup">Team setup recommendations</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#bottom-line">Bottom line</a></li>
     </ol>
+    </nav>
     <h2 id="what-makes-good-autocomplete">What makes good autocomplete</h2>
     <table>
 <thead><tr><th>Signal</th><th>Why it matters</th></tr></thead>
@@ -112,9 +111,9 @@
     <h3 id="the-three-layers-of-a-tab-product">The three layers of a Tab product</h3>
     <p>Every serious autocomplete tool stacks three layers:</p>
     <ol>
-    <li>1. <strong>Model</strong> — a code-specialized LLM trained for fill-in-the-middle (FIM) prediction</li>
-    <li>2. <strong>Context assembly</strong> — what gets sent to the model (open file, imports, index hits, recent edits)</li>
-    <li>3. <strong>Client UX</strong> — ghost text rendering, partial accepts, debouncing, and latency masking</li>
+    <li><strong>Model</strong> — a code-specialized LLM trained for fill-in-the-middle (FIM) prediction</li>
+    <li><strong>Context assembly</strong> — what gets sent to the model (open file, imports, index hits, recent edits)</li>
+    <li><strong>Client UX</strong> — ghost text rendering, partial accepts, debouncing, and latency masking</li>
     </ol>
     <p>Weakness in any layer shows up as wrong suggestions, slow ghost text, or suggestions that ignore your project&#x27;s conventions.</p>
     <h2 id="how-tab-models-work-technically">How Tab models work technically</h2>
@@ -204,9 +203,9 @@ CURSOR:  ↑ (model fills in the loop body)</code></pre>
     <h3 id="partial-accepts-workflow">Partial Accepts workflow</h3>
     <p>Partial Accepts is the feature power users rely on most. When Tab suggests a 12-line block and only the first 4 lines are correct:</p>
     <ol>
-    <li>1. Ghost text appears for the full suggestion</li>
-    <li>2. Press <strong>Partial Accept</strong> (<code>Cmd+→</code> on Mac, <code>Ctrl+→</code> on Windows/Linux) to accept one line</li>
-    <li>3. Repeat until the suggestion diverges, then keep typing</li>
+    <li>Ghost text appears for the full suggestion</li>
+    <li>Press <strong>Partial Accept</strong> (<code>Cmd+→</code> on Mac, <code>Ctrl+→</code> on Windows/Linux) to accept one line</li>
+    <li>Repeat until the suggestion diverges, then keep typing</li>
     </ol>
     <p>Without Partial Accepts, you either accept the whole block (and undo) or reject everything and type manually. On multi-line Tab, Partial Accepts often doubles effective accept rate.</p>
     <h3 id="what-cursor-tab-sees">What Cursor Tab sees</h3>
@@ -246,9 +245,9 @@ __pycache__/</code></pre>
     <h3 id="copilot-next-edit-suggestions-nes">Copilot Next Edit Suggestions (NES)</h3>
     <p>NES is Copilot&#x27;s answer to multi-line and cross-location Tab. Instead of only completing at the cursor, NES:</p>
     <ol>
-    <li>1. Watches your recent edits and cursor movement</li>
-    <li>2. Predicts the <strong>next logical edit location</strong> (another line, another function, even another file)</li>
-    <li>3. Shows a <strong>jump suggestion</strong> — press Tab to jump there and see the completion</li>
+    <li>Watches your recent edits and cursor movement</li>
+    <li>Predicts the <strong>next logical edit location</strong> (another line, another function, even another file)</li>
+    <li>Shows a <strong>jump suggestion</strong> — press Tab to jump there and see the completion</li>
     </ol>
     <p>Enable NES in VS Code:</p>
     <pre><code>{
@@ -258,9 +257,9 @@ __pycache__/</code></pre>
     <h3 id="jetbrains-copilot-setup">JetBrains Copilot setup</h3>
     <p>In IntelliJ / Android Studio / PyCharm:</p>
     <ol>
-    <li>1. <strong>Settings</strong> → <strong>Plugins</strong> → install <strong>GitHub Copilot</strong></li>
-    <li>2. Sign in with GitHub account (or enterprise SSO)</li>
-    <li>3. <strong>Settings</strong> → <strong>Languages &amp; Frameworks</strong> → <strong>GitHub Copilot</strong> → enable per-language</li>
+    <li><strong>Settings</strong> → <strong>Plugins</strong> → install <strong>GitHub Copilot</strong></li>
+    <li>Sign in with GitHub account (or enterprise SSO)</li>
+    <li><strong>Settings</strong> → <strong>Languages &amp; Frameworks</strong> → <strong>GitHub Copilot</strong> → enable per-language</li>
     </ol>
     <p>JetBrains Copilot does not yet mirror every VS Code NES feature — check release notes for your IDE version. Inline completion is stable; NES rollout varies by platform.</p>
     <h3 id="copilot-business-enterprise">Copilot Business / Enterprise</h3>
@@ -302,9 +301,9 @@ code <span class="cm">--install-extension Codeium.codeium</span></code></pre>
 }</code></pre>
     <h3 id="windsurf-plugin-install-jetbrains">Windsurf plugin install (JetBrains)</h3>
     <ol>
-    <li>1. <strong>Settings</strong> → <strong>Plugins</strong> → Marketplace → search <strong>Windsurf</strong> (or Codeium legacy name in older builds)</li>
-    <li>2. Restart IDE</li>
-    <li>3. <strong>Tools</strong> → <strong>Windsurf</strong> → <strong>Login</strong></li>
+    <li><strong>Settings</strong> → <strong>Plugins</strong> → Marketplace → search <strong>Windsurf</strong> (or Codeium legacy name in older builds)</li>
+    <li>Restart IDE</li>
+    <li><strong>Tools</strong> → <strong>Windsurf</strong> → <strong>Login</strong></li>
     </ol>
     <h3 id="windsurf-plugin-install-neovim">Windsurf plugin install (Neovim)</h3>
     <p>Using <code>lazy.nvim</code>:</p>
@@ -457,11 +456,11 @@ tabAutocompleteModel:
     </ul>
     <h3 id="improving-accept-rate-without-switching-tools">Improving accept rate without switching tools</h3>
     <ol>
-    <li>1. Clean <code>.cursorignore</code> / <code>.codeiumignore</code> / <code>.gitignore</code> for index tools</li>
-    <li>2. Enable Partial Accepts (Cursor) or NES (Copilot)</li>
-    <li>3. Disable Tab in comments and string literals</li>
-    <li>4. Keep related files open (Copilot uses open tabs as context)</li>
-    <li>5. Add project rules so Agent <em>and</em> Tab share conventions (<code>AGENTS.md</code>, <code>.cursor/rules</code>)</li>
+    <li>Clean <code>.cursorignore</code> / <code>.codeiumignore</code> / <code>.gitignore</code> for index tools</li>
+    <li>Enable Partial Accepts (Cursor) or NES (Copilot)</li>
+    <li>Disable Tab in comments and string literals</li>
+    <li>Keep related files open (Copilot uses open tabs as context)</li>
+    <li>Add project rules so Agent <em>and</em> Tab share conventions (<code>AGENTS.md</code>, <code>.cursor/rules</code>)</li>
     </ol>
     <h2 id="language-specific-performance">Language-specific performance</h2>
     <p>Tab models train heavily on Python, JavaScript/TypeScript, Java, C#, Go, and Rust. Expect the best accept rates there.</p>
@@ -523,10 +522,10 @@ tabAutocompleteModel:
 </tbody></table>
     <h3 id="symptom-tab-worked-yesterday-slow-today">Symptom: Tab worked yesterday, slow today</h3>
     <ol>
-    <li>1. Restart the editor (stale language server + Tab conflict)</li>
-    <li>2. Clear extension cache (Cursor: reload window; Copilot: sign out/in)</li>
-    <li>3. Check provider status pages (outages happen)</li>
-    <li>4. Verify you did not open the monorepo root vs subpackage (re-index)</li>
+    <li>Restart the editor (stale language server + Tab conflict)</li>
+    <li>Clear extension cache (Cursor: reload window; Copilot: sign out/in)</li>
+    <li>Check provider status pages (outages happen)</li>
+    <li>Verify you did not open the monorepo root vs subpackage (re-index)</li>
     </ol>
     <h3 id="symptom-suggestions-freeze-entirely">Symptom: suggestions freeze entirely</h3>
     <pre><code><span class="cm">// Ensure inline suggest is not disabled globally</span>
@@ -592,11 +591,11 @@ tabAutocompleteModel:
 </tbody></table>
     <h3 id="handoff-workflow">Handoff workflow</h3>
     <ol>
-    <li>1. <strong>Agent</strong> scaffolds feature across files (routes, types, tests)</li>
-    <li>2. You open the main implementation file</li>
-    <li>3. <strong>Tab</strong> fills repetitive CRUD, mapping code, test cases</li>
-    <li>4. <strong>Agent</strong> runs tests, fixes failures Tab cannot see</li>
-    <li>5. <strong>Tab</strong> polishes remaining boilerplate</li>
+    <li><strong>Agent</strong> scaffolds feature across files (routes, types, tests)</li>
+    <li>You open the main implementation file</li>
+    <li><strong>Tab</strong> fills repetitive CRUD, mapping code, test cases</li>
+    <li><strong>Agent</strong> runs tests, fixes failures Tab cannot see</li>
+    <li><strong>Tab</strong> polishes remaining boilerplate</li>
     </ol>
     <p>Avoid running two agents on the same task simultaneously — Tab + Agent in the same file is fine; Agent + Agent is chaos.</p>
     <h2 id="team-setup-recommendations">Team setup recommendations</h2>

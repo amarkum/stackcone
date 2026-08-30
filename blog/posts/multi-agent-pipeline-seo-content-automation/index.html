@@ -77,28 +77,27 @@
     <nav class="toc" aria-label="Table of contents">
     <h2>Table of contents</h2>
     <ol>
-    </ol></nav>
-    <ol>
-    <li>1. <a href="#why-multi-agent">Why multi-agent instead of one prompt</a></li>
-    <li>2. <a href="#five-agents">Five agent roles</a></li>
-    <li>3. <a href="#intent-prompt">Intent agent prompt template</a></li>
-    <li>4. <a href="#serp-analysis">SERP analysis steps</a></li>
-    <li>5. <a href="#pipeline-flow">Pipeline flow</a></li>
-    <li>6. <a href="#seo-metadata">SEO metadata agent checklist</a></li>
-    <li>7. <a href="#html-head">Metadata HTML head example</a></li>
-    <li>8. <a href="#registry-samples">Sample posts.json and sitemap entries</a></li>
-    <li>9. <a href="#static-site">Static site pattern (GitHub Pages)</a></li>
-    <li>10. <a href="#ship-skill">Complete ship-blog-post SKILL.md</a></li>
-    <li>11. <a href="#claude-p">Orchestration with claude -p</a></li>
-    <li>12. <a href="#state-queue">State and queue patterns</a></li>
-    <li>13. <a href="#error-handling">Error handling between agents</a></li>
-    <li>14. <a href="#measuring-success">Measuring pipeline success</a></li>
-    <li>15. <a href="#wordpress">WordPress pattern</a></li>
-    <li>16. <a href="#design-patterns">Agent design patterns that work</a></li>
-    <li>17. <a href="#gsc-loop">GSC feedback loop</a></li>
-    <li>18. <a href="#mistakes">Common mistakes</a></li>
-    <li>19. <a href="#faq">FAQ</a></li>
+    <li><a href="#why-multi-agent">Why multi-agent instead of one prompt</a></li>
+    <li><a href="#five-agents">Five agent roles</a></li>
+    <li><a href="#intent-prompt">Intent agent prompt template</a></li>
+    <li><a href="#serp-analysis">SERP analysis steps</a></li>
+    <li><a href="#pipeline-flow">Pipeline flow</a></li>
+    <li><a href="#seo-metadata">SEO metadata agent checklist</a></li>
+    <li><a href="#html-head">Metadata HTML head example</a></li>
+    <li><a href="#registry-samples">Sample posts.json and sitemap entries</a></li>
+    <li><a href="#static-site">Static site pattern (GitHub Pages)</a></li>
+    <li><a href="#ship-skill">Complete ship-blog-post SKILL.md</a></li>
+    <li><a href="#claude-p">Orchestration with claude -p</a></li>
+    <li><a href="#state-queue">State and queue patterns</a></li>
+    <li><a href="#error-handling">Error handling between agents</a></li>
+    <li><a href="#measuring-success">Measuring pipeline success</a></li>
+    <li><a href="#wordpress">WordPress pattern</a></li>
+    <li><a href="#design-patterns">Agent design patterns that work</a></li>
+    <li><a href="#gsc-loop">GSC feedback loop</a></li>
+    <li><a href="#mistakes">Common mistakes</a></li>
+    <li><a href="#faq">FAQ</a></li>
     </ol>
+    </nav>
     <h2 id="why-multi-agent-instead-of-one-prompt">Why multi-agent instead of one prompt</h2>
     <p>A single “write me an SEO blog post” prompt mixes too many jobs:</p>
     <table>
@@ -560,11 +559,11 @@ _dev/
     <p><strong>Writer agent rules:</strong> <code>.cursor/rules/blog-posts.mdc</code> — md source + html publish, never link to <code>.md</code>.</p>
     <p><strong>Publisher skill steps:</strong></p>
     <ol>
-    <li>1. Write <code>blog/md/{slug}.md</code></li>
-    <li>2. Write <code>blog/posts/{slug}/index.html</code> with full SEO head</li>
-    <li>3. Update <code>blog/posts.json</code>, <code>sitemap.xml</code>, <code>blog/index.html</code></li>
-    <li>4. Run <code>python3 _dev/apply_highlights.py</code></li>
-    <li>5. QA: <code>_pipeline/scripts/qa-blog-post.sh {slug}</code></li>
+    <li>Write <code>blog/md/{slug}.md</code></li>
+    <li>Write <code>blog/posts/{slug}/index.html</code> with full SEO head</li>
+    <li>Update <code>blog/posts.json</code>, <code>sitemap.xml</code>, <code>blog/index.html</code></li>
+    <li>Run <code>python3 _dev/apply_highlights.py</code></li>
+    <li>QA: <code>_pipeline/scripts/qa-blog-post.sh {slug}</code></li>
     </ol>
     <h2 id="complete-ship-blog-post-skillmd">Complete ship-blog-post SKILL.md</h2>
     <p>Place at <code>.claude/skills/ship-blog-post/SKILL.md</code> (Claude Code) or <code>.cursor/skills/ship-blog-post/SKILL.md</code> (Cursor). This skill covers <strong>metadata + QA agents</strong>; run intent/outline/writer phases separately or via <code>claude -p</code> first.</p>
@@ -891,11 +890,11 @@ grep -c <span class="str">'"fix_owner":"writer"'</span> _pipeline/logs/*.jsonl</
     <h2 id="gsc-feedback-loop">GSC feedback loop</h2>
     <p>Close the loop — the Intent agent should re-run monthly:</p>
     <ol>
-    <li>1. Export GSC queries (impressions, clicks, position)</li>
-    <li>2. Flag <strong>high impressions / zero clicks</strong> → title or description mismatch</li>
-    <li>3. Flag <strong>indexed but low impressions</strong> → topic too narrow or weak internal links</li>
-    <li>4. Flag <strong>404 or redirect URLs</strong> in coverage report → fix canonicals, remove stubs</li>
-    <li>5. Queue refresh or new post in content backlog</li>
+    <li>Export GSC queries (impressions, clicks, position)</li>
+    <li>Flag <strong>high impressions / zero clicks</strong> → title or description mismatch</li>
+    <li>Flag <strong>indexed but low impressions</strong> → topic too narrow or weak internal links</li>
+    <li>Flag <strong>404 or redirect URLs</strong> in coverage report → fix canonicals, remove stubs</li>
+    <li>Queue refresh or new post in content backlog</li>
     </ol>
     <pre><code>Publish → wait 2–4 weeks → GSC data → Intent agent → next brief</code></pre>
     <p><strong>Refresh brief example (existing post):</strong></p>
@@ -909,16 +908,16 @@ grep -c <span class="str">'"fix_owner":"writer"'</span> _pipeline/logs/*.jsonl</
     <p>Without this loop, the pipeline produces content but does not learn what searchers actually query.</p>
     <h2 id="common-mistakes">Common mistakes</h2>
     <ol>
-    <li>1. <strong>One mega-prompt for research + write + SEO</strong> — metadata always gets short-changed</li>
-    <li>2. <strong>Duplicate canonicals</strong> — <code>/post/</code> and <code>/post/index.html</code> both indexed</li>
-    <li>3. <strong>Redirect stub files</strong> — client-side redirects confuse Google; use one clean URL</li>
-    <li>4. <strong>AI-generated hero images</strong> — break OG previews; use real logos or site default</li>
-    <li>5. <strong>Skipping sitemap update</strong> — page exists but Google never discovers it</li>
-    <li>6. <strong>No QA agent</strong> — broken internal links ship to production</li>
-    <li>7. <strong>Writing for vanity keywords, not search intent</strong> — impressions without matching query language in title/H1</li>
-    <li>8. <strong>Skipping state files</strong> — retries restart from intent, wasting API spend</li>
-    <li>9. <strong>Publisher rewrites title</strong> — OG/title drift from H1 confuses CTR testing</li>
-    <li>10. <strong>No 90-day scorecard</strong> — you cannot tell which agent phase to improve</li>
+    <li><strong>One mega-prompt for research + write + SEO</strong> — metadata always gets short-changed</li>
+    <li><strong>Duplicate canonicals</strong> — <code>/post/</code> and <code>/post/index.html</code> both indexed</li>
+    <li><strong>Redirect stub files</strong> — client-side redirects confuse Google; use one clean URL</li>
+    <li><strong>AI-generated hero images</strong> — break OG previews; use real logos or site default</li>
+    <li><strong>Skipping sitemap update</strong> — page exists but Google never discovers it</li>
+    <li><strong>No QA agent</strong> — broken internal links ship to production</li>
+    <li><strong>Writing for vanity keywords, not search intent</strong> — impressions without matching query language in title/H1</li>
+    <li><strong>Skipping state files</strong> — retries restart from intent, wasting API spend</li>
+    <li><strong>Publisher rewrites title</strong> — OG/title drift from H1 confuses CTR testing</li>
+    <li><strong>No 90-day scorecard</strong> — you cannot tell which agent phase to improve</li>
     </ol>
     <h2 id="faq">FAQ</h2>
     <h3 id="do-i-need-langgraph-for-a-multi-agent-seo-pipeline">Do I need LangGraph for a multi-agent SEO pipeline?</h3>
