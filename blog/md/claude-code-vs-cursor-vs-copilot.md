@@ -48,8 +48,6 @@ An **extension** for VS Code, JetBrains, Neovim, and Xcode. Started as inline co
 
 Best search match: *"Copilot vs Cursor"*, *"GitHub Copilot agent mode"*, *"Copilot for teams"*.
 
-![Claude](../images/claude-code-vs-cursor-vs-copilot/claude.png) ![Cursor](../images/claude-code-vs-cursor-vs-copilot/cursor.svg) ![Copilot](../images/claude-code-vs-cursor-vs-copilot/openai.png)
-
 ## Side-by-side comparison
 
 | | Claude Code | Cursor | GitHub Copilot |
