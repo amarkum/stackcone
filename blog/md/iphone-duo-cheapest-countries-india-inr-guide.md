@@ -8,7 +8,6 @@ If you are in India and staring at a ~₹3 lakh sticker, this guide converts Duo
 
 > FX and Apple list prices move. INR conversions below use ~₹95–₹96 per USD from mid-September 2026 coverage. Confirm Apple Store / authorised retailer prices before you buy or travel.
 
-![Apple logo](../images/iphone-duo-cheapest-countries-india-inr-guide/apple-logo.svg)
 
 ## What is iPhone Duo?
 
