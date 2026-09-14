@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>NVIDIA and the AI Memory Wall</title>
+  <meta name="description" content="NVIDIA Rubin raised HBM4 bandwidth, but DRAM shortages may cut Rubin Ultra memory. Interactive KV-cache calculator, SKU scenarios, and how the memory wall changes RAG.">
+  <meta name="keywords" content="NVIDIA Rubin, AI memory wall, HBM4, KV cache calculator, HBM shortage, Rubin Ultra, RAG GPU memory, decode bandwidth">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/nvidia-ai-memory-wall/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/nvidia-ai-memory-wall/">
+  <meta property="og:title" content="NVIDIA and the AI Memory Wall">
+  <meta property="og:description" content="NVIDIA Rubin raised HBM4 bandwidth, but DRAM shortages may cut Rubin Ultra memory. Interactive KV-cache calculator, SKU scenarios, and how the memory wall changes RAG.">
+  <meta property="og:image" content="https://stackcone.com/blog/images/nvidia-ai-memory-wall/nvidia.svg">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NVIDIA and the AI Memory Wall">
+  <meta name="twitter:description" content="NVIDIA Rubin raised HBM4 bandwidth, but DRAM shortages may cut Rubin Ultra memory. Interactive KV-cache calculator, SKU scenarios, and how the memory wall changes RAG.">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/nvidia-ai-memory-wall/nvidia.svg">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "NVIDIA and the AI Memory Wall",
+    "description": "NVIDIA Rubin raised HBM4 bandwidth, but DRAM shortages may cut Rubin Ultra memory. Interactive KV-cache calculator, SKU scenarios, and how the memory wall changes RAG.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-09-14",
+    "dateModified": "2026-09-14",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/nvidia-ai-memory-wall/" },
+    "image": "https://stackcone.com/blog/images/nvidia-ai-memory-wall/nvidia.svg",
+    "keywords": ["NVIDIA Rubin", "AI memory wall", "HBM4", "KV cache calculator", "HBM shortage", "Rubin Ultra", "RAG GPU memory"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "NVIDIA AI GPU memory and HBM constraints" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the AI memory wall?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The point where adding GPU compute no longer speeds inference because the chip cannot feed cores with model weights and KV cache fast enough. Long-context decode and agentic workloads hit it first."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much HBM does NVIDIA Rubin have?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Rubin integrates up to 288 GB of HBM4 with about 22 TB/s of peak memory bandwidth — roughly 2.8× Blackwell / Blackwell Ultra."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why might Rubin Ultra ship with less memory than Rubin?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "DRAM wafers are tight through 2027 and 12-Hi HBM4e validation is uncertain. NVIDIA has evaluated 8-Hi stacks around 192 GB while keeping peak FLOPS."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you estimate KV cache size?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bytes per token ≈ 2 × layers × KV heads × head dim × dtype bytes (K and V). Multiply by sequence length and concurrent sessions. GQA cuts KV heads versus full multi-head attention."
+        }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "NVIDIA and the AI Memory Wall", "item": "https://stackcone.com/blog/posts/nvidia-ai-memory-wall/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>NVIDIA and the AI Memory Wall</h1>
+    <p class="meta">September 2026 · Published by Amar Kumar</p>
+
+    <p>For two years the AI infrastructure story was simple: more FLOPS, more GPUs, more NVIDIA. The bottleneck moved. Training and especially long-context inference are no longer limited by tensor cores first. They are limited by how fast weights and KV cache can move on and off the package — the <strong>memory wall</strong>.</p>
+
+    <p>NVIDIA still sits at the center of that stack. Rubin raised HBM4 bandwidth to about <strong>22 TB/s</strong> and <strong>288 GB</strong> per GPU. DRAM supply is tight enough that Rubin Ultra is being evaluated with <em>less</em> on-package memory than Rubin, not more.</p>
+
+    <p>This is a builder's read of that shift: the memory subsystem, why decode is bandwidth-bound, an interactive residency calculator, and how to size RAG when the next SKU might ship with 192 GB instead of 288 GB.</p>
+
+    <figure class="blog-figure">
+      <div class="model-logo-row">
+        <img src="../../images/nvidia-ai-memory-wall/nvidia.svg" alt="NVIDIA wordmark" width="200" height="38" loading="eager">
+      </div>
+      <figcaption>NVIDIA remains the default AI accelerator vendor. The constraint around it is HBM and DRAM supply, not a lack of tensor cores. Wordmark via Wikimedia Commons.</figcaption>
+    </figure>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#bottleneck">The bottleneck moved</a></li>
+        <li><a href="#prefill-decode">Prefill vs decode</a></li>
+        <li><a href="#kv-math">KV cache math</a></li>
+        <li><a href="#calculator">Residency calculator</a></li>
+        <li><a href="#rubin">What Rubin actually changed</a></li>
+        <li><a href="#rubin-ultra">Why Ultra may ship with less HBM</a></li>
+        <li><a href="#hbm-ddr5">HBM vs DDR5</a></li>
+        <li><a href="#inference-rag">Inference and RAG</a></li>
+        <li><a href="#sizing">Cluster sizing</a></li>
+        <li><a href="#bubble">The bubble question</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="bottleneck">The bottleneck moved</h2>
+    <p>Classic GPU marketing ranks chips by peak dense FLOPS. Decode — the generation phase of inference — barely cares. Each new token re-reads the model weights and a growing KV cache. Achieved <strong>memory bandwidth</strong> and <strong>on-package capacity</strong> decide tokens per second, concurrency, and whether you offload cache to host DRAM.</p>
+
+    <div class="diagram-wrap" data-diagram-title="Where a decode token spends time">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef mem fill:#fce7f3,stroke:#db2777,color:#9f1239
+  classDef compute fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef host fill:#f1f5f9,stroke:#64748b,color:#334155
+
+  W["Weights in HBM"]:::mem
+  KV["KV cache in HBM"]:::mem
+  TMA["Memory subsystem / TMA"]:::mem
+  TC["Tensor cores"]:::compute
+  TOK["Next token"]:::compute
+  OFF["Host DDR5 offload"]:::host
+
+  W --> TMA
+  KV --> TMA
+  TMA -->|"feeds"| TC
+  TC --> TOK
+  KV -.->|"overflow"| OFF
+  OFF -->|"high latency"| TMA</div>
+      </div>
+      <p class="diagram-caption">Decode is a memory-feed problem. Tensor cores only run after HBM (or a slow host spill) delivers weights and KV.</p>
+    </div>
+
+    <p>Agentic workloads make this worse:</p>
+    <table>
+      <thead>
+        <tr><th>Workload trait</th><th>Memory effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Long context (100K–1M tokens)</td><td>KV cache grows linearly with sequence length</td></tr>
+        <tr><td>Multi-step tool loops</td><td>More time in decode vs prefill; bandwidth-bound longer</td></tr>
+        <tr><td>High concurrency</td><td>Many KV caches resident at once</td></tr>
+        <tr><td>Multitrillion-parameter models</td><td>Weights alone can exceed a single package</td></tr>
+        <tr><td>Grouped-query attention (GQA)</td><td>Fewer KV heads than Q heads — the main reason 70B models still fit</td></tr>
+      </tbody>
+    </table>
+
+    <p>NVIDIA's own Rubin write-up is explicit: decode is <strong>memory-subsystem bound</strong>. Peak FLOPS on a slide do not tell you whether a reasoning agent will stay interactive.</p>
+
+    <h2 id="prefill-decode">Prefill vs decode</h2>
+    <p>Toggle the phase. The bound flips. Prefill (reading the prompt) looks compute-heavy. User-visible latency for chat and agents is almost always <strong>decode</strong>.</p>
+
+    <div class="blog-widget" id="phaseWidget">
+      <h3>Which phase are you sizing for?</h3>
+      <p class="blog-widget-lead">Same GPU. Different bottleneck. Pick a phase to see what to measure.</p>
+      <div class="blog-pills" role="group" aria-label="Inference phase">
+        <button type="button" class="blog-pill" data-phase="prefill" aria-pressed="false">Prefill</button>
+        <button type="button" class="blog-pill" data-phase="decode" aria-pressed="true">Decode</button>
+      </div>
+      <dl class="blog-stat-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+        <div class="blog-stat"><dt>Bound</dt><dd id="phaseBound">Memory bandwidth</dd></div>
+        <div class="blog-stat"><dt>Measure</dt><dd id="phaseMetric">tok/s vs context</dd></div>
+        <div class="blog-stat"><dt>Upgrade that helps</dt><dd id="phaseUpgrade">HBM BW + capacity</dd></div>
+      </dl>
+      <p id="phaseCopy" class="blog-widget-lead" style="margin-top:1rem;margin-bottom:0;">Each generated token re-reads weights and the entire KV cache. Extra FLOPS do little if HBM cannot keep up.</p>
+    </div>
+
+    <h2 id="kv-math">KV cache math</h2>
+    <p>Weights are the fixed tax. KV cache is the variable that blows up with RAG windows and concurrency.</p>
+    <pre><code>bytes_per_token = 2 * n_layers * n_kv_heads * head_dim * dtype_bytes
+kv_gb = bytes_per_token * seq_len * sessions / 1e9
+weights_gb ≈ n_params_B * bytes_per_param</code></pre>
+    <p>The leading <code>2</code> is K and V. GQA keeps <code>n_kv_heads</code> far below query heads (often 8). FP16 KV uses 2 bytes; FP8 KV uses 1. A Llama-class 70B at FP16 KV is on the order of <strong>~0.3 MB per token</strong> — so 32K context is ~10 GB <em>per session</em> before activations.</p>
+
+    <details class="blog-deep-dive">
+      <summary>Worked 70B example (GQA, 80 layers, 8 KV heads, 128 dim, FP16)</summary>
+      <p><code>2 × 80 × 8 × 128 × 2 = 327,680 bytes/token ≈ 0.31 MB/token</code></p>
+      <table>
+        <thead>
+          <tr><th>Context</th><th>1 session</th><th>8 sessions</th><th>32 sessions</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>4K</td><td>1.3 GB</td><td>10 GB</td><td>40 GB</td></tr>
+          <tr><td>32K</td><td>10 GB</td><td>80 GB</td><td>320 GB</td></tr>
+          <tr><td>128K</td><td>40 GB</td><td>320 GB</td><td>1.3 TB</td></tr>
+        </tbody>
+      </table>
+      <p>Add ~140 GB of FP16 weights for 70B and you see why “we have an H100” is not a 128K × 32-tenant plan.</p>
+    </details>
+
+    <h2 id="calculator">Residency calculator</h2>
+    <p>Indicative GQA-style models — not a vendor datasheet. Change the sliders. The bar chart and fit verdict update live. Overhead is a flat 12 GB for kernels, activations, and fragmentation.</p>
+
+    <div class="blog-widget" id="residencyWidget">
+      <h3>Will this fit on one GPU?</h3>
+      <p class="blog-widget-lead">Pick a model class, precision, context, concurrency, and an HBM SKU.</p>
+      <div class="blog-widget-controls">
+        <div class="blog-widget-field">
+          <label>Model class</label>
+          <div class="blog-pills" role="group" aria-label="Model class">
+            <button type="button" class="blog-pill" data-model="8" aria-pressed="false">8B</button>
+            <button type="button" class="blog-pill" data-model="32" aria-pressed="false">32B</button>
+            <button type="button" class="blog-pill" data-model="70" aria-pressed="true">70B</button>
+            <button type="button" class="blog-pill" data-model="405" aria-pressed="false">405B</button>
+          </div>
+        </div>
+        <div class="blog-widget-field">
+          <label>Weight precision</label>
+          <div class="blog-pills" role="group" aria-label="Precision">
+            <button type="button" class="blog-pill" data-prec="2" aria-pressed="true">FP16</button>
+            <button type="button" class="blog-pill" data-prec="1" aria-pressed="false">FP8</button>
+            <button type="button" class="blog-pill" data-prec="0.5" aria-pressed="false">INT4</button>
+          </div>
+        </div>
+        <div class="blog-widget-field">
+          <label for="ctxRange">Context <span id="ctxLabel">32K</span></label>
+          <input id="ctxRange" type="range" min="4" max="256" step="4" value="32">
+        </div>
+        <div class="blog-widget-field">
+          <label for="sessRange">Concurrent sessions <span id="sessLabel">4</span></label>
+          <input id="sessRange" type="range" min="1" max="64" step="1" value="4">
+        </div>
+        <div class="blog-widget-field" style="grid-column: 1 / -1;">
+          <label>HBM SKU</label>
+          <div class="blog-pills" role="group" aria-label="HBM SKU">
+            <button type="button" class="blog-pill" data-hbm="80" aria-pressed="false">80 GB (H100-class)</button>
+            <button type="button" class="blog-pill" data-hbm="141" aria-pressed="false">141 GB (B200-class)</button>
+            <button type="button" class="blog-pill" data-hbm="192" aria-pressed="false">192 GB (constrained Ultra)</button>
+            <button type="button" class="blog-pill" data-hbm="288" aria-pressed="true">288 GB (Rubin)</button>
+          </div>
+        </div>
+      </div>
+      <dl class="blog-stat-grid">
+        <div class="blog-stat"><dt>Weights</dt><dd id="statWeights">—</dd></div>
+        <div class="blog-stat"><dt>KV cache</dt><dd id="statKv">—</dd></div>
+        <div class="blog-stat"><dt>Total used</dt><dd id="statUsed">—</dd></div>
+        <div class="blog-stat" id="statFitBox"><dt>Fit</dt><dd id="statFit">—</dd></div>
+      </dl>
+      <div class="chart-wrap" style="margin-bottom:0;border:0;padding:0.75rem 0 0;">
+        <canvas id="residencyChart" aria-label="Stacked bar of weights, KV cache, overhead versus HBM capacity"></canvas>
+        <p class="chart-caption" id="residencyCaption">Move the sliders to compare used memory against the selected SKU.</p>
+      </div>
+    </div>
+
+    <h2 id="rubin">What Rubin actually changed</h2>
+    <p>Rubin is NVIDIA's answer to that wall for the current generation. The useful upgrade is not another FLOPS slide. It is <strong>time on-package</strong>: stay in HBM and decode stays fast. Spill to host DDR5 and you pay latency no tensor-core upgrade hides.</p>
+    <table>
+      <thead>
+        <tr><th>Spec</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>HBM4, up to 288 GB</strong></td><td>Larger models and longer context without KV offload</td></tr>
+        <tr><td><strong>~22 TB/s HBM bandwidth</strong></td><td>~2.8× Blackwell / Blackwell Ultra peak memory bandwidth</td></tr>
+        <tr><td><strong>Wider HBM interface</strong></td><td>HBM4 doubles interface width vs HBM3e</td></tr>
+        <tr><td><strong>NVLink 6 (~3,600 GB/s)</strong></td><td>Scale-up all-to-all between GPUs</td></tr>
+        <tr><td><strong>NVLink-C2C (~1,800 GB/s)</strong></td><td>Coherent CPU–GPU path when you must spill</td></tr>
+        <tr><td><strong>PCIe Gen 6 x16 (~256 GB/s)</strong></td><td>Host path — orders of magnitude behind HBM</td></tr>
+      </tbody>
+    </table>
+
+    <div class="chart-wrap">
+      <canvas id="hbmBandwidthChart" aria-label="Bar chart comparing peak HBM bandwidth from Blackwell-class GPUs to NVIDIA Rubin"></canvas>
+      <p class="chart-caption">Indicative peak HBM bandwidth. Rubin’s ~22 TB/s is about 2.8× the Blackwell / Blackwell Ultra class.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="pathBandwidthChart" aria-label="Log-scale comparison of HBM, NVLink, NVLink-C2C, and PCIe bandwidth"></canvas>
+      <p class="chart-caption">Same token, four buses. Offload is not “a bit slower.” PCIe is a different sport from HBM.</p>
+    </div>
+
+    <h2 id="rubin-ultra">Why Ultra may ship with less HBM</h2>
+    <p>Roadmaps assumed every flagship would add memory. Mid-year reporting broke that habit.</p>
+    <p><a href="https://www.trendforce.com/presscenter/news/20260804-13166.html" rel="noopener noreferrer">TrendForce</a> says NVIDIA expanded Rubin Ultra evaluation beyond a 12-Hi HBM4e baseline to include <strong>8-Hi HBM4e</strong>, <strong>12-Hi HBM4</strong>, and <strong>8-Hi HBM4</strong>. A configuration previewed to customers puts memory around <strong>192 GB</strong> — below Rubin's 288 GB — while keeping peak FLOPS. The final SKU is not locked.</p>
+
+    <div class="blog-widget">
+      <h3>SKU scenarios</h3>
+      <p class="blog-widget-lead">Click a column. The capacity chart highlights that plan. Software response changes with the number, not the FLOPS.</p>
+      <div class="blog-pills" id="skuPills" role="group" aria-label="SKU scenario">
+        <button type="button" class="blog-pill" data-sku="192" aria-pressed="false">Constrained Ultra ~192 GB</button>
+        <button type="button" class="blog-pill" data-sku="288" aria-pressed="true">Rubin 288 GB</button>
+        <button type="button" class="blog-pill" data-sku="384" aria-pressed="false">Original Ultra pitch ~384 GB</button>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="hbmCapacityChart" aria-label="Bar chart of on-package HBM capacity scenarios for Rubin and Rubin Ultra"></canvas>
+      <p class="chart-caption" id="skuCaption">Rubin 288 GB is the shipping-class assumption. Constrained Ultra evaluations cluster near 192 GB.</p>
+    </div>
+
+    <p>Two supply constraints, not a silicon bug:</p>
+    <ol>
+      <li><strong>DRAM wafers through 2027</strong> — HBM competes with server DDR5 and mobile LPDDR for the same limited capacity.</li>
+      <li><strong>12-Hi HBM4e yield and validation</strong> — stacking taller is slower to qualify than designing more compute.</li>
+    </ol>
+    <p>NVIDIA already cut SOCAMM / LPDDR5X capacity on Vera Rubin Superchip modules for the same reason. Cloud buyers who sized racks around 288–384 GB per GPU need a fallback model at ~192 GB.</p>
+
+    <div class="diagram-wrap" data-diagram-title="What to do when HBM shrinks">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TD
+  classDef q fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef ok fill:#dcfce7,stroke:#16a34a,color:#166534
+  classDef warn fill:#ffedd5,stroke:#ea580c,color:#9a3412
+
+  A["Weights + KV fit\non one GPU?"]:::q
+  B["Stay single-GPU\nraise concurrency"]:::ok
+  C["Shrink context\nrerank · route smaller model"]:::warn
+  D["Still over capacity?"]:::q
+  E["Tensor parallel\nmore GPUs"]:::warn
+  F["Enable KV offload\nNVLink-C2C / host DRAM"]:::warn
+
+  A -->|yes| B
+  A -->|no| C
+  C --> D
+  D -->|yes| E
+  D -->|no| B
+  E --> F</div>
+      </div>
+      <p class="diagram-caption">Hardware uncertainty is a software problem first. Add GPUs after you have cut context and routed models.</p>
+    </div>
+
+    <h2 id="hbm-ddr5">HBM vs DDR5</h2>
+    <p>The memory wall is not one product.</p>
+    <p><strong>HBM</strong> sits on the GPU. It sets how much of a model and KV cache you can keep hot. Tight HBM is why flagship SKUs may ship thinner stacks.</p>
+    <p><strong>DDR5</strong> sits in general-purpose servers that still do retrieval, embedding, orchestration, and CPU-side KV offload. North American cloud buyers raised DDR5 content per server as inference — not only training — became the spend story. TrendForce has described a seller's market with large contract-price increases.</p>
+    <ul>
+      <li>GPU HBM → generator / reranker residency and decode speed</li>
+      <li>Server DDR5 → vector indexes, feature stores, and any cache you spill</li>
+    </ul>
+    <p>A “we bought more GPUs” plan that ignores DIMM lead times still stalls.</p>
+
+    <h2 id="inference-rag">Inference and RAG</h2>
+    <p>You do not need a Rubin reservation to design around the wall. The same constraints show up on Blackwell, H100, and rented cloud GPUs.</p>
+    <p><strong>1. Measure decode, not prefill.</strong> Profile tokens/sec vs batch size and context length, not only TFLOPS.</p>
+    <p><strong>2. Treat KV cache as a first-class budget.</strong> Stuffing 40 retrieved chunks into a 128K window can evict other tenants. Retrieval quality is a memory optimization. See <a href="/blog/posts/how-to-evaluate-rag-retrieval/">how we evaluate RAG retrieval</a> and <a href="/blog/posts/cohere-reranking-production-rag-retrieval/">Cohere reranking</a>.</p>
+    <p><strong>3. Route models by job, not by prestige.</strong> A frontier model on a memory-tight GPU is worse than a smaller model that stays resident. <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Economical LLM choices</a> and <a href="/blog/posts/auto-model-routing-without-llm-classifier/">heuristic routing</a> exist for this reason.</p>
+    <p><strong>4. Plan for offload paths.</strong> NVLink-C2C and host DRAM are the safety valve. Make offload a config flag, not a rewrite.</p>
+
+    <details class="blog-deep-dive">
+      <summary>Serving-stack checklist when HBM is the scarce resource</summary>
+      <ul>
+        <li>Prefix / prompt cache for repeated system prompts and RAG headers</li>
+        <li>Paged KV (vLLM-style) so fragmentation does not waste 20% of the card</li>
+        <li>Per-tenant max context, not one global 128K</li>
+        <li>FP8 KV where quality allows — halves the variable tax</li>
+        <li>Tensor parallel only after a single card is honestly full</li>
+      </ul>
+    </details>
+
+    <h2 id="sizing">Cluster sizing</h2>
+    <p>If you are writing a capacity plan, keep three columns — not one. Use the calculator above, then recompute:</p>
+    <ul>
+      <li>Max concurrent sessions at your p95 context length</li>
+      <li>Whether weights + KV fit without tensor parallel</li>
+      <li>Cost per million output tokens if you add nodes to buy back memory</li>
+    </ul>
+    <table>
+      <thead>
+        <tr><th>Scenario</th><th>On-package HBM</th><th>Software response</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Original Ultra pitch</td><td>~288–384 GB</td><td>Fewer nodes for large-context residency</td></tr>
+        <tr><td>Rubin parity</td><td>288 GB</td><td>Current Rubin-class assumptions</td></tr>
+        <tr><td>Constrained Ultra</td><td>~192 GB</td><td>More GPUs or earlier KV offload</td></tr>
+      </tbody>
+    </table>
+    <p>Chunking, caching, and routing decide whether a 192 GB SKU is a crisis or a config change.</p>
+
+    <h2 id="bubble">The bubble question</h2>
+    <p>Skepticism and enthusiasm are both rational. Capex is enormous. HBM and power constrain how fast that capex turns into tokens. A chip that ships with less memory than last year's slide is not proof demand disappeared — it is proof the <strong>bill of materials</strong> is the scarce resource.</p>
+    <p>The useful question is not “is AI a bubble?” It is “does our serving path survive a thinner HBM SKU and a more expensive DIMM?” If yes, you are building on the actual constraint. If you assumed FLOPS keep doubling for free, the memory wall will find you in production.</p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Is NVIDIA still the center of AI infrastructure?</h3>
+    <p>Yes for training and high-end inference. The conversation shifted from “how many GPUs” to “how much HBM per GPU, and will it actually ship.”</p>
+
+    <h3>What is the memory wall?</h3>
+    <p>The point where adding compute no longer speeds the workload because the chip cannot feed cores with weights and KV cache fast enough. Decode and long-context agents hit it first.</p>
+
+    <h3>How do you estimate KV cache?</h3>
+    <p><code>2 × layers × KV heads × head dim × dtype bytes × sequence × sessions</code>. GQA is why this is survivable on 70B-class models. Use the calculator above for a first cut.</p>
+
+    <h3>Why would a newer NVIDIA GPU have less memory?</h3>
+    <p>HBM competes with DDR5 and LPDDR for limited DRAM wafers, and taller HBM4e stacks are hard to yield. Vendors can cut stack height to ship more chips.</p>
+
+    <h3>How should RAG teams respond?</h3>
+    <p>Shorter retrieved context, reranking, model routing, and an explicit KV-cache budget. Buy memory headroom in software before you bet the architecture on a single SKU's HBM number.</p>
+
+    <aside class="blog-related">
+      <h2>Related guides</h2>
+      <ul>
+        <li><a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Best Economical LLM Models for RAG</a></li>
+        <li><a href="/blog/posts/how-to-evaluate-rag-retrieval/">How to Evaluate RAG Retrieval</a></li>
+        <li><a href="/blog/posts/auto-model-routing-without-llm-classifier/">Auto Model Routing Without an LLM Classifier</a></li>
+        <li><a href="/blog/posts/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/">GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3</a></li>
+      </ul>
+    </aside>
+
+    <p class="closing">FLOPS still sell slides. Memory decides whether the agent answers in time.</p>
+
+    <aside class="blog-cta">
+      <h2>Need a serving path that survives a thinner GPU SKU?</h2>
+      <p>stackcone designs RAG, routing, and inference stacks around real memory and cost constraints — not peak-FLOPS assumptions.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="/contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=13"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a'];
+
+    const MODELS = {
+      '8': { params: 8, layers: 32, kv: 8, dim: 128 },
+      '32': { params: 32, layers: 64, kv: 8, dim: 128 },
+      '70': { params: 70, layers: 80, kv: 8, dim: 128 },
+      '405': { params: 405, layers: 126, kv: 8, dim: 128 }
+    };
+    const OVERHEAD_GB = 12;
+    const state = { model: '70', prec: 2, ctxK: 32, sessions: 4, hbm: 288 };
+
+    const phases = {
+      prefill: {
+        bound: 'Compute / FLOPS',
+        metric: 'ms to first token',
+        upgrade: 'Tensor cores',
+        copy: 'Prefill reads the prompt once. It can look compute-heavy. It is not what users wait on after the first token.'
+      },
+      decode: {
+        bound: 'Memory bandwidth',
+        metric: 'tok/s vs context',
+        upgrade: 'HBM BW + capacity',
+        copy: 'Each generated token re-reads weights and the entire KV cache. Extra FLOPS do little if HBM cannot keep up.'
+      }
+    };
+
+    document.querySelectorAll('#phaseWidget [data-phase]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#phaseWidget [data-phase]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        const p = phases[btn.dataset.phase];
+        document.getElementById('phaseBound').textContent = p.bound;
+        document.getElementById('phaseMetric').textContent = p.metric;
+        document.getElementById('phaseUpgrade').textContent = p.upgrade;
+        document.getElementById('phaseCopy').textContent = p.copy;
+      });
+    });
+
+    function fmt(n) {
+      if (n >= 1000) return (n / 1024).toFixed(2) + ' TB';
+      if (n >= 100) return Math.round(n) + ' GB';
+      return n.toFixed(1) + ' GB';
+    }
+
+    function compute() {
+      const m = MODELS[state.model];
+      const weights = m.params * state.prec;
+      const bytesPerTok = 2 * m.layers * m.kv * m.dim * 2;
+      const kv = bytesPerTok * state.ctxK * 1024 * state.sessions / 1e9;
+      const used = weights + kv + OVERHEAD_GB;
+      const gpus = Math.max(1, Math.ceil(used / state.hbm));
+      return { weights, kv, used, gpus, headroom: state.hbm - used };
+    }
+
+    const residencyChart = new Chart(document.getElementById('residencyChart'), {
+      type: 'bar',
+      data: {
+        labels: ['This config'],
+        datasets: [
+          { label: 'Weights', data: [0], backgroundColor: palette[0], stack: 'm' },
+          { label: 'KV cache', data: [0], backgroundColor: palette[1], stack: 'm' },
+          { label: 'Overhead', data: [OVERHEAD_GB], backgroundColor: palette[4], stack: 'm' },
+          { label: 'HBM capacity', data: [288], backgroundColor: 'rgba(100,116,139,0.25)', stack: 'cap' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          x: { stacked: false },
+          y: { beginAtZero: true, title: { display: true, text: 'GB' } }
+        }
+      }
+    });
+
+    function syncPills(selector, attr, value) {
+      document.querySelectorAll(selector).forEach((b) => {
+        b.setAttribute('aria-pressed', String(b.getAttribute(attr) === String(value)));
+      });
+    }
+
+    function renderResidency() {
+      const r = compute();
+      document.getElementById('statWeights').textContent = fmt(r.weights);
+      document.getElementById('statKv').textContent = fmt(r.kv);
+      document.getElementById('statUsed').textContent = fmt(r.used);
+      const fit = document.getElementById('statFit');
+      const box = document.getElementById('statFitBox');
+      box.classList.remove('blog-stat-ok', 'blog-stat-warn', 'blog-stat-bad');
+      if (r.used <= state.hbm) {
+        fit.textContent = 'Fits 1 GPU';
+        box.classList.add('blog-stat-ok');
+      } else if (r.gpus === 2) {
+        fit.textContent = 'Needs ~2 GPUs';
+        box.classList.add('blog-stat-warn');
+      } else {
+        fit.textContent = 'Needs ~' + r.gpus + ' GPUs';
+        box.classList.add('blog-stat-bad');
+      }
+      document.getElementById('ctxLabel').textContent = state.ctxK + 'K';
+      document.getElementById('sessLabel').textContent = String(state.sessions);
+      residencyChart.data.datasets[0].data = [r.weights];
+      residencyChart.data.datasets[1].data = [r.kv];
+      residencyChart.data.datasets[2].data = [OVERHEAD_GB];
+      residencyChart.data.datasets[3].data = [state.hbm];
+      residencyChart.update();
+      document.getElementById('residencyCaption').textContent =
+        'Used ' + fmt(r.used) + ' vs ' + state.hbm + ' GB HBM. Indicative GQA math, 12 GB overhead, FP16 KV.';
+    }
+
+    document.querySelectorAll('#residencyWidget [data-model]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.model = btn.dataset.model;
+        syncPills('#residencyWidget [data-model]', 'data-model', state.model);
+        renderResidency();
+      });
+    });
+    document.querySelectorAll('#residencyWidget [data-prec]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.prec = Number(btn.dataset.prec);
+        syncPills('#residencyWidget [data-prec]', 'data-prec', state.prec);
+        renderResidency();
+      });
+    });
+    document.querySelectorAll('#residencyWidget [data-hbm]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.hbm = Number(btn.dataset.hbm);
+        syncPills('#residencyWidget [data-hbm]', 'data-hbm', state.hbm);
+        renderResidency();
+      });
+    });
+    document.getElementById('ctxRange').addEventListener('input', (e) => {
+      state.ctxK = Number(e.target.value);
+      renderResidency();
+    });
+    document.getElementById('sessRange').addEventListener('input', (e) => {
+      state.sessions = Number(e.target.value);
+      renderResidency();
+    });
+
+    new Chart(document.getElementById('hbmBandwidthChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Blackwell / Ultra class', 'Rubin HBM4'],
+        datasets: [{
+          label: 'Peak HBM bandwidth (TB/s)',
+          data: [7.9, 22],
+          backgroundColor: [palette[0], palette[1]],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'TB/s' } } }
+      }
+    });
+
+    new Chart(document.getElementById('pathBandwidthChart'), {
+      type: 'bar',
+      data: {
+        labels: ['HBM4 ~22 TB/s', 'NVLink 6', 'NVLink-C2C', 'PCIe Gen 6 x16'],
+        datasets: [{
+          label: 'GB/s',
+          data: [22000, 3600, 1800, 256],
+          backgroundColor: [palette[1], palette[0], palette[2], palette[3]],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            type: 'logarithmic',
+            title: { display: true, text: 'GB/s (log)' }
+          }
+        }
+      }
+    });
+
+    const skuColors = [palette[2], palette[1], palette[0]];
+    const capacityChart = new Chart(document.getElementById('hbmCapacityChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Constrained Ultra', 'Rubin', 'Ultra original pitch'],
+        datasets: [{
+          label: 'On-package HBM (GB)',
+          data: [192, 288, 384],
+          backgroundColor: skuColors.map((c, i) => i === 1 ? c : c + '66'),
+          borderColor: skuColors,
+          borderWidth: 2,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, title: { display: true, text: 'GB' } } }
+      }
+    });
+
+    const skuNotes = {
+      192: 'Constrained Ultra ~192 GB: cut context, route smaller models, or plan tensor parallel earlier.',
+      288: 'Rubin 288 GB is the shipping-class assumption. Constrained Ultra evaluations cluster near 192 GB.',
+      384: 'Original Ultra pitch ~384 GB: fewer nodes for the same context × concurrency — do not treat this as locked.'
+    };
+    const skuIndex = { 192: 0, 288: 1, 384: 2 };
+
+    document.querySelectorAll('#skuPills [data-sku]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#skuPills [data-sku]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        const sku = Number(btn.dataset.sku);
+        const idx = skuIndex[sku];
+        capacityChart.data.datasets[0].backgroundColor = skuColors.map((c, i) => i === idx ? c : c + '66');
+        capacityChart.update();
+        document.getElementById('skuCaption').textContent = skuNotes[sku];
+        state.hbm = sku === 384 ? 288 : sku;
+        if (sku !== 384) {
+          syncPills('#residencyWidget [data-hbm]', 'data-hbm', state.hbm);
+          renderResidency();
+        }
+      });
+    });
+
+    renderResidency();
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>
