@@ -1,5 +1,5 @@
 (function () {
-  var PAGE_SIZE = 3;
+  var PAGE_SIZE = 6;
   var categoryFilter = "all";
   var yearFilter = "all";
   var searchQuery = "";
