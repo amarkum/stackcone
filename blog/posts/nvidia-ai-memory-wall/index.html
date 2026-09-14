@@ -12,20 +12,20 @@
   <meta property="og:url" content="https://stackcone.com/blog/posts/nvidia-ai-memory-wall/">
   <meta property="og:title" content="NVIDIA and the AI Memory Wall">
   <meta property="og:description" content="NVIDIA Rubin raised HBM4 bandwidth, but DRAM shortages may cut Rubin Ultra memory. Interactive KV-cache calculator, SKU scenarios, and how the memory wall changes RAG.">
-  <meta property="og:image" content="https://stackcone.com/blog/images/nvidia-ai-memory-wall/nvidia.svg">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="stackcone">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="NVIDIA and the AI Memory Wall">
   <meta name="twitter:description" content="NVIDIA Rubin raised HBM4 bandwidth, but DRAM shortages may cut Rubin Ultra memory. Interactive KV-cache calculator, SKU scenarios, and how the memory wall changes RAG.">
-  <meta name="twitter:image" content="https://stackcone.com/blog/images/nvidia-ai-memory-wall/nvidia.svg">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../../styles.css">
-  <link rel="stylesheet" href="../../../blog/blog.css">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -42,7 +42,7 @@
     "datePublished": "2026-09-14",
     "dateModified": "2026-09-14",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/nvidia-ai-memory-wall/" },
-    "image": "https://stackcone.com/blog/images/nvidia-ai-memory-wall/nvidia.svg",
+    "image": "https://stackcone.com/logo/stackcone.png",
     "keywords": ["NVIDIA Rubin", "AI memory wall", "HBM4", "KV cache calculator", "HBM shortage", "Rubin Ultra", "RAG GPU memory"],
     "articleSection": "Platform",
     "about": { "@type": "Thing", "name": "NVIDIA AI GPU memory and HBM constraints" }
@@ -127,13 +127,6 @@
     <p>NVIDIA still sits at the center of that stack. Rubin raised HBM4 bandwidth to about <strong>22 TB/s</strong> and <strong>288 GB</strong> per GPU. DRAM supply is tight enough that Rubin Ultra is being evaluated with <em>less</em> on-package memory than Rubin, not more.</p>
 
     <p>This is a builder's read of that shift: the memory subsystem, why decode is bandwidth-bound, an interactive residency calculator, and how to size RAG when the next SKU might ship with 192 GB instead of 288 GB.</p>
-
-    <figure class="blog-figure">
-      <div class="model-logo-row">
-        <img src="../../images/nvidia-ai-memory-wall/nvidia.svg" alt="NVIDIA wordmark" width="200" height="38" loading="eager">
-      </div>
-      <figcaption>NVIDIA remains the default AI accelerator vendor. The constraint around it is HBM and DRAM supply, not a lack of tensor cores. Wordmark via Wikimedia Commons.</figcaption>
-    </figure>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
