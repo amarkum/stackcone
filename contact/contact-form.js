@@ -31,6 +31,16 @@
       .then(function (response) {
         if (response.ok) {
           form.reset();
+          
+          // Fire GA4 event for successful form submission
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'generate_lead', {
+              event_category: 'Contact',
+              event_label: 'Contact Form Submission',
+              value: 1
+            });
+          }
+          
           openModal("success", "Message sent", "Thanks — we received your message and will reply within 24 hours.");
           return;
         }
