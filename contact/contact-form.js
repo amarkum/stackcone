@@ -37,6 +37,9 @@
             gtag('event', 'generate_lead', {
               event_category: 'Contact',
               event_label: 'Contact Form Submission',
+              page_location: window.location.href,
+              page_path: window.location.pathname,
+              form_id: 'contact-form',
               value: 1
             });
           }
