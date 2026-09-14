@@ -55,18 +55,23 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Is the DRAM shortage real?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Industry revenue jumped on price, not bits. Inventories are low and AI servers still pull HBM and DDR5." }
+        "name": "Is the DRAM shortage real, or is this vendor theater?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It is real enough that industry revenue jumped on price, not bits, and inventories are at historic lows. Vendors always have a speech. The wafers do not care about the speech." }
       },
       {
         "@type": "Question",
-        "name": "Why is PC RAM more expensive?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Suppliers moved wafers to servers and HBM. Consumer DRAM is leftover capacity." }
+        "name": "Why is PC RAM up if AI is the story?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Wafers moved to servers and HBM. Consumer DRAM is leftover capacity by policy. A laptop kit is competing with a GPU stack it will never meet." }
       },
       {
         "@type": "Question",
         "name": "Will HBM stay much more expensive than DDR5?",
-        "acceptedAnswer": { "@type": "Answer", "text": "The premium is shrinking as DDR5 reprices. Both remain scarce." }
+        "acceptedAnswer": { "@type": "Answer", "text": "The multiple is shrinking because DDR5 repriced, not because stacked memory became abundant. Both parts stay scarce." }
+      },
+      {
+        "@type": "Question",
+        "name": "What should a RAG team change first?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Cut retrieved tokens, add a reranker, and stop pinning an oversized model you have not measured." }
       }
     ]
   }
@@ -105,8 +110,9 @@
     <h1>The DRAM Supercycle</h1>
     <p class="meta">September 2026 · Published by Amar Kumar</p>
 
-    <p>AI did not just raise GPU prices. It reallocated the world's DRAM wafers. The three large memory makers still cannot grow bits as fast as servers want them. Inventories sit at historic lows. Contract prices keep rising, even if the quarter-to-quarter jumps have cooled from the early-year spikes.</p>
-    <p>This is a supercycle: HBM for accelerators, high-capacity DDR5 RDIMMs for AI and general servers, and leftover wafers for PCs and phones. If you buy GPUs, rent cloud, or run RAG on your own boxes, you are already paying for it.</p>
+    <p>The first time this cycle got personal for me was not a GPU quote. It was a boring 64 GB DIMM kit for a workstation that used to be a rounding error on the invoice. Same SKU. Same vendor. The price had quietly grown a personality. That is the tell of a memory supercycle: the unglamorous parts get expensive while everyone is still arguing about FLOPS.</p>
+    <p>AI did not “make RAM cost more” in the way a meme coin makes a ticker twitch. It stole the wafers. There are only so many square millimeters of DRAM coming out of Micron, SK hynix, and Samsung. Those millimeters can become HBM stacked on a GPU, fat DDR5 sticks in a server, or the chips in a laptop. This year the first two ate the third for lunch, then started eating each other.</p>
+    <p>If you rent cloud, ship RAG, or buy anything with “AI server” in the BOM, you are already in this story. The rest of this post is the version I wish someone had written before we sized a cluster like memory was still a commodity.</p>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
@@ -123,37 +129,40 @@
     </nav>
 
     <h2 id="what-it-is">What a supercycle is</h2>
-    <p>A memory supercycle is not “RAM got expensive this quarter.” It is a multi-year stretch where <strong>bit demand grows faster than bit supply</strong>, suppliers hold pricing power, and the mix shifts toward the highest-margin parts.</p>
+    <p>Memory people use “cycle” the way weather people use “season.” DRAM is famous for boom-and-bust: overbuild, crash, underbuild, squeeze, repeat. A <em>supercycle</em> is when the squeeze lasts long enough that you stop treating it as a quarter and start treating it as the weather.</p>
+    <p>The boring definition: <strong>bit demand grows faster than bit supply</strong> for years, not months. Suppliers get pricing power. The mix of what they make shifts toward whatever pays the most per wafer. Right now that mix looks like a triage ward. HBM first. Fat server RDIMMs second. Your gaming laptop last, and only if someone forgot a pallet.</p>
     <table>
       <thead><tr><th>Signal</th><th>What it looks like now</th></tr></thead>
       <tbody>
         <tr><td>Mix shift</td><td>Wafers go to HBM and server RDIMMs first</td></tr>
-        <tr><td>Inventory</td><td>Supplier stocks at historic lows</td></tr>
-        <tr><td>Pricing</td><td>Server DRAM still up QoQ; consumer DRAM often up more</td></tr>
-        <tr><td>Duration</td><td>Tightness discussed through 2027, not just this holiday</td></tr>
+        <tr><td>Inventory</td><td>Supplier stocks at historic lows — not “lean,” <em>empty-ish</em></td></tr>
+        <tr><td>Pricing</td><td>Server DRAM still up quarter on quarter; consumer DRAM often up <em>more</em></td></tr>
+        <tr><td>Duration</td><td>People who sell this stuff still talk about 2027, not Black Friday</td></tr>
       </tbody>
     </table>
-    <p>The same wafer can become HBM for a GPU or DDR5 for a CPU. Once HBM wins that allocation, a general server waits.</p>
+    <p>Here is the part that still surprises smart teams: the same silicon can become HBM for a GPU or DDR5 for a CPU. Once a wafer is committed to stacked memory, it is not sitting in a warehouse waiting for your dual-rank kit. It is already spoken for. A general-purpose server does not lose because the industry forgot how to make DRAM. It loses because someone with a bigger purchase order asked first.</p>
 
     <h2 id="numbers">The scoreboard</h2>
-    <p>TrendForce’s mid-year updates are the cleanest public scoreboard:</p>
+    <p>TrendForce’s mid-year updates are the closest thing this industry has to a box score. They are not poetry. They are also not a press release from a GPU company. Read them like a mechanic reads oil pressure.</p>
     <ul>
-      <li><strong>2Q26 DRAM industry revenue</strong> ~<strong>$154.7B</strong>, <strong>+59.5% QoQ</strong> — price, not a flood of new bits.</li>
-      <li>Bit shipments grew only modestly. Extra supply went to servers.</li>
-      <li><strong>3Q26 conventional DRAM contracts</strong> expected <strong>+13–18% QoQ</strong>, down from ~90%+ earlier in the year.</li>
-      <li>Some US cloud buyers locked <strong>multi-year LTAs</strong>. List increases hit everyone else harder.</li>
-      <li>Outlooks still cite large full-year inflation and tightness into 2027.</li>
+      <li><strong>2Q26 DRAM industry revenue</strong> landed around <strong>$154.7 billion</strong>, up <strong>59.5% quarter on quarter</strong>. That is not “they shipped a lot more chips.” Bits barely moved. Prices did.</li>
+      <li>Whatever extra supply existed went to servers. Consumer channels got the leftovers and a lecture.</li>
+      <li><strong>3Q26 conventional DRAM contracts</strong> were still expected up <strong>13–18%</strong> — which sounds almost polite until you remember some earlier quarters this year were up <em>ninety percent</em>. The spike cooled. The squeeze did not end.</li>
+      <li>A handful of US cloud buyers locked <strong>multi-year LTAs</strong> (long-term agreements). If you do not have one, you are shopping in the gift shop while they eat in the kitchen.</li>
+      <li>Full-year commentary still talks about inflation and tightness running into 2027. Anyone telling you “it normalizes next quarter” is selling you something, or selling you RAM.</li>
     </ul>
+    <p>Revenue jumping while bits crawl is the fingerprint of a price supercycle. You can argue about how long it lasts. You cannot argue that this is a capacity boom. The fabs are not magically twice as big. The invoices are.</p>
     <div class="chart-wrap">
       <canvas id="dramRevChart" aria-label="Bar chart of DRAM industry revenue jump in 2Q26"></canvas>
       <p class="chart-caption">Revenue jumped far faster than bits. That is a price supercycle, not a capacity boom.</p>
     </div>
 
     <h2 id="three-markets">HBM vs DDR5 vs consumer</h2>
-    <p><strong>HBM</strong> sits on NVIDIA, AMD, and custom AI ASICs. Highest revenue per wafer. Decode and long-context inference need it. GPU-side detail lives in <a href="/blog/posts/nvidia-ai-memory-wall/">NVIDIA and the AI Memory Wall</a>.</p>
-    <p><strong>Server DDR5</strong> is the other AI memory: retrieval, orchestration, and host-side KV offload. Cloud buyers raised DDR5 content per server. High-capacity modules take a rising share of bits.</p>
-    <p><strong>Consumer DRAM</strong> is leftover. Suppliers cut PC and phone allocation on purpose. That is why laptop RAM can rise even faster than server DIMMs.</p>
-    <p>HBM3e used to cost four to five times server DDR5. That gap is compressing toward <strong>1–2×</strong> as DDR5 itself reprices — not because HBM got cheap.</p>
+    <p>Think of three products that used to live in different aisles and now fight over one factory.</p>
+    <p><strong>HBM</strong> is the celebrity. It sits on NVIDIA, AMD, and custom AI ASICs, stacked like a tiny apartment building and wired with through-silicon vias that make yield engineers age in dog years. Highest revenue per wafer. Decode and long-context inference cannot fake their way around it. If you want the GPU-side math — KV cache, Rubin, 192 GB versus 288 GB — that lives in <a href="/blog/posts/nvidia-ai-memory-wall/">NVIDIA and the AI Memory Wall</a>. This post is the other half: the wafers that never become GPUs at all.</p>
+    <p><strong>Server DDR5</strong> is the unloved sibling that suddenly got rich. Retrieval, orchestration, host-side KV offload, vector indexes that “will totally fit in RAM.” Cloud buyers raised DDR5 content per server the way restaurants raised portion sizes in reverse: more food, same kitchen, higher check. High-capacity modules take a rising share of bits because a 128 GB stick is a better use of scarce silicon than four 32 GB sticks you have to socket and cool.</p>
+    <p><strong>Consumer DRAM</strong> is leftover pizza. Suppliers cut PC and phone allocation on purpose. That is why a laptop upgrade can hurt more than a server DIMM this year, which feels insane until you remember nobody at Micron is losing sleep over your 32 GB kit when a hyperscaler will take the whole lot.</p>
+    <p>HBM3e used to cost four to five times server DDR5. That gap is compressing toward <strong>1–2×</strong>. Do not clap. DDR5 did not get cheap. It caught up. The premium shrank because the floor rose.</p>
     <div class="chart-wrap">
       <canvas id="premiumChart" aria-label="HBM price premium over server DDR5 then versus now"></canvas>
       <p class="chart-caption">The HBM premium shrank because DDR5 caught up, not because stacked memory became abundant.</p>
@@ -162,7 +171,7 @@
     <h2 id="buyer">Who pays more</h2>
     <div class="blog-widget" id="buyerWidget">
       <h3>Pick a buyer</h3>
-      <p class="blog-widget-lead">LTA cloud, spot cloud, and consumer channels are not in the same price movie.</p>
+      <p class="blog-widget-lead">Cloud buyers with a long-term agreement, everyone else on the spot market, and PC/phone channels are not in the same movie. They just share a soundtrack of “RAM is fine, actually.”</p>
       <div class="blog-pills" role="group" aria-label="Buyer type">
         <button type="button" class="blog-pill" data-buyer="lta" aria-pressed="true">Cloud LTA</button>
         <button type="button" class="blog-pill" data-buyer="spot" aria-pressed="false">No agreement</button>
@@ -194,44 +203,51 @@
   W --> S
   W --> C</div>
       </div>
-      <p class="diagram-caption">One wafer, three products. HBM and servers win the allocation fight.</p>
+      <p class="diagram-caption">One wafer, three products. HBM and servers win the allocation fight. Your laptop gets whatever fell off the truck.</p>
     </div>
+    <p>People ask “why don’t they just build more fabs?” the way people ask why restaurants don’t just add a second kitchen during dinner rush. They can. It takes years, tens of billions, and a process node that does not care about your sprint board.</p>
     <ul>
-      <li>New fabs take years. Through 2027 the majors grow bits mainly by <strong>migrating existing lines</strong>.</li>
-      <li>HBM burns more wafer time per usable bit than commodity DDR5.</li>
-      <li>Earlier CPU shortages let US clouds <strong>buffer DRAM inventory</strong> — demand parked on shelves, not cancelled.</li>
+      <li>Through 2027 the majors grow bits mainly by <strong>migrating existing lines</strong> — squeezing more from tools they already own — not by opening a magic HBM Disneyland next quarter.</li>
+      <li>HBM burns more wafer time per usable bit than commodity DDR5. Stacking, TSV, and yield tax mean you spend a wafer and get fewer “happy gigabytes” than a boring DIMM would have given you.</li>
+      <li>Earlier CPU shortages let US clouds <strong>buffer DRAM inventory</strong>. Demand did not vanish. It sat on shelves waiting for sockets. When the CPUs showed up, the DRAM walked out with them. That is parked demand, not cancelled demand.</li>
     </ul>
+    <p>So yes, someone will eventually overbuild. Memory always overbuilds. The question for anyone shipping product this year is whether you can afford to wait for the hangover.</p>
 
     <h2 id="ai-systems">What this does to AI systems</h2>
+    <p>This is where the supercycle stops being a semiconductor story and starts being your architecture review.</p>
     <ol>
-      <li><strong>GPU HBM SKUs</strong> may ship thinner stacks. Same FLOPS, less residency.</li>
-      <li><strong>Host DIMMs</strong> — vector DBs and KV offload get more expensive per GB.</li>
-      <li><strong>Cloud list prices</strong> — memory-heavy instances reprice first.</li>
+      <li><strong>GPU HBM SKUs</strong> may ship thinner stacks. Same marketing FLOPS, less KV residency. The card looks identical in the SKU picker. The context window you thought you bought does not.</li>
+      <li><strong>Host DIMMs</strong> — vector databases and KV offload get more expensive per gigabyte. “Just keep it in RAM” is a strategy from 2023. In 2026 it is a budget line.</li>
+      <li><strong>Cloud list prices</strong> — memory-heavy instances reprice first, because they are made of the thing everyone is fighting over. CPU-heavy instances will feel it later. GPU instances already felt it.</li>
     </ol>
-    <p>RAG is a memory product. That is why <a href="/blog/posts/how-to-evaluate-rag-retrieval/">retrieval quality</a> and <a href="/blog/posts/auto-model-routing-without-llm-classifier/">model routing</a> are cost controls.</p>
+    <p>RAG is a memory product wearing a language-model costume. The retrieval set, the reranker, the working context, the host cache — that is DRAM talking. Which is why <a href="/blog/posts/how-to-evaluate-rag-retrieval/">retrieval quality</a> and <a href="/blog/posts/auto-model-routing-without-llm-classifier/">model routing</a> are not “MLOps nice-to-haves.” They are how you stop buying memory you do not use.</p>
+    <p>A team that pins a 70B model “just in case” and retrieves 40 chunks “because we can” is not being thorough. They are donating margin to SK hynix.</p>
 
     <h2 id="how-to-buy">How to buy around it</h2>
+    <p>You cannot fab your way out of this quarter. You can stop shopping like memory is still a rounding error.</p>
     <table>
       <thead><tr><th>Lever</th><th>Why it works</th></tr></thead>
       <tbody>
-        <tr><td>Smaller working set</td><td>Rerank so you do not buy unused context</td></tr>
-        <tr><td>Right-size models</td><td>A resident 8–32B beats a swapping frontier model</td></tr>
-        <tr><td>Reserved cloud</td><td>Spot memory instances move with the supercycle</td></tr>
-        <tr><td>Don’t future-proof DIMMs</td><td>If 64 GB fits, skip 256 GB this year</td></tr>
-        <tr><td>One TCO line</td><td>GPU HBM + host DDR5 is a single bill</td></tr>
+        <tr><td>Smaller working set</td><td>Rerank so you do not pay HBM and DDR5 for tokens nobody reads</td></tr>
+        <tr><td>Right-size models</td><td>A resident 8–32B that stays on the card beats a frontier model that pages like it’s 1998</td></tr>
+        <tr><td>Reserved cloud</td><td>Spot memory instances are riding the supercycle. Reserved capacity is a boring adult decision</td></tr>
+        <tr><td>Don’t future-proof DIMMs</td><td>If 64 GB fits the working set, skip the 256 GB “for growth.” Growth is priced like a luxury good</td></tr>
+        <tr><td>One TCO line</td><td>GPU HBM + host DDR5 is a single bill. Splitting them in two spreadsheets is how overbuy happens</td></tr>
       </tbody>
     </table>
-    <p>Do not assume next year is cheap. Supplier commentary still has server DRAM rising through 2H27, just more slowly.</p>
+    <p>Do not assume next year is cheap. Supplier commentary still has server DRAM rising through the second half of 2027, just more slowly — the difference between a punch and a grind. Plan for the grind. If prices collapse, you will look conservative. If they do not, you will still have a product.</p>
 
     <h2 id="faq">FAQ</h2>
-    <h3>Is the DRAM shortage real?</h3>
-    <p>Yes. Industry revenue jumped on price, not bits. Inventories are low. AI servers still pull HBM and DDR5.</p>
+    <h3>Is the DRAM shortage real, or is this vendor theater?</h3>
+    <p>It is real enough that industry revenue jumped on price, not bits, and inventories are at historic lows. Vendors always have a speech. The wafers do not care about the speech.</p>
     <h3>Why is PC RAM up if AI is the story?</h3>
-    <p>Wafers moved to servers and HBM. Consumer DRAM is leftover capacity.</p>
+    <p>Because wafers moved. Consumer DRAM is leftover capacity by policy, not by accident. Your laptop is competing with a GPU stack it will never meet.</p>
     <h3>Will HBM stay many times more expensive than DDR5?</h3>
-    <p>The premium is shrinking because DDR5 repriced. Both parts stay scarce.</p>
+    <p>The multiple is shrinking because DDR5 repriced, not because stacked memory became abundant. Both parts stay scarce. The interesting number is no longer “HBM is 5×.” It is “DDR5 is no longer cheap.”</p>
     <h3>What should a RAG team change first?</h3>
-    <p>Cut retrieved tokens, add rerank, stop pinning oversized models.</p>
+    <p>Cut retrieved tokens, add a reranker that earns its keep, and stop pinning an oversized model “for quality” you have not measured. Measure, then buy silicon. The other order is how supercycles get paid.</p>
+    <h3>Should we wait for 2027?</h3>
+    <p>Only if your users will wait with you. The industry may loosen. Your customers will not pause their tickets while SK hynix builds a building.</p>
 
     <aside class="blog-related">
       <h2>Related guides</h2>
@@ -242,7 +258,7 @@
         <li><a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Best Economical LLM Models for RAG</a></li>
       </ul>
     </aside>
-    <p class="closing">You cannot fab your way out of this quarter. You can stop buying memory you do not use.</p>
+    <p class="closing">You cannot fab your way out of this quarter. You can stop buying memory you do not use — which is less exciting than a new cluster, and much closer to a strategy.</p>
 
     <aside class="blog-cta">
       <h2>Building around this constraint?</h2>

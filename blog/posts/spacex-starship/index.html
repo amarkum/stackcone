@@ -56,7 +56,7 @@
       {
         "@type": "Question",
         "name": "Is SpaceX flying fewer rockets?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Fewer Falcons than last year, by design. Starship flights are still in the teens." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Fewer Falcons than last year, by design. Starship flights are still in the teens. SpaceX is changing which vehicle does the boring work, and that work is not fully transferred yet." }
       },
       {
         "@type": "Question",
@@ -66,7 +66,7 @@
       {
         "@type": "Question",
         "name": "What is still missing for Artemis?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Orbital Ship, tower catch / reuse, and demonstrated propellant transfer." }
+        "acceptedAnswer": { "@type": "Answer", "text": "A reliable orbital Ship, tower catch and reuse, and demonstrated propellant transfer." }
       }
     ]
   }
@@ -105,9 +105,10 @@
     <h1>SpaceX Starship and the Falcon Drawdown</h1>
     <p class="meta">September 2026 · Published by Amar Kumar</p>
 
-    <p>Falcon 9 is still the workhorse of Earth orbit. SpaceX is already planning to fly it less.</p>
-    <p>President Gwynne Shotwell told Time the company would do <strong>about 140–145 Falcon launches</strong> this year, down from <strong>165 Falcon 9 flights</strong> last year. That is not a retreat from space. It is a bet that <strong>Starship</strong> takes Starlink, lunar landers, and eventually orbital compute — and that Falcon tails off as that vehicle becomes routine.</p>
-    <p>This is a status report for operators: where Starship actually is after Flight 13, why Falcon cadence is being managed down, and what the launch gap means if you depend on a ride to orbit.</p>
+    <p>Falcon 9 is the most useful rocket of the decade. It is also, if Gwynne Shotwell is to be believed, a rocket SpaceX is trying to fly <em>less</em>.</p>
+    <p>That sentence should feel slightly illegal. Falcon 9 made weekly launches boring. It turned “will it get to orbit?” into “what time is the window?” Then, in a Time interview, SpaceX’s president said the company would do <strong>about 140–145 Falcon launches</strong> this year, down from <strong>165 Falcon 9 flights</strong> in 2025. Not because demand vanished. Because the plan is for <strong>Starship</strong> to eat Starlink, lunar landers, and — someday — the kind of orbital hardware people put on slides with too many arrows.</p>
+    <p>If you book rideshare, fly a cubesat, or just like knowing whether there will be a pad when you need one, this is your problem too. Falcon’s drawdown only works if Starship becomes a bus. After Flight 13 it looks more like a very promising prototype that had a good day.</p>
+    <p>This is the long version: the cadence math, the lucky-13 flight, why Starlink V3 cannot live on Falcon forever, the Artemis gaps nobody can slogan away, and a blunt ride-class picker for people who still have to launch something this year.</p>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
@@ -124,37 +125,43 @@
     </nav>
 
     <h2 id="falcon-drawdown">The Falcon 9 drawdown</h2>
-    <p>Falcon’s recent history is a straight ramp: <strong>96</strong> Falcon flights in 2023, <strong>134</strong> Falcon 9 + Heavy in 2024, <strong>165</strong> Falcon 9 in 2025. Four-day Cape turnarounds became normal, then rare again.</p>
+    <p>Falcon’s recent history is a straight ramp that would have sounded like science fiction in 2016: <strong>96</strong> Falcon flights in 2023, <strong>134</strong> Falcon 9 + Heavy in 2024, <strong>165</strong> Falcon 9 in 2025. Four-day Cape turnarounds became something you complained about if they slipped to five. Then the Cape slowed down again, on purpose.</p>
+    <p>A drawdown is not a grounded fleet. It is a company deciding that the golden goose should lay fewer eggs while the bigger bird learns to fly. The risk is obvious and delicious: you can throttle the reliable vehicle before the ambitious one is a product.</p>
     <div class="chart-wrap">
       <canvas id="falconChart" aria-label="Falcon launch counts by year"></canvas>
       <p class="chart-caption">Planned Falcon flights this year sit below last year’s peak on purpose.</p>
     </div>
     <ul>
-      <li><strong>Vandenberg</strong> — most Starlink Falcon 9s, still as tight as every three or four days</li>
-      <li><strong>Cape Canaveral</strong> — about one Falcon 9 per week, closer to the 2023 rhythm</li>
-      <li><strong>Starbase</strong> — Starship test and early operational flights</li>
+      <li><strong>Vandenberg</strong> — most Starlink Falcon 9s, still as tight as every three or four days. California is where the factory still looks like a factory.</li>
+      <li><strong>Cape Canaveral</strong> — about one Falcon 9 per week, closer to the 2023 rhythm. Florida is where the company is making room, mentally and on the pad, for something taller.</li>
+      <li><strong>Starbase</strong> — Starship test and early operational flights, plus the internet’s favorite industrial live stream.</li>
     </ul>
-    <p>Shotwell’s line: fly a lot this year, then <strong>tail off Falcon as Starship comes online</strong>. Internal Starlink still eats most Falcon manifests. Merchant customers get whatever is left.</p>
+    <p>Shotwell’s line is the adult version of the meme: fly a lot this year, then <strong>tail off Falcon as Starship comes online</strong>. Internal Starlink still eats most Falcon manifests. Merchant customers get whatever is left after SpaceX has fed its own constellation. That was always true. It is more true when the leftover pile shrinks by twenty flights.</p>
+    <p>If you are a commercial customer, you are not competing with “the market.” You are competing with SpaceX’s own satellites, which do not send polite emails about slip dates.</p>
 
     <h2 id="starship-status">Starship after Flight 13</h2>
-    <p>Starship is a two-stage methane/LOX stack: Super Heavy plus the Ship, both meant to be reused. Wikipedia’s running tally through <strong>24 July 2026</strong> lists <strong>13 flights, 8 successes, 5 failures</strong>. 2025 was messy. The V3 / Block 3 vehicle then posted two successful flights this year.</p>
-    <p><strong>Flight 13 (24 July 2026)</strong> changed the tone: first <strong>Starlink V3</strong> batch on a Starship, an in-space engine relight, and the gentlest Ship ocean splashdown SpaceX has shown. Super Heavy is the more mature catch candidate. The <strong>Ship tower catch</strong> is the next advertised leap.</p>
-    <p>Elon Musk said Flight 14 would try to catch the Ship with the tower arms unless data review found problems. That implies an orbital-class profile Starship has not fully closed: around the Earth and back to Starbase.</p>
+    <p>Starship is a two-stage methane/LOX stack: Super Heavy plus the Ship, both meant to be reused, both large enough that ordinary language fails and you start saying “the tank is a building.” Super Heavy is the booster. The Ship is the upper stage that is also the payload bay, the heat shield, and eventually the thing NASA wants to land on the Moon with people inside, which still sounds like a dare.</p>
+    <p>Wikipedia’s running tally through <strong>24 July 2026</strong> lists <strong>13 flights, 8 successes, 5 failures</strong>. 2025 was messy in the way test programs are messy when the vehicle is new and the internet has a stopwatch. The V3 / Block 3 vehicle then posted two successful flights this year. That is the version that started to look like a machine instead of a fireworks permit.</p>
+    <p><strong>Flight 13 on 24 July 2026</strong> changed the tone, and yes, people made the lucky-number jokes. First <strong>Starlink V3</strong> batch on a Starship. An in-space engine relight — the unglamorous trick you need if you ever want to come home on purpose. And the gentlest Ship ocean splashdown SpaceX has shown, which is a polite way of saying previous splashdowns had more personality.</p>
+    <p>Super Heavy is the more mature catch candidate. Those tower arms — “chopsticks,” because engineers are not allowed to name things beautifully — have already proven they can grab a booster. The <strong>Ship tower catch</strong> is the next advertised leap. Catching a returning upper stage that has been to space, survived heating, and still wants to be a building is a different video game.</p>
+    <p>Elon Musk said Flight 14 would try to catch the Ship with the tower arms unless data review found problems. That implies an orbital-class profile Starship has not fully closed: around the Earth and back to Starbase, then a hug from a steel structure. Until that is boring, Starship is a test article with commercial cargo on it, not a bus schedule.</p>
 
     <h2 id="starlink">Starlink V3</h2>
-    <p>Starlink is why Falcon 9’s cadence exists. It is also why Starship has to work. V3 satellites are larger. Putting them on Falcon forever is the wrong factory shape. Moving that traffic to Starship is how SpaceX frees Falcon — or parks it — as Starship pads multiply in Texas and Florida.</p>
-    <p>Orbital data-center nodes launched on Starship are still a slide until the vehicle is orbital, catchable, and flying often. This year’s job is proving reuse, not announcing constellations.</p>
+    <p>Starlink is why Falcon 9’s cadence exists. It is also why Starship has to work. The constellation is not a side hustle. It is the customer that never misses a payment because it is the same company.</p>
+    <p>V3 satellites are larger. Putting them on Falcon forever is the wrong factory shape: you are stuffing a sofa through a hatch because the moving truck is not ready. Moving that traffic to Starship is how SpaceX frees Falcon — or parks it — as Starship pads multiply in Texas and Florida.</p>
+    <p>This is the part launch customers should tattoo on a whiteboard: SpaceX will always prioritize the vehicle that makes Starlink cheaper to replenish. If Starship can loft V3 in useful batches, Falcon becomes a specialist. If Starship cannot, Falcon stays the workhorse and Shotwell’s drawdown number gets quietly… revised.</p>
+    <p>Orbital data-center nodes launched on Starship are still a slide until the vehicle is orbital, catchable, and flying often. This year’s job is proving reuse, not announcing constellations of GPUs in polar orbit. The GPUs, for what it is worth, have their own <a href="/blog/posts/nvidia-ai-memory-wall/">memory problem</a> even on the ground.</p>
 
     <h2 id="artemis">Artemis gaps</h2>
-    <p>NASA selected Starship as a human landing system. Two problems still sit in front of a crewed landing:</p>
+    <p>NASA selected Starship as a human landing system. That sentence has been true long enough to feel like a product. It is not a product. Two problems still sit in front of a crewed landing, and neither one is a paint color:</p>
     <ol>
-      <li><strong>Ship catch and rapid reuse</strong></li>
-      <li><strong>Orbital propellant transfer</strong> — not yet demonstrated</li>
+      <li><strong>Ship catch and rapid reuse.</strong> A lunar lander that is also a barely-caught prototype is a schedule risk with a flag on it.</li>
+      <li><strong>Orbital propellant transfer</strong> — not yet demonstrated. Starship to the Moon is a tanker ballet. Until someone actually pumps methalox from one ship to another in orbit, the architecture is a PowerPoint with excellent rendering.</li>
     </ol>
-    <p>Until those close, Artemis dates slip with the vehicle. Treat Starship news as <strong>test-program progress</strong>, not an operational lunar ferry.</p>
+    <p>Until those close, Artemis dates slip with the vehicle. Treat Starship news as <strong>test-program progress</strong>, not an operational lunar ferry. The catch videos will be great. The propellant transfer will be the unsexy milestone that actually unlocks the Moon, which is very on-brand for engineering.</p>
 
     <h2 id="launch-gap">The launch gap</h2>
-    <p>Global orbital attempts this year are pacing slightly below last year.</p>
+    <p>Global orbital attempts this year are pacing slightly below last year. That should not happen in a world that cannot get enough compute, satellite internet, or Earth-observation pixels. It is happening anyway, because one company still does most of the useful flying, and that company is trying to change airplanes mid-flight.</p>
     <table>
       <thead><tr><th>Factor</th><th>Effect</th></tr></thead>
       <tbody>
@@ -165,29 +172,35 @@
     </table>
 
     <h2 id="ride">Do you have a ride?</h2>
+    <p>Operators love cadence the way backend teams love SLOs: you only notice it when it is gone. Use the picker. It will not book you a pad. It will keep you from treating a livestream as a catalog.</p>
     <div class="blog-widget" id="rideWidget">
       <h3>What are you trying to launch?</h3>
-      <p class="blog-widget-lead">Pick a payload class. This is operator advice, not a booking.</p>
+      <p class="blog-widget-lead">Pick a payload class. This is operator advice, not a booking — and definitely not a promise from Boca Chica.</p>
       <div class="blog-pills" role="group" aria-label="Payload class">
         <button type="button" class="blog-pill" data-ride="starlink" aria-pressed="false">Internal Starlink</button>
         <button type="button" class="blog-pill" data-ride="rideshare" aria-pressed="true">Commercial rideshare</button>
         <button type="button" class="blog-pill" data-ride="heavy" aria-pressed="false">Heavy / lunar</button>
       </div>
-      <p id="rideCopy" class="blog-widget-lead" style="margin-bottom:0;">Assume Falcon is tighter than last year. Book early or look at Neutron / New Glenn backups. Do not treat Starship as a catalog item.</p>
+      <p id="rideCopy" class="blog-widget-lead" style="margin-bottom:0;">Assume Falcon is tighter than last year. Book early or look at Neutron / New Glenn backups. Do not treat a Flight 13 highlight reel as a catalog item.</p>
     </div>
 
     <h2 id="competitors">Who else can fly</h2>
-    <p>The medium-lift gap is the interesting market. Falcon Heavy and New Glenn fight the high end. Rocket Lab’s <strong>Neutron</strong>, Stoke’s reusable designs, and Chinese heavy lift are the “not Starship, not Falcon 9” options. None replace SpaceX volume yet. A Falcon drawdown <em>before</em> Starship is operational is a sector-wide capacity story.</p>
+    <p>The medium-lift gap is the interesting market, which is a polite way of saying: everyone wants to be the “not SpaceX” option and almost nobody can print 140 reliable flights a year.</p>
+    <p>Falcon Heavy and Blue Origin’s New Glenn fight the high end. Rocket Lab’s <strong>Neutron</strong> is the vehicle a lot of smallsat people are quietly rooting for because Electron already taught them how to wait politely. Stoke and a few others are building reuse stories that have not yet become schedules. Chinese heavy lift is real and mostly unavailable if your paperwork says otherwise.</p>
+    <p>None of that replaces SpaceX volume yet. A Falcon drawdown <em>before</em> Starship is operational is a sector-wide capacity story. It is also an opening, if you like launching things and you are not allergic to being compared to a company that catches boosters with a pair of steel arms.</p>
+    <p>Backup manifests are not disloyalty. They are how you sleep when Flight 14 is a catch attempt and your cubesat is still on a spreadsheet.</p>
 
     <h2 id="faq">FAQ</h2>
     <h3>Is SpaceX flying fewer rockets?</h3>
-    <p>Fewer Falcons than last year, by design. Starship flights are still counted in the teens.</p>
+    <p>Fewer Falcons than last year, by design. Starship flights are still counted in the teens. “SpaceX is slowing down” is the wrong headline. “SpaceX is changing which vehicle does the boring work” is closer, and the boring work is not fully transferred yet.</p>
     <h3>Did Starship reach routine operations?</h3>
-    <p>No. Flight 13 was a strong test. Routine means catch, refurbish, and fly again on a schedule.</p>
+    <p>No. Flight 13 was a strong test — V3 satellites, a relight, a calm splashdown. Routine means catch, refurbish, and fly again on a schedule your insurance broker would recognize. We are not there.</p>
     <h3>Why does Starlink V3 need Starship?</h3>
-    <p>The satellites are larger. Starship is the vehicle sized for the next constellation.</p>
+    <p>The satellites are larger. Falcon can still loft them in awkward numbers. Starship is the vehicle sized for the next constellation the way a cargo ship is sized for containers, not for stuffing them in a hatchback.</p>
     <h3>What is still missing for Artemis?</h3>
-    <p>A reliable orbital Ship, tower catch / reuse, and demonstrated propellant transfer.</p>
+    <p>A reliable orbital Ship, tower catch and reuse, and demonstrated propellant transfer. Until the tankers actually tanker, the lunar architecture is a very expensive intention.</p>
+    <h3>Should I wait for Starship instead of booking Falcon?</h3>
+    <p>Only if your launch date is a vibe. If you have a real window this year, book the workhorse and keep a backup. Starship will be a catalog item when catching a Ship is as dull as a Falcon landing. Dull is the goal.</p>
 
     <aside class="blog-related">
       <h2>Related guides</h2>
@@ -197,7 +210,7 @@
         <li><a href="/blog/posts/ai-bubble-debate/">The AI Bubble Debate</a></li>
       </ul>
     </aside>
-    <p class="closing">Cadence is the product. Until Starship has it, Falcon’s drawdown is everyone else’s problem.</p>
+    <p class="closing">Cadence is the product. Until Starship has it, Falcon’s drawdown is everyone else’s scheduling problem — and a reminder that the most reliable rocket in the world is still a family business with a louder sibling.</p>
 
     <aside class="blog-cta">
       <h2>Building around this constraint?</h2>
@@ -243,9 +256,9 @@
       options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Flights' } } } }
     });
     const rides = {
-      starlink: 'Internal Starlink still owns Falcon. V3 wants Starship. That is a factory problem, not a booking window for you.',
-      rideshare: 'Assume Falcon is tighter than last year. Book early or look at Neutron / New Glenn backups. Do not treat Starship as a catalog item.',
-      heavy: 'Lunar and heavy still wait on catch, reuse, and propellant transfer. Plan slips with the test program.'
+      starlink: 'Internal Starlink still owns Falcon. V3 wants Starship. That is a factory problem, not a booking window you can sweet-talk your way into.',
+      rideshare: 'Assume Falcon is tighter than last year. Book early or look at Neutron / New Glenn backups. Do not treat a Flight 13 highlight reel as a catalog item.',
+      heavy: 'Lunar and heavy still wait on catch, reuse, and propellant transfer. Your date slips with the test program, whether the livestream was pretty or not.'
     };
     document.querySelectorAll('#rideWidget [data-ride]').forEach((btn) => {
       btn.addEventListener('click', () => {

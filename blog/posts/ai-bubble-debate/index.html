@@ -56,7 +56,7 @@
       {
         "@type": "Question",
         "name": "Is this financial advice?",
-        "acceptedAnswer": { "@type": "Answer", "text": "No. It is a product-architecture read of a public debate." }
+        "acceptedAnswer": { "@type": "Answer", "text": "No. It is a product-architecture read of a public argument, not a price target." }
       },
       {
         "@type": "Question",
@@ -66,7 +66,7 @@
       {
         "@type": "Question",
         "name": "What should a startup do?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Design for thinner HBM, expensive DIMMs, and higher token prices." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Design for thinner HBM SKUs, expensive DIMMs, and higher token prices. If the product only works on infinite cheap HBM, it is not a product." }
       }
     ]
   }
@@ -105,8 +105,10 @@
     <h1>The AI Bubble Debate</h1>
     <p class="meta">September 2026 · Published by Amar Kumar</p>
 
-    <p>Capex is enormous. HBM is tight. Power interconnects slip. Model labs still raise. Those facts can support a boom <em>and</em> a bubble at the same time. The useful question is not “is AI a bubble?” It is “which cash flows survive if the slides are wrong?”</p>
-    <p>This is a builder’s cut of that debate: what the skeptics get right, what the buildout still has to finish, and a simple test for a product team that does not want to underwrite someone else’s GPU order.</p>
+    <p>Every dinner party with people who work in tech now has a version of this fight. Someone says the whole thing is a bubble. Someone else says look at the HBM quotes, look at the interconnect queues, look at the fact that you cannot buy a fat DIMM without filling out a form that feels like a mortgage. They talk past each other for forty minutes. Both of them can be right.</p>
+    <p>Capex is enormous. Memory is tight. Power interconnects slip. Model labs still raise. Those facts support a boom <em>and</em> a bubble at the same time, which is annoying if you wanted a clean narrative and useful if you actually have to ship software.</p>
+    <p>The unhelpful question is “is AI a bubble?” You cannot answer it from a blog, and you should not try to underwrite NVIDIA’s multiple from a RAG demo. The useful question is: <strong>which cash flows survive if the slides are wrong?</strong> Which products still work if the next GPU ships with less HBM, tokens cost twice as much, or the cluster you were promised shows up two quarters late?</p>
+    <p>This is a builder’s cut of that debate — not financial advice, not a short thesis, not a pep talk. What the skeptics get right, what the buildout still is, a little shock tester, and the boring stack that stays useful either way.</p>
 
     <nav class="toc" aria-label="Table of contents">
       <h2>Table of contents</h2>
@@ -121,60 +123,74 @@
     </nav>
 
     <h2 id="both-true">Both stories can be true</h2>
-    <p>Search interest in “AI bubble” rose next to NVIDIA and DRAM. That is not noise. It is people stress-testing a story that ate most of the last two years of tech capex.</p>
+    <p>Search interest in “AI bubble” rose next to NVIDIA and DRAM for a reason. People are stress-testing a story that ate most of the last two years of tech capex. That is healthy. Markets that cannot joke about themselves tend to be the ones that later get a documentary with a sad piano.</p>
+    <p>The trick is that infrastructure shortages and speculative excess are not opposites. Housing bubbles happen in cities with real housing shortages. Fiber got overbuilt in places that later needed every strand. You can over-order GPUs for a workload that is genuinely growing. The hangover is about <em>how much</em> and <em>at what cost</em>, not about whether anyone uses a chatbot.</p>
     <table>
       <thead><tr><th>Bull case</th><th>Bear case</th></tr></thead>
       <tbody>
-        <tr><td>Inference demand is still growing</td><td>Training clusters were front-loaded</td></tr>
-        <tr><td>HBM and power are scarce because use is real</td><td>Scarcity can be over-ordering</td></tr>
-        <tr><td>Agents need more tokens per task</td><td>Tokens per dollar may not cover depreciation</td></tr>
-        <tr><td>Software is early</td><td>Software may never need this much silicon</td></tr>
+        <tr><td>Inference demand is still growing — agents eat tokens like teenagers eat cereal</td><td>Training clusters were front-loaded. The easy training spend already happened</td></tr>
+        <tr><td>HBM and power are scarce because use is real</td><td>Scarcity can be synchronized over-ordering with a procurement lag</td></tr>
+        <tr><td>Agents need more tokens per task, so the factory stays busy</td><td>Tokens per dollar may not cover depreciation on a rack that ages in dog years</td></tr>
+        <tr><td>Software is early; the apps have not caught up to the silicon</td><td>Software may never need this much silicon if smaller models keep getting good enough</td></tr>
       </tbody>
     </table>
+    <p>If you find yourself nodding at both columns, congratulations: you are paying attention. The rest of this post is about not having to pick a team.</p>
 
     <h2 id="skeptic">What skeptics get right</h2>
+    <p>The bear case is not “AI is fake.” The bear case is “a lot of metal was bought on a story about utilization that has not shown up in the P&amp;L yet.” That is a grown-up objection.</p>
     <ul>
-      <li><strong>Depreciation clocks.</strong> A GPU that ships with less HBM than last year’s slide still has to earn back the rack.</li>
-      <li><strong>Utilization.</strong> Peak reserved capacity is not the same as tokens sold.</li>
-      <li><strong>Power and interconnect</strong> slip dates even when the chip exists.</li>
-      <li><strong>Application revenue</strong> still lags infrastructure spend at most companies.</li>
+      <li><strong>Depreciation clocks.</strong> A GPU that ships with less HBM than last year’s slide still has to earn back the rack. Silicon does not care that the keynote was beautiful. See the <a href="/blog/posts/nvidia-ai-memory-wall/">memory wall</a> — FLOPS without residency is a very expensive space heater with excellent PR.</li>
+      <li><strong>Utilization.</strong> Peak reserved capacity is not tokens sold. A reserved H100 that spends Tuesday waiting for a batch job is a stuffed animal you finance at datacenter rates.</li>
+      <li><strong>Power and interconnect</strong> slip dates even when the chip exists. You cannot decode your way around a missing substation. The cluster that “ships in Q2” and lands in Q4 is the most common science-fiction in this industry.</li>
+      <li><strong>Application revenue</strong> still lags infrastructure spend at most companies. Lots of pilots. Lots of “the CEO wants a demo.” Fewer products where the unit economics would survive a CFO who can do division.</li>
     </ul>
-    <p>A thinner Rubin Ultra HBM SKU is not proof demand vanished. It is proof the <strong>bill of materials</strong> is the scarce resource. That is the <a href="/blog/posts/nvidia-ai-memory-wall/">memory wall</a> and the <a href="/blog/posts/dram-supercycle/">DRAM supercycle</a> in one sentence.</p>
+    <p>A thinner Rubin Ultra HBM SKU is not proof demand vanished. It is proof the <strong>bill of materials</strong> is the scarce resource. That is the memory wall and the <a href="/blog/posts/dram-supercycle/">DRAM supercycle</a> in one sentence: the boom is real enough to starve other products of wafers, and still not a guarantee that <em>your</em> feature pays for the card.</p>
+    <p>Skeptics also get this right, and it stings: a lot of “AI strategy” is a wrapping paper around a GPT wrapper. Wrappers are fine. Wrappers that require a dedicated cluster are a lifestyle.</p>
 
     <h2 id="builder">What the buildout still is</h2>
-    <p>Hyperscalers are still buying. Server DRAM LTAs run for years. That is not a meme-stock chart. It is a procurement process that is painful to unwind. The risk is not “nobody uses models.” The risk is “too much of the same model, at the wrong memory and power point, for workloads that fit a smaller card.”</p>
+    <p>Hyperscalers are still buying. Server DRAM long-term agreements run for years. That is not a meme-stock chart. It is a procurement process that is painful to unwind, which is why “just wait for the crash and buy cheap GPUs” is a strategy for people who do not have customers this quarter.</p>
+    <p>The risk is not “nobody uses models.” People use models. Your support team uses models. Your least technical coworker uses models to write emails that used to take twelve minutes and now take twelve minutes plus a rewrite. The risk is “too much of the same model, at the wrong memory and power point, for workloads that fit a smaller card.”</p>
+    <p>That is a product-architecture problem wearing a macro costume. You do not need to win a debate on CNBC. You need a serving path that still works if the next SKU is 192 GB and the DIMM is priced like a weekend in Tokyo.</p>
     <div class="chart-wrap">
       <canvas id="bubbleChart" aria-label="Where AI spend sits versus where product revenue sits"></canvas>
       <p class="chart-caption">Indicative split of attention: infra spend is loud. Application gross margin is quieter. That gap is the debate.</p>
     </div>
 
     <h2 id="test">A product test</h2>
+    <p>Forget the keynote. Run the product through a cheap, mean thought experiment: would this still be a product if the factory got worse? Toggle the shocks. If quality or unit economics collapse, you were not building a product. You were renting a boom.</p>
     <div class="blog-widget" id="bubbleWidget">
       <h3>Would this product survive a 40% GPU price shock?</h3>
-      <p class="blog-widget-lead">Toggle the constraints. If the product only works on cheap, abundant HBM, you are underwriting the bubble.</p>
+      <p class="blog-widget-lead">Pick a constraint. If the thing you shipped only works on cheap, abundant HBM, you are underwriting someone else’s cluster.</p>
       <div class="blog-pills" role="group" aria-label="Shock">
         <button type="button" class="blog-pill" data-shock="mem" aria-pressed="true">Thinner HBM</button>
         <button type="button" class="blog-pill" data-shock="price" aria-pressed="false">Tokens 2× cost</button>
         <button type="button" class="blog-pill" data-shock="delay" aria-pressed="false">Cluster slips 2 quarters</button>
       </div>
-      <p id="shockCopy" class="blog-widget-lead" style="margin-bottom:0;">Cut context, rerank, and route to a resident model. If quality collapses, the product was a capacity trade.</p>
+      <p id="shockCopy" class="blog-widget-lead" style="margin-bottom:0;">Cut context, rerank, and route to a resident model. If quality collapses, the product was a capacity trade dressed up as a roadmap.</p>
     </div>
 
     <h2 id="stack">What to build anyway</h2>
+    <p>There is a blessed category of work that is useful if the boom continues <em>and</em> if it compresses. It is not glamorous. It will not get you a keynote. It will keep you employed when the unused rack becomes a punchline.</p>
     <ul>
-      <li>Eval harnesses and golden sets — <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">agent testing</a></li>
-      <li>Routing and cheaper models — <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">economical RAG models</a></li>
-      <li>Retrieval that earns its tokens — <a href="/blog/posts/how-to-evaluate-rag-retrieval/">RAG evaluation</a></li>
+      <li><strong>Eval harnesses and golden sets</strong> — so you know whether the smaller model is actually worse, or just less theatrical. See <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">agent testing</a>.</li>
+      <li><strong>Routing and cheaper models</strong> — a 32B that stays resident beats a frontier model that pages. Start with <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">economical RAG models</a>.</li>
+      <li><strong>Retrieval that earns its tokens</strong> — every extra chunk is DRAM and HBM you paid for. <a href="/blog/posts/how-to-evaluate-rag-retrieval/">RAG evaluation</a> is how you stop donating margin to memory vendors.</li>
     </ul>
-    <p>Those layers stay useful if the boom continues <em>and</em> if it compresses. A bubble-proof stack is just a cost-aware stack.</p>
+    <p>A bubble-proof stack is just a cost-aware stack with better manners. Cache the prefixes. Cap the context. Measure decode. Do not pin a 70B “for quality” you have not A/B tested against an 8B plus a reranker.</p>
+    <p>If the boom continues, those layers make you faster and cheaper than the team that bought prestige. If it compresses, those layers are why you still have a product when the CFO asks what the GPUs are for.</p>
+    <p>Either way you will sleep better than the person whose roadmap is a purchase order.</p>
 
     <h2 id="faq">FAQ</h2>
     <h3>Is this financial advice?</h3>
-    <p>No. It is a product-architecture read of a public debate.</p>
+    <p>No. It is a product-architecture read of a public argument. If you want a price target, there are people with Bloomberg terminals who will be wrong more expensively than I will.</p>
     <h3>Does a memory shortage prove there is no bubble?</h3>
-    <p>No. Shortages can be real demand or synchronized over-ordering. They do prove FLOPS are not free.</p>
+    <p>No. Shortages can be real demand or synchronized over-ordering with a six-month lag. They do prove FLOPS are not free, and that the bill of materials can veto a slide. See the <a href="/blog/posts/dram-supercycle/">DRAM supercycle</a>.</p>
     <h3>What should a startup do?</h3>
-    <p>Design for 192 GB SKUs, expensive DIMMs, and higher token prices. If the product still works, you are not betting the company on a slide.</p>
+    <p>Design for 192 GB SKUs, expensive DIMMs, and higher token prices. If the product still works, you are not betting the company on a keynote. If it only works on infinite cheap HBM, you do not have a product — you have a weather derivative.</p>
+    <h3>Isn’t “just use a smaller model” giving up?</h3>
+    <p>Only if quality actually falls, which you will not know unless you measure. A lot of “we need the frontier model” is taste, fear, and a demo that was run once on a fat context window. Taste is allowed. Fear is expensive.</p>
+    <h3>What if the boom is real and I under-build?</h3>
+    <p>Then you scale the serving path that already works. That is a nicer problem than explaining a dark row of GPUs to a board. Capacity can be added. A product that only exists at last quarter’s prices cannot.</p>
 
     <aside class="blog-related">
       <h2>Related guides</h2>
@@ -184,7 +200,7 @@
         <li><a href="/blog/posts/spacex-starship/">SpaceX Starship and the Falcon Drawdown</a></li>
       </ul>
     </aside>
-    <p class="closing">Believe the workload. Distrust the unused rack.</p>
+    <p class="closing">Believe the workload. Distrust the unused rack. And if someone at dinner asks whether it is a bubble, tell them the only honest answer for a builder: it does not matter if your serving path still works when the slides are wrong.</p>
 
     <aside class="blog-cta">
       <h2>Building around this constraint?</h2>
@@ -230,9 +246,9 @@
       options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
     });
     const shocks = {
-      mem: 'Cut context, rerank, and route to a resident model. If quality collapses, the product was a capacity trade.',
-      price: 'Cache, smaller models, and eval gates. If unit economics break at 2× token cost, you were renting the boom.',
-      delay: 'Ship on last-gen cards. If the roadmap requires a cluster that is not built, you do not have a product date.'
+      mem: 'Cut context, rerank, and route to a resident model. If quality collapses, the product was a capacity trade dressed up as a roadmap.',
+      price: 'Cache, smaller models, and eval gates. If unit economics break at 2× token cost, you were renting the boom — and the boom does not send a thank-you note.',
+      delay: 'Ship on last-gen cards. If the roadmap requires a cluster that is not built, you do not have a product date. You have a weather forecast.'
     };
     document.querySelectorAll('#bubbleWidget [data-shock]').forEach((btn) => {
       btn.addEventListener('click', () => {
