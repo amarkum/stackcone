@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>AI Agent Testing and Evaluation Strategies</title>
+  <meta name="description" content="Production AI agent testing — golden dataset eval, unit tests for tools, trace replay, regression gates, and continuous monitoring patterns for reliable agent deployment.">
+  <meta name="keywords" content="AI agent testing, AI evaluation, LLMOps, agent regression testing, AI monitoring, production AI">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/ai-agent-testing-evaluation-strategies/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/ai-agent-testing-evaluation-strategies/">
+  <meta property="og:title" content="AI Agent Testing and Evaluation Strategies">
+  <meta property="og:description" content="Production AI agent testing — golden dataset eval, unit tests for tools, trace replay, regression gates, and continuous monitoring patterns.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="article:published_time" content="2026-09-14">
+  <meta property="article:author" content="Amar Kumar">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:title" content="AI Agent Testing and Evaluation Strategies">
+  <meta name="twitter:description" content="Production AI agent testing — golden dataset eval, unit tests for tools, trace replay, regression gates, and continuous monitoring patterns.">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../blog.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "AI Agent Testing and Evaluation Strategies",
+    "description": "Production AI agent testing — golden dataset eval, unit tests for tools, trace replay, regression gates, and continuous monitoring patterns for reliable agent deployment.",
+    "datePublished": "2026-09-14",
+    "dateModified": "2026-09-14",
+    "author": {
+      "@type": "Person",
+      "name": "Amar Kumar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://stackcone.com/#organization"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://stackcone.com/blog/posts/ai-agent-testing-evaluation-strategies/"
+    },
+    "image": "https://stackcone.com/logo/stackcone.png"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "AI Agent Testing and Evaluation Strategies", "item": "https://stackcone.com/blog/posts/ai-agent-testing-evaluation-strategies/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page blog-article-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <main class="blog-article">
+    <article class="blog-article-inner">
+      <header class="blog-article-header">
+        <div class="blog-article-meta">
+          <span class="blog-article-category">Platform</span>
+          <time datetime="2026-09-14">September 2026</time>
+        </div>
+        <h1>AI Agent Testing and Evaluation Strategies</h1>
+        <p class="blog-article-lead">Production AI agent testing — golden dataset eval, unit tests for tools, trace replay, regression gates, and continuous monitoring patterns for reliable agent deployment.</p>
+        <div class="blog-article-author">By Amar Kumar</div>
+      </header>
+
+      <nav class="toc">
+        <h2>Contents</h2>
+        <ol>
+          <li><a href="#why-agent-testing-matters">Why agent testing matters</a></li>
+          <li><a href="#golden-dataset-evaluation">Golden dataset evaluation</a></li>
+          <li><a href="#unit-tests-for-agent-tools">Unit tests for agent tools</a></li>
+          <li><a href="#trace-replay-testing">Trace replay testing</a></li>
+          <li><a href="#regression-gates">Regression gates for CI/CD</a></li>
+          <li><a href="#production-monitoring">Production monitoring</a></li>
+          <li><a href="#implementation-checklist">Implementation checklist</a></li>
+          <li><a href="#related-guides">Related guides</a></li>
+        </ol>
+      </nav>
+
+      <section id="why-agent-testing-matters">
+        <h2>Why agent testing matters</h2>
+        <p>AI agents ship with non-deterministic behavior, tool dependencies, and complex decision trees. Without structured testing, you're deploying prompt changes blind — no way to catch regressions before users hit them.</p>
+        <p>Production agent testing means:</p>
+        <ul>
+          <li>Measuring agent quality on representative tasks before deploy</li>
+          <li>Catching tool failures and permission errors in CI</li>
+          <li>Verifying agents produce correct outputs on golden examples</li>
+          <li>Monitoring live agent behavior and catching drift</li>
+        </ul>
+        <p>This guide covers five testing layers: golden dataset evaluation, tool unit tests, trace replay, regression gates, and production monitoring. Together they give you confidence to ship agent changes fast.</p>
+      </section>
+
+      <section id="golden-dataset-evaluation">
+        <h2>Golden dataset evaluation</h2>
+        <p>A golden dataset is a curated set of real user queries paired with expected agent outcomes. Run your agent against the dataset before every deploy and measure pass rate.</p>
+
+        <h3>Dataset structure</h3>
+        <p>Each example contains:</p>
+        <ul>
+          <li><strong>Input:</strong> User query or task description</li>
+          <li><strong>Expected outcome:</strong> Success criteria (specific tool calls, file changes, or output format)</li>
+          <li><strong>Context:</strong> Files, state, or environment setup needed</li>
+        </ul>
+
+        <h3>Example golden dataset entry</h3>
+<pre><code>{
+  <span class="str">"id"</span>: <span class="str">"create-api-endpoint"</span>,
+  <span class="str">"input"</span>: <span class="str">"Add a POST /users endpoint that accepts email and name"</span>,
+  <span class="str">"context"</span>: {
+    <span class="str">"files"</span>: [<span class="str">"app/main.py"</span>, <span class="str">"app/models.py"</span>]
+  },
+  <span class="str">"expected"</span>: {
+    <span class="str">"tool_calls"</span>: [<span class="str">"edit_file"</span>, <span class="str">"run_tests"</span>],
+    <span class="str">"files_modified"</span>: [<span class="str">"app/main.py"</span>],
+    <span class="str">"test_pass"</span>: <span class="kw">true</span>
+  }
+}</code></pre>
+
+        <h3>Evaluation harness</h3>
+        <p>Run the agent on each example, capture traces, and score results:</p>
+<pre><code><span class="kw">def</span> <span class="fn">evaluate_agent</span>(dataset, agent):
+    results = []
+    <span class="kw">for</span> example <span class="kw">in</span> dataset:
+        <span class="cm"># Set up context</span>
+        reset_workspace(example[<span class="str">"context"</span>])
+        
+        <span class="cm"># Run agent</span>
+        trace = agent.run(example[<span class="str">"input"</span>])
+        
+        <span class="cm"># Score outcome</span>
+        score = score_trace(trace, example[<span class="str">"expected"</span>])
+        results.append(score)
+    
+    <span class="kw">return</span> {
+        <span class="str">"pass_rate"</span>: <span class="fn">sum</span>(results) / <span class="fn">len</span>(results),
+        <span class="str">"details"</span>: results
+    }</code></pre>
+
+        <h3>When to run</h3>
+        <ul>
+          <li>Before every deploy (CI gate)</li>
+          <li>After prompt or tool changes</li>
+          <li>Weekly on the full dataset to catch model drift</li>
+        </ul>
+      </section>
+
+      <section id="unit-tests-for-agent-tools">
+        <h2>Unit tests for agent tools</h2>
+        <p>Agent tools are functions the agent calls. Test them like any API — inputs, outputs, error handling, and permission boundaries.</p>
+
+        <h3>Tool test example</h3>
+<pre><code><span class="kw">def</span> <span class="fn">test_search_codebase</span>():
+    <span class="cm"># Setup</span>
+    workspace = create_test_workspace({
+        <span class="str">"main.py"</span>: <span class="str">"def hello(): pass"</span>
+    })
+    
+    <span class="cm"># Call tool</span>
+    result = search_codebase(
+        query=<span class="str">"def hello"</span>,
+        workspace=workspace
+    )
+    
+    <span class="cm"># Assert</span>
+    <span class="kw">assert</span> <span class="fn">len</span>(result[<span class="str">"matches"</span>]) == <span class="num">1</span>
+    <span class="kw">assert</span> result[<span class="str">"matches"</span>][<span class="num">0</span>][<span class="str">"file"</span>] == <span class="str">"main.py"</span></code></pre>
+
+        <h3>What to test</h3>
+        <ul>
+          <li><strong>Happy path:</strong> Tool works with valid inputs</li>
+          <li><strong>Error handling:</strong> Tool returns useful errors on bad input</li>
+          <li><strong>Permissions:</strong> Tool respects file boundaries and access rules</li>
+          <li><strong>Idempotency:</strong> Running the same tool call twice is safe</li>
+        </ul>
+
+        <p>Run tool tests in CI. They're fast and catch breaking changes before they reach the agent.</p>
+      </section>
+
+      <section id="trace-replay-testing">
+        <h2>Trace replay testing</h2>
+        <p>Trace replay takes a real agent execution (the "trace"), saves it, and replays it later to verify behavior stayed consistent.</p>
+
+        <h3>What's in a trace</h3>
+        <p>A trace is the full log of one agent run:</p>
+        <ul>
+          <li>User input</li>
+          <li>Model responses</li>
+          <li>Tool calls with arguments</li>
+          <li>Tool results</li>
+          <li>Final output</li>
+        </ul>
+
+        <h3>Replay workflow</h3>
+        <ol>
+          <li>Capture traces from production or staging</li>
+          <li>Mark "good" traces as regression tests</li>
+          <li>Replay traces after prompt or model changes</li>
+          <li>Flag if new behavior diverges from the golden trace</li>
+        </ol>
+
+        <h3>Replay assertion example</h3>
+<pre><code><span class="kw">def</span> <span class="fn">test_trace_replay</span>():
+    <span class="cm"># Load golden trace</span>
+    trace = load_trace(<span class="str">"golden/add-endpoint-001.json"</span>)
+    
+    <span class="cm"># Replay with current agent</span>
+    new_trace = agent.replay(trace[<span class="str">"input"</span>])
+    
+    <span class="cm"># Assert key outcomes match</span>
+    <span class="kw">assert</span> new_trace[<span class="str">"tool_calls"</span>] == trace[<span class="str">"tool_calls"</span>]
+    <span class="kw">assert</span> new_trace[<span class="str">"files_modified"</span>] == trace[<span class="str">"files_modified"</span>]</code></pre>
+
+        <p>Trace replay catches regressions fast. If a prompt tweak breaks a working flow, the test fails.</p>
+      </section>
+
+      <section id="regression-gates">
+        <h2>Regression gates for CI/CD</h2>
+        <p>Regression gates block deploys when agent quality drops below a threshold. Run golden dataset eval + trace replay in CI, and fail the build if pass rate falls.</p>
+
+        <h3>CI pipeline example</h3>
+<pre><code><span class="cm"># .github/workflows/agent-eval.yml</span>
+<span class="fn">name</span>: Agent Evaluation
+<span class="fn">on</span>: [pull_request]
+
+<span class="fn">jobs</span>:
+  <span class="fn">eval</span>:
+    <span class="fn">runs-on</span>: ubuntu-latest
+    <span class="fn">steps</span>:
+      - <span class="fn">uses</span>: actions/checkout@v4
+      - <span class="fn">name</span>: Run golden dataset eval
+        <span class="fn">run</span>: python eval/run_golden_dataset.py
+      - <span class="fn">name</span>: Check pass rate
+        <span class="fn">run</span>: |
+          PASS_RATE=$(cat eval/results.json | jq '.pass_rate')
+          if (( $(echo "$PASS_RATE &lt; 0.85" | bc -l) )); then
+            echo "Pass rate $PASS_RATE below threshold"
+            exit 1
+          fi</code></pre>
+
+        <h3>Threshold tuning</h3>
+        <ul>
+          <li>Start with 80% pass rate, increase as dataset quality improves</li>
+          <li>Allow manual override for intentional breaking changes</li>
+          <li>Track pass rate over time to measure drift</li>
+        </ul>
+      </section>
+
+      <section id="production-monitoring">
+        <h2>Production monitoring</h2>
+        <p>Testing in CI catches most regressions. Production monitoring catches the rest — model API changes, upstream tool failures, and real-world edge cases.</p>
+
+        <h3>Metrics to track</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>What it measures</th>
+              <th>Alert threshold</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tool success rate</td>
+              <td>% of tool calls that succeed</td>
+              <td>&lt; 95%</td>
+            </tr>
+            <tr>
+              <td>Task completion rate</td>
+              <td>% of agent runs that finish successfully</td>
+              <td>&lt; 85%</td>
+            </tr>
+            <tr>
+              <td>Average turns per task</td>
+              <td>Efficiency — fewer is better</td>
+              <td>&gt; 15 turns</td>
+            </tr>
+            <tr>
+              <td>Cost per task</td>
+              <td>LLM API spend</td>
+              <td>&gt; $0.50</td>
+            </tr>
+            <tr>
+              <td>Error rate</td>
+              <td>% of runs with exceptions</td>
+              <td>&gt; 5%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Logging setup</h3>
+        <p>Log every agent run with structured fields:</p>
+<pre><code>{
+  <span class="str">"run_id"</span>: <span class="str">"run_abc123"</span>,
+  <span class="str">"timestamp"</span>: <span class="str">"2026-09-14T10:30:00Z"</span>,
+  <span class="str">"input"</span>: <span class="str">"Add user endpoint"</span>,
+  <span class="str">"tool_calls"</span>: [<span class="str">"edit_file"</span>, <span class="str">"run_tests"</span>],
+  <span class="str">"success"</span>: <span class="kw">true</span>,
+  <span class="str">"turns"</span>: <span class="num">3</span>,
+  <span class="str">"cost_usd"</span>: <span class="num">0.12</span>,
+  <span class="str">"latency_ms"</span>: <span class="num">4500</span>
+}</code></pre>
+
+        <p>Push logs to Datadog, Grafana, or CloudWatch. Set up alerts when metrics cross thresholds.</p>
+      </section>
+
+      <section id="implementation-checklist">
+        <h2>Implementation checklist</h2>
+        <p>Start with these steps to add production-grade testing to your agent:</p>
+        <ol>
+          <li><strong>Build a golden dataset</strong> — 20-50 real examples covering common tasks</li>
+          <li><strong>Write an eval harness</strong> — Run agent on dataset, score outcomes</li>
+          <li><strong>Add tool unit tests</strong> — Test each tool function in isolation</li>
+          <li><strong>Set up trace capture</strong> — Save agent runs as JSON for replay</li>
+          <li><strong>Add CI regression gate</strong> — Fail builds when pass rate drops</li>
+          <li><strong>Instrument production</strong> — Log metrics, set up alerts</li>
+        </ol>
+        <p>Ship each layer incrementally. Golden dataset eval alone catches most regressions.</p>
+      </section>
+
+      <section id="related-guides">
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/blog/posts/how-to-build-cursor-like-ai-coding-agent/">How to Build a Cursor-Like AI Coding Agent</a></li>
+          <li><a href="/blog/posts/ai-agent-mcp-data-engineering-automation/">AI Agents + MCP for Data Engineering Automation</a></li>
+          <li><a href="/blog/posts/how-to-build-a-production-rag-chatbot/">How to Build a Production RAG Chatbot</a></li>
+          <li><a href="/solutions/autonomous-agent-orchestration-platform/">Autonomous Agent Orchestration Platform</a></li>
+        </ul>
+      </section>
+
+      <section class="blog-cta">
+        <h2>Need help shipping production AI agents?</h2>
+        <p>stackcone builds AI agents with evaluation, monitoring, and reliability from day one. <a href="/contact/">Start a project conversation</a> or see our <a href="/work/">portfolio</a>.</p>
+      </section>
+    </article>
+  </main>
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/scroll-reveal.js" defer></script>
+</body>
+</html>
