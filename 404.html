@@ -124,5 +124,16 @@
   <script src="/site-nav.js" defer></script>
   <script src="/script.js" defer></script>
   <script src="/assets/404-search.js" defer></script>
+  <script>
+    // Fire page_not_found event for GA4 tracking
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'page_not_found', {
+        event_category: 'Error',
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        page_title: document.title
+      });
+    }
+  </script>
 </body>
 </html>
