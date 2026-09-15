@@ -33,22 +33,26 @@
 
   <main class="not-found-main">
     <section class="page-hero not-found-hero">
-      <p class="hero-trust">404</p>
+      <p class="not-found-code" aria-hidden="true">404</p>
       <h1 class="page-hero-title">Page not found</h1>
       <p class="page-hero-desc">That URL is not on this site. Search our guides below, or pick a destination.</p>
 
       <form class="not-found-search" id="not-found-search-form" role="search">
         <label for="not-found-search">Search blog guides</label>
         <div class="not-found-search-row">
-          <input type="search" id="not-found-search" class="not-found-search-input" placeholder="e.g. Claude Code, RAG, MCP…" autocomplete="off">
+          <svg class="not-found-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="search" id="not-found-search" class="not-found-search-input" placeholder="Search guides — Claude Code, RAG, MCP…" autocomplete="off">
           <button type="submit" class="cta cta--primary">Search</button>
         </div>
       </form>
       <div id="not-found-results" class="not-found-results" hidden></div>
 
       <div class="hero-ctas">
-        <a href="/" class="cta cta--primary">Home</a>
-        <a href="/blog/" class="cta cta--secondary">Blog</a>
+        <a href="/" class="cta cta--primary">Back home</a>
+        <a href="/blog/" class="cta cta--secondary">Read the blog</a>
         <a href="/contact/" class="cta cta--secondary">Contact</a>
       </div>
     </section>
@@ -86,6 +90,12 @@
             <span>Retrieval, reranking, evals, and deployment patterns</span>
           </a>
         </li>
+        <li>
+          <a href="/blog/posts/skills-vs-mcp-vs-subagents/">
+            <strong>Skills vs MCP vs Subagents</strong>
+            <span>What each one is, and how to compose all three</span>
+          </a>
+        </li>
       </ul>
     </section>
 
@@ -101,9 +111,6 @@
       </div>
     </section>
 
-    <aside class="not-found-tip">
-      <p>Looking for a blog post? URLs look like <code>/blog/posts/{slug}/</code> — not <code>/{slug}.html</code> at the site root. Old bookmarked paths may 404 after we cleaned up legacy redirects.</p>
-    </aside>
   </main>
 
   <footer class="footer">

@@ -352,7 +352,7 @@ def needs_query_rewrite(message: str, history: list) -> bool:
 
 ---
 
-**Need help optimizing production RAG retrieval?** stackcone designs and ships RAG systems for enterprise and startups — reranking pipelines, cost optimization, evaluation harnesses, and deployment. [Hire us on Upwork](https://www.upwork.com/agencies/2022687811186513260/) or [contact us](../contact/).
+**Need help optimizing production RAG retrieval?** stackcone designs and ships RAG systems for enterprise and startups — reranking pipelines, cost optimization, evaluation harnesses, and deployment. [Hire us on Upwork](https://www.upwork.com/agencies/2022687811186513260/) or [contact us](/contact/).
 
 Retrieval is where RAG quality is won or lost. Rerank for precision, skip for cost, MMR for diversity — and measure every dollar.
 
