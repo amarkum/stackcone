@@ -12,14 +12,14 @@
       label: "Learn",
       children: [
         {
-          label: "Coding",
+          label: "Courses",
           items: [
-            { href: "/learn/#track-python", label: "Python" },
-            { href: "/learn/#track-java", label: "Java" }
+            { href: "/learn/#track-python", label: "Python", prefix: "/learn/courses/python-" },
+            { href: "/learn/#track-java", label: "Java", prefix: "/learn/courses/java-" },
+            { href: "/learn/#track-data-structures", label: "Data Structures", prefix: "/learn/courses/ds-" }
           ]
         },
-        { href: "/learn/#track-data-structures", label: "Data Structures" },
-        { href: "/learn/", label: "Browse all courses" }
+        { href: "/learn/", label: "Browse all courses", separator: true }
       ]
     },
     { href: "/blog/", label: "Blog" },
@@ -35,8 +35,11 @@
   }
 
   function renderPanelItem(item) {
+    var prefix = item.prefix ? ' data-match="' + esc(item.prefix) + '"' : "";
+    var sep = item.separator ? '<div class="nav-dd-sep" role="separator"></div>' : "";
     return (
-      '<a class="nav-dd-item" href="' + esc(item.href) + '" role="menuitem">' +
+      sep +
+      '<a class="nav-dd-item" href="' + esc(item.href) + '"' + prefix + ' role="menuitem">' +
       esc(item.label) +
       "</a>"
     );
@@ -84,8 +87,24 @@
   nav.querySelectorAll("a.nav-link, a.nav-dd-item").forEach(function (link) {
     var raw = link.getAttribute("href");
     if (!raw || raw.charAt(0) === "#") return;
-    var href = raw.replace(/#.*$/, "").replace(/\/$/, "") || "/";
-    var isActive = href === path || (href !== "/" && path.indexOf(href) === 0);
+
+    var hashIndex = raw.indexOf("#");
+    var hash = hashIndex >= 0 ? raw.slice(hashIndex) : "";
+    var href = (hashIndex >= 0 ? raw.slice(0, hashIndex) : raw).replace(/\/$/, "") || "/";
+    var matchPrefix = link.getAttribute("data-match");
+    var isDropdownItem = link.classList.contains("nav-dd-item");
+    var isActive = false;
+
+    if (matchPrefix && path.indexOf(matchPrefix) === 0) {
+      isActive = true;
+    } else if (hash) {
+      isActive = href === path && window.location.hash === hash;
+    } else if (isDropdownItem) {
+      isActive = href === path && !window.location.hash;
+    } else {
+      isActive = href === path || (href !== "/" && path.indexOf(href + "/") === 0);
+    }
+
     if (isActive) {
       link.setAttribute("aria-current", "page");
     } else {

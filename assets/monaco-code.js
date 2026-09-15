@@ -1,4 +1,8 @@
 (function () {
+  var PLAY_ICON =
+    '<svg class="learn-code-run-icon" viewBox="0 0 384 512" width="11" height="11" aria-hidden="true" focusable="false">' +
+    '<path fill="none" stroke="currentColor" stroke-width="32" stroke-linejoin="round" d="M73 39l281 217c8 6 8 18 0 24L73 497c-11 8-27 1-27-12V51c0-13 16-20 27-12z"/></svg>';
+
   var MONACO_VERSION = '0.52.2';
   var MONACO_BASE = 'https://cdn.jsdelivr.net/npm/monaco-editor@' + MONACO_VERSION + '/min/vs';
 
@@ -76,8 +80,7 @@
       var wrap = pre.closest('.learn-code-wrap');
       var hint = '';
       if (wrap) {
-        var langEl = wrap.querySelector('.learn-code-lang');
-        if (langEl) hint = langEl.textContent.trim();
+        hint = wrap.getAttribute('data-lang') || '';
       } else {
         var cls = codeEl.className || '';
         var match = cls.match(/language-([\w-]+)/);
@@ -115,7 +118,7 @@
     var runBtn = document.createElement('button');
     runBtn.type = 'button';
     runBtn.className = 'learn-code-run';
-    runBtn.textContent = 'Run';
+    runBtn.innerHTML = PLAY_ICON + '<span>Run</span>';
     toolbar.appendChild(runBtn);
 
     var output = document.createElement('div');

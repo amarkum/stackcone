@@ -240,7 +240,7 @@ def render_section(item: tuple) -> str:
         return f"      <h2>{esc(rest[0])}</h2>"
     if kind == "code":
         lang, code = rest
-        return f"      <div class=\"learn-code-wrap\"><span class=\"learn-code-lang\">{esc(lang)}</span><pre><code>{esc(code)}</code></pre></div>"
+        return f"      <div class=\"learn-code-wrap\" data-lang=\"{esc(lang)}\"><pre><code>{esc(code)}</code></pre></div>"
     if kind == "exercise":
         return f"      <div class=\"learn-exercise\"><h3>Try it yourself</h3><p>{rest[0]}</p></div>"
     return ""
