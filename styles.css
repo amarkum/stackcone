@@ -215,6 +215,120 @@ img {
   color: var(--accent);
 }
 
+/* Nav dropdowns (Learn → Coding → Python/Java) */
+.nav-item--has-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.nav-dropdown-chevron {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  opacity: 0.55;
+  transition: transform 0.15s ease;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  min-width: 12.5rem;
+  padding: 0.45rem 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  z-index: 60;
+}
+
+.nav-item--has-dropdown:hover > .nav-dropdown,
+.nav-item--has-dropdown.is-open > .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-dropdown > a,
+.nav-dropdown-nested-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-mid);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.nav-dropdown > a:hover,
+.nav-dropdown-nested-trigger:hover {
+  color: var(--accent);
+  background: var(--bg-soft);
+}
+
+.nav-dropdown-nested {
+  position: relative;
+}
+
+.nav-dropdown-nested-panel {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 0.25rem);
+  min-width: 10.5rem;
+  padding: 0.45rem 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  z-index: 61;
+}
+
+.nav-dropdown-nested:hover > .nav-dropdown-nested-panel,
+.nav-dropdown-nested.is-open > .nav-dropdown-nested-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.nav-dropdown-nested-panel a {
+  display: block;
+  padding: 0.55rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+.nav-dropdown-nested-panel a:hover {
+  color: var(--accent);
+  background: var(--bg-soft);
+}
+
 /* Overlay — hidden on desktop */
 .nav-overlay {
   display: none;
@@ -2013,14 +2127,73 @@ body.landing-page main > section:not(.hero) {
     transform: translateX(0);
   }
 
-  .nav a {
+  .nav > a,
+  .nav-item--has-dropdown {
     font-size: 1rem;
     padding: 0.85rem 0;
     border-bottom: 1px solid var(--border);
     text-align: right;
   }
 
-  .nav a:last-child {
+  .nav > a {
+    display: block;
+  }
+
+  .nav-item--has-dropdown {
+    position: static;
+  }
+
+  .nav-dropdown-trigger {
+    justify-content: flex-end;
+    width: 100%;
+    padding: 0;
+    border: none;
+  }
+
+  .nav-dropdown,
+  .nav-dropdown-nested-panel {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    min-width: 0;
+    padding: 0;
+    display: none;
+    background: transparent;
+  }
+
+  .nav-item--has-dropdown.is-open > .nav-dropdown,
+  .nav-dropdown-nested.is-open > .nav-dropdown-nested-panel {
+    display: block;
+  }
+
+  .nav-dropdown > a,
+  .nav-dropdown-nested-trigger,
+  .nav-dropdown-nested-panel a {
+    padding: 0.65rem 0 0.65rem 1rem;
+    font-size: 0.95rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-dropdown-nested-trigger {
+    width: 100%;
+  }
+
+  .nav-dropdown-nested-panel a:last-child {
+    border-bottom: none;
+  }
+
+  .nav-item--has-dropdown.is-open .nav-dropdown-trigger .nav-dropdown-chevron,
+  .nav-dropdown-nested.is-open .nav-dropdown-nested-trigger .nav-dropdown-chevron {
+    transform: rotate(180deg);
+  }
+
+  .nav > a:last-child,
+  .nav-item--has-dropdown:last-child {
     border-bottom: none;
   }
 
