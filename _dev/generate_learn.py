@@ -15,21 +15,18 @@ TRACKS = {
         "label": "Python",
         "parent": "Coding",
         "color": "#3776ab",
-        "icon": "🐍",
         "description": "From your first print() to classes, files, and exceptions.",
     },
     "java": {
         "label": "Java",
         "parent": "Coding",
         "color": "#e76f00",
-        "icon": "☕",
         "description": "Static typing, OOP, and the collections you use every day.",
     },
     "data-structures": {
         "label": "Data Structures",
         "parent": None,
         "color": "#7c3aed",
-        "icon": "🧱",
         "description": "Arrays, lists, trees, graphs, and why Big O matters.",
     },
 }
@@ -310,11 +307,8 @@ def lesson_html(les: dict) -> str:
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <span class="learn-track-icon" style="background:{track["color"]}">{track["icon"]}</span>
-            <div>
-              <p class="learn-sidebar-track">{esc(track["label"])}</p>
-              <p class="learn-sidebar-progress">Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
-            </div>
+            <p class="learn-sidebar-track">{esc(track["label"])}</p>
+            <p class="learn-sidebar-progress">Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
           </div>
           <nav class="learn-sidebar-lessons">
 {sidebar}
@@ -377,13 +371,10 @@ def catalog_html() -> str:
         track_cards.append(f"""
       <section class="learn-track-card" id="track-{track_id}" style="--track-color:{track["color"]}">
         <div class="learn-track-card-head">
-          <span class="learn-track-icon">{track["icon"]}</span>
-          <div>
-            {parent_label}
-            <h2>{esc(track["label"])}</h2>
-            <p>{esc(track["description"])}</p>
-            <p class="learn-track-count">{len(lessons)} lessons</p>
-          </div>
+          {parent_label}
+          <h2>{esc(track["label"])}</h2>
+          <p>{esc(track["description"])}</p>
+          <p class="learn-track-count">{len(lessons)} lessons</p>
         </div>
         <div class="learn-course-list">
 {lesson_links}
