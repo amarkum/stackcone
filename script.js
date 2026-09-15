@@ -23,7 +23,7 @@ if (navToggle && header) {
 
 if (navOverlay) navOverlay.addEventListener('click', closeMenu);
 
-// Nav dropdowns — accordion on mobile drawer
+// Nav dropdowns — hover on desktop, accordion on mobile drawer
 function initNavDropdowns() {
   var nav = document.getElementById('main-nav');
   if (!nav) return;
@@ -32,6 +32,23 @@ function initNavDropdowns() {
   wraps.forEach(function (wrap) {
     var trigger = wrap.querySelector('.nav-link--dd');
     if (!trigger) return;
+    var closeTimer = null;
+
+    wrap.addEventListener('mouseenter', function () {
+      if (window.innerWidth <= 992) return;
+      clearTimeout(closeTimer);
+      wrap.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    });
+
+    wrap.addEventListener('mouseleave', function () {
+      if (window.innerWidth <= 992) return;
+      closeTimer = setTimeout(function () {
+        wrap.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }, 180);
+    });
+
     trigger.addEventListener('click', function (e) {
       if (window.innerWidth > 992) return;
       e.preventDefault();
