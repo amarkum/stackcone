@@ -204,3 +204,36 @@ if (document.readyState === 'loading') {
   loadTestimonials();
 }
 
+// Monaco Editor for syntax-highlighted code blocks (blog, learn, solutions)
+(function loadMonacoCode() {
+  function boot() {
+    var hasCode = false;
+    document.querySelectorAll('pre > code').forEach(function (code) {
+      var pre = code.parentElement;
+      if (!pre || pre.classList.contains('mermaid')) return;
+      if (pre.closest('.mermaid, .diagram-wrap')) return;
+      hasCode = true;
+    });
+    if (!hasCode) return;
+
+    if (!document.querySelector('link[href="/assets/monaco-code.css"]')) {
+      var css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = '/assets/monaco-code.css';
+      document.head.appendChild(css);
+    }
+    if (!document.querySelector('script[src="/assets/monaco-code.js"]')) {
+      var script = document.createElement('script');
+      script.src = '/assets/monaco-code.js';
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+

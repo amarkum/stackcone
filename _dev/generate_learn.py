@@ -285,7 +285,8 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=1">
+  <link rel="stylesheet" href="/learn/learn.css?v=2">
+  <link rel="stylesheet" href="/assets/monaco-code.css">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -353,6 +354,8 @@ def lesson_html(les: dict) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
@@ -394,7 +397,8 @@ def catalog_html() -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/learn/learn.css?v=1">
+  <link rel="stylesheet" href="/learn/learn.css?v=2">
+  <link rel="stylesheet" href="/assets/monaco-code.css">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -430,6 +434,8 @@ def catalog_html() -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
