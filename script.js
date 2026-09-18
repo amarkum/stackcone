@@ -62,24 +62,40 @@ function initNavDropdowns() {
   });
 }
 
-// Nested Learn submenus: tap to expand on mobile (desktop uses CSS hover)
+// Nested Learn submenus: on mobile a tap toggles the section open/closed (accordion);
+// the section's own page stays reachable via the "All ..." row inside it.
 function initNavSubmenus() {
-  document.querySelectorAll('#main-nav .nav-dd-item--sub').forEach(function (link) {
+  var links = document.querySelectorAll('#main-nav .nav-dd-item--sub');
+  links.forEach(function (link) {
+    if (link.dataset.subBound) return;
+    link.dataset.subBound = '1';
+    link.setAttribute('aria-expanded', 'false');
     link.addEventListener('click', function (e) {
       if (window.innerWidth > 992) return;
+      e.preventDefault();
       var sub = link.parentElement;
-      if (!sub.classList.contains('is-open')) {
-        e.preventDefault();
+      var willOpen = !sub.classList.contains('is-open');
+      links.forEach(function (other) {
+        other.parentElement.classList.remove('is-open');
+        other.setAttribute('aria-expanded', 'false');
+      });
+      if (willOpen) {
         sub.classList.add('is-open');
+        link.setAttribute('aria-expanded', 'true');
       }
     });
   });
 }
 
-document.addEventListener('site-nav-ready', initNavSubmenus);
-document.addEventListener('site-nav-ready', initNavDropdowns);
-if (document.getElementById('main-nav') && document.getElementById('main-nav').innerHTML.trim()) {
+function initNav() {
   initNavDropdowns();
+  initNavSubmenus();
+}
+
+// site-nav.js may already have rendered the nav before this file loads, so run now if so
+document.addEventListener('site-nav-ready', initNav);
+if (document.getElementById('main-nav') && document.getElementById('main-nav').innerHTML.trim()) {
+  initNav();
 }
 
 // Smooth scroll for same-page anchors only
