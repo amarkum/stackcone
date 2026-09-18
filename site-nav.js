@@ -15,6 +15,9 @@
         { href: "/learn/courses/python-hello-world/", label: "Python", matches: ["/learn/python", "/learn/courses/python-"] },
         { href: "/learn/courses/java-hello-world/", label: "Java", matches: ["/learn/java", "/learn/courses/java-"] },
         { href: "/learn/courses/js-hello-world/", label: "JavaScript", matches: ["/learn/javascript", "/learn/courses/js-"] },
+        { href: "/learn/courses/html-introduction/", label: "HTML & CSS", matches: ["/learn/htmlcss", "/learn/courses/html-", "/learn/courses/css-"] },
+        { href: "/learn/courses/ts-introduction/", label: "TypeScript", matches: ["/learn/typescript", "/learn/courses/ts-"] },
+        { href: "/learn/courses/git-introduction/", label: "Git & CLI", matches: ["/learn/git", "/learn/courses/git-"] },
         { href: "/learn/courses/sql-introduction/", label: "SQL", matches: ["/learn/sql", "/learn/courses/sql-"] },
         { href: "/learn/programming/", label: "All Programming", separator: true }
       ]
