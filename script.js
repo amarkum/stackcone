@@ -62,6 +62,21 @@ function initNavDropdowns() {
   });
 }
 
+// Nested Learn submenus: tap to expand on mobile (desktop uses CSS hover)
+function initNavSubmenus() {
+  document.querySelectorAll('#main-nav .nav-dd-item--sub').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      if (window.innerWidth > 992) return;
+      var sub = link.parentElement;
+      if (!sub.classList.contains('is-open')) {
+        e.preventDefault();
+        sub.classList.add('is-open');
+      }
+    });
+  });
+}
+
+document.addEventListener('site-nav-ready', initNavSubmenus);
 document.addEventListener('site-nav-ready', initNavDropdowns);
 if (document.getElementById('main-nav') && document.getElementById('main-nav').innerHTML.trim()) {
   initNavDropdowns();

@@ -59,6 +59,20 @@
     { href: "/contact/", label: "Contact" }
   ];
 
+  // Merge Programming / DS & Algo / Frameworks into a single nested "Learn" menu
+  (function () {
+    var ids = ["programming", "ds-algo", "frameworks"];
+    var subs = [];
+    var at = -1;
+    NAV_ITEMS = NAV_ITEMS.filter(function (it, i) {
+      if (ids.indexOf(it.id) === -1) return true;
+      if (at < 0) at = i;
+      subs.push({ sub: true, label: it.label, href: it.href, children: it.children });
+      return false;
+    });
+    NAV_ITEMS.splice(at, 0, { id: "learn", label: "Learn", href: "/learn/", children: subs });
+  })();
+
   function esc(s) {
     return String(s)
       .replace(/&/g, "&amp;")
@@ -98,7 +112,19 @@
     );
   }
 
+  function renderSub(item) {
+    return (
+      '<div class="nav-dd-sub">' +
+      '<a class="nav-dd-item nav-dd-item--sub" href="' + esc(item.href) + '" aria-haspopup="true" role="menuitem">' +
+      esc(item.label) + '<span class="nav-sub-chevron">' + CHEVRON + "</span></a>" +
+      '<div class="nav-dd-flyout" role="menu">' +
+      item.children.map(renderPanelItem).join("") +
+      "</div></div>"
+    );
+  }
+
   function renderPanelChild(item) {
+    if (item.sub) return renderSub(item);
     if (item.items) return renderPanelGroup(item);
     return renderPanelItem(item);
   }
@@ -113,7 +139,7 @@
       esc(item.label) +
       '<span class="nav-link-chevron">' + CHEVRON + "</span>" +
       "</button>" +
-      '<div class="nav-dd-panel" data-name="' + esc(item.id) + '" role="menu">' +
+      '<div class="nav-dd-panel' + (item.id === "learn" ? " nav-dd-panel--nested" : "") + '" data-name="' + esc(item.id) + '" role="menu">' +
       item.children.map(renderPanelChild).join("") +
       "</div></div>"
     );

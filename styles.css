@@ -3120,3 +3120,71 @@ body.landing-page main > section:not(.hero) {
     transform: none !important;
   }
 }
+
+/* Learn: one dropdown with nested flyouts (Programming / DS & Algo / Frameworks) */
+.nav-dd-panel--nested {
+  overflow: visible;
+  max-height: none;
+  min-width: 12rem;
+}
+
+.nav-dd-sub {
+  position: relative;
+}
+
+.nav-dd-item--sub .nav-sub-chevron {
+  display: inline-flex;
+  transform: rotate(-90deg);
+}
+
+.nav-dd-flyout {
+  position: absolute;
+  top: -8px;
+  left: 100%;
+  min-width: 13rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  margin-left: 2px;
+  padding: 8px 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 81;
+}
+
+@media (min-width: 993px) {
+  .nav-dd-sub:hover > .nav-dd-flyout,
+  .nav-dd-sub:focus-within > .nav-dd-flyout {
+    opacity: 1;
+    visibility: visible;
+  }
+  .nav-dd-sub:hover > .nav-dd-item--sub {
+    color: var(--text-bright);
+  }
+}
+
+@media (max-width: 992px) {
+  .nav-dd-flyout {
+    position: static;
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    padding: 0 1rem 0 0;
+    min-width: 0;
+    max-height: none;
+    background: transparent;
+  }
+  .nav-dd-sub.is-open > .nav-dd-flyout {
+    display: block;
+  }
+  .nav-dd-item--sub .nav-sub-chevron {
+    transform: none;
+  }
+}
