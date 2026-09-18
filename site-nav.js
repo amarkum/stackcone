@@ -18,6 +18,7 @@
         { href: "/learn/courses/html-introduction/", label: "HTML & CSS", matches: ["/learn/htmlcss", "/learn/courses/html-", "/learn/courses/css-"] },
         { href: "/learn/courses/ts-introduction/", label: "TypeScript", matches: ["/learn/typescript", "/learn/courses/ts-"] },
         { href: "/learn/courses/git-introduction/", label: "Git & CLI", matches: ["/learn/git", "/learn/courses/git-"] },
+        { href: "/learn/courses/docker-introduction/", label: "Docker", matches: ["/learn/docker", "/learn/courses/docker-"] },
         { href: "/learn/courses/sql-introduction/", label: "SQL", matches: ["/learn/sql", "/learn/courses/sql-"] },
         { href: "/learn/programming/", label: "All Programming", separator: true }
       ]
@@ -44,8 +45,9 @@
         { href: "/learn/courses/django-introduction/", label: "Django", matches: ["/learn/django", "/learn/courses/django-"] },
         { href: "/learn/courses/fastapi-introduction/", label: "FastAPI", matches: ["/learn/fastapi", "/learn/courses/fastapi-"] },
         { href: "/learn/courses/express-introduction/", label: "Express", matches: ["/learn/express", "/learn/courses/express-"] },
-        { label: "LangChain", soon: true },
-        { label: "Next.js", soon: true },
+        { href: "/learn/courses/spring-introduction/", label: "Spring Boot", matches: ["/learn/spring", "/learn/courses/spring-"] },
+        { href: "/learn/courses/nextjs-introduction/", label: "Next.js", matches: ["/learn/nextjs", "/learn/courses/nextjs-"] },
+        { href: "/learn/courses/langchain-introduction/", label: "LangChain", matches: ["/learn/langchain", "/learn/courses/langchain-"] },
         { href: "/learn/frameworks/", label: "All Frameworks", separator: true }
       ]
     },

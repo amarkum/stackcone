@@ -31,6 +31,14 @@ TRACKS = {
         "description": "Add static types to JavaScript: interfaces, generics and safer code."},
     "git": {"label": "Git & Command Line", "parent": "Programming", "category": "programming",
         "description": "Move around the terminal and track work with Git branches and pull requests."},
+    "docker": {"label": "Docker", "parent": "Programming", "category": "programming",
+        "description": "Package apps into containers and run multi-service stacks with Compose."},
+    "nextjs": {"label": "Next.js", "parent": "Frameworks", "category": "frameworks",
+        "description": "Full-stack React: file-based routing, server components and API routes."},
+    "langchain": {"label": "LangChain", "parent": "Frameworks", "category": "frameworks",
+        "description": "Build LLM apps: prompts, chains, retrieval (RAG) and tool-using agents."},
+    "spring": {"label": "Spring Boot", "parent": "Frameworks", "category": "frameworks",
+        "description": "Java REST APIs with dependency injection, JPA and validation."},
     "sql": {"label": "SQL", "parent": "Programming", "category": "programming",
         "description": "Query, filter, join and aggregate data in relational databases."},
     "algorithms": {"label": "Algorithms", "parent": "DS & Algo", "category": "ds-algo",
@@ -67,11 +75,12 @@ CATEGORIES = {
 }
 
 FRAMEWORKS = [
-    {"label": "LangChain", "description": "Build LLM apps with chains, agents, and retrieval."},
+    {"label": "LangChain", "track": "langchain", "description": "Build LLM apps with chains, agents, and retrieval."},
     {"label": "React", "track": "react", "description": "Component-based UI with hooks and the modern React model."},
-    {"label": "Next.js", "description": "Full-stack React with routing, SSR, and API routes."},
+    {"label": "Next.js", "track": "nextjs", "description": "Full-stack React with routing, SSR, and API routes."},
     {"label": "FastAPI", "track": "fastapi", "description": "High-performance Python APIs with automatic OpenAPI docs."},
     {"label": "Django", "track": "django", "description": "Batteries-included Python web framework for production apps."},
+    {"label": "Spring Boot", "track": "spring", "description": "Java REST APIs with dependency injection, JPA and validation."},
     {"label": "Express", "track": "express", "description": "Minimal Node.js server framework for APIs and backends."},
 ]
 
@@ -270,9 +279,10 @@ from content_js_sql import META as _M1, CONTENT as _C1
 from content_algo import META as _M2, CONTENT as _C2
 from content_frameworks import META as _M3, CONTENT as _C3
 from content_web_tools import META as _M4, CONTENT as _C4
-for _m in (*_M1, *_M2, *_M3, *_M4):
+from content_more import META as _M5, CONTENT as _C5
+for _m in (*_M1, *_M2, *_M3, *_M4, *_M5):
     LESSONS.append({**_m, "sections": []})
-_RICH = {**_PY, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4}
+_RICH = {**_PY, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5}
 for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
