@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/courses/django-introduction/">Django</a> / Building a JSON API</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/django/">Django</a> / Building a JSON API</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/django-introduction/">Django</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/django/">Django</a></p>
             <p class="learn-sidebar-progress">Lesson 5 of 5</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -48,24 +48,29 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">15 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/django/">Django</a> · Lesson 5 of 5</p>
           <h1>Building a JSON API</h1>
           <p class="learn-summary">Return JSON from views and expose a REST API with Django REST framework.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>15</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/django-forms-admin/">Lesson 4: Forms and the Admin</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Return JsonResponse</li><li>Write a serializer</li><li>Use a ModelViewSet</li></ul>
           </div>
       <p>Modern apps often serve JSON to a React front end or a mobile app instead of HTML pages. Django can do that natively, and the <strong>Django REST framework</strong> (DRF) makes it fast to build a full API.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="A plain JSON view"><pre><code>from django.http import JsonResponse
+      <h2>A plain JSON view</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from django.http import JsonResponse
 from .models import Post
 
 def api_posts(request):
     data = list(Post.objects.filter(published=True).values(&quot;id&quot;, &quot;title&quot;, &quot;created&quot;))
     return JsonResponse({&quot;posts&quot;: data})</code></pre></div>
-      <div class="learn-code-wrap" data-lang="bash" data-title="Django REST framework"><pre><code>pip install djangorestframework</code></pre></div>
+      <h2>Django REST framework</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>pip install djangorestframework</code></pre></div>
       <p>Add <code>"rest_framework"</code> to <code>INSTALLED_APPS</code>. DRF has three main pieces: serializers, viewsets and routers.</p>
       <h2>Serializers</h2>
       <p>A serializer converts model instances to JSON and validates incoming JSON, much like a form.</p>
@@ -98,11 +103,13 @@ router = DefaultRouter()
 router.register(&quot;posts&quot;, PostViewSet)
 urlpatterns += [path(&quot;api/&quot;, include(router.urls))]</code></pre></div>
       <p>That gives you <code>GET /api/posts/</code>, <code>POST /api/posts/</code>, <code>GET /api/posts/1/</code>, <code>PUT</code>, <code>PATCH</code> and <code>DELETE</code>, plus a browsable HTML interface for testing.</p>
-      <div class="learn-code-wrap" data-lang="bash" data-title="Trying it"><pre><code>curl http://127.0.0.1:8000/api/posts/
+      <h2>Trying it</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>curl http://127.0.0.1:8000/api/posts/
 curl -X POST http://127.0.0.1:8000/api/posts/ \
   -H &quot;Content-Type: application/json&quot; \
   -d &#x27;{&quot;title&quot;: &quot;Hello API&quot;, &quot;body&quot;: &quot;text&quot;, &quot;author&quot;: 1}&#x27;</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Pagination, filtering and auth"><pre><code># settings.py
+      <h2>Pagination, filtering and auth</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># settings.py
 REST_FRAMEWORK = {
     &quot;DEFAULT_PAGINATION_CLASS&quot;: &quot;rest_framework.pagination.PageNumberPagination&quot;,
     &quot;PAGE_SIZE&quot;: 20,
@@ -124,6 +131,7 @@ class PostViewSet(viewsets.ModelViewSet):
         post.published = True
         post.save()
         return Response(self.get_serializer(post).data)</code></pre></div></div></details>
+          <a class="learn-upnext learn-upnext--done" href="/learn/django/"><span class="learn-upnext-label">Course complete</span><strong>You finished Django</strong><small>Review the full course or pick your next one.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/django-forms-admin/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>
@@ -152,7 +160,7 @@ class PostViewSet(viewsets.ModelViewSet):
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

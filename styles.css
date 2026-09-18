@@ -3139,12 +3139,12 @@ body.landing-page main > section:not(.hero) {
 
 .nav-dd-flyout {
   position: absolute;
-  top: -8px;
-  left: 100%;
+  top: -9px;
+  left: calc(100% + 12px);
   min-width: 13rem;
   max-height: 80vh;
   overflow-y: auto;
-  margin-left: 2px;
+  margin-left: 0;
   padding: 8px 6px;
   background: #fff;
   border: 1px solid var(--border);
@@ -3153,6 +3153,21 @@ body.landing-page main > section:not(.hero) {
   opacity: 0;
   visibility: hidden;
   z-index: 81;
+}
+
+/* hover bridge across the gap so the flyout stays open */
+.nav-dd-sub::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: 14px;
+}
+
+.nav-dd-item:hover,
+.nav-dd-sub:hover > .nav-dd-item--sub {
+  background: #f1f5f9;
 }
 
 @media (min-width: 993px) {

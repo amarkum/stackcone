@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/courses/html-introduction/">HTML &amp; CSS</a> / Grid and Responsive Design</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/htmlcss/">HTML &amp; CSS</a> / Grid and Responsive Design</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/html-introduction/">HTML &amp; CSS</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/htmlcss/">HTML &amp; CSS</a></p>
             <p class="learn-sidebar-progress">Lesson 5 of 5</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -48,30 +48,36 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">17 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/htmlcss/">HTML &amp; CSS</a> · Lesson 5 of 5</p>
           <h1>Grid and Responsive Design</h1>
           <p class="learn-summary">Two-dimensional layouts, media queries and mobile-first CSS.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>17</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/css-flexbox/">Lesson 4: Flexbox Layout</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Build a grid layout</li><li>Write media queries</li><li>Use clamp and custom properties</li></ul>
           </div>
       <p><strong>CSS Grid</strong> lays out content in rows <em>and</em> columns at the same time. Use Flexbox for one-dimensional alignment and Grid for whole-page or gallery layouts. Combined with media queries, it lets one page adapt to any screen.</p>
-      <div class="learn-code-wrap" data-lang="css" data-title="A basic grid"><pre><code>.grid {
+      <h2>A basic grid</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);   /* three equal columns */
   gap: 1rem;
 }</code></pre></div>
       <p>The <code>fr</code> unit means a fraction of the free space. <code>1fr 2fr</code> creates a column twice as wide as the first.</p>
-      <div class="learn-code-wrap" data-lang="css" data-title="Auto-responsive grid, no media query"><pre><code>.gallery {
+      <h2>Auto-responsive grid, no media query</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
 }</code></pre></div>
       <p>This fits as many columns of at least 220px as the container allows, and grows them evenly. Resize the window and columns appear or disappear by themselves.</p>
-      <div class="learn-code-wrap" data-lang="css" data-title="Page layout with areas"><pre><code>.page {
+      <h2>Page layout with areas</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.page {
   display: grid;
   grid-template-columns: 220px 1fr;
   grid-template-rows: auto 1fr auto;
@@ -95,10 +101,13 @@ footer  { grid-area: footer; }</code></pre></div>
     grid-template-columns: 220px 1fr;   /* tablet and up */
   }
 }</code></pre></div>
-      <div class="learn-code-wrap" data-lang="css" data-title="Fluid sizing with clamp"><pre><code>h1 { font-size: clamp(1.75rem, 4vw, 3rem); }   /* min, preferred, max */
+      <h2>Fluid sizing with clamp</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>h1 { font-size: clamp(1.75rem, 4vw, 3rem); }   /* min, preferred, max */
 .container { width: min(100% - 2rem, 1100px); margin-inline: auto; }</code></pre></div>
-      <div class="learn-code-wrap" data-lang="css" data-title="Responsive images"><pre><code>img { max-width: 100%; height: auto; display: block; }</code></pre></div>
-      <div class="learn-code-wrap" data-lang="css" data-title="Dark mode"><pre><code>:root { --bg: #fff; --text: #111; }
+      <h2>Responsive images</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>img { max-width: 100%; height: auto; display: block; }</code></pre></div>
+      <h2>Dark mode</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>:root { --bg: #fff; --text: #111; }
 @media (prefers-color-scheme: dark) {
   :root { --bg: #0b0b0b; --text: #eaeaea; }
 }
@@ -108,6 +117,7 @@ body { background: var(--bg); color: var(--text); }</code></pre></div>
       <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="css"><pre><code>.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 @media (max-width: 900px) { .gallery { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .gallery { grid-template-columns: 1fr; } }</code></pre></div></div></details>
+          <a class="learn-upnext learn-upnext--done" href="/learn/htmlcss/"><span class="learn-upnext-label">Course complete</span><strong>You finished HTML &amp; CSS</strong><small>Review the full course or pick your next one.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/css-flexbox/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>
@@ -136,7 +146,7 @@ body { background: var(--bg); color: var(--text); }</code></pre></div>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

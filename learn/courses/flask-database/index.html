@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/courses/flask-introduction/">Flask</a> / Databases with SQLAlchemy</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/flask/">Flask</a> / Databases with SQLAlchemy</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/flask-introduction/">Flask</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/flask/">Flask</a></p>
             <p class="learn-sidebar-progress">Lesson 3 of 4</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -47,19 +47,23 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">16 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/flask/">Flask</a> · Lesson 3 of 4</p>
           <h1>Databases with SQLAlchemy</h1>
           <p class="learn-summary">Models, queries and migrations with Flask-SQLAlchemy.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>16</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/flask-templates-forms/">Lesson 2: Templates and Forms</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Define models</li><li>Query and commit</li><li>Understand migrations</li></ul>
           </div>
       <p>Most apps need a database. The usual choice with Flask is <strong>Flask-SQLAlchemy</strong>, which wraps SQLAlchemy, Python's leading ORM, so you work with classes instead of raw SQL.</p>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>pip install flask flask-sqlalchemy flask-migrate</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Setup and models"><pre><code>from flask import Flask
+      <h2>Setup and models</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 
@@ -82,7 +86,8 @@ class Post(db.Model):
 
 with app.app_context():
     db.create_all()</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Create, read, update, delete"><pre><code>with app.app_context():
+      <h2>Create, read, update, delete</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>with app.app_context():
     ada = User(email=&quot;ada@example.com&quot;, name=&quot;Ada&quot;)
     db.session.add(ada)
     db.session.commit()
@@ -101,7 +106,8 @@ with app.app_context():
     db.session.delete(ada)
     db.session.commit()</code></pre></div>
       <p>Changes are staged in the <em>session</em> and only written when you call <code>commit()</code>. If something fails, call <code>db.session.rollback()</code>.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Using it in routes"><pre><code>@app.route(&quot;/posts&quot;)
+      <h2>Using it in routes</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>@app.route(&quot;/posts&quot;)
 def posts():
     posts = Post.query.order_by(Post.created.desc()).all()
     return jsonify([{&quot;id&quot;: p.id, &quot;title&quot;: p.title, &quot;author&quot;: p.author.name} for p in posts])
@@ -127,6 +133,7 @@ flask db upgrade</code></pre></div>
 def full(pid):
     p = db.get_or_404(Post, pid)
     return jsonify(title=p.title, comments=[c.text for c in p.comments])</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/flask-blueprints-deploy/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Blueprints, Testing and Deployment</strong><small>Structure larger apps, test them and run with gunicorn.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/flask-templates-forms/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/flask-blueprints-deploy/">Next lesson →</a>
@@ -155,7 +162,7 @@ def full(pid):
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/courses/spring-introduction/">Spring Boot</a> / Dependency Injection and Layers</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/spring/">Spring Boot</a> / Dependency Injection and Layers</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/spring-introduction/">Spring Boot</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/spring/">Spring Boot</a></p>
             <p class="learn-sidebar-progress">Lesson 3 of 5</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -48,12 +48,15 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">14 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/spring/">Spring Boot</a> · Lesson 3 of 5</p>
           <h1>Dependency Injection and Layers</h1>
           <p class="learn-summary">Beans, services, repositories and constructor injection.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>14</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/spring-rest-controllers/">Lesson 2: REST Controllers and Validation</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Explain inversion of control</li><li>Use @Service and constructor injection</li><li>Structure controller/service/repository</li></ul>
@@ -62,7 +65,8 @@
       <h2>Beans</h2>
       <p>A <strong>bean</strong> is an object created and managed by Spring's container. Mark a class with a stereotype annotation and component scanning registers it.</p>
       <ul><li><code>@Component</code>: a generic bean.</li><li><code>@Service</code>: business logic.</li><li><code>@Repository</code>: data access.</li><li><code>@RestController</code>: web layer.</li><li><code>@Configuration</code> with <code>@Bean</code> methods: create beans manually, for example for third-party classes.</li></ul>
-      <div class="learn-code-wrap" data-lang="java" data-title="Constructor injection"><pre><code>public interface NotificationSender {
+      <h2>Constructor injection</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public interface NotificationSender {
     void send(String to, String message);
 }
 
@@ -88,7 +92,8 @@ public class OrderService {
     }
 }</code></pre></div>
       <p>Prefer <strong>constructor injection</strong>: dependencies are explicit, can be <code>final</code>, and the class cannot exist in a half-built state. With a single constructor, <code>@Autowired</code> is unnecessary.</p>
-      <div class="learn-code-wrap" data-lang="java" data-title="Testing gets easy"><pre><code>class OrderServiceTest {
+      <h2>Testing gets easy</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>class OrderServiceTest {
     @Test
     void sendsConfirmation() {
         var sent = new java.util.ArrayList&lt;String&gt;();
@@ -125,6 +130,7 @@ class InvoiceService {
     InvoiceService(PriceCalculator calc) { this.calc = calc; }
     double invoice(double subtotal) { return calc.total(subtotal); }
 }</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/spring-data-jpa/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Spring Data JPA</strong><small>Entities, repositories, relationships and derived queries.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/spring-rest-controllers/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/spring-data-jpa/">Next lesson →</a>
@@ -153,7 +159,7 @@ class InvoiceService {
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

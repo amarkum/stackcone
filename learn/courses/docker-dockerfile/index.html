@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/courses/docker-introduction/">Docker</a> / Writing a Dockerfile</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/docker/">Docker</a> / Writing a Dockerfile</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/docker-introduction/">Docker</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/docker/">Docker</a></p>
             <p class="learn-sidebar-progress">Lesson 2 of 3</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -46,18 +46,22 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">16 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/docker/">Docker</a> · Lesson 2 of 3</p>
           <h1>Writing a Dockerfile</h1>
           <p class="learn-summary">Build your own image, use layer caching and keep images small.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>16</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/docker-introduction/">Lesson 1: Containers and Docker Basics</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Write a Dockerfile</li><li>Use .dockerignore</li><li>Use multi-stage builds</li></ul>
           </div>
       <p>A <strong>Dockerfile</strong> is a text file of instructions for building your own image. Each instruction adds a <em>layer</em>. Docker caches layers, so ordering the file well makes rebuilds very fast.</p>
-      <div class="learn-code-wrap" data-lang="dockerfile" data-title="A Python example"><pre><code>FROM python:3.12-slim
+      <h2>A Python example</h2>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code>FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -110,6 +114,7 @@ COPY . .
 EXPOSE 3000
 USER node
 CMD [&quot;node&quot;, &quot;server.js&quot;]</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/docker-compose/"><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Docker Compose</strong><small>Run an app with a database and other services from one file.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/docker-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/docker-compose/">Next lesson →</a>
@@ -138,7 +143,7 @@ CMD [&quot;node&quot;, &quot;server.js&quot;]</code></pre></div></div></details>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

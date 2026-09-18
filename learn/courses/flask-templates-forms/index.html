@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/courses/flask-introduction/">Flask</a> / Templates and Forms</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/flask/">Flask</a> / Templates and Forms</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/flask-introduction/">Flask</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/flask/">Flask</a></p>
             <p class="learn-sidebar-progress">Lesson 2 of 4</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -47,18 +47,22 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Beginner</span>
-            <span class="learn-duration">15 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/flask/">Flask</a> · Lesson 2 of 4</p>
           <h1>Templates and Forms</h1>
           <p class="learn-summary">Render HTML with Jinja2 and process form submissions.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><strong>15</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/flask-introduction/">Lesson 1: Introduction and Routes</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Render templates</li><li>Use template inheritance</li><li>Handle POST forms</li></ul>
           </div>
       <p>Flask renders HTML using <strong>Jinja2</strong> templates. A template is an HTML file with placeholders and small bits of logic, filled with data from your view.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Rendering a template"><pre><code>from flask import render_template
+      <h2>Rendering a template</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from flask import render_template
 
 @app.route(&quot;/&quot;)
 def index():
@@ -78,7 +82,8 @@ def index():
   {% endfor %}
 {% endblock %}</code></pre></div>
       <ul><li><code>{{ ... }}</code> prints a value, and Jinja <strong>auto-escapes</strong> it to prevent XSS.</li><li><code>{% ... %}</code> is a statement (<code>if</code>, <code>for</code>, <code>extends</code>, <code>block</code>).</li><li><code>|filter</code> transforms values: <code>upper</code>, <code>length</code>, <code>default</code>, <code>truncate</code>.</li></ul>
-      <div class="learn-code-wrap" data-lang="html" data-title="Template inheritance"><pre><code>&lt;!-- templates/base.html --&gt;
+      <h2>Template inheritance</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!-- templates/base.html --&gt;
 &lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -91,7 +96,8 @@ def index():
 &lt;/body&gt;
 &lt;/html&gt;</code></pre></div>
       <p><code>url_for</code> builds URLs from view function names, so links do not break when you rename a route. Static files go in a <code>static/</code> folder.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Handling forms"><pre><code>from flask import request, redirect, url_for, flash
+      <h2>Handling forms</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from flask import request, redirect, url_for, flash
 
 app.secret_key = &quot;change-me&quot;     # load from an environment variable in real apps
 
@@ -122,6 +128,7 @@ def greet():
     return render_template(&quot;greet.html&quot;, name=name)
 # greet.html: {% if name %}&lt;h1&gt;Hello, {{ name }}!&lt;/h1&gt;{% endif %}
 #             &lt;form method=&quot;post&quot;&gt;&lt;input name=&quot;name&quot;&gt;&lt;button&gt;Go&lt;/button&gt;&lt;/form&gt;</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/flask-database/"><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Databases with SQLAlchemy</strong><small>Models, queries and migrations with Flask-SQLAlchemy.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/flask-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/flask-database/">Next lesson →</a>
@@ -150,7 +157,7 @@ def greet():
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
