@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -68,7 +68,7 @@
 
 print(area_circle(2))
 result = area_circle(10)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>12.56636</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>12.56636</pre></div>
       <p>The values you pass in are called <em>arguments</em>. A function with no <code>return</code> statement returns <code>None</code>. Prefer returning a value over printing inside the function, because a returned value can be reused, tested and combined.</p>
       <h2>Default and keyword arguments</h2>
       <p>Give a parameter a default value and callers may omit it. When you call a function you can also name arguments, which makes calls self-documenting and lets you pass them in any order.</p>
@@ -79,7 +79,7 @@ result = area_circle(10)</code></pre></div>
 print(greet(&quot;world&quot;))
 print(greet(&quot;world&quot;, excited=True))
 print(greet(excited=True, name=&quot;Ada&quot;))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>Hello, world
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, world
 Hello, world!
 Hello, Ada!</pre></div>
       <h2>Returning several values</h2>
@@ -89,12 +89,12 @@ Hello, Ada!</pre></div>
 
 low, high = min_max([4, 9, 1, 7])
 print(low, high)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>1 9</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1 9</pre></div>
       <h2>Scope</h2>
       <p>Variables created inside a function are <strong>local</strong>: they exist only while the function runs. Reading a global variable inside a function is fine, but assigning to it creates a new local one instead. Passing data in through parameters and out through <code>return</code> keeps functions predictable.</p>
-      <div class="learn-note"><strong>Mutable default trap</strong><p>Never use a list or dict as a default value, as in <code>def add(x, items=[])</code>. The same list is shared across every call. Use <code>items=None</code> and create the list inside the function.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>area_rect(w, h)</code> that returns width times height. Then write <code>is_even(n)</code> that returns <code>True</code> or <code>False</code>, and use it in a loop to print the even numbers below 10.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def area_rect(w, h):
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Mutable default trap</p><p class="learn-callout-body">Never use a list or dict as a default value, as in <code>def add(x, items=[])</code>. The same list is shared across every call. Use <code>items=None</code> and create the list inside the function.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>area_rect(w, h)</code> that returns width times height. Then write <code>is_even(n)</code> that returns <code>True</code> or <code>False</code>, and use it in a loop to print the even numbers below 10.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def area_rect(w, h):
     return w * h
 
 def is_even(n):
@@ -102,7 +102,7 @@ def is_even(n):
 
 for n in range(10):
     if is_even(n):
-        print(n)</code></pre></div></details>
+        print(n)</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-control-flow/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-lists-tuples/">Next lesson →</a>

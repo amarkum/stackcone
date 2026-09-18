@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -94,18 +94,18 @@ public class HelloController {
 }</code></pre></div>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>curl &#x27;http://localhost:8080/hello?name=Ada&#x27;
 curl http://localhost:8080/health</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>Hello, Ada!
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, Ada!
 {&quot;status&quot;:&quot;ok&quot;}</pre></div>
       <p>Returning a <code>Map</code> or an object is converted to JSON automatically by Jackson.</p>
       <h2>Project layout</h2>
       <ul><li><code>src/main/java</code>: your code.</li><li><code>src/main/resources/application.properties</code> (or <code>.yml</code>): configuration such as the port.</li><li><code>src/test/java</code>: tests.</li><li><code>pom.xml</code> / <code>build.gradle</code>: dependencies and build.</li></ul>
-      <div class="learn-note"><strong>Actuator</strong><p>Add the <code>spring-boot-starter-actuator</code> dependency to get <code>/actuator/health</code> and metrics endpoints for free, which is what monitoring tools and load balancers use.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Add <code>GET /time</code> that returns the current server time as a string, and change the port to 9090 in <code>application.properties</code>.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>@GetMapping(&quot;/time&quot;)
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Actuator</p><p class="learn-callout-body">Add the <code>spring-boot-starter-actuator</code> dependency to get <code>/actuator/health</code> and metrics endpoints for free, which is what monitoring tools and load balancers use.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add <code>GET /time</code> that returns the current server time as a string, and change the port to 9090 in <code>application.properties</code>.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="java"><pre><code>@GetMapping(&quot;/time&quot;)
 public String time() {
     return java.time.Instant.now().toString();
 }
-// application.properties:  server.port=9090</code></pre></div></details>
+// application.properties:  server.port=9090</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/spring-rest-controllers/">Next lesson →</a>

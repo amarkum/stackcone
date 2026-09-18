@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -70,7 +70,7 @@
 } finally {
     System.out.println(&quot;always runs&quot;);
 }</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>bad number: For input string: &quot;abc&quot;
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>bad number: For input string: &quot;abc&quot;
 always runs</pre></div>
       <p>List catch blocks from most specific to most general; the first match wins. You can also catch several types in one block with <code>catch (IOException | SQLException e)</code>.</p>
       <h2>try-with-resources</h2>
@@ -96,15 +96,15 @@ try (BufferedReader in = Files.newBufferedReader(Path.of(&quot;notes.txt&quot;))
 }</code></pre></div>
       <h2>Common mistakes</h2>
       <ul><li>Empty catch blocks (<code>catch (Exception e) {}</code>) hide failures. At least log the error.</li><li>Catching <code>Exception</code> or <code>Throwable</code> too broadly, which also swallows bugs.</li><li>Using exceptions for normal control flow; they are slow and obscure intent.</li><li>Losing the original cause by not passing it to the new exception.</li></ul>
-      <div class="learn-note"><strong>NullPointerException</strong><p>The most common runtime error. It happens when you call a method on a <code>null</code> reference. Check for null at boundaries, or return <code>Optional</code> from methods that may have no result.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>int safeDivide(int a, int b)</code> that returns 0 when <code>b</code> is zero by catching <code>ArithmeticException</code>.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>public static int safeDivide(int a, int b) {
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>NullPointerException</p><p class="learn-callout-body">The most common runtime error. It happens when you call a method on a <code>null</code> reference. Check for null at boundaries, or return <code>Optional</code> from methods that may have no result.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>int safeDivide(int a, int b)</code> that returns 0 when <code>b</code> is zero by catching <code>ArithmeticException</code>.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="java"><pre><code>public static int safeDivide(int a, int b) {
     try {
         return a / b;
     } catch (ArithmeticException e) {
         return 0;
     }
-}</code></pre></div></details>
+}</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-collections/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

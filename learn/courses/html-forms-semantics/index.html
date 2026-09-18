@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -101,20 +101,20 @@
       <p>Every input needs a <code>&lt;label&gt;</code> linked by <code>for</code>/<code>id</code> (or by wrapping the input). Clicking the label focuses the field, and screen readers announce it. Placeholder text is not a substitute, since it disappears as soon as you type.</p>
       <h2>Input types and built-in validation</h2>
       <ul><li><code>type</code>: <code>email</code>, <code>url</code>, <code>tel</code>, <code>number</code>, <code>date</code>, <code>password</code>, <code>search</code>, <code>file</code>. Mobile keyboards adapt to the type.</li><li>Validation attributes: <code>required</code>, <code>min</code>, <code>max</code>, <code>minlength</code>, <code>maxlength</code>, <code>pattern</code>.</li><li>The <code>name</code> attribute is the key sent to the server; an input without one is not submitted.</li></ul>
-      <div class="learn-note"><strong>Server-side too</strong><p>Browser validation is a convenience, easily bypassed. Always validate again on the server.</p></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Server-side too</p><p class="learn-callout-body">Browser validation is a convenience, easily bypassed. Always validate again on the server.</p></aside>
       <h2>Buttons</h2>
       <p>Inside a form a <code>&lt;button&gt;</code> submits by default. Use <code>type="button"</code> for buttons that should not submit. Use a <code>&lt;button&gt;</code> for actions and an <code>&lt;a&gt;</code> for navigation.</p>
       <h2>Accessibility quick wins</h2>
       <ul><li>Everything usable with a keyboard: tab through your page.</li><li>Sufficient color contrast (aim for 4.5:1 for body text).</li><li>Meaningful link text: "Read the pricing guide", not "click here".</li></ul>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Build a contact form with name, email, a topic dropdown, a message box and a submit button. Every field needs a label and the email and message must be required.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="html"><pre><code>&lt;form action=&quot;/contact&quot; method=&quot;post&quot;&gt;
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a contact form with name, email, a topic dropdown, a message box and a submit button. Every field needs a label and the email and message must be required.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="html"><pre><code>&lt;form action=&quot;/contact&quot; method=&quot;post&quot;&gt;
   &lt;label for=&quot;n&quot;&gt;Name&lt;/label&gt;&lt;input id=&quot;n&quot; name=&quot;name&quot; required&gt;
   &lt;label for=&quot;e&quot;&gt;Email&lt;/label&gt;&lt;input id=&quot;e&quot; name=&quot;email&quot; type=&quot;email&quot; required&gt;
   &lt;label for=&quot;t&quot;&gt;Topic&lt;/label&gt;
   &lt;select id=&quot;t&quot; name=&quot;topic&quot;&gt;&lt;option&gt;Sales&lt;/option&gt;&lt;option&gt;Support&lt;/option&gt;&lt;/select&gt;
   &lt;label for=&quot;m&quot;&gt;Message&lt;/label&gt;&lt;textarea id=&quot;m&quot; name=&quot;message&quot; required&gt;&lt;/textarea&gt;
   &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
-&lt;/form&gt;</code></pre></div></details>
+&lt;/form&gt;</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/html-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/css-basics/">Next lesson →</a>

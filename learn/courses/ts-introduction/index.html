@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -79,7 +79,7 @@ function add(a: number, b: number): number {
       <h2>Type inference</h2>
       <p>You do not need to annotate everything. TypeScript infers types from values, so <code>let n = 5</code> is already a <code>number</code>. Annotate function parameters and public return types; let inference handle local variables.</p>
       <div class="learn-code-wrap" data-lang="typescript" data-title="Reading an error"><pre><code>add(1, &quot;2&quot;);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>error TS2345: Argument of type &#x27;string&#x27; is not assignable to parameter of type &#x27;number&#x27;.</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>error TS2345: Argument of type &#x27;string&#x27; is not assignable to parameter of type &#x27;number&#x27;.</pre></div>
       <p>The compiler points to the exact place and explains the mismatch. In plain JavaScript this would have silently produced <code>"12"</code> at runtime.</p>
       <h2>any, unknown and never</h2>
       <ul><li><code>any</code> turns off type checking for a value. Avoid it; it hides bugs.</li><li><code>unknown</code> is the safe alternative: you must check the type before using the value.</li><li><code>never</code> marks code that cannot happen, such as a function that always throws.</li></ul>
@@ -88,13 +88,13 @@ function add(a: number, b: number): number {
   if (typeof input === &quot;string&quot;) return Number(input);
   throw new Error(&quot;cannot parse&quot;);
 }</code></pre></div>
-      <div class="learn-note"><strong>Types vanish</strong><p>Types exist only at compile time. They are erased in the output, so they cannot check data arriving from an API at runtime; you will handle that in a later lesson.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a function <code>average(nums: number[]): number</code> and confirm the compiler rejects <code>average("1,2,3")</code>.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="typescript"><pre><code>function average(nums: number[]): number {
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Types vanish</p><p class="learn-callout-body">Types exist only at compile time. They are erased in the output, so they cannot check data arriving from an API at runtime; you will handle that in a later lesson.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a function <code>average(nums: number[]): number</code> and confirm the compiler rejects <code>average("1,2,3")</code>.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="typescript"><pre><code>function average(nums: number[]): number {
   return nums.reduce((a, b) =&gt; a + b, 0) / nums.length;
 }
 average([1, 2, 3]);        // OK: 2
-// average(&quot;1,2,3&quot;);        // Error: string is not assignable to number[]</code></pre></div></details>
+// average(&quot;1,2,3&quot;);        // Error: string is not assignable to number[]</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ts-types-interfaces/">Next lesson →</a>

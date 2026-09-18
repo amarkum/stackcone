@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -108,16 +108,16 @@ docker compose down -v          # ...and delete volumes (data!)</code></pre></di
       - .env                    # keep settings out of the YAML</code></pre></div>
       <h2>Health checks and start order</h2>
       <p><code>depends_on</code> alone only waits until the container <em>starts</em>, not until the database is ready to accept connections. Combining it with a <code>healthcheck</code>, as above, makes the app wait for a truly ready database.</p>
-      <div class="learn-note"><strong>Compose is not Kubernetes</strong><p>Compose is perfect for development and small single-server deployments. For large multi-server production systems teams typically move to an orchestrator such as Kubernetes.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a compose file with a <code>web</code> service using the <code>nginx</code> image on port 8080, and a <code>redis</code> service. Bring it up and check both are running.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="yaml"><pre><code>services:
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Compose is not Kubernetes</p><p class="learn-callout-body">Compose is perfect for development and small single-server deployments. For large multi-server production systems teams typically move to an orchestrator such as Kubernetes.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a compose file with a <code>web</code> service using the <code>nginx</code> image on port 8080, and a <code>redis</code> service. Bring it up and check both are running.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="yaml"><pre><code>services:
   web:
     image: nginx:alpine
     ports:
       - &quot;8080:80&quot;
   redis:
     image: redis:7
-# docker compose up -d &amp;&amp; docker compose ps</code></pre></div></details>
+# docker compose up -d &amp;&amp; docker compose ps</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/docker-dockerfile/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

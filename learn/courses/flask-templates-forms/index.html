@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -114,14 +114,14 @@ def contact():
   &lt;button&gt;Send&lt;/button&gt;
 &lt;/form&gt;</code></pre></div>
       <p>Redirecting after a successful POST stops the browser from resubmitting the form when the user refreshes. For CSRF protection and validation, add <strong>Flask-WTF</strong>.</p>
-      <div class="learn-note"><strong>Security</strong><p>Never build HTML by concatenating user input into strings. Let Jinja escape it, and only use <code>|safe</code> on content you have sanitized.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Create a <code>/greet</code> page with a form that asks for a name and shows "Hello, &lt;name&gt;!" after submission, using a base template.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>@app.route(&quot;/greet&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Security</p><p class="learn-callout-body">Never build HTML by concatenating user input into strings. Let Jinja escape it, and only use <code>|safe</code> on content you have sanitized.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a <code>/greet</code> page with a form that asks for a name and shows "Hello, &lt;name&gt;!" after submission, using a base template.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>@app.route(&quot;/greet&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
 def greet():
     name = request.form.get(&quot;name&quot;) if request.method == &quot;POST&quot; else None
     return render_template(&quot;greet.html&quot;, name=name)
 # greet.html: {% if name %}&lt;h1&gt;Hello, {{ name }}!&lt;/h1&gt;{% endif %}
-#             &lt;form method=&quot;post&quot;&gt;&lt;input name=&quot;name&quot;&gt;&lt;button&gt;Go&lt;/button&gt;&lt;/form&gt;</code></pre></div></details>
+#             &lt;form method=&quot;post&quot;&gt;&lt;input name=&quot;name&quot;&gt;&lt;button&gt;Go&lt;/button&gt;&lt;/form&gt;</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/flask-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/flask-database/">Next lesson →</a>

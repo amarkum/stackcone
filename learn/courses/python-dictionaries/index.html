@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -69,7 +69,7 @@ user[&quot;role&quot;] = &quot;admin&quot;      # add or update
 print(user[&quot;email&quot;])
 print(user.get(&quot;phone&quot;, &quot;n/a&quot;))  # safe lookup with a default
 print(&quot;role&quot; in user)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>dev@example.com
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>dev@example.com
 n/a
 True</pre></div>
       <p>Indexing a missing key with <code>user["phone"]</code> raises <code>KeyError</code>. Use <code>.get(key, default)</code> when the key may not exist. Remove entries with <code>del user["role"]</code> or <code>user.pop("role")</code>.</p>
@@ -78,7 +78,7 @@ True</pre></div>
 
 print(list(user.keys()))
 print(list(user.values()))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>id = 1
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id = 1
 email = dev@example.com
 role = admin
 [&#x27;id&#x27;, &#x27;email&#x27;, &#x27;role&#x27;]
@@ -90,25 +90,25 @@ counts = {}
 for word in text.split():
     counts[word] = counts.get(word, 0) + 1
 print(counts)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>{&#x27;the&#x27;: 2, &#x27;cat&#x27;: 1, &#x27;and&#x27;: 1, &#x27;hat&#x27;: 1}</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;the&#x27;: 2, &#x27;cat&#x27;: 1, &#x27;and&#x27;: 1, &#x27;hat&#x27;: 1}</pre></div>
       <h2>Sets</h2>
       <p>A <strong>set</strong> is an unordered collection of unique values. Adding a duplicate does nothing, which makes sets ideal for removing repeats and for fast membership checks. They also support math operations: union <code>|</code>, intersection <code>&amp;</code> and difference <code>-</code>.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>tags = {&quot;python&quot;, &quot;api&quot;, &quot;python&quot;}
 print(tags)
 print({1, 2, 3} &amp; {2, 3, 4})
 print(len(set([1, 1, 2, 2, 3])))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>{&#x27;python&#x27;, &#x27;api&#x27;}
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;python&#x27;, &#x27;api&#x27;}
 {2, 3}
 3</pre></div>
-      <div class="learn-note"><strong>Order</strong><p>Since Python 3.7 dictionaries remember insertion order. Sets do not guarantee any order, so never rely on it.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Build a word-frequency dictionary from a sentence, then print the word that appears most often.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>text = &quot;to be or not to be&quot;
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Order</p><p class="learn-callout-body">Since Python 3.7 dictionaries remember insertion order. Sets do not guarantee any order, so never rely on it.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a word-frequency dictionary from a sentence, then print the word that appears most often.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>text = &quot;to be or not to be&quot;
 counts = {}
 for w in text.split():
     counts[w] = counts.get(w, 0) + 1
 
 best = max(counts, key=counts.get)
-print(best, counts[best])</code></pre></div></details>
+print(best, counts[best])</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-lists-tuples/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-oop-classes/">Next lesson →</a>

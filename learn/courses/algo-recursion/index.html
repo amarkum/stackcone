@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -68,7 +68,7 @@
     return n * factorial(n - 1)   # recursive case
 
 print(factorial(5))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>120</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>120</pre></div>
       <h2>The call stack</h2>
       <p>Each call waits for the one it started. <code>factorial(3)</code> becomes <code>3 * factorial(2)</code>, which becomes <code>3 * (2 * factorial(1))</code>; when the base case returns 1, the stack unwinds multiplying as it goes. Each waiting call uses memory, so Python limits depth (about 1000) and raises <code>RecursionError</code> if you exceed it.</p>
       <div class="learn-code-wrap" data-lang="python" data-title="More examples"><pre><code>def sum_list(a):
@@ -84,7 +84,7 @@ def power(x, n):                    # fast exponent, O(log n)
     return half * half * (x if n % 2 else 1)
 
 print(sum_list([1, 2, 3]), reverse(&quot;abc&quot;), power(2, 10))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>6 cba 1024</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>6 cba 1024</pre></div>
       <h2>Recursion on nested data</h2>
       <p>Recursion shines when data has no fixed depth, like a nested list or a directory tree.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def flatten(x):
@@ -97,7 +97,7 @@ print(sum_list([1, 2, 3]), reverse(&quot;abc&quot;), power(2, 10))</code></pre><
     return out
 
 print(flatten([1, [2, [3, 4]], 5]))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[1, 2, 3, 4, 5]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 3, 4, 5]</pre></div>
       <h2>The Fibonacci trap</h2>
       <p>Naive <code>fib(n) = fib(n-1) + fib(n-2)</code> recomputes the same values over and over and takes exponential time. Caching results fixes it, which leads straight into dynamic programming.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>from functools import lru_cache
@@ -107,17 +107,17 @@ def fib(n):
     return n if n &lt; 2 else fib(n - 1) + fib(n - 2)
 
 print(fib(50))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>12586269025</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>12586269025</pre></div>
       <h2>Recursion vs iteration</h2>
       <p>Anything recursive can be written with a loop and an explicit stack. Prefer a loop when depth could be large or the loop is just as clear; prefer recursion when it mirrors the structure of the problem.</p>
-      <div class="learn-note"><strong>Debugging tip</strong><p>Write the base case first, then check that every recursive call moves strictly closer to it. Print the arguments at the top of the function to watch the stack build.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a recursive <code>is_palindrome(s)</code> that returns True if a string reads the same backward.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def is_palindrome(s):
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Debugging tip</p><p class="learn-callout-body">Write the base case first, then check that every recursive call moves strictly closer to it. Print the arguments at the top of the function to watch the stack build.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a recursive <code>is_palindrome(s)</code> that returns True if a string reads the same backward.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def is_palindrome(s):
     if len(s) &lt;= 1:
         return True
     return s[0] == s[-1] and is_palindrome(s[1:-1])
 
-print(is_palindrome(&quot;level&quot;), is_palindrome(&quot;stack&quot;))</code></pre></div></details>
+print(is_palindrome(&quot;level&quot;), is_palindrome(&quot;stack&quot;))</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-sorting/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/algo-greedy/">Next lesson →</a>

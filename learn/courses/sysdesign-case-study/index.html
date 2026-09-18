@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -70,7 +70,7 @@ records_5_years = 100_000_000 * 12 * 5          # 6 billion
 bytes_per_record = 500
 storage_tb = records_5_years * bytes_per_record / 1e12
 print(round(writes_per_sec), round(reads_per_sec), round(storage_tb, 1))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>39 3858 3.0</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>39 3858 3.0</pre></div>
       <p>Roughly 40 writes per second and 4,000 reads per second is modest; 3 TB over five years fits comfortably in a database. The design is read-heavy, so caching is the big lever.</p>
       <div class="learn-code-wrap" data-lang="text" data-title="3. API and data model"><pre><code>POST /api/v1/urls       { long_url, custom_alias?, expires_at? } -&gt; { short_url }
 GET  /{code}             -&gt; 301/302 redirect to the long URL
@@ -97,19 +97,19 @@ def base62(n: int) -&gt; str:
     return &quot;&quot;.join(reversed(out))
 
 print(base62(125), base62(3_500_000_000))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>21 3lbTzk</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>21 3lbTzk</pre></div>
       <h2>5. High-level design</h2>
       <ul><li>Clients hit a <strong>load balancer</strong>, which spreads requests over stateless <strong>app servers</strong>.</li><li>Redirect path: check <strong>Redis</strong> for <code>code</code>; on a miss read the database and fill the cache (cache-aside, long TTL, LRU eviction). The hottest links stay in memory, so most reads never touch the database.</li><li>Write path: validate the URL, allocate a code, insert into the database.</li><li>Database: PostgreSQL with a primary and read replicas; shard by <code>code</code> hash only if it outgrows one cluster. A key-value store such as DynamoDB also fits well, since access is always by key.</li><li>Analytics: publish a click event to a <strong>queue</strong>; workers aggregate counts asynchronously so redirects stay fast.</li></ul>
       <h2>6. Trade-offs and edge cases</h2>
       <ul><li><strong>301 vs 302</strong>: 301 (permanent) lets browsers cache the redirect, reducing load but hiding later clicks from analytics. 302 keeps every click visible.</li><li><strong>Abuse</strong>: rate limit creation, block malicious domains, and scan for phishing.</li><li><strong>Expiry</strong>: a background job deletes expired rows; check <code>expires_at</code> on read too.</li><li><strong>Custom aliases</strong> need a uniqueness check and reserved words (<code>api</code>, <code>admin</code>).</li><li><strong>Availability</strong>: multiple regions with replicated data and DNS failover if global uptime matters.</li></ul>
-      <div class="learn-note"><strong>How to present it</strong><p>Talk through the six steps in order, state assumptions aloud, sketch as you go and invite the interviewer to steer toward the part they care about. Clear structure matters more than a perfect answer.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Extend the design with per-link click analytics (clicks per day, top countries) without slowing down redirects. Which components do you add, and where does each piece of data live?</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="text"><pre><code>On each redirect the server publishes a small event {code, ts, country, referrer}
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>How to present it</p><p class="learn-callout-body">Talk through the six steps in order, state assumptions aloud, sketch as you go and invite the interviewer to steer toward the part they care about. Clear structure matters more than a perfect answer.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend the design with per-link click analytics (clicks per day, top countries) without slowing down redirects. Which components do you add, and where does each piece of data live?</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="text"><pre><code>On each redirect the server publishes a small event {code, ts, country, referrer}
 to Kafka/SQS (fire-and-forget, after responding). A consumer batches events and
 writes aggregates into an analytics store (ClickHouse/BigQuery, or Postgres
 tables partitioned by day). A dashboard API reads only the aggregates. The
 redirect path never waits on analytics writes; if the queue is down, events
-are buffered or dropped without breaking redirects.</code></pre></div></details>
+are buffered or dropped without breaking redirects.</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/sysdesign-queues-apis/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -73,7 +73,7 @@
     return a
 
 print(insertion_sort([5, 2, 4, 6, 1, 3]))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[1, 2, 3, 4, 5, 6]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 3, 4, 5, 6]</pre></div>
       <h2>Merge sort: O(n log n)</h2>
       <p>Merge sort is <em>divide and conquer</em>: split the list in half, sort each half recursively, then <strong>merge</strong> the two sorted halves by repeatedly taking the smaller front item. The list is halved log n times, and each level of merging does O(n) work, giving O(n log n) always, at the cost of O(n) extra memory.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def merge_sort(a):
@@ -90,7 +90,7 @@ print(insertion_sort([5, 2, 4, 6, 1, 3]))</code></pre></div>
     return out + left[i:] + right[j:]
 
 print(merge_sort([38, 27, 43, 3, 9, 82, 10]))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[3, 9, 10, 27, 38, 43, 82]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[3, 9, 10, 27, 38, 43, 82]</pre></div>
       <h2>Quick sort</h2>
       <p>Pick a <em>pivot</em>, partition the items into smaller and larger, and recursively sort each side. Average time is O(n log n) and it sorts in place, which is why it is so popular. The worst case is O(n squared), for example when the pivot is always the smallest item; picking a random pivot makes that vanishingly unlikely.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>import random
@@ -105,23 +105,23 @@ def quick_sort(a):
     return quick_sort(less) + equal + quick_sort(greater)
 
 print(quick_sort([3, 6, 1, 8, 2, 9, 2]))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[1, 2, 2, 3, 6, 8, 9]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 2, 3, 6, 8, 9]</pre></div>
       <h2>What you should actually use</h2>
       <p>In real code, call the built-in. Python's <code>sorted()</code> and <code>list.sort()</code> use Timsort, a hybrid of merge and insertion sort that is O(n log n) worst case and very fast on partially ordered data. Use <code>key=</code> to sort by a computed value and <code>reverse=True</code> for descending.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>people = [(&quot;Ann&quot;, 31), (&quot;Bob&quot;, 25), (&quot;Cy&quot;, 31)]
 print(sorted(people, key=lambda p: p[1]))
 print(sorted(people, key=lambda p: (-p[1], p[0])))   # age desc, then name</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[(&#x27;Bob&#x27;, 25), (&#x27;Ann&#x27;, 31), (&#x27;Cy&#x27;, 31)]
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[(&#x27;Bob&#x27;, 25), (&#x27;Ann&#x27;, 31), (&#x27;Cy&#x27;, 31)]
 [(&#x27;Ann&#x27;, 31), (&#x27;Cy&#x27;, 31), (&#x27;Bob&#x27;, 25)]</pre></div>
       <h2>Stability</h2>
       <p>A sort is <strong>stable</strong> if equal items keep their original relative order. In the first output above, Ann stays before Cy. Stability lets you sort by one field, then another, and keep the first ordering as a tiebreaker.</p>
       <h2>The lower bound</h2>
       <p>Any sort that works by comparing items needs at least about n log n comparisons in the worst case. Non-comparison sorts such as counting sort get O(n) only when values are small integers in a known range.</p>
-      <div class="learn-note"><strong>Rule of thumb</strong><p>Memorize: bubble/insertion O(n squared), merge/heap O(n log n) always, quick O(n log n) average. Then use the standard library.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Sort a list of words by length, and alphabetically within the same length, using <code>sorted</code> and a tuple key.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>words = [&quot;pear&quot;, &quot;fig&quot;, &quot;apple&quot;, &quot;kiwi&quot;, &quot;date&quot;]
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Rule of thumb</p><p class="learn-callout-body">Memorize: bubble/insertion O(n squared), merge/heap O(n log n) always, quick O(n log n) average. Then use the standard library.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Sort a list of words by length, and alphabetically within the same length, using <code>sorted</code> and a tuple key.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>words = [&quot;pear&quot;, &quot;fig&quot;, &quot;apple&quot;, &quot;kiwi&quot;, &quot;date&quot;]
 print(sorted(words, key=lambda w: (len(w), w)))
-# [&#x27;fig&#x27;, &#x27;date&#x27;, &#x27;kiwi&#x27;, &#x27;pear&#x27;, &#x27;apple&#x27;]</code></pre></div></details>
+# [&#x27;fig&#x27;, &#x27;date&#x27;, &#x27;kiwi&#x27;, &#x27;pear&#x27;, &#x27;apple&#x27;]</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-searching/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/algo-recursion/">Next lesson →</a>

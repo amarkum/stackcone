@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -88,7 +88,7 @@ structured = llm.with_structured_output(Review)
 result = structured.invoke(&quot;The battery is great but the screen scratches easily.&quot;)
 print(result.sentiment, result.score)
 print(result.model_dump())</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>neutral 3
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>neutral 3
 {&#x27;sentiment&#x27;: &#x27;neutral&#x27;, &#x27;score&#x27;: 3, &#x27;summary&#x27;: &#x27;Great battery but a screen that scratches easily.&#x27;}</pre></div>
       <div class="learn-code-wrap" data-lang="python" data-title="Composing bigger chains"><pre><code>from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 
@@ -100,15 +100,15 @@ print(both.invoke({&quot;text&quot;: &quot;LangChain helps build LLM application
       <p><code>RunnableParallel</code> runs branches at the same time. Other useful runnables: <code>RunnableLambda</code> to wrap your own function, and <code>RunnablePassthrough</code> to carry inputs alongside results.</p>
       <h2>Prompt-writing tips</h2>
       <ul><li>Be specific about role, task, format and length.</li><li>Give one or two examples (few-shot) when the format matters.</li><li>Put untrusted user text in its own clearly labeled section to reduce prompt-injection risk.</li><li>Version and test your prompts like code.</li></ul>
-      <div class="learn-note"><strong>Debugging</strong><p>Set <code>set_debug(True)</code> from <code>langchain.globals</code> to print every step's inputs and outputs, or use tracing (covered in a later lesson).</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Build a chain that takes a job description and returns a structured object with <code>title</code>, <code>skills</code> (list of strings) and <code>seniority</code>.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>class Job(BaseModel):
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Debugging</p><p class="learn-callout-body">Set <code>set_debug(True)</code> from <code>langchain.globals</code> to print every step's inputs and outputs, or use tracing (covered in a later lesson).</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a chain that takes a job description and returns a structured object with <code>title</code>, <code>skills</code> (list of strings) and <code>seniority</code>.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>class Job(BaseModel):
     title: str
     skills: list[str]
     seniority: str
 
 chain = ChatPromptTemplate.from_template(&quot;Extract job info:\n{jd}&quot;) | llm.with_structured_output(Job)
-print(chain.invoke({&quot;jd&quot;: &quot;Senior Python engineer with SQL and Docker experience.&quot;}))</code></pre></div></details>
+print(chain.invoke({&quot;jd&quot;: &quot;Senior Python engineer with SQL and Docker experience.&quot;}))</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/langchain-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/langchain-rag/">Next lesson →</a>

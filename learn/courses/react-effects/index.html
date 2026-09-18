@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -98,9 +98,9 @@ function Title({ name }) {
 }</code></pre></div>
       <h2>You might not need an effect</h2>
       <ul><li>Computing a value from props or state: do it during render, no effect needed.</li><li>Responding to a click or submit: put the logic in the event handler.</li><li>Resetting state when a prop changes: give the component a different <code>key</code>.</li></ul>
-      <div class="learn-note"><strong>Infinite loop</strong><p>An effect that sets state, with that same state in its dependency array, can loop forever. Also, an object or function created inline changes identity on every render, so listing it as a dependency re-runs the effect each time.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a <code>useWindowWidth</code>-style effect: track <code>window.innerWidth</code> in state, update it on the <code>resize</code> event and remove the listener on cleanup.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="javascript"><pre><code>function Width() {
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Infinite loop</p><p class="learn-callout-body">An effect that sets state, with that same state in its dependency array, can loop forever. Also, an object or function created inline changes identity on every render, so listing it as a dependency re-runs the effect each time.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a <code>useWindowWidth</code>-style effect: track <code>window.innerWidth</code> in state, update it on the <code>resize</code> event and remove the listener on cleanup.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="javascript"><pre><code>function Width() {
   const [w, setW] = useState(window.innerWidth);
   useEffect(() =&gt; {
     const onResize = () =&gt; setW(window.innerWidth);
@@ -108,7 +108,7 @@ function Title({ name }) {
     return () =&gt; window.removeEventListener(&quot;resize&quot;, onResize);
   }, []);
   return &lt;p&gt;{w}px&lt;/p&gt;;
-}</code></pre></div></details>
+}</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/react-events-forms/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/react-hooks-context/">Next lesson →</a>

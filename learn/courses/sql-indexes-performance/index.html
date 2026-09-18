@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -69,7 +69,7 @@ CREATE INDEX idx_orders_cust_status ON orders (customer_id, status);   -- compos
       <p><code>EXPLAIN</code> shows how the database intends to run a query. Look for a scan of the whole table versus an index search.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>EXPLAIN QUERY PLAN
 SELECT * FROM orders WHERE customer_id = 1;</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>-- before index: SCAN orders
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>-- before index: SCAN orders
 -- after index:  SEARCH orders USING INDEX idx_orders_customer (customer_id=?)</pre></div>
       <p>In PostgreSQL use <code>EXPLAIN ANALYZE</code> to also run the query and report real timings.</p>
       <h2>The trade-off</h2>
@@ -86,11 +86,11 @@ SELECT * FROM customers WHERE name LIKE &#x27;%son&#x27;;
 SELECT * FROM customers WHERE email = &#x27;a@b.com&#x27;;</code></pre></div>
       <h2>Other habits that keep queries fast</h2>
       <ul><li>Select only needed columns instead of <code>SELECT *</code>.</li><li>Paginate with <code>LIMIT</code>; for deep pages prefer keyset pagination (<code>WHERE id &gt; last_seen</code>) over big OFFSETs.</li><li>Avoid the N+1 problem: one query per row from application code. Fetch related rows with a join or an <code>IN</code> list.</li></ul>
-      <div class="learn-note"><strong>Measure, do not guess</strong><p>Add an index, re-run EXPLAIN and compare. Query planners are complex, and real data often surprises you.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>A query <code>SELECT * FROM orders WHERE customer_id = ? AND status = 'paid' ORDER BY created DESC</code> is slow. Propose an index and explain the column order.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="sql"><pre><code>-- Equality columns first, then the sort column, so the database can
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Measure, do not guess</p><p class="learn-callout-body">Add an index, re-run EXPLAIN and compare. Query planners are complex, and real data often surprises you.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A query <code>SELECT * FROM orders WHERE customer_id = ? AND status = 'paid' ORDER BY created DESC</code> is slow. Propose an index and explain the column order.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="sql"><pre><code>-- Equality columns first, then the sort column, so the database can
 -- read matching rows already in order without a separate sort step.
-CREATE INDEX idx_orders_lookup ON orders (customer_id, status, created DESC);</code></pre></div></details>
+CREATE INDEX idx_orders_lookup ON orders (customer_id, status, created DESC);</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/sql-schema-design/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

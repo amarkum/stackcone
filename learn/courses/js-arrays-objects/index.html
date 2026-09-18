@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -65,7 +65,7 @@ nums.push(4);         // add to end
 nums.unshift(0);      // add to start
 console.log(nums, nums.length, nums.at(-1));
 console.log(nums.includes(3), nums.indexOf(3));</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[ 0, 1, 2, 3, 4 ] 5 4
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[ 0, 1, 2, 3, 4 ] 5 4
 true 3</pre></div>
       <h2>map, filter, reduce</h2>
       <p><code>map</code> transforms every item, <code>filter</code> keeps some, and <code>reduce</code> folds the list into one value. None of them change the original array; they return new ones, so they chain nicely.</p>
@@ -75,7 +75,7 @@ const big = prices.filter((p) =&gt; p &gt; 9);
 const total = prices.reduce((sum, p) =&gt; sum + p, 0);
 console.log(withTax);
 console.log(big, total);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[ 12, 30, 48, 6 ]
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[ 12, 30, 48, 6 ]
 [ 10, 25, 40 ] 80</pre></div>
       <p>Also useful: <code>find</code> (first match), <code>some</code> / <code>every</code> (yes/no checks), <code>sort</code> and <code>flat</code>. Beware that <code>sort()</code> converts to strings by default and mutates the array; pass a comparer for numbers: <code>nums.sort((a, b) => a - b)</code>.</p>
       <div class="learn-code-wrap" data-lang="javascript" data-title="Objects"><pre><code>const user = { name: &quot;Ada&quot;, age: 36, tags: [&quot;dev&quot;] };
@@ -83,7 +83,7 @@ user.role = &quot;admin&quot;;
 console.log(user.name, user[&quot;age&quot;]);
 console.log(Object.keys(user));
 console.log(Object.entries(user).length);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>Ada 36
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada 36
 [ &#x27;name&#x27;, &#x27;age&#x27;, &#x27;tags&#x27;, &#x27;role&#x27; ]
 4</pre></div>
       <h2>Destructuring and spread</h2>
@@ -93,22 +93,22 @@ const [first, second] = [10, 20, 30];
 const updated = { ...user, age: 37 };
 const merged = [...[1, 2], ...[3]];
 console.log(name, first, second, updated.age, merged);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>Ada 10 20 37 [ 1, 2, 3 ]</pre></div>
-      <div class="learn-note"><strong>Shallow copies</strong><p>Spread copies only the top level. Nested objects are still shared. Use <code>structuredClone(obj)</code> for a deep copy.</p></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada 10 20 37 [ 1, 2, 3 ]</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Shallow copies</p><p class="learn-callout-body">Spread copies only the top level. Nested objects are still shared. Use <code>structuredClone(obj)</code> for a deep copy.</p></aside>
       <div class="learn-code-wrap" data-lang="javascript" data-title="Grouping with reduce"><pre><code>const words = [&quot;apple&quot;, &quot;avocado&quot;, &quot;banana&quot;];
 const byLetter = words.reduce((acc, w) =&gt; {
   (acc[w[0]] ??= []).push(w);
   return acc;
 }, {});
 console.log(byLetter);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>{ a: [ &#x27;apple&#x27;, &#x27;avocado&#x27; ], b: [ &#x27;banana&#x27; ] }</pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given an array of user objects with <code>name</code> and <code>age</code>, produce an array of the names of users aged 18 or over, sorted alphabetically.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="javascript"><pre><code>const users = [{ name: &quot;Zed&quot;, age: 20 }, { name: &quot;Amy&quot;, age: 15 }, { name: &quot;Bob&quot;, age: 30 }];
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{ a: [ &#x27;apple&#x27;, &#x27;avocado&#x27; ], b: [ &#x27;banana&#x27; ] }</pre></div>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given an array of user objects with <code>name</code> and <code>age</code>, produce an array of the names of users aged 18 or over, sorted alphabetically.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="javascript"><pre><code>const users = [{ name: &quot;Zed&quot;, age: 20 }, { name: &quot;Amy&quot;, age: 15 }, { name: &quot;Bob&quot;, age: 30 }];
 const adults = users
   .filter((u) =&gt; u.age &gt;= 18)
   .map((u) =&gt; u.name)
   .sort();
-console.log(adults);   // [ &#x27;Bob&#x27;, &#x27;Zed&#x27; ]</code></pre></div></details>
+console.log(adults);   // [ &#x27;Bob&#x27;, &#x27;Zed&#x27; ]</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/js-functions/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/js-async/">Next lesson →</a>

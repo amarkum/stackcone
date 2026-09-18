@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -70,7 +70,7 @@ if (score &gt;= 90) {
     grade = &quot;C&quot;;
 }
 System.out.println(grade);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>B</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>B</pre></div>
       <p>Conditions must be real <code>boolean</code> expressions; Java has no "truthy" values, so <code>if (count)</code> will not compile. Combine conditions with <code>&amp;&amp;</code> (and), <code>||</code> (or) and <code>!</code> (not). For a simple choice, the ternary operator is compact: <code>String s = ok ? "yes" : "no";</code>.</p>
       <h2>switch</h2>
       <p>When one value selects between many branches, <code>switch</code> is clearer than a chain of <code>else if</code>. Modern Java (14+) supports arrow syntax with no fall-through and can produce a value.</p>
@@ -82,7 +82,7 @@ String name = switch (day) {
     default -&gt; &quot;Other&quot;;
 };
 System.out.println(name);</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>Wed</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Wed</pre></div>
       <h2>Loops</h2>
       <p>A classic <code>for</code> loop has three parts: initialize, test and update. The enhanced <code>for</code> ("for-each") loop reads every element of an array or collection without an index. <code>while</code> repeats while a condition holds, and <code>do/while</code> runs the body at least once.</p>
       <div class="learn-code-wrap" data-lang="java"><pre><code>for (int i = 0; i &lt; 3; i++) {
@@ -100,15 +100,15 @@ int count = 3;
 while (count &gt; 0) {
     count--;
 }</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>tick 0
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>tick 0
 tick 1
 tick 2
 27</pre></div>
       <p>Use <code>break</code> to exit a loop early and <code>continue</code> to jump to the next iteration.</p>
       <h2>Common mistakes</h2>
       <ul><li>Using <code>=</code> instead of <code>==</code> in a condition. Java usually catches this for non-booleans, but not for boolean variables.</li><li>Off-by-one errors: <code>i &lt;= nums.length</code> reads one past the end and throws <code>ArrayIndexOutOfBoundsException</code>.</li><li>A stray semicolon after <code>if (x);</code> makes the block run unconditionally.</li><li>Forgetting to change the loop variable in <code>while</code>, causing an infinite loop.</li></ul>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Print the sum of all even numbers from 1 to 100 using a <code>for</code> loop and an <code>if</code>. Then rewrite the loop to step by 2 without the <code>if</code>.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>int sum = 0;
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Print the sum of all even numbers from 1 to 100 using a <code>for</code> loop and an <code>if</code>. Then rewrite the loop to step by 2 without the <code>if</code>.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="java"><pre><code>int sum = 0;
 for (int i = 1; i &lt;= 100; i++) {
     if (i % 2 == 0) sum += i;
 }
@@ -118,7 +118,7 @@ int sum2 = 0;
 for (int i = 2; i &lt;= 100; i += 2) {
     sum2 += i;
 }
-System.out.println(sum2);  // 2550</code></pre></div></details>
+System.out.println(sum2);  // 2550</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-variables-types/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/java-oop-classes/">Next lesson →</a>

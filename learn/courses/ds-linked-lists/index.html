@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -73,7 +73,7 @@ cur = head
 while cur:
     print(cur.val)
     cur = cur.next</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>1
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1
 2
 3</pre></div>
       <h2>Insert and delete</h2>
@@ -107,11 +107,11 @@ head = delete_value(head, 2)</code></pre></div>
     return slow.val
 
 print(middle(Node(1, Node(2, Node(3, Node(4, Node(5)))))))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>3</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3</pre></div>
       <p>The fast pointer moves twice as quickly, so when it reaches the end the slow pointer is at the middle. The same idea detects cycles.</p>
-      <div class="learn-note"><strong>Common bug</strong><p>Losing the rest of the list by overwriting <code>next</code> before saving it. When reversing or splicing, store the next node in a temporary variable first.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Implement <code>count_nodes(head)</code> that returns the length of a singly linked list, then <code>reverse(head)</code> that reverses it in place.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def count_nodes(head):
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body">Losing the rest of the list by overwriting <code>next</code> before saving it. When reversing or splicing, store the next node in a temporary variable first.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Implement <code>count_nodes(head)</code> that returns the length of a singly linked list, then <code>reverse(head)</code> that reverses it in place.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def count_nodes(head):
     n = 0
     while head:
         n += 1
@@ -124,7 +124,7 @@ def reverse(head):
         nxt = head.next
         head.next = prev
         prev, head = head, nxt
-    return prev</code></pre></div></details>
+    return prev</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-arrays/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-stacks-queues/">Next lesson →</a>

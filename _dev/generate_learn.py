@@ -68,15 +68,15 @@ TRACKS = {
 CATEGORIES = {
     "programming": {
         "label": "Programming",
-        "description": "Language fundamentals — Python and Java, with short lessons and runnable examples.",
+        "description": "Language and tooling fundamentals — Python, Java, JavaScript, TypeScript, SQL, HTML & CSS, Git and Docker.",
     },
     "ds-algo": {
         "label": "DS & Algo",
-        "description": "Data structures and algorithmic thinking for interviews and real systems.",
+        "description": "Data structures, algorithms and system design — the thinking behind interviews and real systems.",
     },
     "frameworks": {
         "label": "Frameworks",
-        "description": "Modern libraries and frameworks — LangChain, React, FastAPI, and more.",
+        "description": "Ship real products — React, Next.js, Django, FastAPI, Flask, Express, Spring Boot and LangChain.",
     },
 }
 
@@ -308,6 +308,34 @@ for track_lessons in by_track.values():
         les["next"] = track_lessons[i + 1]["slug"] if i < len(track_lessons) - 1 else None
 
 
+# --- Inline icons for lesson content blocks (chevron matches the site nav) ---
+ICON_CHEVRON = (
+    '<svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" '
+    'aria-hidden="true" focusable="false">'
+    '<path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>'
+)
+ICON_NOTE = (
+    '<svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" '
+    'aria-hidden="true" focusable="false">'
+    '<circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/>'
+    '<path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" '
+    'stroke-linecap="round"/></svg>'
+)
+ICON_EXERCISE = (
+    '<svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" '
+    'aria-hidden="true" focusable="false">'
+    '<path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" '
+    'stroke-linejoin="round"/></svg>'
+)
+ICON_OUTPUT = (
+    '<svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" '
+    'aria-hidden="true" focusable="false">'
+    '<path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>'
+)
+
+
 def esc(s: str) -> str:
     return html.escape(s, quote=True)
 
@@ -328,14 +356,27 @@ def render_section(item: tuple, title: str | None = None) -> str:
     if kind == "ul":
         return "      <ul>" + "".join(f"<li>{x}</li>" for x in rest[0]) + "</ul>"
     if kind == "note":
-        return f'      <div class="learn-note"><strong>{esc(rest[0])}</strong><p>{rest[1]}</p></div>'
+        return (f'      <aside class="learn-callout learn-note">'
+                f'<p class="learn-callout-label">{ICON_NOTE}{esc(rest[0])}</p>'
+                f'<p class="learn-callout-body">{rest[1]}</p></aside>')
     if kind == "output":
-        return f'      <div class="learn-output"><span>Output</span><pre>{esc(rest[0])}</pre></div>'
+        return (f'      <div class="learn-output">'
+                f'<span class="learn-output-label">{ICON_OUTPUT}Output</span>'
+                f'<pre>{esc(rest[0])}</pre></div>')
     if kind == "solution":
-        return (f'      <details class="learn-solution"><summary>Show solution</summary>'
-                f'<div class="learn-code-wrap" data-lang="{esc(rest[0])}"><pre><code>{esc(rest[1])}</code></pre></div></details>')
+        return (f'      <details class="learn-solution">'
+                f'<summary class="learn-solution-toggle">'
+                f'<span class="learn-solution-text">'
+                f'<span class="when-closed">Show solution</span>'
+                f'<span class="when-open">Hide solution</span></span>'
+                f'{ICON_CHEVRON}</summary>'
+                f'<div class="learn-solution-body">'
+                f'<div class="learn-code-wrap" data-lang="{esc(rest[0])}">'
+                f'<pre><code>{esc(rest[1])}</code></pre></div></div></details>')
     if kind == "exercise":
-        return f"      <div class=\"learn-exercise\"><h3>Try it yourself</h3><p>{rest[0]}</p></div>"
+        return (f'      <aside class="learn-callout learn-exercise">'
+                f'<p class="learn-callout-label">{ICON_EXERCISE}Try it yourself</p>'
+                f'<p class="learn-callout-body">{rest[0]}</p></aside>')
     return ""
 
 
@@ -399,7 +440,7 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -490,7 +531,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>

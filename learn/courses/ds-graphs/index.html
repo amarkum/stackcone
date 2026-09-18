@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -73,7 +73,7 @@
     &quot;D&quot;: [],
 }
 print(graph[&quot;A&quot;])</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[&#x27;B&#x27;, &#x27;C&#x27;]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;B&#x27;, &#x27;C&#x27;]</pre></div>
       <p>An <em>adjacency matrix</em> (a 2D grid of yes/no) answers "is there an edge between X and Y?" in O(1) but uses V squared memory, so it fits only dense graphs.</p>
       <h2>Breadth-first search (BFS)</h2>
       <p>BFS explores all neighbors before going deeper, using a queue. In an unweighted graph it finds the path with the fewest edges. Track visited nodes so you never loop forever on a cycle.</p>
@@ -93,7 +93,7 @@ def bfs(start):
     return order
 
 print(bfs(&quot;A&quot;))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]</pre></div>
       <h2>Depth-first search (DFS)</h2>
       <p>DFS follows one path as far as it goes before backing up, using recursion or a stack. It is the basis for cycle detection, topological sorting and finding connected components.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def dfs(node, seen=None):
@@ -105,13 +105,13 @@ print(bfs(&quot;A&quot;))</code></pre></div>
     return seen
 
 print(sorted(dfs(&quot;A&quot;)))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]</pre></div>
       <p>Both BFS and DFS run in O(V + E): every vertex and edge is examined at most once.</p>
       <h2>Where to go next</h2>
       <ul><li><strong>Dijkstra</strong>: shortest paths with weighted edges.</li><li><strong>Topological sort</strong>: order tasks so dependencies come first.</li><li><strong>Union-Find</strong>: quickly answer whether two nodes are connected.</li></ul>
-      <div class="learn-note"><strong>Always mark visited</strong><p>Forgetting the <code>seen</code> set is the most common graph bug. On any graph with a cycle it causes an infinite loop.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Extend <code>bfs</code> to take a target and return the shortest path as a list of nodes, or <code>None</code> if unreachable.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Always mark visited</p><p class="learn-callout-body">Forgetting the <code>seen</code> set is the most common graph bug. On any graph with a cycle it causes an infinite loop.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend <code>bfs</code> to take a target and return the shortest path as a list of nodes, or <code>None</code> if unreachable.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
 
 def shortest_path(start, target):
     q = deque([[start]])
@@ -127,7 +127,7 @@ def shortest_path(start, target):
                 q.append(path + [nxt])
     return None
 
-print(shortest_path(&quot;A&quot;, &quot;D&quot;))   # [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;D&#x27;]</code></pre></div></details>
+print(shortest_path(&quot;A&quot;, &quot;D&quot;))   # [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;D&#x27;]</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-hash-tables/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-big-o/">Next lesson →</a>

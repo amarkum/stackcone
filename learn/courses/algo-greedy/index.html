@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -71,8 +71,8 @@
     return result
 
 print(make_change(63))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[25, 25, 10, 1, 1, 1]</pre></div>
-      <div class="learn-note"><strong>When greedy fails</strong><p>With coins (4, 3, 1) and amount 6, greedy picks 4+1+1 (three coins), but 3+3 needs only two. That case needs dynamic programming. Always look for a counterexample before trusting a greedy idea.</p></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[25, 25, 10, 1, 1, 1]</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>When greedy fails</p><p class="learn-callout-body">With coins (4, 3, 1) and amount 6, greedy picks 4+1+1 (three coins), but 3+3 needs only two. That case needs dynamic programming. Always look for a counterexample before trusting a greedy idea.</p></aside>
       <h2>Interval scheduling</h2>
       <p>Given meetings with start and end times, attend as many as possible. The winning rule: <strong>always pick the meeting that ends earliest</strong> among those that do not overlap, because that leaves the most room for the rest.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def max_meetings(meetings):
@@ -84,7 +84,7 @@ print(make_change(63))</code></pre></div>
     return chosen
 
 print(max_meetings([(1, 4), (3, 5), (0, 6), (5, 7), (8, 9), (5, 9)]))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[(1, 4), (5, 7), (8, 9)]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[(1, 4), (5, 7), (8, 9)]</pre></div>
       <h2>Jump game</h2>
       <p>Each number says how far you may jump. Can you reach the end? Track the farthest index reachable so far.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def can_reach_end(nums):
@@ -96,15 +96,15 @@ print(max_meetings([(1, 4), (3, 5), (0, 6), (5, 7), (8, 9), (5, 9)]))</code></pr
     return True
 
 print(can_reach_end([2, 3, 1, 1, 4]), can_reach_end([3, 2, 1, 0, 4]))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>True False</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True False</pre></div>
       <h2>How to justify a greedy choice</h2>
       <ul><li><strong>Exchange argument</strong>: show that any optimal solution can be transformed to use your greedy choice without getting worse.</li><li><strong>Stays ahead</strong>: show that after each step greedy is at least as good as any other strategy.</li></ul>
       <p>Famous greedy algorithms you will meet later include Dijkstra's shortest paths, Kruskal's and Prim's minimum spanning trees and Huffman coding.</p>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given <code>prices</code> for consecutive days, compute the maximum profit if you may buy and sell as many times as you like (but hold one share at a time). Hint: add every positive day-to-day rise.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def max_profit(prices):
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given <code>prices</code> for consecutive days, compute the maximum profit if you may buy and sell as many times as you like (but hold one share at a time). Hint: add every positive day-to-day rise.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def max_profit(prices):
     return sum(max(0, b - a) for a, b in zip(prices, prices[1:]))
 
-print(max_profit([7, 1, 5, 3, 6, 4]))   # 7</code></pre></div></details>
+print(max_profit([7, 1, 5, 3, 6, 4]))   # 7</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-recursion/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/algo-backtracking/">Next lesson →</a>

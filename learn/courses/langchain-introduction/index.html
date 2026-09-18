@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -74,21 +74,21 @@ reply = llm.invoke([
     HumanMessage(content=&quot;Explain a database index in one sentence.&quot;),
 ])
 print(reply.content)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>A database index is a data structure that lets the database find rows quickly without scanning the whole table.</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>A database index is a data structure that lets the database find rows quickly without scanning the whole table.</pre></div>
       <p>LangChain provides a common interface: <code>invoke</code> for one call, <code>stream</code> for token-by-token output and <code>batch</code> for many inputs. To use another provider, change only the import and class, for example <code>ChatAnthropic</code> from <code>langchain_anthropic</code>.</p>
       <div class="learn-code-wrap" data-lang="python" data-title="Streaming"><pre><code>for chunk in llm.stream(&quot;Write a haiku about Python&quot;):
     print(chunk.content, end=&quot;&quot;, flush=True)</code></pre></div>
       <p>Streaming makes chat apps feel fast: users start reading immediately instead of waiting for the full answer.</p>
       <h2>Costs and safety basics</h2>
       <ul><li>Log token usage (<code>reply.usage_metadata</code>) from day one.</li><li>Set a maximum output length and timeouts.</li><li>Treat model output as untrusted text: never run it as code or SQL without validation.</li></ul>
-      <div class="learn-note"><strong>Non-determinism</strong><p>Even at temperature 0, outputs can vary slightly. Design your app and tests to tolerate wording differences.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Ask the model to translate a sentence into Spanish with a system message that says to reply only with the translation, then print the token usage.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>reply = llm.invoke([
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Non-determinism</p><p class="learn-callout-body">Even at temperature 0, outputs can vary slightly. Design your app and tests to tolerate wording differences.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Ask the model to translate a sentence into Spanish with a system message that says to reply only with the translation, then print the token usage.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>reply = llm.invoke([
     SystemMessage(content=&quot;Translate to Spanish. Reply only with the translation.&quot;),
     HumanMessage(content=&quot;Where is the train station?&quot;),
 ])
 print(reply.content)
-print(reply.usage_metadata)</code></pre></div></details>
+print(reply.usage_metadata)</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/langchain-prompts-chains/">Next lesson →</a>

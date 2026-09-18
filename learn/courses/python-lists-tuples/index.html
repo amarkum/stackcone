@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -73,7 +73,7 @@ last = nums.pop()    # remove and return the last item
 print(nums)
 print(nums[1:3], nums[-1])
 print(len(nums), 20 in nums)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[5, 10, 20, 30]
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[5, 10, 20, 30]
 [10, 20] 30
 4 True</pre></div>
       <p>Other methods you will use constantly: <code>remove(x)</code>, <code>sort()</code>, <code>reverse()</code>, <code>index(x)</code> and <code>count(x)</code>. The built-in <code>sorted(nums)</code> returns a new sorted list and leaves the original alone.</p>
@@ -84,7 +84,7 @@ squares = [n * n for n in nums]
 evens = [n for n in nums if n % 2 == 0]
 print(squares)
 print(evens)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[1, 4, 9, 16, 25, 36]
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 4, 9, 16, 25, 36]
 [2, 4, 6]</pre></div>
       <h2>Tuples</h2>
       <p>A tuple uses parentheses and cannot be modified. Use one for a small fixed group of related values, such as a coordinate pair or a database row. Because tuples are immutable, they can be used as dictionary keys.</p>
@@ -92,10 +92,10 @@ print(evens)</code></pre></div>
 x, y = point        # unpacking
 print(x, y, point[0])
 # point[0] = 9      # TypeError: tuples are immutable</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>3 4 3</pre></div>
-      <div class="learn-note"><strong>Copies share data</strong><p><code>b = a</code> does not copy a list; both names point at the same list. Use <code>b = a.copy()</code> or <code>b = a[:]</code> when you want an independent copy.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given <code>scores = [88, 92, 75, 95]</code>, print the highest score without using <code>max()</code>. Then build a list of the scores that are 90 or above using a comprehension.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>scores = [88, 92, 75, 95]
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3 4 3</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Copies share data</p><p class="learn-callout-body"><code>b = a</code> does not copy a list; both names point at the same list. Use <code>b = a.copy()</code> or <code>b = a[:]</code> when you want an independent copy.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given <code>scores = [88, 92, 75, 95]</code>, print the highest score without using <code>max()</code>. Then build a list of the scores that are 90 or above using a comprehension.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>scores = [88, 92, 75, 95]
 best = scores[0]
 for s in scores:
     if s &gt; best:
@@ -103,7 +103,7 @@ for s in scores:
 print(best)
 
 high = [s for s in scores if s &gt;= 90]
-print(high)</code></pre></div></details>
+print(high)</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-functions/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-dictionaries/">Next lesson →</a>

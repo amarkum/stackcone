@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -109,9 +109,9 @@ export function BackButton() {
   const router = useRouter();
   return &lt;button onClick={() =&gt; router.back()}&gt;Back&lt;/button&gt;;
 }</code></pre></div>
-      <div class="learn-note"><strong>Tip</strong><p>A folder without a <code>page.tsx</code> is not a route. You can keep components or helpers next to the pages that use them without exposing them as URLs.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Create <code>/products</code> (a list) and <code>/products/[id]</code> (a detail page that shows the id), plus a <code>loading.tsx</code> for the detail page.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="javascript"><pre><code>// app/products/page.tsx
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Tip</p><p class="learn-callout-body">A folder without a <code>page.tsx</code> is not a route. You can keep components or helpers next to the pages that use them without exposing them as URLs.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create <code>/products</code> (a list) and <code>/products/[id]</code> (a detail page that shows the id), plus a <code>loading.tsx</code> for the detail page.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="javascript"><pre><code>// app/products/page.tsx
 import Link from &quot;next/link&quot;;
 export default function Products() {
   return &lt;ul&gt;{[1, 2, 3].map((id) =&gt; &lt;li key={id}&gt;&lt;Link href={`/products/${id}`}&gt;Product {id}&lt;/Link&gt;&lt;/li&gt;)}&lt;/ul&gt;;
@@ -120,7 +120,7 @@ export default function Products() {
 export default async function Product({ params }: { params: Promise&lt;{ id: string }&gt; }) {
   const { id } = await params;
   return &lt;h1&gt;Product {id}&lt;/h1&gt;;
-}</code></pre></div></details>
+}</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/nextjs-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/nextjs-server-components/">Next lesson →</a>

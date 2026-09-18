@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -68,7 +68,7 @@ SELECT DISTINCT country FROM customers; -- remove duplicates</code></pre></div>
       <p>Avoid <code>SELECT *</code> in application code. It fetches more than you need and breaks when columns are added or reordered.</p>
       <div class="learn-code-wrap" data-lang="sql" data-title="Filtering with WHERE"><pre><code>SELECT name FROM customers
 WHERE age &gt;= 30;</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>name
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
 Ada
 Grace</pre></div>
       <p>Comparison operators: <code>= &lt;&gt; &lt; &gt; &lt;= &gt;=</code> (note that equality is a single <code>=</code>, and not-equal is <code>&lt;&gt;</code> or <code>!=</code>). Combine tests with <code>AND</code>, <code>OR</code> and <code>NOT</code>, and use parentheses to be explicit, since AND binds tighter than OR.</p>
@@ -84,11 +84,11 @@ SELECT * FROM customers WHERE name LIKE &#x27;_da&#x27;;            -- one char 
       <p><code>NULL</code> means "unknown or missing". Any comparison with NULL is unknown, so <code>WHERE phone = NULL</code> matches nothing. Use <code>IS NULL</code> and <code>IS NOT NULL</code>.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers WHERE phone IS NULL;
 SELECT name, COALESCE(phone, &#x27;n/a&#x27;) AS phone FROM customers;</code></pre></div>
-      <div class="learn-note"><strong>Common bug</strong><p><code>WHERE country &lt;&gt; 'UK'</code> silently excludes rows where country is NULL. Add <code>OR country IS NULL</code> if you want them.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>From <code>orders</code>, return the id and total of every paid order over 50.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT id, total
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body"><code>WHERE country &lt;&gt; 'UK'</code> silently excludes rows where country is NULL. Add <code>OR country IS NULL</code> if you want them.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">From <code>orders</code>, return the id and total of every paid order over 50.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT id, total
 FROM orders
-WHERE status = &#x27;paid&#x27; AND total &gt; 50;</code></pre></div></details>
+WHERE status = &#x27;paid&#x27; AND total &gt; 50;</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/sql-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/sql-sorting-aggregates/">Next lesson →</a>

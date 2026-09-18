@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -76,7 +76,7 @@ def multiply(a: float, b: float) -&gt; float:
       <div class="learn-code-wrap" data-lang="python" data-title="Tool calling by hand"><pre><code>llm_with_tools = llm.bind_tools([get_weather, multiply])
 response = llm_with_tools.invoke(&quot;What is the weather in Paris?&quot;)
 print(response.tool_calls)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>[{&#x27;name&#x27;: &#x27;get_weather&#x27;, &#x27;args&#x27;: {&#x27;city&#x27;: &#x27;Paris&#x27;}, &#x27;id&#x27;: &#x27;call_1&#x27;}]</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[{&#x27;name&#x27;: &#x27;get_weather&#x27;, &#x27;args&#x27;: {&#x27;city&#x27;: &#x27;Paris&#x27;}, &#x27;id&#x27;: &#x27;call_1&#x27;}]</pre></div>
       <p>The model does not run the function. It <em>requests</em> a call with arguments; your code executes it and sends the result back so the model can write the final answer. An <strong>agent loop</strong> automates that exchange.</p>
       <div class="learn-code-wrap" data-lang="python" data-title="A ready-made agent"><pre><code>from langgraph.prebuilt import create_react_agent
 
@@ -89,9 +89,9 @@ print(result[&quot;messages&quot;][-1].content)</code></pre></div>
       <ul><li>One clear purpose per tool, with a precise description of when to use it.</li><li>Simple, typed arguments; return short, useful strings or JSON.</li><li>Return errors as readable messages so the model can recover and retry.</li><li>Keep the tool list small. Too many similar tools confuse the model.</li></ul>
       <h2>Safety for agents</h2>
       <ul><li><strong>Least privilege</strong>: give read-only tools where possible.</li><li><strong>Confirm dangerous actions</strong> (sending email, deleting, spending money) with a human before executing.</li><li><strong>Limit loops</strong>: cap the number of steps and total cost.</li><li><strong>Validate arguments</strong> exactly as you would any user input.</li><li><strong>Prompt injection</strong>: text from web pages or emails may try to instruct the agent. Never let untrusted content authorize actions.</li></ul>
-      <div class="learn-note"><strong>Do you need an agent?</strong><p>If the steps are known in advance, a plain chain is cheaper, faster and more predictable. Reach for agents when the number and order of steps genuinely depends on the input.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a <code>word_count(text: str)</code> tool and a <code>current_time()</code> tool, give them to an agent, and ask it how many words are in a sentence you supply.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>from datetime import datetime
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do you need an agent?</p><p class="learn-callout-body">If the steps are known in advance, a plain chain is cheaper, faster and more predictable. Reach for agents when the number and order of steps genuinely depends on the input.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a <code>word_count(text: str)</code> tool and a <code>current_time()</code> tool, give them to an agent, and ask it how many words are in a sentence you supply.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>from datetime import datetime
 
 @tool
 def word_count(text: str) -&gt; int:
@@ -104,7 +104,7 @@ def current_time() -&gt; str:
     return datetime.utcnow().isoformat()
 
 agent = create_react_agent(llm, [word_count, current_time])
-print(agent.invoke({&quot;messages&quot;: [(&quot;user&quot;, &quot;How many words are in: the quick brown fox?&quot;)]})[&quot;messages&quot;][-1].content)</code></pre></div></details>
+print(agent.invoke({&quot;messages&quot;: [(&quot;user&quot;, &quot;How many words are in: the quick brown fox?&quot;)]})[&quot;messages&quot;][-1].content)</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/langchain-rag/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/langchain-evaluation-production/">Next lesson →</a>

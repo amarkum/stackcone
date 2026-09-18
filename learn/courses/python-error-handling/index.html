@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -72,7 +72,7 @@ except ValueError:
     n = 0
     print(&quot;not a number, using 0&quot;)
 print(n)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>not a number, using 0
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>not a number, using 0
 0</pre></div>
       <h2>else and finally</h2>
       <p><code>else</code> runs only when no exception happened, and <code>finally</code> always runs, which makes it the place for cleanup such as closing a connection.</p>
@@ -84,7 +84,7 @@ else:
     print(&quot;result:&quot;, result)
 finally:
     print(&quot;done&quot;)</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>result: 5.0
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>result: 5.0
 done</pre></div>
       <h2>Raising your own errors</h2>
       <p>Use <code>raise</code> to signal that the caller gave you bad input. Choose the most fitting built-in type (<code>ValueError</code> for a bad value, <code>TypeError</code> for a bad type) and write a message that says what was wrong.</p>
@@ -99,13 +99,13 @@ done</pre></div>
 
 print(parse_port(&quot;8080&quot;))
 print(parse_port(&quot;99999&quot;))</code></pre></div>
-      <div class="learn-output"><span>Output</span><pre>8080
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>8080
 ValueError: port out of range</pre></div>
       <h2>Common exceptions</h2>
       <ul><li><code>ValueError</code>: right type, wrong value, like <code>int("x")</code>.</li><li><code>TypeError</code>: wrong type, like <code>"a" + 1</code>.</li><li><code>KeyError</code> / <code>IndexError</code>: missing dictionary key or list position.</li><li><code>FileNotFoundError</code>: the path does not exist.</li><li><code>ZeroDivisionError</code>: dividing by zero.</li></ul>
-      <div class="learn-note"><strong>Fail loudly</strong><p>Only catch an exception when you can actually do something useful about it. Swallowing errors silently makes bugs very hard to find later.</p></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>safe_divide(a, b)</code> that returns the result, or <code>None</code> when <code>b</code> is zero. Then wrap file reading in try/except so it returns <code>None</code> if the file is missing.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def safe_divide(a, b):
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Fail loudly</p><p class="learn-callout-body">Only catch an exception when you can actually do something useful about it. Swallowing errors silently makes bugs very hard to find later.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>safe_divide(a, b)</code> that returns the result, or <code>None</code> when <code>b</code> is zero. Then wrap file reading in try/except so it returns <code>None</code> if the file is missing.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def safe_divide(a, b):
     try:
         return a / b
     except ZeroDivisionError:
@@ -116,7 +116,7 @@ def read_or_none(path):
         with open(path, encoding=&quot;utf-8&quot;) as f:
             return f.read()
     except FileNotFoundError:
-        return None</code></pre></div></details>
+        return None</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-file-handling/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

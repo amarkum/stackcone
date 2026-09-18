@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=6">
+  <link rel="stylesheet" href="/learn/learn.css?v=7">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -61,7 +61,7 @@
       <p>You may write endpoints with <code>def</code> or <code>async def</code>. Choosing correctly affects performance, and databases plus deployment are what turn a demo into a service.</p>
       <h2>async or not?</h2>
       <ul><li><strong>async def</strong>: use when everything you call inside is <em>awaitable</em> (async database drivers, <code>httpx.AsyncClient</code>). The event loop can serve other requests while you wait.</li><li><strong>def</strong>: use when you call blocking code (a regular database driver, <code>requests</code>, heavy computation). FastAPI runs these in a thread pool so they do not freeze the server.</li></ul>
-      <div class="learn-note"><strong>The trap</strong><p>Calling blocking code inside <code>async def</code> stalls the whole event loop and every other request waits. When unsure, use plain <code>def</code>.</p></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The trap</p><p class="learn-callout-body">Calling blocking code inside <code>async def</code> stalls the whole event loop and every other request waits. When unsure, use plain <code>def</code>.</p></aside>
       <div class="learn-code-wrap" data-lang="python"><pre><code>import httpx
 
 @app.get(&quot;/proxy&quot;)
@@ -121,8 +121,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 CMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]</code></pre></div>
       <ul><li>Read secrets and the database URL from environment variables (<code>pydantic-settings</code> helps).</li><li>Run behind a process manager or several workers: <code>uvicorn main:app --workers 4</code>.</li><li>Add CORS middleware if a browser front end on another origin calls your API.</li><li>Write tests with <code>TestClient</code> from <code>fastapi.testclient</code>.</li></ul>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a test using <code>TestClient</code> that posts a todo and asserts the response has status 201 and a <code>title</code> field.</p></div>
-      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>from fastapi.testclient import TestClient
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a test using <code>TestClient</code> that posts a todo and asserts the response has status 201 and a <code>title</code> field.</p></aside>
+      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>from fastapi.testclient import TestClient
 from main import app
 
 client = TestClient(app)
@@ -130,7 +130,7 @@ client = TestClient(app)
 def test_create_todo():
     r = client.post(&quot;/todos&quot;, json={&quot;title&quot;: &quot;write tests&quot;})
     assert r.status_code == 201
-    assert r.json()[&quot;title&quot;] == &quot;write tests&quot;</code></pre></div></details>
+    assert r.json()[&quot;title&quot;] == &quot;write tests&quot;</code></pre></div></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/fastapi-dependencies/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>
