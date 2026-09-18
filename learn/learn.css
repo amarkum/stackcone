@@ -938,8 +938,9 @@ a.learn-track-card:hover {
     border-radius: 10px;
   }
 
-  /* Full-bleed code on narrow screens */
-  .learn-code-wrap {
+  /* Full-bleed code and output on narrow screens: same edges, stacked flush */
+  .learn-code-wrap,
+  .learn-output {
     margin-left: -1.1rem;
     margin-right: -1.1rem;
     border-left: none;
@@ -947,14 +948,16 @@ a.learn-track-card:hover {
     border-radius: 0;
   }
 
-  .learn-solution-body .learn-code-wrap,
-  .learn-output {
-    margin-left: 0;
-    margin-right: 0;
+  .learn-code-wrap + .learn-output {
+    margin-top: -1.5rem;
   }
 
-  .learn-code-wrap + .learn-output {
-    margin-top: 0;
+  /* Inside a collapsed solution both stay inset with the toggle */
+  .learn-solution-body .learn-code-wrap {
+    margin-left: 0;
+    margin-right: 0;
+    border-left: 1px solid #1e293b;
+    border-right: 1px solid #1e293b;
     border-radius: var(--l-radius);
   }
 

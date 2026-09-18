@@ -161,3 +161,9 @@
 .learn-code-wrap.monaco-runnable { display: flex; flex-direction: column; overflow: hidden; }
 .learn-code-wrap.monaco-runnable .monaco-code-host { position: relative; flex: none; overflow: hidden; }
 .learn-code-wrap.monaco-runnable .learn-code-output { position: relative; flex: none; z-index: 1; margin: 0; }
+
+/* Monaco adds a floating keyboard button to editable editors on iOS. Runnable snippets are
+   run with the Run button, so the extra control is just visual noise over the code. */
+.monaco-editor .iPadShowKeyboard {
+  display: none !important;
+}

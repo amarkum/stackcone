@@ -2141,14 +2141,20 @@ body.landing-page main > section:not(.hero) {
     background: var(--bg);
     border: none;
     border-left: 1px solid var(--border);
-    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
     z-index: 20;
     overflow-y: auto;
     transform: translateX(100%);
+    /* Closed: fully hidden. A visible shadow here bleeds ~16px back into the viewport. */
+    visibility: hidden;
+    box-shadow: none;
+    transition: transform 0.28s ease, visibility 0s linear 0.28s, box-shadow 0.28s ease;
   }
 
   .header.is-menu-open .nav {
     transform: translateX(0);
+    visibility: visible;
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
+    transition-delay: 0s;
   }
 
   .nav {
@@ -2213,14 +2219,21 @@ body.landing-page main > section:not(.hero) {
   }
 
   .nav-dd-item {
-    padding: 0.65rem 0 0.65rem 1rem;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.65rem 0;
     border-radius: 0;
     text-align: right;
     border-bottom: 1px solid var(--border);
   }
 
-  .nav-dd-group .nav-dd-item:last-child {
-    border-bottom: 1px solid var(--border);
+  /* The last row of an open panel sits on the wrapper's own divider: avoid a double line */
+  .nav-dd-panel > .nav-dd-item:last-child,
+  .nav-dd-panel > .nav-dd-group:last-child > .nav-dd-item:last-child,
+  .nav-dd-panel > .nav-dd-sub:last-child:not(.is-open) > .nav-dd-item--sub,
+  .nav-dd-panel > .nav-dd-sub.is-open:last-child > .nav-dd-flyout > .nav-dd-item:last-child {
+    border-bottom: none;
   }
 
   .nav > .nav-link:last-child,
@@ -3165,9 +3178,11 @@ body.landing-page main > section:not(.hero) {
   width: 24px;
 }
 
-.nav-dd-item:hover,
-.nav-dd-sub:hover > .nav-dd-item--sub {
-  background: #f1f5f9;
+@media (hover: hover) {
+  .nav-dd-item:hover,
+  .nav-dd-sub:hover > .nav-dd-item--sub {
+    background: #f1f5f9;
+  }
 }
 
 @media (min-width: 993px) {
@@ -3191,22 +3206,39 @@ body.landing-page main > section:not(.hero) {
     border: none;
     border-radius: 0;
     margin: 0;
-    padding: 0 1rem 0 0;
+    padding: 0;
     min-width: 0;
     max-height: none;
+    overflow: visible;
     background: transparent;
   }
   .nav-dd-sub.is-open > .nav-dd-flyout {
     display: block;
   }
+  .nav-dd-flyout .nav-dd-item {
+    padding-right: 1rem;
+    font-size: 0.9375rem;
+    color: var(--text-dim);
+    border-bottom-color: var(--border-light);
+  }
   .nav-dd-item--sub .nav-sub-chevron {
     transform: none;
+    transition: transform 0.2s ease;
+  }
+  .nav-dd-sub.is-open > .nav-dd-item--sub .nav-sub-chevron {
+    transform: scaleY(-1);
   }
 }
 
-.nav-dd-panel .nav-dd-item:hover,
-.nav-dd-panel .nav-dd-item:focus-visible,
-.nav-dd-panel .nav-dd-sub:hover > .nav-dd-item--sub {
+.nav-dd-panel .nav-dd-item:focus-visible {
   color: #0f172a;
   background: #f1f5f9;
+}
+
+@media (hover: hover) {
+  .nav-dd-panel .nav-dd-item:hover,
+  .nav-dd-panel .nav-dd-sub:hover > .nav-dd-item--sub {
+    color: #0f172a;
+    background: #f1f5f9;
+  }
 }
