@@ -36,6 +36,7 @@
 
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   min-height: 100vh;
+  overflow-x: clip; /* a hidden nav flyout must never create page-level scroll */
 }
 
 /* ============================================================
@@ -69,7 +70,8 @@
 }
 
 /* Small uppercase label above titles */
-.learn-eyebrow {
+.learn-eyebrow,
+.blog-article .learn-eyebrow {
   margin: 0 0 0.5rem;
   font-size: 0.72rem;
   font-weight: 700;
@@ -551,7 +553,7 @@ a.learn-track-card:hover {
 }
 
 /* "Before this lesson" pointer */
-.learn-prereq {
+.blog-article .learn-prereq {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -571,7 +573,9 @@ a.learn-track-card:hover {
 
 .blog-article .learn-prereq a {
   color: var(--l-ink);
+  font-size: 0.875rem;
   font-weight: 600;
+  text-decoration-color: var(--l-line);
 }
 
 /* What you will learn */
@@ -696,7 +700,7 @@ a.learn-track-card:hover {
   border-radius: var(--l-radius);
 }
 
-.learn-callout-label {
+.blog-article .learn-callout-label {
   display: flex;
   align-items: center;
   gap: 0.45rem;
@@ -712,7 +716,7 @@ a.learn-track-card:hover {
   flex-shrink: 0;
 }
 
-.learn-callout-body {
+.blog-article .learn-callout-body {
   margin: 0;
   font-size: 0.975rem;
   line-height: 1.65;
@@ -724,8 +728,8 @@ a.learn-track-card:hover {
   border-left-color: var(--l-blue);
 }
 
-.learn-note .learn-callout-label { color: var(--l-blue-ink); }
-.learn-note .learn-callout-body { color: #1e3a5f; }
+.blog-article .learn-note .learn-callout-label { color: var(--l-blue-ink); }
+.blog-article .learn-note .learn-callout-body { color: #1e3a5f; }
 
 .learn-exercise {
   background: var(--l-amber-bg);
@@ -733,8 +737,8 @@ a.learn-track-card:hover {
   border-left-color: var(--l-amber);
 }
 
-.learn-exercise .learn-callout-label { color: var(--l-amber-ink); }
-.learn-exercise .learn-callout-body { color: #78350f; }
+.blog-article .learn-exercise .learn-callout-label { color: var(--l-amber-ink); }
+.blog-article .learn-exercise .learn-callout-body { color: #78350f; }
 
 /* Collapsible solution */
 .learn-solution {

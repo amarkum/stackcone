@@ -121,19 +121,8 @@
   };
 
   function resolveBlockTitle(block) {
-    if (!block.wrap) return '';
-    var titled = block.wrap.getAttribute('data-title');
-    if (titled) return titled.trim();
-    var prev = block.wrap.previousElementSibling;
-    if (prev && /^H[1-6]$/.test(prev.tagName)) {
-      var text = (prev.textContent || '').trim();
-      if (text) {
-        block.wrap.setAttribute('data-title', text);
-        prev.remove();
-        return text;
-      }
-    }
-    return '';
+    // Headings stay in the document; only an explicit data-title labels the bar.
+    return block.wrap ? (block.wrap.getAttribute('data-title') || '').trim() : '';
   }
 
   function createCodeToolbar(block, host, editor) {
