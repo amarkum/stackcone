@@ -660,8 +660,19 @@ a.learn-track-card:hover {
   overflow: hidden;
 }
 
+/* A code block followed by its output renders as one card: the code keeps the
+   top corners, the output keeps the bottom ones, and nothing overlaps. */
+.learn-code-wrap:has(+ .learn-output) {
+  margin-bottom: 0;
+  border-bottom: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+}
+
 .learn-code-wrap + .learn-output {
-  margin-top: -1.5rem;
+  margin-top: 0;
+  border-top: none;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -949,7 +960,7 @@ a.learn-track-card:hover {
   }
 
   .learn-code-wrap + .learn-output {
-    margin-top: -1.5rem;
+    margin-top: 0;
   }
 
   /* Inside a collapsed solution both stay inset with the toggle */
