@@ -62,15 +62,53 @@
             <h2>What you will learn</h2>
             <ul><li>Read and write dict keys</li><li>Iterate .items()</li><li>Use sets for uniqueness</li></ul>
           </div>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>user = {&quot;id&quot;: 1, &quot;email&quot;: &quot;dev@example.com&quot;}
-user[&quot;role&quot;] = &quot;admin&quot;
+      <p>A <strong>dictionary</strong> stores data as key-value pairs. Instead of asking "what is at position 2?" you ask "what is the value for the key <code>"email"</code>?". Lookups are very fast, on average constant time no matter how large the dictionary grows. Keys must be immutable (strings, numbers, tuples); values can be anything.</p>
+      <div class="learn-code-wrap" data-lang="python" data-title="Creating and reading"><pre><code>user = {&quot;id&quot;: 1, &quot;email&quot;: &quot;dev@example.com&quot;}
+user[&quot;role&quot;] = &quot;admin&quot;      # add or update
 
-for key, val in user.items():
-    print(key, val)
+print(user[&quot;email&quot;])
+print(user.get(&quot;phone&quot;, &quot;n/a&quot;))  # safe lookup with a default
+print(&quot;role&quot; in user)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>dev@example.com
+n/a
+True</pre></div>
+      <p>Indexing a missing key with <code>user["phone"]</code> raises <code>KeyError</code>. Use <code>.get(key, default)</code> when the key may not exist. Remove entries with <code>del user["role"]</code> or <code>user.pop("role")</code>.</p>
+      <div class="learn-code-wrap" data-lang="python" data-title="Iterating"><pre><code>for key, val in user.items():
+    print(key, &quot;=&quot;, val)
 
-tags = {&quot;python&quot;, &quot;api&quot;, &quot;python&quot;}
-print(tags)</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Build a word-frequency dict from a sentence string.</p></div>
+print(list(user.keys()))
+print(list(user.values()))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>id = 1
+email = dev@example.com
+role = admin
+[&#x27;id&#x27;, &#x27;email&#x27;, &#x27;role&#x27;]
+[1, &#x27;dev@example.com&#x27;, &#x27;admin&#x27;]</pre></div>
+      <h2>A classic pattern: counting</h2>
+      <p>Dictionaries are the natural tool for counting things. <code>counts.get(word, 0) + 1</code> reads the current count, treating a missing word as zero.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>text = &quot;the cat and the hat&quot;
+counts = {}
+for word in text.split():
+    counts[word] = counts.get(word, 0) + 1
+print(counts)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>{&#x27;the&#x27;: 2, &#x27;cat&#x27;: 1, &#x27;and&#x27;: 1, &#x27;hat&#x27;: 1}</pre></div>
+      <h2>Sets</h2>
+      <p>A <strong>set</strong> is an unordered collection of unique values. Adding a duplicate does nothing, which makes sets ideal for removing repeats and for fast membership checks. They also support math operations: union <code>|</code>, intersection <code>&amp;</code> and difference <code>-</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>tags = {&quot;python&quot;, &quot;api&quot;, &quot;python&quot;}
+print(tags)
+print({1, 2, 3} &amp; {2, 3, 4})
+print(len(set([1, 1, 2, 2, 3])))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>{&#x27;python&#x27;, &#x27;api&#x27;}
+{2, 3}
+3</pre></div>
+      <div class="learn-note"><strong>Order</strong><p>Since Python 3.7 dictionaries remember insertion order. Sets do not guarantee any order, so never rely on it.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Build a word-frequency dictionary from a sentence, then print the word that appears most often.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>text = &quot;to be or not to be&quot;
+counts = {}
+for w in text.split():
+    counts[w] = counts.get(w, 0) + 1
+
+best = max(counts, key=counts.get)
+print(best, counts[best])</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-lists-tuples/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-oop-classes/">Next lesson →</a>

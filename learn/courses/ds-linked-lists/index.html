@@ -61,17 +61,70 @@
             <h2>What you will learn</h2>
             <ul><li>Describe a node structure</li><li>Insert at head in O(1)</li><li>Compare to arrays</li></ul>
           </div>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+      <p>A <strong>linked list</strong> is a chain of <em>nodes</em>. Each node holds a value and a reference (pointer) to the next node. The nodes can live anywhere in memory; the pointers are what tie them together. You keep track of the first node, called the <em>head</em>, and follow <code>next</code> pointers until you reach <code>None</code>.</p>
+      <div class="learn-code-wrap" data-lang="python" data-title="Building one"><pre><code>class Node:
     def __init__(self, val, nxt=None):
         self.val = val
         self.next = nxt
 
 head = Node(1, Node(2, Node(3)))
+
 cur = head
 while cur:
     print(cur.val)
     cur = cur.next</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Implement a function to count nodes in a singly linked list.</p></div>
+      <div class="learn-output"><span>Output</span><pre>1
+2
+3</pre></div>
+      <h2>Insert and delete</h2>
+      <p>The big advantage: adding or removing at a known position is O(1), because you only rewire a pointer, and nothing shifts. Inserting at the head is the simplest case.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def push_front(head, val):
+    return Node(val, head)     # new head points at old head
+
+def delete_value(head, target):
+    if head and head.val == target:
+        return head.next
+    cur = head
+    while cur and cur.next:
+        if cur.next.val == target:
+            cur.next = cur.next.next   # skip the node
+            break
+        cur = cur.next
+    return head
+
+head = push_front(head, 0)
+head = delete_value(head, 2)</code></pre></div>
+      <p>Finding the node to delete still takes O(n), because you must walk the list to reach it.</p>
+      <h2>Singly versus doubly linked</h2>
+      <p>A <strong>singly linked</strong> list has only <code>next</code> pointers, so you can move in one direction. A <strong>doubly linked</strong> list also has <code>prev</code>, which allows walking backward and removing a node when you already hold a reference to it, at the cost of more memory.</p>
+      <h2>Arrays vs linked lists</h2>
+      <ul><li>Access by index: array O(1), linked list O(n).</li><li>Insert/delete at the front: array O(n), linked list O(1).</li><li>Memory: linked lists spend extra space on pointers and cache poorly.</li><li>In practice arrays win most of the time; linked lists shine as building blocks (queues, LRU caches, adjacency lists).</li></ul>
+      <div class="learn-code-wrap" data-lang="python" data-title="Classic technique: fast and slow pointers"><pre><code>def middle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    return slow.val
+
+print(middle(Node(1, Node(2, Node(3, Node(4, Node(5)))))))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3</pre></div>
+      <p>The fast pointer moves twice as quickly, so when it reaches the end the slow pointer is at the middle. The same idea detects cycles.</p>
+      <div class="learn-note"><strong>Common bug</strong><p>Losing the rest of the list by overwriting <code>next</code> before saving it. When reversing or splicing, store the next node in a temporary variable first.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Implement <code>count_nodes(head)</code> that returns the length of a singly linked list, then <code>reverse(head)</code> that reverses it in place.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def count_nodes(head):
+    n = 0
+    while head:
+        n += 1
+        head = head.next
+    return n
+
+def reverse(head):
+    prev = None
+    while head:
+        nxt = head.next
+        head.next = prev
+        prev, head = head, nxt
+    return prev</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-arrays/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-stacks-queues/">Next lesson →</a>

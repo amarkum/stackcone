@@ -62,13 +62,48 @@
             <h2>What you will learn</h2>
             <ul><li>Create and slice lists</li><li>Use list methods append/pop</li><li>Know when tuples beat lists</li></ul>
           </div>
+      <p>Lists and tuples are <strong>ordered sequences</strong>: they keep items in the order you put them in and let you fetch any item by its position. The difference is mutability. A list can be changed after creation; a tuple cannot.</p>
+      <h2>Lists</h2>
+      <p>Create a list with square brackets. Indexes start at 0, and negative indexes count from the end, so <code>nums[-1]</code> is the last item. Slicing with <code>nums[start:stop]</code> returns a new list that includes <code>start</code> and excludes <code>stop</code>.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [10, 20, 30]
-nums.append(40)
-print(nums[1:3])
+nums.append(40)      # add to the end
+nums.insert(0, 5)    # add at a position
+last = nums.pop()    # remove and return the last item
 
-point = (3, 4)
-print(point[0])</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given <code>scores = [88, 92, 75, 95]</code>, print the highest score without using max().</p></div>
+print(nums)
+print(nums[1:3], nums[-1])
+print(len(nums), 20 in nums)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[5, 10, 20, 30]
+[10, 20] 30
+4 True</pre></div>
+      <p>Other methods you will use constantly: <code>remove(x)</code>, <code>sort()</code>, <code>reverse()</code>, <code>index(x)</code> and <code>count(x)</code>. The built-in <code>sorted(nums)</code> returns a new sorted list and leaves the original alone.</p>
+      <h2>Looping and comprehensions</h2>
+      <p>A <strong>list comprehension</strong> builds a new list from an existing one in a single readable line: <code>[expression for item in items if condition]</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [1, 2, 3, 4, 5, 6]
+squares = [n * n for n in nums]
+evens = [n for n in nums if n % 2 == 0]
+print(squares)
+print(evens)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[1, 4, 9, 16, 25, 36]
+[2, 4, 6]</pre></div>
+      <h2>Tuples</h2>
+      <p>A tuple uses parentheses and cannot be modified. Use one for a small fixed group of related values, such as a coordinate pair or a database row. Because tuples are immutable, they can be used as dictionary keys.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>point = (3, 4)
+x, y = point        # unpacking
+print(x, y, point[0])
+# point[0] = 9      # TypeError: tuples are immutable</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3 4 3</pre></div>
+      <div class="learn-note"><strong>Copies share data</strong><p><code>b = a</code> does not copy a list; both names point at the same list. Use <code>b = a.copy()</code> or <code>b = a[:]</code> when you want an independent copy.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given <code>scores = [88, 92, 75, 95]</code>, print the highest score without using <code>max()</code>. Then build a list of the scores that are 90 or above using a comprehension.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>scores = [88, 92, 75, 95]
+best = scores[0]
+for s in scores:
+    if s &gt; best:
+        best = s
+print(best)
+
+high = [s for s in scores if s &gt;= 90]
+print(high)</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-functions/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-dictionaries/">Next lesson →</a>

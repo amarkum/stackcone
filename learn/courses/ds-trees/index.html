@@ -61,19 +61,71 @@
             <h2>What you will learn</h2>
             <ul><li>Define root, child, leaf</li><li>Walk in-order traversal</li><li>Understand BST ordering</li></ul>
           </div>
+      <p>A <strong>tree</strong> is a hierarchy: one <em>root</em> node at the top, and every node may have <em>children</em> below it. Nodes with no children are <em>leaves</em>. Folders on your disk, the HTML DOM and organization charts are all trees. A <strong>binary tree</strong> limits each node to at most two children, called left and right.</p>
+      <h2>Vocabulary</h2>
+      <ul><li><strong>Depth</strong> of a node: number of edges from the root.</li><li><strong>Height</strong> of the tree: the longest path from the root down to a leaf.</li><li><strong>Subtree</strong>: any node together with all of its descendants. Trees are recursive by nature.</li></ul>
       <div class="learn-code-wrap" data-lang="python"><pre><code>class TreeNode:
     def __init__(self, val, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
 
-def inorder(node):
+#        4
+#       / \
+#      2   6
+#     / \
+#    1   3
+root = TreeNode(4, TreeNode(2, TreeNode(1), TreeNode(3)), TreeNode(6))</code></pre></div>
+      <h2>Depth-first traversal</h2>
+      <p>Recursion fits trees perfectly: handle the node, then hand the left and right subtrees to the same function. The three orders differ only in when the node is visited. <strong>In-order</strong> is left, node, right.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def inorder(node):
     if not node:
         return
     inorder(node.left)
     print(node.val)
-    inorder(node.right)</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a function that returns the height of a binary tree.</p></div>
+    inorder(node.right)
+
+inorder(root)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>1
+2
+3
+4
+6</pre></div>
+      <p><strong>Pre-order</strong> (node, left, right) is useful for copying a tree. <strong>Post-order</strong> (left, right, node) is useful for deleting one, since children are processed before their parent.</p>
+      <h2>Breadth-first (level order)</h2>
+      <p>Visit nodes level by level using a queue.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+
+def level_order(root):
+    result, q = [], deque([root])
+    while q:
+        node = q.popleft()
+        result.append(node.val)
+        if node.left:  q.append(node.left)
+        if node.right: q.append(node.right)
+    return result
+
+print(level_order(root))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[4, 2, 6, 1, 3]</pre></div>
+      <h2>Binary search trees</h2>
+      <p>A <strong>binary search tree</strong> (BST) keeps every left descendant smaller and every right descendant larger than the node. Searching is like binary search: at each node, go left or right, discarding half the remaining tree. That is O(log n) when the tree is balanced, but degrades to O(n) if it becomes a long chain. In-order traversal of a BST visits values in sorted order, as you saw above.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def contains(node, target):
+    while node:
+        if target == node.val:
+            return True
+        node = node.left if target &lt; node.val else node.right
+    return False
+
+print(contains(root, 3), contains(root, 5))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>True False</pre></div>
+      <div class="learn-note"><strong>Heights matter</strong><p>Self-balancing trees (AVL, red-black) keep the height near log n automatically. Databases and language libraries use them, so you rarely write one yourself.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>height(node)</code> that returns the height of a binary tree, counting an empty tree as 0.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def height(node):
+    if not node:
+        return 0
+    return 1 + max(height(node.left), height(node.right))
+
+print(height(root))   # 3</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-stacks-queues/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-hash-tables/">Next lesson →</a>

@@ -62,6 +62,9 @@
             <h2>What you will learn</h2>
             <ul><li>Define a class with __init__</li><li>Add instance methods</li><li>Understand self</li></ul>
           </div>
+      <p>A <strong>class</strong> is a blueprint that bundles data (attributes) with the functions that work on it (methods). An <strong>object</strong>, or instance, is one thing built from that blueprint. Classes help when several related values travel together, such as a bank account with an owner and a balance, and when behavior belongs with that data.</p>
+      <h2>Your first class</h2>
+      <p><code>__init__</code> runs automatically when you create an instance and sets up its starting state. The first parameter of every method is <code>self</code>, which refers to the specific object the method is being called on. You do not pass it yourself; Python does.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>class BankAccount:
     def __init__(self, owner, balance=0):
         self.owner = owner
@@ -72,8 +75,51 @@
 
 acct = BankAccount(&quot;Amar&quot;, 100)
 acct.deposit(50)
-print(acct.balance)</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Add a <code>withdraw</code> method that refuses negative balances.</p></div>
+print(acct.owner, acct.balance)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>Amar 150</pre></div>
+      <h2>Each object has its own state</h2>
+      <p>Two instances of the same class do not share attribute values. Changing one account leaves the other untouched.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>a = BankAccount(&quot;Ann&quot;, 10)
+b = BankAccount(&quot;Bob&quot;, 500)
+a.deposit(5)
+print(a.balance, b.balance)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>15 500</pre></div>
+      <h2>Making objects printable</h2>
+      <p>Special methods with double underscores customize behavior. <code>__repr__</code> controls how an object is displayed, which makes debugging much easier than the default <code>&lt;BankAccount object at 0x...&gt;</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner, self.balance = owner, balance
+
+    def __repr__(self):
+        return f&quot;BankAccount({self.owner!r}, {self.balance})&quot;
+
+print(BankAccount(&quot;Amar&quot;, 100))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>BankAccount(&#x27;Amar&#x27;, 100)</pre></div>
+      <h2>Inheritance in one minute</h2>
+      <p>A subclass reuses and extends another class. Put the parent in parentheses and call <code>super()</code> to run its logic.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class SavingsAccount(BankAccount):
+    def add_interest(self, rate):
+        self.deposit(self.balance * rate)
+
+s = SavingsAccount(&quot;Amar&quot;, 1000)
+s.add_interest(0.05)
+print(s.balance)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>1050.0</pre></div>
+      <div class="learn-note"><strong>When to use a class</strong><p>If you only need to group a few values, a dictionary or a <code>dataclass</code> is simpler. Reach for a full class when behavior and data belong together.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Add a <code>withdraw(amount)</code> method that refuses to make the balance negative. Return <code>True</code> when it works and <code>False</code> when it does not.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def withdraw(self, amount):
+        if amount &gt; self.balance:
+            return False
+        self.balance -= amount
+        return True
+
+acct = BankAccount(&quot;Amar&quot;, 100)
+print(acct.withdraw(150), acct.withdraw(40), acct.balance)</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-dictionaries/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-file-handling/">Next lesson →</a>

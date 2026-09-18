@@ -61,10 +61,33 @@
             <h2>What you will learn</h2>
             <ul><li>Define data structure vs algorithm</li><li>Name common ADTs</li><li>Connect to real code (lists, maps)</li></ul>
           </div>
-      <p>A data structure is how you organize data in memory so operations are fast enough for your problem. Picking the wrong one is how a feature that should be instant becomes a timeout.</p>
-      <h2>Common structures</h2>
-      <p>Arrays, linked lists, stacks, queues, trees, hash tables, and graphs — each optimizes different operations (lookup, insert, order, relationships).</p>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>For a chat app's "recent messages" feature, would you prioritize fast append or fast lookup by ID?</p></div>
+      <p>A <strong>data structure</strong> is a way of organizing data in memory so that the operations you care about are fast enough. An <strong>algorithm</strong> is the sequence of steps that uses the structure to solve a problem. The two go together: the right structure often makes the algorithm trivial, and the wrong one turns a feature that should be instant into a timeout.</p>
+      <h2>Why it matters</h2>
+      <p>Imagine finding a contact among one million. In an unsorted list you may have to look at every entry, about a million steps. In a hash table you jump straight to it, about one step. The data is identical; only the structure changed.</p>
+      <h2>The toolbox</h2>
+      <ul><li><strong>Array / list</strong>: ordered items with fast access by position.</li><li><strong>Linked list</strong>: items chained by pointers, with fast insert and remove at a known spot.</li><li><strong>Stack</strong>: last in, first out (undo history, function calls).</li><li><strong>Queue</strong>: first in, first out (task scheduling, breadth-first search).</li><li><strong>Hash table</strong>: key to value lookup in about constant time.</li><li><strong>Tree</strong>: hierarchical data with fast ordered search (file systems, databases).</li><li><strong>Graph</strong>: things connected to other things (maps, social networks, dependencies).</li></ul>
+      <h2>Abstract data types</h2>
+      <p>An <em>abstract data type</em> (ADT) says <strong>what</strong> operations exist, not how they are built. A stack promises <code>push</code> and <code>pop</code>; you could build it on an array or a linked list. Thinking in ADTs lets you pick the behavior you need first and the implementation second.</p>
+      <div class="learn-code-wrap" data-lang="python" data-title="You already use them"><pre><code>stack = []
+stack.append(&quot;a&quot;)        # list used as a stack
+stack.append(&quot;b&quot;)
+print(stack.pop())
+
+lookup = {&quot;id&quot;: 7}       # dict is a hash table
+print(lookup[&quot;id&quot;])</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>b
+7</pre></div>
+      <h2>How to choose</h2>
+      <p>Ask four questions: What operations will I do most often? Does order matter? Are duplicates allowed? How large can the data get? The rest of this course gives you the vocabulary (and the Big O lesson gives you the measuring stick) to answer them.</p>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>For a chat app's "recent messages" feature, would you prioritize fast append or fast lookup by ID? Name a structure for each need and explain whether one structure could serve both.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code># Fast append + ordered display -&gt; list/deque (append at the end)
+# Fast lookup by message id   -&gt; dict {id: message}
+# Use both: a list of ids for order and a dict for lookup,
+# or Python 3.7+ dict itself, which remembers insertion order.
+messages = {}
+messages[101] = &quot;hi&quot;
+messages[102] = &quot;hello&quot;
+print(list(messages.values())[-1])</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-arrays/">Next lesson →</a>

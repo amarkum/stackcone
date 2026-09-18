@@ -62,13 +62,47 @@
             <h2>What you will learn</h2>
             <ul><li>Define functions with def</li><li>Return values</li><li>Use default parameters</li></ul>
           </div>
+      <p>A <strong>function</strong> is a named, reusable block of code. Functions let you avoid copy and paste, give a name to an idea, and test small pieces in isolation. You define one with <code>def</code>, list its <em>parameters</em> in parentheses, and use <code>return</code> to hand a result back to the caller.</p>
+      <div class="learn-code-wrap" data-lang="python" data-title="Defining and calling"><pre><code>def area_circle(radius):
+    return 3.14159 * radius ** 2
+
+print(area_circle(2))
+result = area_circle(10)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>12.56636</pre></div>
+      <p>The values you pass in are called <em>arguments</em>. A function with no <code>return</code> statement returns <code>None</code>. Prefer returning a value over printing inside the function, because a returned value can be reused, tested and combined.</p>
+      <h2>Default and keyword arguments</h2>
+      <p>Give a parameter a default value and callers may omit it. When you call a function you can also name arguments, which makes calls self-documenting and lets you pass them in any order.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def greet(name, excited=False):
     msg = f&quot;Hello, {name}&quot;
     return msg + &quot;!&quot; if excited else msg
 
 print(greet(&quot;world&quot;))
-print(greet(&quot;world&quot;, excited=True))</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a function <code>area_rect(w, h)</code> that returns width × height.</p></div>
+print(greet(&quot;world&quot;, excited=True))
+print(greet(excited=True, name=&quot;Ada&quot;))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>Hello, world
+Hello, world!
+Hello, Ada!</pre></div>
+      <h2>Returning several values</h2>
+      <p>Python can return a tuple, and the caller can unpack it into separate names in one line.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def min_max(nums):
+    return min(nums), max(nums)
+
+low, high = min_max([4, 9, 1, 7])
+print(low, high)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>1 9</pre></div>
+      <h2>Scope</h2>
+      <p>Variables created inside a function are <strong>local</strong>: they exist only while the function runs. Reading a global variable inside a function is fine, but assigning to it creates a new local one instead. Passing data in through parameters and out through <code>return</code> keeps functions predictable.</p>
+      <div class="learn-note"><strong>Mutable default trap</strong><p>Never use a list or dict as a default value, as in <code>def add(x, items=[])</code>. The same list is shared across every call. Use <code>items=None</code> and create the list inside the function.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>area_rect(w, h)</code> that returns width times height. Then write <code>is_even(n)</code> that returns <code>True</code> or <code>False</code>, and use it in a loop to print the even numbers below 10.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def area_rect(w, h):
+    return w * h
+
+def is_even(n):
+    return n % 2 == 0
+
+for n in range(10):
+    if is_even(n):
+        print(n)</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-control-flow/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-lists-tuples/">Next lesson →</a>

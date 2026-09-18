@@ -62,6 +62,32 @@
             <h2>What you will learn</h2>
             <ul><li>Catch specific exceptions</li><li>Use finally for cleanup</li><li>Raise ValueError with a message</li></ul>
           </div>
+      <p>Things go wrong: files are missing, users type letters where numbers belong, networks drop. When Python hits a problem it raises an <strong>exception</strong>. If nothing handles it, the program stops and prints a traceback. <strong>Error handling</strong> lets you respond gracefully instead.</p>
+      <h2>try and except</h2>
+      <p>Put risky code in a <code>try</code> block and describe how to recover in <code>except</code>. Catch the <em>specific</em> exception you expect. A bare <code>except:</code> hides real bugs, including typos in your own code.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>raw = &quot;abc&quot;
+try:
+    n = int(raw)
+except ValueError:
+    n = 0
+    print(&quot;not a number, using 0&quot;)
+print(n)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>not a number, using 0
+0</pre></div>
+      <h2>else and finally</h2>
+      <p><code>else</code> runs only when no exception happened, and <code>finally</code> always runs, which makes it the place for cleanup such as closing a connection.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>try:
+    result = 10 / 2
+except ZeroDivisionError:
+    print(&quot;cannot divide by zero&quot;)
+else:
+    print(&quot;result:&quot;, result)
+finally:
+    print(&quot;done&quot;)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>result: 5.0
+done</pre></div>
+      <h2>Raising your own errors</h2>
+      <p>Use <code>raise</code> to signal that the caller gave you bad input. Choose the most fitting built-in type (<code>ValueError</code> for a bad value, <code>TypeError</code> for a bad type) and write a message that says what was wrong.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def parse_port(text):
     try:
         port = int(text)
@@ -69,8 +95,28 @@
         raise ValueError(f&quot;invalid port: {text}&quot;) from None
     if not 1 &lt;= port &lt;= 65535:
         raise ValueError(&quot;port out of range&quot;)
-    return port</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Wrap file reading in try/except and return None if the file is missing.</p></div>
+    return port
+
+print(parse_port(&quot;8080&quot;))
+print(parse_port(&quot;99999&quot;))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>8080
+ValueError: port out of range</pre></div>
+      <h2>Common exceptions</h2>
+      <ul><li><code>ValueError</code>: right type, wrong value, like <code>int("x")</code>.</li><li><code>TypeError</code>: wrong type, like <code>"a" + 1</code>.</li><li><code>KeyError</code> / <code>IndexError</code>: missing dictionary key or list position.</li><li><code>FileNotFoundError</code>: the path does not exist.</li><li><code>ZeroDivisionError</code>: dividing by zero.</li></ul>
+      <div class="learn-note"><strong>Fail loudly</strong><p>Only catch an exception when you can actually do something useful about it. Swallowing errors silently makes bugs very hard to find later.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>safe_divide(a, b)</code> that returns the result, or <code>None</code> when <code>b</code> is zero. Then wrap file reading in try/except so it returns <code>None</code> if the file is missing.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def safe_divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return None
+
+def read_or_none(path):
+    try:
+        with open(path, encoding=&quot;utf-8&quot;) as f:
+            return f.read()
+    except FileNotFoundError:
+        return None</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-file-handling/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

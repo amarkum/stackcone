@@ -59,16 +59,52 @@
             <h2>What you will learn</h2>
             <ul><li>Catch NumberFormatException</li><li>Use finally</li><li>Throw IllegalArgumentException</li></ul>
           </div>
+      <p>When something goes wrong at runtime, Java throws an <strong>exception</strong> object and unwinds the call stack until some code catches it. If nothing does, the thread ends with a stack trace. Handling exceptions well is the difference between a program that crashes mysteriously and one that fails clearly.</p>
+      <h2>Checked and unchecked</h2>
+      <ul><li><strong>Checked</strong> exceptions (such as <code>IOException</code>) describe problems outside your control. The compiler forces you to catch them or declare them with <code>throws</code>.</li><li><strong>Unchecked</strong> exceptions extend <code>RuntimeException</code> (such as <code>NullPointerException</code> or <code>IllegalArgumentException</code>). They usually signal a bug, and you are not forced to catch them.</li></ul>
+      <div class="learn-code-wrap" data-lang="java" data-title="try / catch / finally"><pre><code>try {
+    int n = Integer.parseInt(&quot;abc&quot;);
+    System.out.println(n);
+} catch (NumberFormatException e) {
+    System.out.println(&quot;bad number: &quot; + e.getMessage());
+} finally {
+    System.out.println(&quot;always runs&quot;);
+}</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>bad number: For input string: &quot;abc&quot;
+always runs</pre></div>
+      <p>List catch blocks from most specific to most general; the first match wins. You can also catch several types in one block with <code>catch (IOException | SQLException e)</code>.</p>
+      <h2>try-with-resources</h2>
+      <p>Anything that must be closed (files, connections) should be opened in the parentheses of a <code>try</code>. Java closes it automatically, even when an exception is thrown, so you never need a manual <code>finally</code> for cleanup.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.io.*;
+import java.nio.file.*;
+
+try (BufferedReader in = Files.newBufferedReader(Path.of(&quot;notes.txt&quot;))) {
+    System.out.println(in.readLine());
+} catch (IOException e) {
+    System.out.println(&quot;cannot read file: &quot; + e.getMessage());
+}</code></pre></div>
+      <h2>Throwing your own</h2>
+      <p>Validate input early and throw an exception whose message says exactly what was wrong. When you catch one exception and throw another, pass the original as the <em>cause</em> so the trace is not lost.</p>
       <div class="learn-code-wrap" data-lang="java"><pre><code>public static int parsePositive(String raw) {
     try {
         int n = Integer.parseInt(raw);
-        if (n &lt;= 0) throw new IllegalArgumentException(&quot;must be positive&quot;);
+        if (n &lt;= 0) throw new IllegalArgumentException(&quot;must be positive: &quot; + n);
         return n;
     } catch (NumberFormatException e) {
-        throw new IllegalArgumentException(&quot;not a number&quot;, e);
+        throw new IllegalArgumentException(&quot;not a number: &quot; + raw, e);
     }
 }</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write a method that divides two ints and returns 0 on divide-by-zero.</p></div>
+      <h2>Common mistakes</h2>
+      <ul><li>Empty catch blocks (<code>catch (Exception e) {}</code>) hide failures. At least log the error.</li><li>Catching <code>Exception</code> or <code>Throwable</code> too broadly, which also swallows bugs.</li><li>Using exceptions for normal control flow; they are slow and obscure intent.</li><li>Losing the original cause by not passing it to the new exception.</li></ul>
+      <div class="learn-note"><strong>NullPointerException</strong><p>The most common runtime error. It happens when you call a method on a <code>null</code> reference. Check for null at boundaries, or return <code>Optional</code> from methods that may have no result.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Write <code>int safeDivide(int a, int b)</code> that returns 0 when <code>b</code> is zero by catching <code>ArithmeticException</code>.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>public static int safeDivide(int a, int b) {
+    try {
+        return a / b;
+    } catch (ArithmeticException e) {
+        return 0;
+    }
+}</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-collections/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

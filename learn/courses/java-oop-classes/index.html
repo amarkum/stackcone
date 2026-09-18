@@ -59,24 +59,66 @@
             <h2>What you will learn</h2>
             <ul><li>Define a class with fields</li><li>Write a constructor</li><li>Add getters/setters</li></ul>
           </div>
-      <div class="learn-code-wrap" data-lang="java"><pre><code>public class User {
-    private final String email;
-    private int loginCount;
+      <p>Java is object-oriented from the ground up. A <strong>class</strong> describes the shape of something (its fields) and what it can do (its methods). An <strong>object</strong> is a concrete instance created with <code>new</code>. Good classes hide their internal data and expose a small, safe set of operations. That idea is called <strong>encapsulation</strong>.</p>
+      <h2>A class with a constructor</h2>
+      <p>A constructor has the same name as the class and no return type. It runs when you call <code>new</code> and sets the object up. Marking fields <code>private</code> stops outside code from changing them directly.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class BankAccount {
+    private final String owner;
+    private double balance;
 
-    public User(String email) {
-        this.email = email;
-        this.loginCount = 0;
+    public BankAccount(String owner, double balance) {
+        this.owner = owner;
+        this.balance = balance;
     }
 
-    public void recordLogin() {
-        loginCount++;
+    public void deposit(double amount) {
+        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;amount must be positive&quot;);
+        balance += amount;
     }
 
-    public int getLoginCount() {
-        return loginCount;
-    }
+    public double getBalance() { return balance; }
+    public String getOwner()   { return owner; }
 }</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Add a <code>getEmail()</code> method and a <code>resetLogins()</code> method.</p></div>
+      <p><code>this</code> refers to the current object, and is needed here to tell the field <code>this.owner</code> apart from the parameter <code>owner</code>.</p>
+      <div class="learn-code-wrap" data-lang="java" data-title="Using the class"><pre><code>BankAccount acct = new BankAccount(&quot;Amar&quot;, 100);
+acct.deposit(50);
+System.out.println(acct.getOwner() + &quot;: &quot; + acct.getBalance());</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>Amar: 150.0</pre></div>
+      <h2>Static versus instance</h2>
+      <p>Instance members belong to each object; <code>static</code> members belong to the class and are shared. <code>Math.sqrt(9)</code> is a static method: you call it on the class, not on an object.</p>
+      <h2>Inheritance and interfaces</h2>
+      <p>A subclass <code>extends</code> one parent class. An <code>interface</code> is a contract of methods that a class promises to provide, and a class may <code>implements</code> many of them. Prefer interfaces when you want different classes to be used interchangeably.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>interface Shape {
+    double area();
+}
+
+class Circle implements Shape {
+    private final double r;
+    Circle(double r) { this.r = r; }
+    public double area() { return Math.PI * r * r; }
+}
+
+class Square implements Shape {
+    private final double s;
+    Square(double s) { this.s = s; }
+    public double area() { return s * s; }
+}
+
+Shape[] shapes = { new Circle(1), new Square(2) };
+for (Shape sh : shapes) {
+    System.out.printf(&quot;%.2f%n&quot;, sh.area());
+}</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3.14
+4.00</pre></div>
+      <p>Calling <code>sh.area()</code> runs the right version for each object. That is <strong>polymorphism</strong>: one call, many behaviors.</p>
+      <div class="learn-note"><strong>Access modifiers</strong><p><code>private</code>: this class only. <code>protected</code>: same package and subclasses. <code>public</code>: everywhere. No modifier: same package. Start with <code>private</code> and open up only as needed.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Add a <code>withdraw(double amount)</code> method to <code>BankAccount</code> that throws <code>IllegalStateException</code> if the balance would go negative.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>public void withdraw(double amount) {
+    if (amount &gt; balance) {
+        throw new IllegalStateException(&quot;insufficient funds&quot;);
+    }
+    balance -= amount;
+}</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-control-flow/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/java-collections/">Next lesson →</a>

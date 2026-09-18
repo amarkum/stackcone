@@ -240,6 +240,17 @@ LESSONS = [
      ]},
 ]
 
+# Rich lesson bodies live in _dev/content_*.py (slug -> sections); they replace the stubs above.
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from content_python import CONTENT as _PY
+from content_java import CONTENT as _JAVA
+from content_ds import CONTENT as _DS
+_RICH = {**_PY, **_JAVA, **_DS}
+for _les in LESSONS:
+    if _les["slug"] in _RICH:
+        _les["sections"] = _RICH[_les["slug"]]
+
 # wire prev/next per track
 by_track: dict[str, list] = {}
 for les in LESSONS:
@@ -269,6 +280,15 @@ def render_section(item: tuple, title: str | None = None) -> str:
             f'      <div class="learn-code-wrap" data-lang="{esc(lang)}"{title_attr}>'
             f"<pre><code>{esc(code)}</code></pre></div>"
         )
+    if kind == "ul":
+        return "      <ul>" + "".join(f"<li>{x}</li>" for x in rest[0]) + "</ul>"
+    if kind == "note":
+        return f'      <div class="learn-note"><strong>{esc(rest[0])}</strong><p>{rest[1]}</p></div>'
+    if kind == "output":
+        return f'      <div class="learn-output"><span>Output</span><pre>{esc(rest[0])}</pre></div>'
+    if kind == "solution":
+        return (f'      <details class="learn-solution"><summary>Show solution</summary>'
+                f'<div class="learn-code-wrap" data-lang="{esc(rest[0])}"><pre><code>{esc(rest[1])}</code></pre></div></details>')
     if kind == "exercise":
         return f"      <div class=\"learn-exercise\"><h3>Try it yourself</h3><p>{rest[0]}</p></div>"
     return ""

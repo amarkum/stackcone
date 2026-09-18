@@ -61,11 +61,46 @@
             <h2>What you will learn</h2>
             <ul><li>O(1) index access</li><li>Understand fixed vs dynamic arrays</li><li>Know when cache locality helps</li></ul>
           </div>
-      <p>An array stores elements in contiguous memory. Access by index is O(1). Inserting in the middle is O(n) because elements shift.</p>
+      <p>An <strong>array</strong> stores elements one after another in a single block of memory. Because every element takes the same amount of space, the computer can calculate the address of element <code>i</code> directly: start address plus <code>i</code> times the element size. That is why reading <code>arr[i]</code> takes the same tiny amount of time whether the array has ten items or ten million.</p>
+      <h2>What is fast and what is slow</h2>
+      <ul><li><strong>Read or write by index</strong>: O(1).</li><li><strong>Append at the end</strong>: O(1) on average.</li><li><strong>Insert or delete in the middle or front</strong>: O(n), because everything after it must shift.</li><li><strong>Search for a value</strong> in an unsorted array: O(n), since you may check every element.</li></ul>
       <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [10, 20, 30, 40]
-print(nums[2])      # O(1) access
-nums.insert(1, 15)  # O(n) insert</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given an array, write a function to reverse it in-place.</p></div>
+print(nums[2])        # O(1) access
+nums.append(50)       # O(1) amortized
+nums.insert(1, 15)    # O(n) shifts 20, 30, 40, 50
+print(nums)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>30
+[10, 15, 20, 30, 40, 50]</pre></div>
+      <h2>Fixed versus dynamic arrays</h2>
+      <p>In C or Java a plain array has a fixed length. Python lists, Java's <code>ArrayList</code> and JavaScript arrays are <em>dynamic arrays</em>: when they run out of room they allocate a bigger block (usually double), copy everything over and continue. Each resize is O(n), but they are rare, so appends average out to O(1).</p>
+      <h2>Why arrays are fast in practice</h2>
+      <p>Contiguous memory is friendly to the CPU cache. When you read one element, its neighbors come along for free, so scanning an array is often faster than scanning a linked list even when the Big O is the same.</p>
+      <h2>A classic technique: two pointers</h2>
+      <p>Many array problems can be solved with two indexes that move toward each other, avoiding nested loops. Reversing an array in place is the simplest example.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def reverse(a):
+    left, right = 0, len(a) - 1
+    while left &lt; right:
+        a[left], a[right] = a[right], a[left]
+        left += 1
+        right -= 1
+
+vals = [1, 2, 3, 4, 5]
+reverse(vals)
+print(vals)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[5, 4, 3, 2, 1]</pre></div>
+      <p>This runs in O(n) time and O(1) extra space, because it swaps in place instead of building a second array.</p>
+      <div class="learn-note"><strong>Common bug</strong><p>Off-by-one errors and reading past the end (<code>IndexError</code>). Remember valid indexes run from <code>0</code> to <code>len(a) - 1</code>.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Reverse an array in place without using <code>reverse()</code> or slicing. Then write a function that returns the second largest value in one pass.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>def second_largest(a):
+    first = second = float(&quot;-inf&quot;)
+    for x in a:
+        if x &gt; first:
+            first, second = x, first
+        elif first &gt; x &gt; second:
+            second = x
+    return second
+
+print(second_largest([4, 9, 1, 7, 9]))  # 7</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-linked-lists/">Next lesson →</a>

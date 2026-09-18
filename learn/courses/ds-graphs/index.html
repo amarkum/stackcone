@@ -61,26 +61,73 @@
             <h2>What you will learn</h2>
             <ul><li>Represent a graph as adjacency list</li><li>Run BFS for shortest unweighted path</li><li>Know when graphs model real systems</li></ul>
           </div>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
-
-graph = {
+      <p>A <strong>graph</strong> is a set of <em>vertices</em> (nodes) joined by <em>edges</em>. It models anything made of connections: roads between cities, friends in a social network, links between web pages, packages that depend on other packages. A tree is just a graph with no cycles and one root.</p>
+      <h2>Kinds of graphs</h2>
+      <ul><li><strong>Undirected</strong>: an edge works both ways (friendship). <strong>Directed</strong>: an edge has a direction (follows, links to).</li><li><strong>Weighted</strong>: edges carry a cost such as distance or time.</li><li><strong>Cyclic</strong> or <strong>acyclic</strong>: whether you can follow edges and return to where you started. A directed acyclic graph (DAG) models task dependencies.</li></ul>
+      <h2>Representing a graph</h2>
+      <p>The most common representation is an <strong>adjacency list</strong>: a dictionary mapping each vertex to a list of its neighbors. It uses space proportional to vertices plus edges and is fast to iterate, which suits most real graphs.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>graph = {
     &quot;A&quot;: [&quot;B&quot;, &quot;C&quot;],
     &quot;B&quot;: [&quot;D&quot;],
-    &quot;C&quot;: [],
+    &quot;C&quot;: [&quot;D&quot;],
     &quot;D&quot;: [],
 }
+print(graph[&quot;A&quot;])</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[&#x27;B&#x27;, &#x27;C&#x27;]</pre></div>
+      <p>An <em>adjacency matrix</em> (a 2D grid of yes/no) answers "is there an edge between X and Y?" in O(1) but uses V squared memory, so it fits only dense graphs.</p>
+      <h2>Breadth-first search (BFS)</h2>
+      <p>BFS explores all neighbors before going deeper, using a queue. In an unweighted graph it finds the path with the fewest edges. Track visited nodes so you never loop forever on a cycle.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
 
 def bfs(start):
     seen = {start}
     q = deque([start])
+    order = []
     while q:
         node = q.popleft()
-        print(node)
+        order.append(node)
         for nxt in graph[node]:
             if nxt not in seen:
                 seen.add(nxt)
-                q.append(nxt)</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Add a target to BFS and return the path when found.</p></div>
+                q.append(nxt)
+    return order
+
+print(bfs(&quot;A&quot;))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]</pre></div>
+      <h2>Depth-first search (DFS)</h2>
+      <p>DFS follows one path as far as it goes before backing up, using recursion or a stack. It is the basis for cycle detection, topological sorting and finding connected components.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def dfs(node, seen=None):
+    seen = seen if seen is not None else set()
+    seen.add(node)
+    for nxt in graph[node]:
+        if nxt not in seen:
+            dfs(nxt, seen)
+    return seen
+
+print(sorted(dfs(&quot;A&quot;)))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;]</pre></div>
+      <p>Both BFS and DFS run in O(V + E): every vertex and edge is examined at most once.</p>
+      <h2>Where to go next</h2>
+      <ul><li><strong>Dijkstra</strong>: shortest paths with weighted edges.</li><li><strong>Topological sort</strong>: order tasks so dependencies come first.</li><li><strong>Union-Find</strong>: quickly answer whether two nodes are connected.</li></ul>
+      <div class="learn-note"><strong>Always mark visited</strong><p>Forgetting the <code>seen</code> set is the most common graph bug. On any graph with a cycle it causes an infinite loop.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Extend <code>bfs</code> to take a target and return the shortest path as a list of nodes, or <code>None</code> if unreachable.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+
+def shortest_path(start, target):
+    q = deque([[start]])
+    seen = {start}
+    while q:
+        path = q.popleft()
+        node = path[-1]
+        if node == target:
+            return path
+        for nxt in graph[node]:
+            if nxt not in seen:
+                seen.add(nxt)
+                q.append(path + [nxt])
+    return None
+
+print(shortest_path(&quot;A&quot;, &quot;D&quot;))   # [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;D&#x27;]</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-hash-tables/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/ds-big-o/">Next lesson →</a>

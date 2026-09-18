@@ -59,13 +59,48 @@
             <h2>What you will learn</h2>
             <ul><li>Declare typed variables</li><li>Use String concatenation</li><li>Know int vs long vs double</li></ul>
           </div>
+      <p>In Java you must <strong>declare the type</strong> of every variable, and the compiler enforces it. That feels strict compared with Python, but it catches a whole class of mistakes before the program ever runs. A variable declaration has the shape <code>type name = value;</code>.</p>
+      <h2>Primitive types</h2>
+      <p>Primitives hold raw values directly and are very fast. The ones you will use most:</p>
+      <ul><li><code>int</code>: 32-bit whole numbers (about ±2.1 billion). <code>long</code> is the 64-bit version.</li><li><code>double</code>: 64-bit decimals. <code>float</code> is the less precise 32-bit version.</li><li><code>boolean</code>: <code>true</code> or <code>false</code>.</li><li><code>char</code>: a single character in single quotes, like <code>'A'</code>.</li></ul>
       <div class="learn-code-wrap" data-lang="java"><pre><code>int count = 3;
+long population = 8_000_000_000L;
 double price = 9.99;
-String title = &quot;Widget&quot;;
-final int MAX = 100;
+boolean active = true;
+char grade = &#x27;A&#x27;;
+String name = &quot;stackcone&quot;;
 
-System.out.println(title + &quot; costs &quot; + price);</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Declare variables for a product SKU, quantity, and unit price; print total.</p></div>
+System.out.println(name + &quot; has &quot; + count + &quot; items&quot;);</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>stackcone has 3 items</pre></div>
+      <p><code>String</code> is not a primitive but a class, written with a capital letter. Strings are <strong>immutable</strong>: methods like <code>toUpperCase()</code> return a new string instead of changing the original.</p>
+      <h2>Type inference with var</h2>
+      <p>Since Java 10 you can write <code>var</code> for local variables and let the compiler work out the type from the right-hand side. The variable is still statically typed; you are only saving keystrokes.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>var total = 42;          // int
+var label = &quot;Total&quot;;      // String
+System.out.println(label + &quot;: &quot; + total);</code></pre></div>
+      <h2>Casting and integer division</h2>
+      <p>Converting a wider type to a narrower one requires an explicit <em>cast</em>. Beware that dividing two <code>int</code> values gives an <code>int</code>, discarding the fraction.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>double d = 9.7;
+int truncated = (int) d;      // 9, not rounded
+
+System.out.println(7 / 2);       // 3
+System.out.println(7 / 2.0);     // 3.5
+System.out.println(truncated);</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3
+3.5
+9</pre></div>
+      <h2>Comparing strings</h2>
+      <p>Use <code>.equals()</code> to compare string contents. The <code>==</code> operator compares whether two references point at the very same object, which is almost never what you want for text.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>String a = new String(&quot;java&quot;);
+String b = &quot;java&quot;;
+System.out.println(a == b);       // false (different objects)
+System.out.println(a.equals(b));  // true</code></pre></div>
+      <div class="learn-note"><strong>final</strong><p>Add <code>final</code> to a variable that should never change: <code>final int MAX = 100;</code>. The compiler will reject any later assignment.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Declare an <code>int</code> price in cents and a <code>double</code> tax rate. Compute the total as a double and print it formatted like <code>Total: 1080.00</code> using <code>System.out.printf</code>.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>int cents = 1000;
+double rate = 0.08;
+double total = cents + cents * rate;
+System.out.printf(&quot;Total: %.2f%n&quot;, total);</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-hello-world/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/java-control-flow/">Next lesson →</a>

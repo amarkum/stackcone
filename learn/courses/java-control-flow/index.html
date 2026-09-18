@@ -59,15 +59,66 @@
             <h2>What you will learn</h2>
             <ul><li>Write if/else chains</li><li>Use for and while</li><li>Iterate arrays with for-each</li></ul>
           </div>
-      <div class="learn-code-wrap" data-lang="java"><pre><code>int[] scores = {88, 92, 75};
-for (int s : scores) {
-    if (s &gt;= 90) {
-        System.out.println(&quot;A&quot;);
-    } else {
-        System.out.println(&quot;pass&quot;);
-    }
+      <p>Control flow decides which code runs and how many times. Java's syntax will feel familiar if you know any C-style language: conditions go in parentheses and blocks go in braces. Unlike Python, indentation is only for humans; the braces are what the compiler reads.</p>
+      <div class="learn-code-wrap" data-lang="java" data-title="if / else"><pre><code>int score = 87;
+String grade;
+if (score &gt;= 90) {
+    grade = &quot;A&quot;;
+} else if (score &gt;= 80) {
+    grade = &quot;B&quot;;
+} else {
+    grade = &quot;C&quot;;
+}
+System.out.println(grade);</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>B</pre></div>
+      <p>Conditions must be real <code>boolean</code> expressions; Java has no "truthy" values, so <code>if (count)</code> will not compile. Combine conditions with <code>&amp;&amp;</code> (and), <code>||</code> (or) and <code>!</code> (not). For a simple choice, the ternary operator is compact: <code>String s = ok ? "yes" : "no";</code>.</p>
+      <h2>switch</h2>
+      <p>When one value selects between many branches, <code>switch</code> is clearer than a chain of <code>else if</code>. Modern Java (14+) supports arrow syntax with no fall-through and can produce a value.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>int day = 3;
+String name = switch (day) {
+    case 1 -&gt; &quot;Mon&quot;;
+    case 2 -&gt; &quot;Tue&quot;;
+    case 3 -&gt; &quot;Wed&quot;;
+    default -&gt; &quot;Other&quot;;
+};
+System.out.println(name);</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>Wed</pre></div>
+      <h2>Loops</h2>
+      <p>A classic <code>for</code> loop has three parts: initialize, test and update. The enhanced <code>for</code> ("for-each") loop reads every element of an array or collection without an index. <code>while</code> repeats while a condition holds, and <code>do/while</code> runs the body at least once.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>for (int i = 0; i &lt; 3; i++) {
+    System.out.println(&quot;tick &quot; + i);
+}
+
+int[] nums = {4, 8, 15};
+int sum = 0;
+for (int n : nums) {
+    sum += n;
+}
+System.out.println(sum);
+
+int count = 3;
+while (count &gt; 0) {
+    count--;
 }</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Print numbers 1–10, skipping 5.</p></div>
+      <div class="learn-output"><span>Output</span><pre>tick 0
+tick 1
+tick 2
+27</pre></div>
+      <p>Use <code>break</code> to exit a loop early and <code>continue</code> to jump to the next iteration.</p>
+      <h2>Common mistakes</h2>
+      <ul><li>Using <code>=</code> instead of <code>==</code> in a condition. Java usually catches this for non-booleans, but not for boolean variables.</li><li>Off-by-one errors: <code>i &lt;= nums.length</code> reads one past the end and throws <code>ArrayIndexOutOfBoundsException</code>.</li><li>A stray semicolon after <code>if (x);</code> makes the block run unconditionally.</li><li>Forgetting to change the loop variable in <code>while</code>, causing an infinite loop.</li></ul>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Print the sum of all even numbers from 1 to 100 using a <code>for</code> loop and an <code>if</code>. Then rewrite the loop to step by 2 without the <code>if</code>.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>int sum = 0;
+for (int i = 1; i &lt;= 100; i++) {
+    if (i % 2 == 0) sum += i;
+}
+System.out.println(sum);   // 2550
+
+int sum2 = 0;
+for (int i = 2; i &lt;= 100; i += 2) {
+    sum2 += i;
+}
+System.out.println(sum2);  // 2550</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-variables-types/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/java-oop-classes/">Next lesson →</a>

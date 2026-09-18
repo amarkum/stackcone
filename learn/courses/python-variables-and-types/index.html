@@ -62,17 +62,42 @@
             <h2>What you will learn</h2>
             <ul><li>Assign and reassign variables</li><li>Use type() to inspect values</li><li>Cast between types</li></ul>
           </div>
-      <p>A variable is a name bound to a value. Python figures out the type at runtime — you do not declare it.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Core types"><pre><code>age = 28
+      <p>A <strong>variable</strong> is a name that points at a value. You create one with the assignment operator <code>=</code>. Python is <em>dynamically typed</em>: you never declare a type, because the type belongs to the value, not the name. The same name can later point at a value of a different type, although doing that on purpose is usually a sign of confusing code.</p>
+      <h2>The core types</h2>
+      <ul><li><code>int</code>: whole numbers of any size, such as <code>28</code> or <code>-5</code>.</li><li><code>float</code>: decimal numbers such as <code>19.99</code>. They are binary approximations, so <code>0.1 + 0.2</code> is not exactly <code>0.3</code>.</li><li><code>str</code>: text, written in single or double quotes.</li><li><code>bool</code>: <code>True</code> or <code>False</code> (note the capital letters).</li><li><code>None</code>: a special value that means "nothing here yet".</li></ul>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>age = 28
 price = 19.99
 name = &quot;Amar&quot;
 active = True
+nickname = None
 
 print(type(age), type(price), type(name), type(active))</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Type conversion"><pre><code>n = int(&quot;42&quot;)
-s = str(3.14)
-print(n + 1, s)</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Create variables for a product title, price, and in-stock flag. Print a one-line summary string.</p></div>
+      <div class="learn-output"><span>Output</span><pre>&lt;class &#x27;int&#x27;&gt; &lt;class &#x27;float&#x27;&gt; &lt;class &#x27;str&#x27;&gt; &lt;class &#x27;bool&#x27;&gt;</pre></div>
+      <h2>Naming rules and style</h2>
+      <p>Names can contain letters, digits and underscores but cannot start with a digit or be a reserved word like <code>class</code> or <code>if</code>. The community style is <code>snake_case</code> for variables: <code>total_price</code>, not <code>totalPrice</code>. Pick names that say what the value is.</p>
+      <h2>Doing math and building strings</h2>
+      <p>Arithmetic uses <code>+ - * /</code>. Also useful: <code>//</code> for floor division, <code>%</code> for the remainder and <code>**</code> for powers. To put values inside text, use an <strong>f-string</strong>: prefix the string with <code>f</code> and place expressions in braces.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>items = 3
+unit_price = 4.5
+total = items * unit_price
+
+print(7 // 2, 7 % 2, 2 ** 10)
+print(f&quot;{items} items cost ${total:.2f}&quot;)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3 1 1024
+3 items cost $13.50</pre></div>
+      <h2>Type conversion</h2>
+      <p>Input from files and users usually arrives as text. Convert it with <code>int()</code>, <code>float()</code>, <code>str()</code> and <code>bool()</code>. Conversion can fail: <code>int("abc")</code> raises a <code>ValueError</code>, which you will learn to handle in the error-handling lesson.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>n = int(&quot;42&quot;)
+price = float(&quot;19.99&quot;)
+label = str(3.14)
+print(n + 1, price * 2, label + &quot;!&quot;)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>43 39.98 3.14!</pre></div>
+      <div class="learn-note"><strong>Strings are not numbers</strong><p><code>"2" + "2"</code> is <code>"22"</code>, because <code>+</code> joins strings. Mixing types, like <code>"2" + 2</code>, raises a <code>TypeError</code>. Convert first.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Create variables for a product title, a price and an in-stock flag. Print one summary line such as <code>Laptop costs $999.00 (in stock: True)</code> using an f-string.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>title = &quot;Laptop&quot;
+price = 999
+in_stock = True
+print(f&quot;{title} costs ${price:.2f} (in stock: {in_stock})&quot;)</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-hello-world/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-control-flow/">Next lesson →</a>

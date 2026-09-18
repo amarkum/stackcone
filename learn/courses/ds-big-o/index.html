@@ -61,10 +61,57 @@
             <h2>What you will learn</h2>
             <ul><li>Read O(1), O(n), O(log n), O(n²)</li><li>Drop constants in big-O</li><li>Pick structure by operation cost</li></ul>
           </div>
-      <p>Big O describes how runtime or memory grows as input size n grows. We care about the dominant term, not whether you save 2× with a faster CPU.</p>
-      <h2>Common complexities</h2>
-      <p>O(1) — hash lookup. O(log n) — binary search. O(n) — scan an array. O(n log n) — good sorts. O(n²) — nested loops over n.</p>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>What is the complexity of finding duplicates with nested loops vs a hash set?</p></div>
+      <p>How do you compare two solutions to the same problem? Timing them on your laptop depends on the hardware and the input. <strong>Big O notation</strong> instead describes how the number of steps <em>grows</em> as the input size <code>n</code> grows. It lets you predict whether code that works on 100 items will survive 100 million.</p>
+      <h2>The common classes</h2>
+      <ul><li><strong>O(1) constant</strong>: same work regardless of size. Array index, dict lookup.</li><li><strong>O(log n) logarithmic</strong>: each step halves the problem. Binary search.</li><li><strong>O(n) linear</strong>: touch every item once. Scanning a list.</li><li><strong>O(n log n)</strong>: efficient sorting (merge sort, Python's <code>sorted</code>).</li><li><strong>O(n squared) quadratic</strong>: a loop inside a loop over the same data. Comparing all pairs.</li><li><strong>O(2 to the n) exponential</strong>: doubles with every added item. Naive recursion over subsets.</li></ul>
+      <div class="learn-code-wrap" data-lang="python" data-title="Reading code"><pre><code>def first(items):          # O(1)
+    return items[0]
+
+def total(items):          # O(n)
+    s = 0
+    for x in items:
+        s += x
+    return s
+
+def has_pair(items):       # O(n^2)
+    for i in items:
+        for j in items:
+            if i != j and i + j == 10:
+                return True
+    return False</code></pre></div>
+      <h2>Rules for simplifying</h2>
+      <ul><li><strong>Drop constants</strong>: 3n and n are both O(n). Big O describes shape, not exact counts.</li><li><strong>Keep the dominant term</strong>: n squared + n is O(n squared).</li><li><strong>Sequential steps add</strong>: an O(n) loop followed by an O(n) loop is O(n).</li><li><strong>Nested steps multiply</strong>: an O(n) loop containing an O(n) loop is O(n squared).</li></ul>
+      <h2>Binary search: the power of halving</h2>
+      <p>On a sorted list, check the middle; the answer is in one half, so discard the other. A billion items need only about 30 comparisons.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def binary_search(a, target):
+    lo, hi = 0, len(a) - 1
+    while lo &lt;= hi:
+        mid = (lo + hi) // 2
+        if a[mid] == target:
+            return mid
+        if a[mid] &lt; target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+
+print(binary_search([1, 3, 5, 7, 9, 11], 7))</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3</pre></div>
+      <h2>Space complexity</h2>
+      <p>Big O also measures <em>memory</em>. Building a new list of n items costs O(n) extra space; swapping values in place costs O(1). Trading space for time, such as adding a hash table to avoid a nested loop, is one of the most common optimizations.</p>
+      <h2>Best, average, worst</h2>
+      <p>Big O usually quotes the worst case. Quicksort is O(n log n) on average but O(n squared) in the worst case; hash lookups are O(1) on average and O(n) worst case. State which one you mean.</p>
+      <div class="learn-note"><strong>Practical advice</strong><p>Big O matters most as n gets large. For tiny inputs, a simple O(n squared) solution is fine and often faster. Measure before optimizing.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>What is the time complexity of finding whether a list contains duplicates by comparing every pair? Rewrite it using a set to reach O(n).</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code># Pairwise comparison: O(n^2) time, O(1) space
+# With a set: O(n) time, O(n) space
+def has_duplicates(items):
+    seen = set()
+    for x in items:
+        if x in seen:
+            return True
+        seen.add(x)
+    return False</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-graphs/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>

@@ -59,19 +59,66 @@
             <h2>What you will learn</h2>
             <ul><li>Use ArrayList add/get</li><li>Store key-value in HashMap</li><li>Iterate with for-each</li></ul>
           </div>
+      <p>Arrays have a fixed size. Real programs need data structures that grow, shrink and search efficiently, and Java's <strong>Collections Framework</strong> provides them in <code>java.util</code>. The three interfaces to know are <code>List</code> (ordered, duplicates allowed), <code>Set</code> (no duplicates) and <code>Map</code> (key-value pairs).</p>
+      <h2>List and ArrayList</h2>
+      <p><code>ArrayList</code> is the default list. The angle brackets are <strong>generics</strong>: they tell the compiler what the list holds, so mistakes are caught at compile time instead of at runtime.</p>
       <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
 
-List&lt;String&gt; tags = new ArrayList&lt;&gt;();
-tags.add(&quot;java&quot;);
-tags.add(&quot;api&quot;);
+List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add(&quot;Ada&quot;);
+names.add(&quot;Linus&quot;);
+names.add(&quot;Grace&quot;);
 
-Map&lt;String, Integer&gt; stock = new HashMap&lt;&gt;();
-stock.put(&quot;widget&quot;, 42);
+System.out.println(names.get(1));
+System.out.println(names.size());
+names.remove(&quot;Linus&quot;);
+System.out.println(names);</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>Linus
+3
+[Ada, Grace]</pre></div>
+      <h2>Set and HashSet</h2>
+      <p>A <code>HashSet</code> silently ignores duplicates and answers "is this in here?" in roughly constant time. Use <code>LinkedHashSet</code> to keep insertion order or <code>TreeSet</code> for sorted order.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+System.out.println(seen.add(5));   // true
+System.out.println(seen.add(5));   // false, already present
+System.out.println(seen.contains(5));</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>true
+false
+true</pre></div>
+      <h2>Map and HashMap</h2>
+      <p>A <code>Map</code> stores values by key. <code>getOrDefault</code> and <code>merge</code> make counting easy without null checks.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();
+for (String w : &quot;to be or not to be&quot;.split(&quot; &quot;)) {
+    counts.merge(w, 1, Integer::sum);
+}
+System.out.println(counts.get(&quot;to&quot;));
 
-for (String t : tags) {
-    System.out.println(t);
+for (Map.Entry&lt;String, Integer&gt; e : counts.entrySet()) {
+    System.out.println(e.getKey() + &quot;=&quot; + e.getValue());
 }</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Count word frequency in a sentence using a HashMap.</p></div>
+      <div class="learn-output"><span>Output</span><pre>2
+(entries in hash order, for example: not=1, be=2, or=1, to=2)</pre></div>
+      <h2>Choosing the right one</h2>
+      <ul><li>Need order and index access? <code>ArrayList</code>.</li><li>Need fast add/remove at both ends? <code>ArrayDeque</code>.</li><li>Need uniqueness or fast contains? <code>HashSet</code>.</li><li>Need lookup by key? <code>HashMap</code>.</li><li>Need keys kept sorted? <code>TreeMap</code> / <code>TreeSet</code>.</li></ul>
+      <div class="learn-code-wrap" data-lang="java" data-title="Sorting and streams"><pre><code>List&lt;Integer&gt; nums = new ArrayList&lt;&gt;(List.of(5, 2, 9, 1));
+Collections.sort(nums);
+System.out.println(nums);
+
+List&lt;Integer&gt; big = nums.stream().filter(n -&gt; n &gt; 2).toList();
+System.out.println(big);</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>[1, 2, 5, 9]
+[5, 9]</pre></div>
+      <div class="learn-note"><strong>Program to the interface</strong><p>Declare variables as <code>List</code>, <code>Set</code> or <code>Map</code>, not the concrete class. You can then swap <code>ArrayList</code> for <code>LinkedList</code> in one place without touching the rest of the code.</p></div>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Given a list of words, use a <code>Map&lt;String, Integer&gt;</code> to count occurrences, then print the word with the highest count.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="java"><pre><code>List&lt;String&gt; words = List.of(&quot;a&quot;, &quot;b&quot;, &quot;a&quot;, &quot;c&quot;, &quot;a&quot;, &quot;b&quot;);
+Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();
+for (String w : words) counts.merge(w, 1, Integer::sum);
+
+String best = null;
+for (var e : counts.entrySet()) {
+    if (best == null || e.getValue() &gt; counts.get(best)) best = e.getKey();
+}
+System.out.println(best + &quot; &quot; + counts.get(best));</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/java-oop-classes/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/java-exceptions/">Next lesson →</a>

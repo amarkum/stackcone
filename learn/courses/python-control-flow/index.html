@@ -62,7 +62,10 @@
             <h2>What you will learn</h2>
             <ul><li>Branch with if/elif/else</li><li>Iterate with for and range()</li><li>Use while with a clear exit</li></ul>
           </div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Conditionals"><pre><code>score = 87
+      <p>Programs get interesting when they can make decisions and repeat work. <strong>Control flow</strong> statements do both. Python marks the body of each one with <em>indentation</em> (four spaces by convention) instead of braces, so consistent indentation is part of the syntax.</p>
+      <h2>Conditionals</h2>
+      <p><code>if</code> runs a block when its condition is true. Add <code>elif</code> for extra cases and <code>else</code> for the fallback. Python checks them in order and runs only the first block that matches. Conditions use comparison operators (<code>== != &lt; &gt; &lt;= &gt;=</code>) and the logical words <code>and</code>, <code>or</code>, <code>not</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>score = 87
 if score &gt;= 90:
     grade = &quot;A&quot;
 elif score &gt;= 80:
@@ -70,14 +73,44 @@ elif score &gt;= 80:
 else:
     grade = &quot;C&quot;
 print(grade)</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Loops"><pre><code>for i in range(3):
+      <div class="learn-output"><span>Output</span><pre>B</pre></div>
+      <div class="learn-note"><strong>Truthiness</strong><p>Empty things count as false in a condition: <code>0</code>, <code>""</code>, <code>[]</code>, <code>{}</code> and <code>None</code>. That lets you write <code>if items:</code> instead of <code>if len(items) &gt; 0:</code>.</p></div>
+      <h2>for loops</h2>
+      <p>A <code>for</code> loop walks through any sequence one item at a time. <code>range(n)</code> produces the numbers <code>0</code> to <code>n-1</code>; <code>range(start, stop, step)</code> gives you control over both ends and the gap. Use <code>enumerate()</code> when you need the position as well as the value.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>for i in range(3):
     print(&quot;tick&quot;, i)
 
-count = 3
+for idx, color in enumerate([&quot;red&quot;, &quot;green&quot;], start=1):
+    print(idx, color)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>tick 0
+tick 1
+tick 2
+1 red
+2 green</pre></div>
+      <h2>while loops</h2>
+      <p><code>while</code> repeats as long as its condition stays true, which makes it right when you do not know the number of repetitions in advance. Always make sure something inside the loop moves it toward the exit, or you will create an infinite loop. Use <code>break</code> to leave early and <code>continue</code> to skip to the next round.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>count = 3
 while count &gt; 0:
     print(count)
-    count -= 1</code></pre></div>
-      <div class="learn-exercise"><h3>Try it yourself</h3><p>Print even numbers from 2 to 20 using a for loop.</p></div>
+    count -= 1
+print(&quot;liftoff&quot;)</code></pre></div>
+      <div class="learn-output"><span>Output</span><pre>3
+2
+1
+liftoff</pre></div>
+      <h2>Common mistakes</h2>
+      <ul><li>Using <code>=</code> (assign) where you meant <code>==</code> (compare).</li><li>Forgetting the colon at the end of <code>if</code>, <code>for</code> or <code>while</code> lines.</li><li>Mixing tabs and spaces, which causes <code>IndentationError</code>.</li><li>Off-by-one errors: <code>range(5)</code> stops at 4, not 5.</li></ul>
+      <div class="learn-exercise"><h3>Try it yourself</h3><p>Print the even numbers from 2 to 20 using a <code>for</code> loop. Then print "FizzBuzz" style: for 1 to 15 print "Fizz" for multiples of 3, "Buzz" for multiples of 5, and the number otherwise.</p></div>
+      <details class="learn-solution"><summary>Show solution</summary><div class="learn-code-wrap" data-lang="python"><pre><code>for n in range(2, 21, 2):
+    print(n)
+
+for n in range(1, 16):
+    if n % 3 == 0:
+        print(&quot;Fizz&quot;)
+    elif n % 5 == 0:
+        print(&quot;Buzz&quot;)
+    else:
+        print(n)</code></pre></div></details>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/python-variables-and-types/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/python-functions/">Next lesson →</a>
