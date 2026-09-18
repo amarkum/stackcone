@@ -19,6 +19,7 @@
         { href: "/learn/courses/ts-introduction/", label: "TypeScript", matches: ["/learn/typescript", "/learn/courses/ts-"] },
         { href: "/learn/courses/git-introduction/", label: "Git & CLI", matches: ["/learn/git", "/learn/courses/git-"] },
         { href: "/learn/courses/docker-introduction/", label: "Docker", matches: ["/learn/docker", "/learn/courses/docker-"] },
+        { href: "/learn/courses/pandas-introduction/", label: "Pandas", matches: ["/learn/pandas", "/learn/courses/pandas-"] },
         { href: "/learn/courses/sql-introduction/", label: "SQL", matches: ["/learn/sql", "/learn/courses/sql-"] },
         { href: "/learn/programming/", label: "All Programming", separator: true }
       ]
@@ -30,6 +31,7 @@
       children: [
         { href: "/learn/courses/ds-introduction/", label: "Data Structures", matches: ["/learn/data-structures", "/learn/courses/ds-"] },
         { href: "/learn/courses/algo-searching/", label: "Algorithms", matches: ["/learn/algorithms", "/learn/courses/algo-"] },
+        { href: "/learn/courses/sysdesign-fundamentals/", label: "System Design", matches: ["/learn/sysdesign", "/learn/courses/sysdesign-"] },
         { href: "/learn/courses/algo-sorting/", label: "Sorting" },
         { href: "/learn/courses/algo-recursion/", label: "Recursion" },
         { href: "/learn/courses/algo-dynamic-programming/", label: "Dynamic Programming" },
@@ -43,6 +45,7 @@
       children: [
         { href: "/learn/courses/react-introduction/", label: "React", matches: ["/learn/react", "/learn/courses/react-"] },
         { href: "/learn/courses/django-introduction/", label: "Django", matches: ["/learn/django", "/learn/courses/django-"] },
+        { href: "/learn/courses/flask-introduction/", label: "Flask", matches: ["/learn/flask", "/learn/courses/flask-"] },
         { href: "/learn/courses/fastapi-introduction/", label: "FastAPI", matches: ["/learn/fastapi", "/learn/courses/fastapi-"] },
         { href: "/learn/courses/express-introduction/", label: "Express", matches: ["/learn/express", "/learn/courses/express-"] },
         { href: "/learn/courses/spring-introduction/", label: "Spring Boot", matches: ["/learn/spring", "/learn/courses/spring-"] },

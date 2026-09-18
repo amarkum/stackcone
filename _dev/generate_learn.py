@@ -39,6 +39,12 @@ TRACKS = {
         "description": "Build LLM apps: prompts, chains, retrieval (RAG) and tool-using agents."},
     "spring": {"label": "Spring Boot", "parent": "Frameworks", "category": "frameworks",
         "description": "Java REST APIs with dependency injection, JPA and validation."},
+    "pandas": {"label": "Pandas", "parent": "Programming", "category": "programming",
+        "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging."},
+    "sysdesign": {"label": "System Design", "parent": "DS & Algo", "category": "ds-algo",
+        "description": "Scalability, caching, databases, queues and how to design real systems."},
+    "flask": {"label": "Flask", "parent": "Frameworks", "category": "frameworks",
+        "description": "Lightweight Python web apps and APIs with routes, templates and blueprints."},
     "sql": {"label": "SQL", "parent": "Programming", "category": "programming",
         "description": "Query, filter, join and aggregate data in relational databases."},
     "algorithms": {"label": "Algorithms", "parent": "DS & Algo", "category": "ds-algo",
@@ -81,6 +87,7 @@ FRAMEWORKS = [
     {"label": "FastAPI", "track": "fastapi", "description": "High-performance Python APIs with automatic OpenAPI docs."},
     {"label": "Django", "track": "django", "description": "Batteries-included Python web framework for production apps."},
     {"label": "Spring Boot", "track": "spring", "description": "Java REST APIs with dependency injection, JPA and validation."},
+    {"label": "Flask", "track": "flask", "description": "Lightweight Python web apps and APIs with routes, templates and blueprints."},
     {"label": "Express", "track": "express", "description": "Minimal Node.js server framework for APIs and backends."},
 ]
 
@@ -280,9 +287,10 @@ from content_algo import META as _M2, CONTENT as _C2
 from content_frameworks import META as _M3, CONTENT as _C3
 from content_web_tools import META as _M4, CONTENT as _C4
 from content_more import META as _M5, CONTENT as _C5
-for _m in (*_M1, *_M2, *_M3, *_M4, *_M5):
+from content_batch3 import META as _M6, CONTENT as _C6
+for _m in (*_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
     LESSONS.append({**_m, "sections": []})
-_RICH = {**_PY, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5}
+_RICH = {**_PY, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
 for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
