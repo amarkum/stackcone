@@ -57,21 +57,55 @@
   position: relative;
 }
 
-/* Runnable Python blocks (Learn) */
+/* Leftover language labels from older lesson HTML */
+.learn-code-lang,
+.learn-code-wrap > .learn-code-lang {
+  display: none !important;
+}
+
+.learn-code-wrap[data-lang]::before,
+.learn-code-wrap[data-lang]::after {
+  content: none !important;
+}
+
+.monaco-code-host textarea.inputarea {
+  background: transparent !important;
+  color: transparent !important;
+}
+
+/* Code tab bar — title left, Run right */
 .learn-code-toolbar {
+  position: relative;
+  z-index: 6;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 0.45rem 0.6rem;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
   background: #1e293b;
+  border: none;
   border-bottom: 1px solid #334155;
+}
+
+.learn-code-title {
+  min-width: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.learn-code-title--empty {
+  flex: 1;
 }
 
 .learn-code-run {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  margin-left: auto;
   padding: 0.35rem 0.85rem;
   font-size: 0.75rem;
   font-weight: 600;
@@ -81,6 +115,7 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   transition: background 0.15s ease, opacity 0.15s ease;
 }
 

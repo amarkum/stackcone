@@ -12,11 +12,32 @@
       label: "Learn",
       children: [
         {
-          label: "Courses",
+          label: "Programming",
           items: [
-            { href: "/learn/#track-python", label: "Python", prefix: "/learn/courses/python-" },
-            { href: "/learn/#track-java", label: "Java", prefix: "/learn/courses/java-" },
-            { href: "/learn/#track-data-structures", label: "Data Structures", prefix: "/learn/courses/ds-" }
+            { href: "/learn/python/", label: "Python", prefix: "/learn/courses/python-", also: "/learn/python" },
+            { href: "/learn/java/", label: "Java", prefix: "/learn/courses/java-", also: "/learn/java" }
+          ]
+        },
+        {
+          label: "DS & Algo",
+          items: [
+            { href: "/learn/data-structures/", label: "Data Structures", prefix: "/learn/courses/ds-", also: "/learn/data-structures" },
+            { label: "Algorithms", soon: true },
+            { label: "Sorting", soon: true },
+            { label: "Searching", soon: true },
+            { label: "Recursion", soon: true },
+            { label: "Dynamic Programming", soon: true }
+          ]
+        },
+        {
+          label: "Frameworks",
+          items: [
+            { label: "LangChain", soon: true },
+            { label: "React", soon: true },
+            { label: "Next.js", soon: true },
+            { label: "FastAPI", soon: true },
+            { label: "Django", soon: true },
+            { label: "Express", soon: true }
           ]
         },
         { href: "/learn/", label: "Browse all courses", separator: true }
@@ -35,11 +56,20 @@
   }
 
   function renderPanelItem(item) {
-    var prefix = item.prefix ? ' data-match="' + esc(item.prefix) + '"' : "";
     var sep = item.separator ? '<div class="nav-dd-sep" role="separator"></div>' : "";
+    if (item.soon) {
+      return (
+        sep +
+        '<span class="nav-dd-item nav-dd-item--soon" role="menuitem" aria-disabled="true">' +
+        esc(item.label) +
+        '<em>Soon</em></span>'
+      );
+    }
+    var prefix = item.prefix ? ' data-match="' + esc(item.prefix) + '"' : "";
+    var also = item.also ? ' data-also="' + esc(item.also) + '"' : "";
     return (
       sep +
-      '<a class="nav-dd-item" href="' + esc(item.href) + '"' + prefix + ' role="menuitem">' +
+      '<a class="nav-dd-item" href="' + esc(item.href) + '"' + prefix + also + ' role="menuitem">' +
       esc(item.label) +
       "</a>"
     );
@@ -92,10 +122,13 @@
     var hash = hashIndex >= 0 ? raw.slice(hashIndex) : "";
     var href = (hashIndex >= 0 ? raw.slice(0, hashIndex) : raw).replace(/\/$/, "") || "/";
     var matchPrefix = link.getAttribute("data-match");
+    var alsoPath = link.getAttribute("data-also");
     var isDropdownItem = link.classList.contains("nav-dd-item");
     var isActive = false;
 
     if (matchPrefix && path.indexOf(matchPrefix) === 0) {
+      isActive = true;
+    } else if (alsoPath && (path === alsoPath || path.indexOf(alsoPath + "/") === 0)) {
       isActive = true;
     } else if (hash) {
       isActive = href === path && window.location.hash === hash;

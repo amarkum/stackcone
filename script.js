@@ -233,15 +233,15 @@ if (document.readyState === 'loading') {
     });
     if (!hasCode) return;
 
-    if (!document.querySelector('link[href="/assets/monaco-code.css"]')) {
+    if (!document.querySelector('link[href^="/assets/monaco-code.css"]')) {
       var css = document.createElement('link');
       css.rel = 'stylesheet';
-      css.href = '/assets/monaco-code.css';
+      css.href = '/assets/monaco-code.css?v=3';
       document.head.appendChild(css);
     }
-    if (!document.querySelector('script[src="/assets/monaco-code.js"]')) {
+    if (!document.querySelector('script[src^="/assets/monaco-code.js"]')) {
       var script = document.createElement('script');
-      script.src = '/assets/monaco-code.js';
+      script.src = '/assets/monaco-code.js?v=3';
       script.defer = true;
       document.body.appendChild(script);
     }

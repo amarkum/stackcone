@@ -36,20 +36,45 @@
 
 .learn-tracks {
   display: grid;
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(16.5rem, 1fr));
+  gap: 1.25rem;
 }
 
-.learn-track-card {
+a.learn-track-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
   background: #fff;
-  border: 1px solid #e2e8f0;
+  border: none;
   border-radius: 16px;
-  padding: 1.75rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-  border-top: 4px solid var(--track-color, #0f172a);
+  padding: 1.5rem 1.6rem 1.35rem;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: none;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
-.learn-track-card-head {
-  margin-bottom: 1.25rem;
+a.learn-track-card:hover {
+  background: #eef2f7;
+  transform: translateY(-2px);
+  color: inherit;
+  text-decoration: none;
+}
+
+a.learn-track-card h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+a.learn-track-card p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  flex: 1;
 }
 
 .learn-track-parent {
@@ -59,52 +84,80 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #94a3b8;
-  margin-bottom: 0.2rem;
-}
-
-.learn-track-card h2 {
-  margin: 0 0 0.35rem;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.learn-track-card p {
-  margin: 0;
-  color: #64748b;
-  font-size: 0.95rem;
-  line-height: 1.55;
 }
 
 .learn-track-count {
-  margin-top: 0.5rem !important;
-  font-size: 0.8rem !important;
+  margin-top: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--track-color, #0f172a) !important;
+  color: var(--track-color, #0f172a);
+}
+
+.learn-track-open {
+  margin-top: 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Track detail (full course structure) */
+.learn-track-hero {
+  margin-bottom: 1.75rem;
+}
+
+.learn-track-hero h1 {
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0.15rem 0 0.65rem;
+  color: #0f172a;
+}
+
+.learn-track-hero .learn-hero-desc {
+  margin-bottom: 0.75rem;
+}
+
+.learn-track-start {
+  display: inline-flex;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: #0f172a;
+  text-decoration: none;
+  padding: 0.7rem 1.15rem;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.learn-track-start:hover {
+  background: #1e293b;
+  color: #fff;
+  text-decoration: none;
 }
 
 .learn-course-list {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .learn-course-link {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
+  padding: 0.85rem 0.35rem;
+  border: none;
   border-radius: 10px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .learn-course-link:hover {
-  border-color: var(--track-color, #94a3b8);
-  background: #f8fafc;
+  background: #e8eef5;
   transform: translateX(3px);
   color: inherit;
+  text-decoration: none;
 }
 
 .learn-course-num {
@@ -114,7 +167,7 @@
   width: 1.75rem;
   height: 1.75rem;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: #e2e8f0;
   font-size: 0.75rem;
   font-weight: 700;
   color: #475569;
@@ -160,16 +213,16 @@
   position: sticky;
   top: 5.5rem;
   background: #fff;
-  border: 1px solid #e2e8f0;
+  border: none;
   border-radius: 14px;
   padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow: none;
 }
 
 .learn-sidebar-head {
   padding-bottom: 1rem;
   margin-bottom: 0.75rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: none;
 }
 
 .learn-sidebar-track {
@@ -177,6 +230,15 @@
   font-size: 0.95rem;
   color: #0f172a;
   margin: 0;
+}
+
+.learn-sidebar-track a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.learn-sidebar-track a:hover {
+  text-decoration: underline;
 }
 
 .learn-sidebar-progress {
@@ -243,10 +305,10 @@
 /* Lesson content */
 .learn-lesson {
   background: #fff;
-  border: 1px solid #e2e8f0;
+  border: none;
   border-radius: 16px;
   padding: 2rem 2.25rem 2.5rem;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow: none;
 }
 
 .learn-lesson-meta {
@@ -333,7 +395,6 @@
   padding: 1.15rem 1.35rem;
   background: #fffbeb;
   border: 1px solid #fde68a;
-  border-left: 4px solid #f59e0b;
   border-radius: 10px;
 }
 

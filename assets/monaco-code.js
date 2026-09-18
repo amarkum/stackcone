@@ -111,34 +111,74 @@
     );
   }
 
-  function createRunnableChrome(block, host, editor) {
+  function resolveBlockTitle(block) {
+    if (!block.wrap) return '';
+    var titled = block.wrap.getAttribute('data-title');
+    if (titled) return titled.trim();
+    var prev = block.wrap.previousElementSibling;
+    if (prev && /^H[1-6]$/.test(prev.tagName)) {
+      var text = (prev.textContent || '').trim();
+      if (text) {
+        block.wrap.setAttribute('data-title', text);
+        prev.remove();
+        return text;
+      }
+    }
+    return '';
+  }
+
+  function createCodeToolbar(block, host, editor) {
+    var title = resolveBlockTitle(block);
+    var runnable = !!(editor && isRunnablePython(block, detectLang(block.code, block.hint)));
+    if (!title && !runnable) return;
+
     var toolbar = document.createElement('div');
     toolbar.className = 'learn-code-toolbar';
 
-    var runBtn = document.createElement('button');
-    runBtn.type = 'button';
-    runBtn.className = 'learn-code-run';
-    runBtn.innerHTML = PLAY_ICON + '<span>Run</span>';
-    toolbar.appendChild(runBtn);
+    if (title) {
+      var titleEl = document.createElement('span');
+      titleEl.className = 'learn-code-title';
+      titleEl.textContent = title;
+      toolbar.appendChild(titleEl);
+    } else {
+      var spacer = document.createElement('span');
+      spacer.className = 'learn-code-title learn-code-title--empty';
+      toolbar.appendChild(spacer);
+    }
 
-    var output = document.createElement('div');
-    output.className = 'learn-code-output';
-    output.hidden = true;
-    output.setAttribute('aria-live', 'polite');
+    if (runnable) {
+      var runBtn = document.createElement('button');
+      runBtn.type = 'button';
+      runBtn.className = 'learn-code-run';
+      runBtn.innerHTML = PLAY_ICON + '<span>Run</span>';
+      toolbar.appendChild(runBtn);
 
-    block.wrap.classList.add('monaco-runnable');
+      var output = document.createElement('div');
+      output.className = 'learn-code-output';
+      output.hidden = true;
+      output.setAttribute('aria-live', 'polite');
+
+      block.wrap.classList.add('monaco-runnable');
+      block.wrap.insertBefore(toolbar, host);
+      host.insertAdjacentElement('afterend', output);
+
+      runBtn.addEventListener('click', function () {
+        if (typeof window.stackconeRunPython !== 'function') {
+          output.hidden = false;
+          output.textContent = 'Python runner not loaded. Refresh the page.';
+          output.classList.add('is-error');
+          return;
+        }
+        window.stackconeRunPython(editor.getValue(), output, runBtn);
+      });
+      return;
+    }
+
     block.wrap.insertBefore(toolbar, host);
-    host.insertAdjacentElement('afterend', output);
+  }
 
-    runBtn.addEventListener('click', function () {
-      if (typeof window.stackconeRunPython !== 'function') {
-        output.hidden = false;
-        output.textContent = 'Python runner not loaded. Refresh the page.';
-        output.classList.add('is-error');
-        return;
-      }
-      window.stackconeRunPython(editor.getValue(), output, runBtn);
-    });
+  function createRunnableChrome(block, host, editor) {
+    createCodeToolbar(block, host, editor);
   }
 
   function createHost(block) {
@@ -254,6 +294,8 @@
       editor.onDidChangeModelContent(function () {
         fitEditor(editor);
       });
+    } else if (block.wrap) {
+      createCodeToolbar(block, host, null);
     }
     fitEditor(editor);
     editor.onDidContentSizeChange(function () {
