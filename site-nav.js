@@ -8,39 +8,34 @@
     { href: "/work/", label: "Portfolio" },
     { href: "/solutions/", label: "Solutions" },
     {
-      id: "learn",
-      label: "Learn",
+      id: "programming",
+      label: "Programming",
+      href: "/learn/programming/",
       children: [
         {
-          label: "Programming",
-          items: [
-            { href: "/learn/python/", label: "Python", prefix: "/learn/courses/python-", also: "/learn/python" },
-            { href: "/learn/java/", label: "Java", prefix: "/learn/courses/java-", also: "/learn/java" }
-          ]
+          href: "/learn/courses/python-hello-world/",
+          label: "Python",
+          matches: ["/learn/python", "/learn/courses/python-"]
         },
         {
-          label: "DS & Algo",
-          items: [
-            { href: "/learn/data-structures/", label: "Data Structures", prefix: "/learn/courses/ds-", also: "/learn/data-structures" },
-            { label: "Algorithms", soon: true },
-            { label: "Sorting", soon: true },
-            { label: "Searching", soon: true },
-            { label: "Recursion", soon: true },
-            { label: "Dynamic Programming", soon: true }
-          ]
+          href: "/learn/courses/java-hello-world/",
+          label: "Java",
+          matches: ["/learn/java", "/learn/courses/java-"]
         },
+        { href: "/learn/programming/", label: "All Programming", separator: true }
+      ]
+    },
+    {
+      id: "ds-algo",
+      label: "DS & Algo",
+      href: "/learn/ds-algo/",
+      children: [
         {
-          label: "Frameworks",
-          items: [
-            { label: "LangChain", soon: true },
-            { label: "React", soon: true },
-            { label: "Next.js", soon: true },
-            { label: "FastAPI", soon: true },
-            { label: "Django", soon: true },
-            { label: "Express", soon: true }
-          ]
+          href: "/learn/courses/ds-introduction/",
+          label: "Data Structures",
+          matches: ["/learn/data-structures", "/learn/courses/ds-"]
         },
-        { href: "/learn/", label: "Browse all courses", separator: true }
+        { href: "/learn/ds-algo/", label: "All DS & Algo", separator: true }
       ]
     },
     { href: "/blog/", label: "Blog" },
@@ -65,11 +60,14 @@
         '<em>Soon</em></span>'
       );
     }
+    var matches = item.matches
+      ? ' data-matches="' + esc(item.matches.join("|")) + '"'
+      : "";
     var prefix = item.prefix ? ' data-match="' + esc(item.prefix) + '"' : "";
     var also = item.also ? ' data-also="' + esc(item.also) + '"' : "";
     return (
       sep +
-      '<a class="nav-dd-item" href="' + esc(item.href) + '"' + prefix + also + ' role="menuitem">' +
+      '<a class="nav-dd-item" href="' + esc(item.href) + '"' + prefix + also + matches + ' role="menuitem">' +
       esc(item.label) +
       "</a>"
     );
@@ -90,8 +88,11 @@
   }
 
   function renderDropdown(item) {
+    var rootHref = item.href
+      ? ' data-root-href="' + esc(item.href) + '"'
+      : "";
     return (
-      '<div class="nav-dd-wrap" data-target="' + esc(item.id) + '">' +
+      '<div class="nav-dd-wrap" data-target="' + esc(item.id) + '"' + rootHref + ">" +
       '<button type="button" class="nav-link nav-link--dd" aria-haspopup="true" aria-expanded="false">' +
       esc(item.label) +
       '<span class="nav-link-chevron">' + CHEVRON + "</span>" +
@@ -105,6 +106,14 @@
   function renderItem(item) {
     if (item.children) return renderDropdown(item);
     return '<a class="nav-link" href="' + esc(item.href) + '">' + esc(item.label) + "</a>";
+  }
+
+  function pathMatches(path, patterns) {
+    for (var i = 0; i < patterns.length; i++) {
+      var p = patterns[i];
+      if (path === p || path.indexOf(p) === 0) return true;
+    }
+    return false;
   }
 
   var nav = document.getElementById("main-nav");
@@ -123,10 +132,13 @@
     var href = (hashIndex >= 0 ? raw.slice(0, hashIndex) : raw).replace(/\/$/, "") || "/";
     var matchPrefix = link.getAttribute("data-match");
     var alsoPath = link.getAttribute("data-also");
+    var matchesAttr = link.getAttribute("data-matches");
     var isDropdownItem = link.classList.contains("nav-dd-item");
     var isActive = false;
 
-    if (matchPrefix && path.indexOf(matchPrefix) === 0) {
+    if (matchesAttr && pathMatches(path, matchesAttr.split("|"))) {
+      isActive = true;
+    } else if (matchPrefix && path.indexOf(matchPrefix) === 0) {
       isActive = true;
     } else if (alsoPath && (path === alsoPath || path.indexOf(alsoPath + "/") === 0)) {
       isActive = true;
@@ -145,10 +157,19 @@
     }
   });
 
-  if (path.indexOf("/learn") === 0) {
-    var learnBtn = nav.querySelector('.nav-dd-wrap[data-target="learn"] .nav-link--dd');
-    if (learnBtn) learnBtn.setAttribute("aria-current", "page");
-  }
+  // Highlight parent dropdown when any of its courses/pages are active
+  nav.querySelectorAll(".nav-dd-wrap").forEach(function (wrap) {
+    var hasActiveChild = wrap.querySelector('.nav-dd-item[aria-current="page"]');
+    var root = wrap.getAttribute("data-root-href");
+    var rootPath = root ? root.replace(/\/$/, "") : "";
+    var onRoot =
+      rootPath &&
+      (path === rootPath || path.indexOf(rootPath + "/") === 0);
+    if (hasActiveChild || onRoot) {
+      var btn = wrap.querySelector(".nav-link--dd");
+      if (btn) btn.setAttribute("aria-current", "page");
+    }
+  });
 
   document.dispatchEvent(new CustomEvent("site-nav-ready", { detail: { nav: nav } }));
 })();

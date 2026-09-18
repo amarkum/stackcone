@@ -14,20 +14,31 @@ TRACKS = {
     "python": {
         "label": "Python",
         "parent": "Programming",
-        "color": "#3776ab",
+        "category": "programming",
         "description": "From your first print() to classes, files, and exceptions.",
     },
     "java": {
         "label": "Java",
         "parent": "Programming",
-        "color": "#e76f00",
+        "category": "programming",
         "description": "Static typing, OOP, and the collections you use every day.",
     },
     "data-structures": {
         "label": "Data Structures",
         "parent": "DS & Algo",
-        "color": "#7c3aed",
+        "category": "ds-algo",
         "description": "Arrays, lists, trees, graphs, and why Big O matters.",
+    },
+}
+
+CATEGORIES = {
+    "programming": {
+        "label": "Programming",
+        "description": "Language fundamentals — Python and Java, with short lessons and runnable examples.",
+    },
+    "ds-algo": {
+        "label": "DS & Algo",
+        "description": "Data structures and algorithmic thinking for interviews and real systems.",
     },
 }
 
@@ -290,7 +301,11 @@ def lesson_html(les: dict) -> str:
         f'<a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/{les["next"]}/">Next lesson →</a>'
         if les["next"] else '<span class="learn-nav-btn is-disabled">Next lesson →</span>'
     )
-    breadcrumb_track = f' / <a href="/learn/{track_slug}/">{esc(track["label"])}</a>'
+    breadcrumb_track = ""
+    cat_id = track.get("category")
+    if cat_id and cat_id in CATEGORIES:
+        breadcrumb_track += f' / <a href="/learn/{cat_id}/">{esc(CATEGORIES[cat_id]["label"])}</a>'
+    breadcrumb_track += f' / <a href="{first_lesson_url(track_slug)}">{esc(track["label"])}</a>'
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -306,7 +321,7 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=5">
+  <link rel="stylesheet" href="/learn/learn.css?v=6">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=3">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -329,7 +344,7 @@ def lesson_html(les: dict) -> str:
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/{track_slug}/">{esc(track["label"])}</a></p>
+            <p class="learn-sidebar-track"><a href="{first_lesson_url(track_slug)}">{esc(track["label"])}</a></p>
             <p class="learn-sidebar-progress">Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -397,7 +412,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/learn/learn.css?v=5">
+  <link rel="stylesheet" href="/learn/learn.css?v=6">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=3">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -432,70 +447,99 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
 """
 
 
-def catalog_html() -> str:
-    track_cards = []
-    for track_id, track in TRACKS.items():
+def first_lesson_url(track_id: str) -> str:
+    return f"/learn/courses/{by_track[track_id][0]['slug']}/"
+
+
+def _track_cards(track_ids: list[str]) -> str:
+    cards = []
+    for track_id in track_ids:
+        track = TRACKS[track_id]
         lessons = by_track[track_id]
-        parent_label = f'<span class="learn-track-parent">{esc(track["parent"])}</span>\n        ' if track["parent"] else ""
-        track_cards.append(f"""
-      <a class="learn-track-card" href="/learn/{track_id}/" style="--track-color:{track["color"]}">
-        {parent_label}<h2>{esc(track["label"])}</h2>
+        cards.append(f"""
+      <a class="learn-track-card" href="{first_lesson_url(track_id)}">
+        <h2>{esc(track["label"])}</h2>
         <p>{esc(track["description"])}</p>
         <span class="learn-track-count">{len(lessons)} lessons</span>
-        <span class="learn-track-open">Open course →</span>
+        <span class="learn-track-open">Start course →</span>
       </a>""")
-    tracks_block = "\n".join(track_cards)
+    return "\n".join(cards)
+
+
+def catalog_html() -> str:
+    cat_cards = []
+    for cat_id, cat in CATEGORIES.items():
+        track_ids = [tid for tid, t in TRACKS.items() if t.get("category") == cat_id]
+        n = sum(len(by_track[tid]) for tid in track_ids)
+        course_label = "course" if len(track_ids) == 1 else "courses"
+        cat_cards.append(f"""
+      <a class="learn-track-card" href="/learn/{cat_id}/">
+        <h2>{esc(cat["label"])}</h2>
+        <p>{esc(cat["description"])}</p>
+        <span class="learn-track-count">{len(track_ids)} {course_label} · {n} lessons</span>
+        <span class="learn-track-open">Browse courses →</span>
+      </a>""")
     body = f"""  <main class="learn-main">
     <div class="learn-main-inner learn-catalog">
       <div class="learn-hero">
         <h1>Learn</h1>
-        <p class="learn-hero-desc">Hands-on courses across Programming, DS &amp; Algo, and Frameworks. Short lessons, runnable examples, and exercises after every topic.</p>
+        <p class="learn-hero-desc">Hands-on courses in Programming and DS &amp; Algo. Short lessons, runnable examples, and exercises after every topic.</p>
       </div>
       <div class="learn-tracks">
-{tracks_block}
+{"".join(cat_cards)}
       </div>
     </div>
   </main>"""
     return _page_shell(
         "Learn Coding &amp; Data Structures | stackcone",
-        "Free coding courses — Python basics, Java fundamentals, and data structures. Interactive lessons with exercises.",
+        "Free coding courses — Programming and DS & Algo. Interactive lessons with exercises.",
         "https://stackcone.com/learn/",
         body,
     )
 
 
-def track_html(track_id: str) -> str:
-    track = TRACKS[track_id]
-    lessons = by_track[track_id]
-    lesson_links = "\n".join(
-        f'        <a class="learn-course-link" href="/learn/courses/{l["slug"]}/">'
-        f'<span class="learn-course-num">{l["lesson_num"]}</span>'
-        f'<span><strong>{esc(l["title"])}</strong><small>{l["minutes"]} min · {esc(l["level"])}</small></span></a>'
-        for l in lessons
-    )
-    parent_label = f'<span class="learn-track-parent">{esc(track["parent"])}</span>' if track["parent"] else ""
-    first = lessons[0]
+def category_html(cat_id: str) -> str:
+    cat = CATEGORIES[cat_id]
+    track_ids = [tid for tid, t in TRACKS.items() if t.get("category") == cat_id]
     body = f"""  <main class="learn-main">
-    <div class="learn-main-inner learn-track-page">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / {esc(track["label"])}</p>
-      <div class="learn-track-hero" style="--track-color:{track["color"]}">
-        {parent_label}
-        <h1>{esc(track["label"])}</h1>
-        <p class="learn-hero-desc">{esc(track["description"])}</p>
-        <p class="learn-track-count">{len(lessons)} lessons</p>
-        <a class="learn-track-start" href="/learn/courses/{first["slug"]}/">Start lesson 1 →</a>
+    <div class="learn-main-inner learn-catalog">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / {esc(cat["label"])}</p>
+      <div class="learn-hero">
+        <h1>{esc(cat["label"])}</h1>
+        <p class="learn-hero-desc">{esc(cat["description"])}</p>
       </div>
-      <div class="learn-course-list" aria-label="{esc(track["label"])} lessons">
-{lesson_links}
+      <div class="learn-tracks">
+{_track_cards(track_ids)}
       </div>
     </div>
   </main>"""
     return _page_shell(
-        f'{esc(track["label"])} Course | stackcone Learn',
-        esc(track["description"]),
-        f"https://stackcone.com/learn/{track_id}/",
+        f'{esc(cat["label"])} Courses | stackcone Learn',
+        esc(cat["description"]),
+        f"https://stackcone.com/learn/{cat_id}/",
         body,
     )
+
+
+def track_html(track_id: str) -> str:
+    """Legacy /learn/{track}/ URL — redirect straight into lesson 1."""
+    track = TRACKS[track_id]
+    dest = first_lesson_url(track_id)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url={dest}">
+  <link rel="canonical" href="https://stackcone.com{dest}">
+  <title>Redirecting...</title>
+  <script>window.location.replace('{dest}');</script>
+</head>
+<body>
+  <p>Redirecting to <a href="{dest}">{esc(track["label"])}</a>...</p>
+</body>
+</html>
+"""
 
 
 def courses_json() -> dict:
@@ -523,6 +567,10 @@ def main() -> None:
     (LEARN / "courses").mkdir(exist_ok=True)
     (LEARN / "index.html").write_text(catalog_html(), encoding="utf-8")
     (LEARN / "courses.json").write_text(json.dumps(courses_json(), indent=2) + "\n", encoding="utf-8")
+    for cat_id in CATEGORIES:
+        out = LEARN / cat_id / "index.html"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(category_html(cat_id), encoding="utf-8")
     for track_id in TRACKS:
         out = LEARN / track_id / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
@@ -531,7 +579,7 @@ def main() -> None:
         out = LEARN / "courses" / les["slug"] / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(lesson_html(les), encoding="utf-8")
-    print(f"Generated {len(LESSONS)} lessons + {len(TRACKS)} tracks + catalog")
+    print(f"Generated {len(LESSONS)} lessons + {len(TRACKS)} tracks + {len(CATEGORIES)} categories + catalog")
 
 
 if __name__ == "__main__":
