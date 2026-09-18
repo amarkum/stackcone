@@ -113,6 +113,13 @@
     );
   }
 
+  var LANG_LABELS = {
+    python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', java: 'Java',
+    shell: 'Terminal', sql: 'SQL', json: 'JSON', yaml: 'YAML', html: 'HTML', css: 'CSS',
+    xml: 'XML', dockerfile: 'Dockerfile', go: 'Go', rust: 'Rust', kotlin: 'Kotlin',
+    dart: 'Dart', ruby: 'Ruby', plaintext: 'Text'
+  };
+
   function resolveBlockTitle(block) {
     if (!block.wrap) return '';
     var titled = block.wrap.getAttribute('data-title');
@@ -132,8 +139,9 @@
   function createCodeToolbar(block, host, editor) {
     if (block.wrap && block.wrap.querySelector('.learn-code-toolbar')) return;
 
-    var title = resolveBlockTitle(block);
-    var runnable = !!(editor && isRunnablePython(block, detectLang(block.code, block.hint)));
+    var lang = detectLang(block.code, block.hint);
+    var title = resolveBlockTitle(block) || LANG_LABELS[lang] || '';
+    var runnable = !!(editor && isRunnablePython(block, lang));
     if (!title && !runnable) return;
 
     var toolbar = document.createElement('div');

@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/courses/langchain-introduction/">LangChain</a> / LLM Apps and LangChain Basics</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/langchain/">LangChain</a> / LLM Apps and LangChain Basics</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/langchain-introduction/">LangChain</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/langchain/">LangChain</a></p>
             <p class="learn-sidebar-progress">Lesson 1 of 5</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -48,12 +48,15 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Beginner</span>
-            <span class="learn-duration">14 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/langchain/">LangChain</a> · Lesson 1 of 5</p>
           <h1>LLM Apps and LangChain Basics</h1>
           <p class="learn-summary">How LLM apps work, and calling a chat model through LangChain.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><strong>14</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Explain messages and tokens</li><li>Call a chat model</li><li>Stream output</li></ul>
@@ -61,10 +64,12 @@
       <p>A <strong>large language model</strong> (LLM) predicts text. Given a conversation, it produces a helpful continuation. On its own that is a chat box; wrapped in code that gives it data, tools and memory, it becomes an application. <strong>LangChain</strong> is a Python (and JavaScript) library that standardizes those building blocks so you can swap models and compose steps easily.</p>
       <h2>Core vocabulary</h2>
       <ul><li><strong>Messages</strong>: a conversation is a list of messages with roles: <code>system</code> (instructions), <code>human</code> (the user) and <code>ai</code> (the model).</li><li><strong>Tokens</strong>: models read and write chunks of text called tokens (roughly three quarters of a word). Pricing and limits are measured in tokens.</li><li><strong>Context window</strong>: the maximum tokens the model can consider at once (prompt plus answer).</li><li><strong>Temperature</strong>: randomness. 0 gives focused, repeatable answers; higher values are more creative.</li></ul>
-      <div class="learn-code-wrap" data-lang="bash" data-title="Setup"><pre><code>python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+      <h2>Setup</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>python3 -m venv .venv &amp;&amp; source .venv/bin/activate
 pip install langchain langchain-openai
 export OPENAI_API_KEY=&quot;sk-...&quot;        # never hard-code or commit keys</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Call a chat model"><pre><code>from langchain_openai import ChatOpenAI
+      <h2>Call a chat model</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
 llm = ChatOpenAI(model=&quot;gpt-4o-mini&quot;, temperature=0)
@@ -76,7 +81,8 @@ reply = llm.invoke([
 print(reply.content)</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>A database index is a data structure that lets the database find rows quickly without scanning the whole table.</pre></div>
       <p>LangChain provides a common interface: <code>invoke</code> for one call, <code>stream</code> for token-by-token output and <code>batch</code> for many inputs. To use another provider, change only the import and class, for example <code>ChatAnthropic</code> from <code>langchain_anthropic</code>.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Streaming"><pre><code>for chunk in llm.stream(&quot;Write a haiku about Python&quot;):
+      <h2>Streaming</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>for chunk in llm.stream(&quot;Write a haiku about Python&quot;):
     print(chunk.content, end=&quot;&quot;, flush=True)</code></pre></div>
       <p>Streaming makes chat apps feel fast: users start reading immediately instead of waiting for the full answer.</p>
       <h2>Costs and safety basics</h2>
@@ -89,6 +95,7 @@ print(reply.content)</code></pre></div>
 ])
 print(reply.content)
 print(reply.usage_metadata)</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/langchain-prompts-chains/"><span class="learn-upnext-label">Up next · Lesson 2</span><strong>Prompts, Parsers and Chains</strong><small>Compose prompts, models and parsers with the pipe operator.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/langchain-prompts-chains/">Next lesson →</a>
@@ -117,7 +124,7 @@ print(reply.usage_metadata)</code></pre></div></div></details>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

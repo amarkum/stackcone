@@ -348,9 +348,8 @@ def render_section(item: tuple, title: str | None = None) -> str:
         return f"      <h2>{esc(rest[0])}</h2>"
     if kind == "code":
         lang, code = rest
-        title_attr = f' data-title="{esc(title)}"' if title else ""
         return (
-            f'      <div class="learn-code-wrap" data-lang="{esc(lang)}"{title_attr}>'
+            f'      <div class="learn-code-wrap" data-lang="{esc(lang)}">'
             f"<pre><code>{esc(code)}</code></pre></div>"
         )
     if kind == "ul":
@@ -381,21 +380,8 @@ def render_section(item: tuple, title: str | None = None) -> str:
 
 
 def render_sections(sections: list) -> str:
-    parts: list[str] = []
-    i = 0
-    while i < len(sections):
-        item = sections[i]
-        if (
-            item[0] == "h2"
-            and i + 1 < len(sections)
-            and sections[i + 1][0] == "code"
-        ):
-            parts.append(render_section(sections[i + 1], title=item[1]))
-            i += 2
-            continue
-        parts.append(render_section(item))
-        i += 1
-    return "\n".join(parts)
+    """Every section keeps its own heading; code blocks label themselves."""
+    return "\n".join(render_section(item) for item in sections)
 
 
 def lesson_html(les: dict) -> str:
@@ -410,6 +396,24 @@ def lesson_html(les: dict) -> str:
             f'<span class="learn-sidebar-num">{t["lesson_num"]}</span>{esc(t["title"])}</a>'
         )
     sidebar = "\n".join(sidebar_items)
+    by_slug = {l["slug"]: l for l in LESSONS}
+    cat_id_, cat_label_ = category_of(les["track"])
+    prereq = ""
+    if les["prev"]:
+        pv = by_slug[les["prev"]]
+        prereq = (f'<p class="learn-prereq"><span>Before this lesson</span>'
+                  f'<a href="/learn/courses/{pv["slug"]}/">Lesson {pv["lesson_num"]}: {esc(pv["title"])}</a></p>')
+    upnext = ""
+    if les["next"]:
+        nx = by_slug[les["next"]]
+        upnext = (f'<a class="learn-upnext" href="/learn/courses/{nx["slug"]}/">'
+                  f'<span class="learn-upnext-label">Up next · Lesson {nx["lesson_num"]}</span>'
+                  f'<strong>{esc(nx["title"])}</strong><small>{esc(nx["summary"])}</small></a>')
+    else:
+        upnext = (f'<a class="learn-upnext learn-upnext--done" href="{track_url(les["track"])}">'
+                  f'<span class="learn-upnext-label">Course complete</span>'
+                  f'<strong>You finished {esc(track["label"])}</strong>'
+                  f'<small>Review the full course or pick your next one.</small></a>')
     objectives = "".join(f"<li>{esc(o)}</li>" for o in les["objectives"])
     sections = render_sections(les["sections"])
     prev_link = (
@@ -424,7 +428,7 @@ def lesson_html(les: dict) -> str:
     cat_id = track.get("category")
     if cat_id and cat_id in CATEGORIES:
         breadcrumb_track += f' / <a href="/learn/{cat_id}/">{esc(CATEGORIES[cat_id]["label"])}</a>'
-    breadcrumb_track += f' / <a href="{first_lesson_url(track_slug)}">{esc(track["label"])}</a>'
+    breadcrumb_track += f' / <a href="{track_url(track_slug)}">{esc(track["label"])}</a>'
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -440,8 +444,8 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -463,7 +467,7 @@ def lesson_html(les: dict) -> str:
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="{first_lesson_url(track_slug)}">{esc(track["label"])}</a></p>
+            <p class="learn-sidebar-track"><a href="{track_url(track_slug)}">{esc(track["label"])}</a></p>
             <p class="learn-sidebar-progress">Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -471,17 +475,21 @@ def lesson_html(les: dict) -> str:
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">{esc(les["level"])}</span>
-            <span class="learn-duration">{les["minutes"]} min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="{track_url(track_slug)}">{esc(track["label"])}</a> · Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
           <h1>{esc(les["title"])}</h1>
           <p class="learn-summary">{esc(les["summary"])}</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">{esc(les["level"])}</span></li>
+            <li><strong>{les["minutes"]}</strong> min read</li>
+            <li>{len(les["objectives"])} objectives</li>
+          </ul>
+          {prereq}
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul>{objectives}</ul>
           </div>
 {sections}
+          {upnext}
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             {prev_link}
             {next_link}
@@ -510,7 +518,7 @@ def lesson_html(les: dict) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
@@ -531,8 +539,8 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -559,11 +567,52 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
 """
+
+
+LEVEL_ORDER = {"Beginner": 0, "Intermediate": 1, "Advanced": 2}
+
+
+def track_url(track_id: str) -> str:
+    return f"/learn/{track_id}/"
+
+
+def fmt_minutes(total: int) -> str:
+    hours, minutes = divmod(total, 60)
+    if hours and minutes:
+        return f"{hours}h {minutes}m"
+    if hours:
+        return f"{hours}h"
+    return f"{minutes} min"
+
+
+def level_range(lessons: list) -> str:
+    levels = sorted({l["level"] for l in lessons}, key=lambda x: LEVEL_ORDER.get(x, 0))
+    return levels[0] if len(levels) == 1 else f"{levels[0]} → {levels[-1]}"
+
+
+def course_highlights(lessons: list, limit: int = 6) -> list[str]:
+    picks = [l["objectives"][0] for l in lessons if l.get("objectives")]
+    if len(picks) <= limit:
+        return picks
+    step = len(picks) / limit
+    return [picks[int(i * step)] for i in range(limit)]
+
+
+def checklist(items: list) -> str:
+    return ('<ul class="learn-checklist">'
+            + "".join(f"<li>{esc(i)}</li>" for i in items)
+            + "</ul>")
+
+
+def category_of(track_id: str) -> tuple[str, str]:
+    cat_id = TRACKS[track_id].get("category")
+    label = CATEGORIES[cat_id]["label"] if cat_id in CATEGORIES else "Learn"
+    return cat_id, label
 
 
 def first_lesson_url(track_id: str) -> str:
@@ -576,10 +625,11 @@ def _framework_cards() -> str:
         if fw.get("track") in by_track:
             n = len(by_track[fw["track"]])
             cards.append(f"""
-      <a class="learn-track-card" href="{first_lesson_url(fw["track"])}">
+      <a class="learn-track-card" href="{track_url(fw["track"])}">
         <h2>{esc(fw["label"])}</h2>
         <p>{esc(fw["description"])}</p>
-        <span class="learn-track-count">{n} lessons</span>
+        <span class="learn-track-count">{n} lessons · {fmt_minutes(sum(l["minutes"] for l in by_track[fw["track"]]))}</span>
+        <span class="learn-track-open">View course →</span>
       </a>""")
             continue
         cards.append(f"""
@@ -597,11 +647,11 @@ def _track_cards(track_ids: list[str]) -> str:
         track = TRACKS[track_id]
         lessons = by_track[track_id]
         cards.append(f"""
-      <a class="learn-track-card" href="{first_lesson_url(track_id)}">
+      <a class="learn-track-card" href="{track_url(track_id)}">
         <h2>{esc(track["label"])}</h2>
         <p>{esc(track["description"])}</p>
-        <span class="learn-track-count">{len(lessons)} lessons</span>
-        <span class="learn-track-open">Start course →</span>
+        <span class="learn-track-count">{len(lessons)} lessons · {fmt_minutes(sum(l["minutes"] for l in lessons))}</span>
+        <span class="learn-track-open">View course →</span>
       </a>""")
     return "\n".join(cards)
 
@@ -668,24 +718,66 @@ def category_html(cat_id: str) -> str:
 
 
 def track_html(track_id: str) -> str:
-    """Legacy /learn/{track}/ URL — redirect straight into lesson 1."""
+    """Course overview: what the course covers and its full syllabus."""
     track = TRACKS[track_id]
-    dest = first_lesson_url(track_id)
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url={dest}">
-  <link rel="canonical" href="https://stackcone.com{dest}">
-  <title>Redirecting...</title>
-  <script>window.location.replace('{dest}');</script>
-</head>
-<body>
-  <p>Redirecting to <a href="{dest}">{esc(track["label"])}</a>...</p>
-</body>
-</html>
-"""
+    lessons = by_track[track_id]
+    cat_id, cat_label = category_of(track_id)
+    total = sum(l["minutes"] for l in lessons)
+
+    rows = []
+    for les in lessons:
+        rows.append(f"""
+          <li>
+            <a class="learn-syllabus-row" href="/learn/courses/{les["slug"]}/">
+              <span class="learn-syllabus-num">{les["lesson_num"]}</span>
+              <span class="learn-syllabus-text">
+                <strong>{esc(les["title"])}</strong>
+                <small>{esc(les["summary"])}</small>
+              </span>
+              <span class="learn-syllabus-meta">{les["minutes"]} min</span>
+            </a>
+          </li>""")
+
+    body = f"""  <main class="learn-main">
+    <div class="learn-main-inner learn-course">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/{cat_id}/">{esc(cat_label)}</a> / {esc(track["label"])}</p>
+      <header class="learn-course-hero">
+        <p class="learn-eyebrow">{esc(cat_label)}</p>
+        <h1>{esc(track["label"])}</h1>
+        <p class="learn-hero-desc">{esc(track["description"])}</p>
+        <ul class="learn-facts">
+          <li><strong>{len(lessons)}</strong> lessons</li>
+          <li><strong>{fmt_minutes(total)}</strong> of reading</li>
+          <li><strong>{esc(level_range(lessons))}</strong></li>
+        </ul>
+        <a class="learn-btn learn-btn--primary" href="{first_lesson_url(track_id)}">Start course →</a>
+      </header>
+      <div class="learn-course-grid">
+        <section class="learn-course-body">
+          <h2 class="learn-section-title">Course content</h2>
+          <ol class="learn-syllabus">
+{"".join(rows)}
+          </ol>
+        </section>
+        <aside class="learn-course-aside">
+          <div class="learn-panel">
+            <h2 class="learn-panel-title">What you will learn</h2>
+            {checklist(course_highlights(lessons))}
+          </div>
+          <div class="learn-panel learn-panel--quiet">
+            <h2 class="learn-panel-title">How it works</h2>
+            <p>Every lesson explains the idea in plain language, shows small runnable examples with their output, and ends with an exercise and a worked solution.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>"""
+    return _page_shell(
+        f'{esc(track["label"])} Course — {len(lessons)} Lessons | stackcone Learn',
+        f'{esc(track["description"])} {len(lessons)} free lessons with runnable examples and exercises.',
+        f"https://stackcone.com{track_url(track_id)}",
+        body,
+    )
 
 
 def courses_json() -> dict:

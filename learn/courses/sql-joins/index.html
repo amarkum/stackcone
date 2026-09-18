@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/courses/sql-introduction/">SQL</a> / Joins</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/sql/">SQL</a> / Joins</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/sql-introduction/">SQL</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/sql/">SQL</a></p>
             <p class="learn-sidebar-progress">Lesson 4 of 7</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -50,12 +50,15 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">17 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/sql/">SQL</a> · Lesson 4 of 7</p>
           <h1>Joins</h1>
           <p class="learn-summary">Combine tables with INNER, LEFT and self joins.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>17</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/sql-sorting-aggregates/">Lesson 3: Sorting and Aggregates</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Write an INNER JOIN</li><li>Know when LEFT JOIN is needed</li><li>Avoid duplicate-row surprises</li></ul>
@@ -86,7 +89,8 @@ WHERE o.id IS NULL;</code></pre></div>
 Linus</pre></div>
       <h2>Join types at a glance</h2>
       <ul><li><strong>INNER</strong>: only matches.</li><li><strong>LEFT</strong>: all left rows, matches from the right.</li><li><strong>RIGHT</strong>: mirror of LEFT (rarely needed; swap the table order instead).</li><li><strong>FULL OUTER</strong>: all rows from both sides.</li><li><strong>CROSS</strong>: every combination; use with care, it multiplies row counts.</li></ul>
-      <div class="learn-code-wrap" data-lang="sql" data-title="Joining and aggregating"><pre><code>SELECT c.name, COALESCE(SUM(o.total), 0) AS spent
+      <h2>Joining and aggregating</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, COALESCE(SUM(o.total), 0) AS spent
 FROM customers c
 LEFT JOIN orders o ON o.customer_id = c.id
 GROUP BY c.id, c.name
@@ -102,6 +106,7 @@ LEFT JOIN employees m ON e.manager_id = m.id;</code></pre></div>
 FROM orders o
 JOIN customers c ON c.id = o.customer_id
 WHERE o.status = &#x27;refunded&#x27;;</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/sql-modifying-data/"><span class="learn-upnext-label">Up next · Lesson 5</span><strong>INSERT, UPDATE, DELETE</strong><small>Change data safely, including transactions.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/sql-sorting-aggregates/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/sql-modifying-data/">Next lesson →</a>
@@ -130,7 +135,7 @@ WHERE o.status = &#x27;refunded&#x27;;</code></pre></div></div></details>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

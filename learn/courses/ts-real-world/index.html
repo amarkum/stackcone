@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/courses/ts-introduction/">TypeScript</a> / TypeScript in Real Projects</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/typescript/">TypeScript</a> / TypeScript in Real Projects</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/ts-introduction/">TypeScript</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/typescript/">TypeScript</a></p>
             <p class="learn-sidebar-progress">Lesson 4 of 4</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -47,18 +47,22 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">15 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/typescript/">TypeScript</a> · Lesson 4 of 4</p>
           <h1>TypeScript in Real Projects</h1>
           <p class="learn-summary">tsconfig, strict mode, typing APIs and React props.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>15</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/ts-generics-utility/">Lesson 3: Generics and Utility Types</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Configure strict mode</li><li>Type API responses safely</li><li>Type React components</li></ul>
           </div>
       <p>Moving from exercises to a real project involves configuration, typing data that comes from outside your code, and typing your framework. This lesson covers the practical parts.</p>
-      <div class="learn-code-wrap" data-lang="json" data-title="tsconfig and strict mode"><pre><code>{
+      <h2>tsconfig and strict mode</h2>
+      <div class="learn-code-wrap" data-lang="json"><pre><code>{
   &quot;compilerOptions&quot;: {
     &quot;target&quot;: &quot;ES2022&quot;,
     &quot;module&quot;: &quot;ESNext&quot;,
@@ -72,7 +76,8 @@
   &quot;include&quot;: [&quot;src&quot;]
 }</code></pre></div>
       <p><code>"strict": true</code> turns on the checks that make TypeScript worth using: no implicit <code>any</code>, and strict null checks (a value that may be <code>null</code> must be handled). Start every new project with it enabled.</p>
-      <div class="learn-code-wrap" data-lang="typescript" data-title="Null safety"><pre><code>function firstWord(s: string | null): string {
+      <h2>Null safety</h2>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>function firstWord(s: string | null): string {
   if (s === null) return &quot;&quot;;
   return s.split(&quot; &quot;)[0];
 }
@@ -96,7 +101,8 @@ async function getUser(id: number): Promise&lt;User&gt; {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return UserSchema.parse(await res.json());     // throws if the shape is wrong
 }</code></pre></div>
-      <div class="learn-code-wrap" data-lang="typescript" data-title="Typing React"><pre><code>import { useState } from &quot;react&quot;;
+      <h2>Typing React</h2>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>import { useState } from &quot;react&quot;;
 
 interface ButtonProps {
   label: string;
@@ -124,6 +130,7 @@ async function fetchTodos(): Promise&lt;Todo[]&gt; {
   const res = await fetch(&quot;/api/todos&quot;);
   return z.array(TodoSchema).parse(await res.json());
 }</code></pre></div></div></details>
+          <a class="learn-upnext learn-upnext--done" href="/learn/typescript/"><span class="learn-upnext-label">Course complete</span><strong>You finished TypeScript</strong><small>Review the full course or pick your next one.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ts-generics-utility/">← Previous</a>
             <span class="learn-nav-btn is-disabled">Next lesson →</span>
@@ -152,7 +159,7 @@ async function fetchTodos(): Promise&lt;Todo[]&gt; {
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

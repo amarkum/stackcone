@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/courses/sql-introduction/">SQL</a> / SELECT and WHERE</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/sql/">SQL</a> / SELECT and WHERE</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/sql-introduction/">SQL</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/sql/">SQL</a></p>
             <p class="learn-sidebar-progress">Lesson 2 of 7</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -50,23 +50,28 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Beginner</span>
-            <span class="learn-duration">14 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/sql/">SQL</a> · Lesson 2 of 7</p>
           <h1>SELECT and WHERE</h1>
           <p class="learn-summary">Read columns and filter rows with conditions, patterns and NULL checks.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><strong>14</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/sql-introduction/">Lesson 1: Databases and SQL Basics</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Select specific columns</li><li>Filter with AND/OR/IN/LIKE</li><li>Handle NULL correctly</li></ul>
           </div>
       <p><code>SELECT</code> chooses <em>columns</em>; <code>WHERE</code> chooses <em>rows</em>. Combining them lets you pull exactly the data you need, and nothing else.</p>
-      <div class="learn-code-wrap" data-lang="sql" data-title="Choosing columns"><pre><code>SELECT * FROM customers;               -- every column
+      <h2>Choosing columns</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers;               -- every column
 SELECT name, age FROM customers;        -- only some
 SELECT name AS customer FROM customers; -- rename with an alias
 SELECT DISTINCT country FROM customers; -- remove duplicates</code></pre></div>
       <p>Avoid <code>SELECT *</code> in application code. It fetches more than you need and breaks when columns are added or reordered.</p>
-      <div class="learn-code-wrap" data-lang="sql" data-title="Filtering with WHERE"><pre><code>SELECT name FROM customers
+      <h2>Filtering with WHERE</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name FROM customers
 WHERE age &gt;= 30;</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
 Ada
@@ -75,7 +80,8 @@ Grace</pre></div>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers
 WHERE (country = &#x27;UK&#x27; OR country = &#x27;US&#x27;)
   AND age &gt; 30;</code></pre></div>
-      <div class="learn-code-wrap" data-lang="sql" data-title="IN, BETWEEN and LIKE"><pre><code>SELECT * FROM customers WHERE country IN (&#x27;UK&#x27;, &#x27;US&#x27;, &#x27;FI&#x27;);
+      <h2>IN, BETWEEN and LIKE</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers WHERE country IN (&#x27;UK&#x27;, &#x27;US&#x27;, &#x27;FI&#x27;);
 SELECT * FROM orders    WHERE total BETWEEN 50 AND 150;   -- inclusive
 SELECT * FROM customers WHERE name LIKE &#x27;G%&#x27;;             -- starts with G
 SELECT * FROM customers WHERE name LIKE &#x27;_da&#x27;;            -- one char then &#x27;da&#x27;</code></pre></div>
@@ -89,6 +95,7 @@ SELECT name, COALESCE(phone, &#x27;n/a&#x27;) AS phone FROM customers;</code></p
       <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT id, total
 FROM orders
 WHERE status = &#x27;paid&#x27; AND total &gt; 50;</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/sql-sorting-aggregates/"><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Sorting and Aggregates</strong><small>ORDER BY, LIMIT, COUNT, SUM, AVG and GROUP BY with HAVING.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/sql-introduction/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/sql-sorting-aggregates/">Next lesson →</a>
@@ -117,7 +124,7 @@ WHERE status = &#x27;paid&#x27; AND total &gt; 50;</code></pre></div></div></det
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

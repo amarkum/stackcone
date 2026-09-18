@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/courses/pandas-introduction/">Pandas</a> / Grouping, Merging and Pivots</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/pandas/">Pandas</a> / Grouping, Merging and Pivots</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/pandas-introduction/">Pandas</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/pandas/">Pandas</a></p>
             <p class="learn-sidebar-progress">Lesson 3 of 4</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -47,12 +47,15 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">17 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/pandas/">Pandas</a> · Lesson 3 of 4</p>
           <h1>Grouping, Merging and Pivots</h1>
           <p class="learn-summary">Aggregate with groupby, join tables and reshape data.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>17</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/pandas-cleaning/">Lesson 2: Cleaning Data</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Use groupby with agg</li><li>Merge DataFrames</li><li>Build a pivot table</li></ul>
@@ -67,7 +70,8 @@ employees = pd.DataFrame({
     &quot;salary&quot;: [120, 95, 150, 110, 105],
 })
 depts = pd.DataFrame({&quot;dept_id&quot;: [1, 2, 4], &quot;dept&quot;: [&quot;Research&quot;, &quot;Kernel&quot;, &quot;Sales&quot;]})</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="groupby: split, apply, combine"><pre><code>employees.groupby(&quot;country&quot;)[&quot;salary&quot;].mean()
+      <h2>groupby: split, apply, combine</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>employees.groupby(&quot;country&quot;)[&quot;salary&quot;].mean()
 
 employees.groupby(&quot;country&quot;).agg(
     people=(&quot;name&quot;, &quot;count&quot;),
@@ -79,21 +83,25 @@ employees.groupby(&quot;country&quot;).agg(
 1      UK       3       111.7         120
 2      US       1       150.0         150</pre></div>
       <p>Named aggregation (<code>new_name=(column, function)</code>) yields clean column names. Group by several columns with a list: <code>groupby(["country", "dept_id"])</code>.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Transform and rank within groups"><pre><code>employees[&quot;pct_of_country_avg&quot;] = (
+      <h2>Transform and rank within groups</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>employees[&quot;pct_of_country_avg&quot;] = (
     employees[&quot;salary&quot;] / employees.groupby(&quot;country&quot;)[&quot;salary&quot;].transform(&quot;mean&quot;)
 )
 employees[&quot;rank_in_country&quot;] = employees.groupby(&quot;country&quot;)[&quot;salary&quot;].rank(ascending=False)</code></pre></div>
       <p><code>transform</code> returns a result the same length as the original, so it slots back in as a new column.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="merge: joining tables"><pre><code>pd.merge(employees, depts, on=&quot;dept_id&quot;, how=&quot;inner&quot;)   # only matching
+      <h2>merge: joining tables</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>pd.merge(employees, depts, on=&quot;dept_id&quot;, how=&quot;inner&quot;)   # only matching
 pd.merge(employees, depts, on=&quot;dept_id&quot;, how=&quot;left&quot;)    # keep all employees
 pd.merge(employees, depts, on=&quot;dept_id&quot;, how=&quot;outer&quot;)   # keep everything
 
 # different key names
 pd.merge(employees, depts, left_on=&quot;dept_id&quot;, right_on=&quot;id&quot;)</code></pre></div>
       <p>The <code>how</code> values match SQL joins: inner, left, right and outer. Tim (dept 2) matches Kernel; Alan (dept 3) has no department, so a left merge gives NaN for his <code>dept</code>. Add <code>validate="many_to_one"</code> to catch accidental duplicate keys that would multiply rows.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Stacking tables"><pre><code>pd.concat([jan, feb, mar], ignore_index=True)     # same columns, stacked rows
+      <h2>Stacking tables</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>pd.concat([jan, feb, mar], ignore_index=True)     # same columns, stacked rows
 pd.concat([a, b], axis=1)                       # side by side</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python" data-title="Pivot tables"><pre><code>pd.pivot_table(
+      <h2>Pivot tables</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>pd.pivot_table(
     employees, index=&quot;country&quot;, columns=&quot;dept_id&quot;,
     values=&quot;salary&quot;, aggfunc=&quot;mean&quot;, fill_value=0,
 )</code></pre></div>
@@ -102,6 +110,7 @@ pd.concat([a, b], axis=1)                       # side by side</code></pre></div
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Using the tables above, find the department name with the highest average salary, ignoring employees without a department.</p></aside>
       <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>merged = employees.merge(depts, on=&quot;dept_id&quot;, how=&quot;inner&quot;)
 print(merged.groupby(&quot;dept&quot;)[&quot;salary&quot;].mean().idxmax())   # Research</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/pandas-time-plots/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Dates, Plots and Exporting</strong><small>Work with time series, make quick charts and save results.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/pandas-cleaning/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/pandas-time-plots/">Next lesson →</a>
@@ -130,7 +139,7 @@ print(merged.groupby(&quot;dept&quot;)[&quot;salary&quot;].mean().idxmax())   # 
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

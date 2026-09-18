@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/courses/algo-searching/">Algorithms</a> / Backtracking</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/algorithms/">Algorithms</a> / Backtracking</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/algo-searching/">Algorithms</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/algorithms/">Algorithms</a></p>
             <p class="learn-sidebar-progress">Lesson 5 of 6</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -49,12 +49,15 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Advanced</span>
-            <span class="learn-duration">16 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/algorithms/">Algorithms</a> · Lesson 5 of 6</p>
           <h1>Backtracking</h1>
           <p class="learn-summary">Explore choices, undo them, and generate permutations and subsets.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><strong>16</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/algo-greedy/">Lesson 4: Greedy Algorithms</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Use choose-explore-unchoose</li><li>Generate subsets and permutations</li><li>Prune the search</li></ul>
@@ -62,7 +65,8 @@
       <p><strong>Backtracking</strong> is systematic trial and error. You build a solution one choice at a time; if a partial solution cannot possibly work, you <em>undo</em> the last choice and try another. It is the tool for problems that ask for <em>all</em> arrangements: subsets, permutations, puzzles like Sudoku and N-Queens.</p>
       <h2>The pattern: choose, explore, unchoose</h2>
       <p>Every backtracking solution has the same skeleton: if the current path is a complete answer, record it; otherwise, for each available option, add it to the path, recurse, then remove it again.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Subsets"><pre><code>def subsets(nums):
+      <h2>Subsets</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def subsets(nums):
     result, path = [], []
 
     def go(start):
@@ -78,7 +82,8 @@
 print(subsets([1, 2, 3]))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]</pre></div>
       <p>Note <code>path[:]</code>: append a <em>copy</em>, because <code>path</code> keeps changing afterward. Forgetting the copy is the most common bug.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="Permutations"><pre><code>def permutations(nums):
+      <h2>Permutations</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def permutations(nums):
     result, path, used = [], [], [False] * len(nums)
 
     def go():
@@ -134,6 +139,7 @@ print(combination_sum([2, 3, 6, 7], 7))</code></pre></div>
     return out
 
 print(gen_parens(3))</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/algo-dynamic-programming/"><span class="learn-upnext-label">Up next · Lesson 6</span><strong>Dynamic Programming</strong><small>Overlapping subproblems, memoization, tabulation, knapsack and edit distance.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-greedy/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/algo-dynamic-programming/">Next lesson →</a>
@@ -162,7 +168,7 @@ print(gen_parens(3))</code></pre></div></div></details>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

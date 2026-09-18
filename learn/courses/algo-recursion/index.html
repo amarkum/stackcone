@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=7">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=8">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=6">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -32,11 +32,11 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/courses/algo-searching/">Algorithms</a> / Recursion</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/algorithms/">Algorithms</a> / Recursion</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="/learn/courses/algo-searching/">Algorithms</a></p>
+            <p class="learn-sidebar-track"><a href="/learn/algorithms/">Algorithms</a></p>
             <p class="learn-sidebar-progress">Lesson 3 of 6</p>
           </div>
           <nav class="learn-sidebar-lessons">
@@ -49,12 +49,15 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <div class="learn-lesson-meta">
-            <span class="learn-badge">Intermediate</span>
-            <span class="learn-duration">15 min</span>
-          </div>
+          <p class="learn-eyebrow"><a href="/learn/algorithms/">Algorithms</a> · Lesson 3 of 6</p>
           <h1>Recursion</h1>
           <p class="learn-summary">Base cases, recursive cases, the call stack and when to avoid recursion.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>15</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/courses/algo-sorting/">Lesson 2: Sorting</a></p>
           <div class="learn-objectives">
             <h2>What you will learn</h2>
             <ul><li>Identify base and recursive cases</li><li>Trace the call stack</li><li>Convert recursion to iteration</li></ul>
@@ -71,7 +74,8 @@ print(factorial(5))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>120</pre></div>
       <h2>The call stack</h2>
       <p>Each call waits for the one it started. <code>factorial(3)</code> becomes <code>3 * factorial(2)</code>, which becomes <code>3 * (2 * factorial(1))</code>; when the base case returns 1, the stack unwinds multiplying as it goes. Each waiting call uses memory, so Python limits depth (about 1000) and raises <code>RecursionError</code> if you exceed it.</p>
-      <div class="learn-code-wrap" data-lang="python" data-title="More examples"><pre><code>def sum_list(a):
+      <h2>More examples</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def sum_list(a):
     return 0 if not a else a[0] + sum_list(a[1:])
 
 def reverse(s):
@@ -118,6 +122,7 @@ print(fib(50))</code></pre></div>
     return s[0] == s[-1] and is_palindrome(s[1:-1])
 
 print(is_palindrome(&quot;level&quot;), is_palindrome(&quot;stack&quot;))</code></pre></div></div></details>
+          <a class="learn-upnext" href="/learn/courses/algo-greedy/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Greedy Algorithms</strong><small>Make the locally best choice at each step, and know when that is enough.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-sorting/">← Previous</a>
             <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/algo-greedy/">Next lesson →</a>
@@ -146,7 +151,7 @@ print(is_palindrome(&quot;level&quot;), is_palindrome(&quot;stack&quot;))</code>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=5" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
