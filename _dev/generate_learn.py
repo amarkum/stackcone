@@ -23,6 +23,20 @@ TRACKS = {
         "category": "programming",
         "description": "Static typing, OOP, and the collections you use every day.",
     },
+    "javascript": {"label": "JavaScript", "parent": "Programming", "category": "programming",
+        "description": "The language of the web: values, functions, arrays, async code and the DOM."},
+    "sql": {"label": "SQL", "parent": "Programming", "category": "programming",
+        "description": "Query, filter, join and aggregate data in relational databases."},
+    "algorithms": {"label": "Algorithms", "parent": "DS & Algo", "category": "ds-algo",
+        "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming."},
+    "react": {"label": "React", "parent": "Frameworks", "category": "frameworks",
+        "description": "Components, state, effects, forms and data fetching with modern hooks."},
+    "django": {"label": "Django", "parent": "Frameworks", "category": "frameworks",
+        "description": "Models, views, templates and the admin in Python's batteries-included framework."},
+    "fastapi": {"label": "FastAPI", "parent": "Frameworks", "category": "frameworks",
+        "description": "Typed, fast Python APIs with validation and automatic docs."},
+    "express": {"label": "Express", "parent": "Frameworks", "category": "frameworks",
+        "description": "Routes, middleware and REST APIs on Node.js."},
     "data-structures": {
         "label": "Data Structures",
         "parent": "DS & Algo",
@@ -48,11 +62,11 @@ CATEGORIES = {
 
 FRAMEWORKS = [
     {"label": "LangChain", "description": "Build LLM apps with chains, agents, and retrieval."},
-    {"label": "React", "description": "Component-based UI with hooks and the modern React model."},
+    {"label": "React", "track": "react", "description": "Component-based UI with hooks and the modern React model."},
     {"label": "Next.js", "description": "Full-stack React with routing, SSR, and API routes."},
-    {"label": "FastAPI", "description": "High-performance Python APIs with automatic OpenAPI docs."},
-    {"label": "Django", "description": "Batteries-included Python web framework for production apps."},
-    {"label": "Express", "description": "Minimal Node.js server framework for APIs and backends."},
+    {"label": "FastAPI", "track": "fastapi", "description": "High-performance Python APIs with automatic OpenAPI docs."},
+    {"label": "Django", "track": "django", "description": "Batteries-included Python web framework for production apps."},
+    {"label": "Express", "track": "express", "description": "Minimal Node.js server framework for APIs and backends."},
 ]
 
 LESSONS = [
@@ -246,7 +260,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from content_python import CONTENT as _PY
 from content_java import CONTENT as _JAVA
 from content_ds import CONTENT as _DS
-_RICH = {**_PY, **_JAVA, **_DS}
+from content_js_sql import META as _M1, CONTENT as _C1
+from content_algo import META as _M2, CONTENT as _C2
+from content_frameworks import META as _M3, CONTENT as _C3
+for _m in (*_M1, *_M2, *_M3):
+    LESSONS.append({**_m, "sections": []})
+_RICH = {**_PY, **_JAVA, **_DS, **_C1, **_C2, **_C3}
 for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
@@ -255,6 +274,7 @@ for _les in LESSONS:
 by_track: dict[str, list] = {}
 for les in LESSONS:
     by_track.setdefault(les["track"], []).append(les)
+TRACKS = {k: v for k, v in TRACKS.items() if k in by_track}  # skip tracks with no lessons yet
 for track_lessons in by_track.values():
     for i, les in enumerate(track_lessons):
         les["lesson_num"] = i + 1
@@ -487,6 +507,15 @@ def first_lesson_url(track_id: str) -> str:
 def _framework_cards() -> str:
     cards = []
     for fw in FRAMEWORKS:
+        if fw.get("track") in by_track:
+            n = len(by_track[fw["track"]])
+            cards.append(f"""
+      <a class="learn-track-card" href="{first_lesson_url(fw["track"])}">
+        <h2>{esc(fw["label"])}</h2>
+        <p>{esc(fw["description"])}</p>
+        <span class="learn-track-count">{n} lessons</span>
+      </a>""")
+            continue
         cards.append(f"""
       <div class="learn-track-card learn-track-card--soon">
         <h2>{esc(fw["label"])}</h2>
@@ -516,7 +545,8 @@ def catalog_html() -> str:
     for cat_id, cat in CATEGORIES.items():
         track_ids = [tid for tid, t in TRACKS.items() if t.get("category") == cat_id]
         if cat_id == "frameworks":
-            count_line = f"{len(FRAMEWORKS)} coming soon"
+            _live = [f for f in FRAMEWORKS if f.get("track") in by_track]
+            count_line = f"{len(_live)} courses · {sum(len(by_track[f['track']]) for f in _live)} lessons"
         else:
             n = sum(len(by_track[tid]) for tid in track_ids)
             course_label = "course" if len(track_ids) == 1 else "courses"

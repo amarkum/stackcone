@@ -12,16 +12,10 @@
       label: "Programming",
       href: "/learn/programming/",
       children: [
-        {
-          href: "/learn/courses/python-hello-world/",
-          label: "Python",
-          matches: ["/learn/python", "/learn/courses/python-"]
-        },
-        {
-          href: "/learn/courses/java-hello-world/",
-          label: "Java",
-          matches: ["/learn/java", "/learn/courses/java-"]
-        },
+        { href: "/learn/courses/python-hello-world/", label: "Python", matches: ["/learn/python", "/learn/courses/python-"] },
+        { href: "/learn/courses/java-hello-world/", label: "Java", matches: ["/learn/java", "/learn/courses/java-"] },
+        { href: "/learn/courses/js-hello-world/", label: "JavaScript", matches: ["/learn/javascript", "/learn/courses/js-"] },
+        { href: "/learn/courses/sql-introduction/", label: "SQL", matches: ["/learn/sql", "/learn/courses/sql-"] },
         { href: "/learn/programming/", label: "All Programming", separator: true }
       ]
     },
@@ -30,16 +24,11 @@
       label: "DS & Algo",
       href: "/learn/ds-algo/",
       children: [
-        {
-          href: "/learn/courses/ds-introduction/",
-          label: "Data Structures",
-          matches: ["/learn/data-structures", "/learn/courses/ds-"]
-        },
-        { label: "Algorithms", soon: true },
-        { label: "Sorting", soon: true },
-        { label: "Searching", soon: true },
-        { label: "Recursion", soon: true },
-        { label: "Dynamic Programming", soon: true },
+        { href: "/learn/courses/ds-introduction/", label: "Data Structures", matches: ["/learn/data-structures", "/learn/courses/ds-"] },
+        { href: "/learn/courses/algo-searching/", label: "Algorithms", matches: ["/learn/algorithms", "/learn/courses/algo-"] },
+        { href: "/learn/courses/algo-sorting/", label: "Sorting" },
+        { href: "/learn/courses/algo-recursion/", label: "Recursion" },
+        { href: "/learn/courses/algo-dynamic-programming/", label: "Dynamic Programming" },
         { href: "/learn/ds-algo/", label: "All DS & Algo", separator: true }
       ]
     },
@@ -48,12 +37,12 @@
       label: "Frameworks",
       href: "/learn/frameworks/",
       children: [
+        { href: "/learn/courses/react-introduction/", label: "React", matches: ["/learn/react", "/learn/courses/react-"] },
+        { href: "/learn/courses/django-introduction/", label: "Django", matches: ["/learn/django", "/learn/courses/django-"] },
+        { href: "/learn/courses/fastapi-introduction/", label: "FastAPI", matches: ["/learn/fastapi", "/learn/courses/fastapi-"] },
+        { href: "/learn/courses/express-introduction/", label: "Express", matches: ["/learn/express", "/learn/courses/express-"] },
         { label: "LangChain", soon: true },
-        { label: "React", soon: true },
         { label: "Next.js", soon: true },
-        { label: "FastAPI", soon: true },
-        { label: "Django", soon: true },
-        { label: "Express", soon: true },
         { href: "/learn/frameworks/", label: "All Frameworks", separator: true }
       ]
     },
