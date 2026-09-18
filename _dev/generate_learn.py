@@ -40,7 +40,20 @@ CATEGORIES = {
         "label": "DS & Algo",
         "description": "Data structures and algorithmic thinking for interviews and real systems.",
     },
+    "frameworks": {
+        "label": "Frameworks",
+        "description": "Modern libraries and frameworks — LangChain, React, FastAPI, and more.",
+    },
 }
+
+FRAMEWORKS = [
+    {"label": "LangChain", "description": "Build LLM apps with chains, agents, and retrieval."},
+    {"label": "React", "description": "Component-based UI with hooks and the modern React model."},
+    {"label": "Next.js", "description": "Full-stack React with routing, SSR, and API routes."},
+    {"label": "FastAPI", "description": "High-performance Python APIs with automatic OpenAPI docs."},
+    {"label": "Django", "description": "Batteries-included Python web framework for production apps."},
+    {"label": "Express", "description": "Minimal Node.js server framework for APIs and backends."},
+]
 
 LESSONS = [
     # Python
@@ -322,7 +335,7 @@ def lesson_html(les: dict) -> str:
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
   <link rel="stylesheet" href="/learn/learn.css?v=6">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=3">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -391,7 +404,7 @@ def lesson_html(les: dict) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=3" defer></script>
+  <script src="/assets/monaco-code.js?v=4" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
@@ -413,7 +426,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/learn/learn.css?v=6">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=3">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -440,7 +453,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=3" defer></script>
+  <script src="/assets/monaco-code.js?v=4" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
@@ -449,6 +462,18 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
 
 def first_lesson_url(track_id: str) -> str:
     return f"/learn/courses/{by_track[track_id][0]['slug']}/"
+
+
+def _framework_cards() -> str:
+    cards = []
+    for fw in FRAMEWORKS:
+        cards.append(f"""
+      <div class="learn-track-card learn-track-card--soon">
+        <h2>{esc(fw["label"])}</h2>
+        <p>{esc(fw["description"])}</p>
+        <span class="learn-track-count">Coming soon</span>
+      </div>""")
+    return "\n".join(cards)
 
 
 def _track_cards(track_ids: list[str]) -> str:
@@ -470,20 +495,24 @@ def catalog_html() -> str:
     cat_cards = []
     for cat_id, cat in CATEGORIES.items():
         track_ids = [tid for tid, t in TRACKS.items() if t.get("category") == cat_id]
-        n = sum(len(by_track[tid]) for tid in track_ids)
-        course_label = "course" if len(track_ids) == 1 else "courses"
+        if cat_id == "frameworks":
+            count_line = f"{len(FRAMEWORKS)} coming soon"
+        else:
+            n = sum(len(by_track[tid]) for tid in track_ids)
+            course_label = "course" if len(track_ids) == 1 else "courses"
+            count_line = f"{len(track_ids)} {course_label} · {n} lessons"
         cat_cards.append(f"""
       <a class="learn-track-card" href="/learn/{cat_id}/">
         <h2>{esc(cat["label"])}</h2>
         <p>{esc(cat["description"])}</p>
-        <span class="learn-track-count">{len(track_ids)} {course_label} · {n} lessons</span>
+        <span class="learn-track-count">{count_line}</span>
         <span class="learn-track-open">Browse courses →</span>
       </a>""")
     body = f"""  <main class="learn-main">
     <div class="learn-main-inner learn-catalog">
       <div class="learn-hero">
         <h1>Learn</h1>
-        <p class="learn-hero-desc">Hands-on courses in Programming and DS &amp; Algo. Short lessons, runnable examples, and exercises after every topic.</p>
+        <p class="learn-hero-desc">Hands-on courses in Programming, DS &amp; Algo, and Frameworks. Short lessons, runnable examples, and exercises after every topic.</p>
       </div>
       <div class="learn-tracks">
 {"".join(cat_cards)}
@@ -492,7 +521,7 @@ def catalog_html() -> str:
   </main>"""
     return _page_shell(
         "Learn Coding &amp; Data Structures | stackcone",
-        "Free coding courses — Programming and DS & Algo. Interactive lessons with exercises.",
+        "Free coding courses — Programming, DS & Algo, and Frameworks. Interactive lessons with exercises.",
         "https://stackcone.com/learn/",
         body,
     )
@@ -501,6 +530,7 @@ def catalog_html() -> str:
 def category_html(cat_id: str) -> str:
     cat = CATEGORIES[cat_id]
     track_ids = [tid for tid, t in TRACKS.items() if t.get("category") == cat_id]
+    track_block = _framework_cards() if cat_id == "frameworks" else _track_cards(track_ids)
     body = f"""  <main class="learn-main">
     <div class="learn-main-inner learn-catalog">
       <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / {esc(cat["label"])}</p>
@@ -509,7 +539,7 @@ def category_html(cat_id: str) -> str:
         <p class="learn-hero-desc">{esc(cat["description"])}</p>
       </div>
       <div class="learn-tracks">
-{_track_cards(track_ids)}
+{track_block}
       </div>
     </div>
   </main>"""

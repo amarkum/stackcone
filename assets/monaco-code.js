@@ -67,6 +67,8 @@
     if (pre.classList.contains('mermaid')) return true;
     if (pre.closest('.mermaid, .diagram-wrap, .monaco-code-block')) return true;
     if (pre.classList.contains('monaco-replaced')) return true;
+    if (pre.closest('.learn-code-wrap.monaco-ready, .learn-code-wrap.monaco-booting')) return true;
+    if (pre.previousElementSibling && pre.previousElementSibling.classList.contains('monaco-code-host')) return true;
     return false;
   }
 
@@ -128,6 +130,8 @@
   }
 
   function createCodeToolbar(block, host, editor) {
+    if (block.wrap && block.wrap.querySelector('.learn-code-toolbar')) return;
+
     var title = resolveBlockTitle(block);
     var runnable = !!(editor && isRunnablePython(block, detectLang(block.code, block.hint)));
     if (!title && !runnable) return;
@@ -182,6 +186,11 @@
   }
 
   function createHost(block) {
+    if (block.wrap) {
+      if (block.wrap.querySelector('.monaco-code-host')) return null;
+      block.wrap.classList.add('monaco-booting');
+    }
+
     var host = document.createElement('div');
     host.className = 'monaco-code-host';
     host.setAttribute('data-language', block.hint || 'auto');
@@ -189,6 +198,7 @@
     if (block.wrap) {
       block.pre.insertAdjacentElement('beforebegin', host);
       block.wrap.classList.add('monaco-ready');
+      block.wrap.classList.remove('monaco-booting');
     } else {
       var shell = document.createElement('div');
       shell.className = 'monaco-code-block';
@@ -304,25 +314,27 @@
     return editor;
   }
 
-  var monacoInitialized = false;
-
   function initMonacoCodeBlocks() {
-    if (monacoInitialized) return;
+    if (window.__stackconeMonacoBooted) return;
     var blocks = collectBlocks();
     if (!blocks.length) return;
-    monacoInitialized = true;
+    window.__stackconeMonacoBooted = true;
 
     loadMonaco()
       .then(function (monaco) {
         blocks.forEach(function (block) {
           var host = createHost(block);
+          if (!host) return;
           createEditor(monaco, host, block);
         });
       })
       .catch(function () {
+        window.__stackconeMonacoBooted = false;
         blocks.forEach(function (block) {
           block.pre.classList.remove('monaco-replaced');
-          if (block.wrap) block.wrap.classList.remove('monaco-ready');
+          if (block.wrap) {
+            block.wrap.classList.remove('monaco-ready', 'monaco-booting');
+          }
         });
       });
   }
@@ -330,7 +342,7 @@
   window.initMonacoCodeBlocks = initMonacoCodeBlocks;
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMonacoCodeBlocks);
+    document.addEventListener('DOMContentLoaded', initMonacoCodeBlocks, { once: true });
   } else {
     initMonacoCodeBlocks();
   }

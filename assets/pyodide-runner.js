@@ -57,8 +57,16 @@
       .then(function (pyodide) {
         var stdout = '';
         var stderr = '';
-        pyodide.setStdout({ batched: function (s) { stdout += s; } });
-        pyodide.setStderr({ batched: function (s) { stderr += s; } });
+        pyodide.setStdout({
+          batched: function (s) {
+            stdout += s + '\n';
+          }
+        });
+        pyodide.setStderr({
+          batched: function (s) {
+            stderr += s + '\n';
+          }
+        });
         return pyodide.runPythonAsync(code).then(
           function () {
             var out = stdout + (stderr ? (stdout ? '\n' : '') + stderr : '');

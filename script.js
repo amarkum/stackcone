@@ -224,6 +224,13 @@ if (document.readyState === 'loading') {
 // Monaco Editor for syntax-highlighted code blocks (blog, learn, solutions)
 (function loadMonacoCode() {
   function boot() {
+    if (window.__stackconeMonacoBooted || window.initMonacoCodeBlocks) {
+      if (typeof window.initMonacoCodeBlocks === 'function' && !window.__stackconeMonacoBooted) {
+        window.initMonacoCodeBlocks();
+      }
+      return;
+    }
+
     var hasCode = false;
     document.querySelectorAll('pre > code').forEach(function (code) {
       var pre = code.parentElement;
@@ -233,22 +240,22 @@ if (document.readyState === 'loading') {
     });
     if (!hasCode) return;
 
-    if (!document.querySelector('link[href^="/assets/monaco-code.css"]')) {
+    if (!document.querySelector('link[href*="monaco-code.css"]')) {
       var css = document.createElement('link');
       css.rel = 'stylesheet';
-      css.href = '/assets/monaco-code.css?v=3';
+      css.href = '/assets/monaco-code.css?v=4';
       document.head.appendChild(css);
     }
-    if (!document.querySelector('script[src^="/assets/monaco-code.js"]')) {
+    if (!document.querySelector('script[src*="monaco-code.js"]')) {
       var script = document.createElement('script');
-      script.src = '/assets/monaco-code.js?v=3';
+      script.src = '/assets/monaco-code.js?v=4';
       script.defer = true;
       document.body.appendChild(script);
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
   } else {
     boot();
   }

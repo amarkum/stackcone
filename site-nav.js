@@ -35,7 +35,26 @@
           label: "Data Structures",
           matches: ["/learn/data-structures", "/learn/courses/ds-"]
         },
+        { label: "Algorithms", soon: true },
+        { label: "Sorting", soon: true },
+        { label: "Searching", soon: true },
+        { label: "Recursion", soon: true },
+        { label: "Dynamic Programming", soon: true },
         { href: "/learn/ds-algo/", label: "All DS & Algo", separator: true }
+      ]
+    },
+    {
+      id: "frameworks",
+      label: "Frameworks",
+      href: "/learn/frameworks/",
+      children: [
+        { label: "LangChain", soon: true },
+        { label: "React", soon: true },
+        { label: "Next.js", soon: true },
+        { label: "FastAPI", soon: true },
+        { label: "Django", soon: true },
+        { label: "Express", soon: true },
+        { href: "/learn/frameworks/", label: "All Frameworks", separator: true }
       ]
     },
     { href: "/blog/", label: "Blog" },
