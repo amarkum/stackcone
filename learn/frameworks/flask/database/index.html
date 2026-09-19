@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Databases with SQLAlchemy | Flask | stackcone Learn</title>
+  <meta name="description" content="Models, queries and migrations with Flask-SQLAlchemy.">
+  <link rel="canonical" href="https://stackcone.com/learn/frameworks/flask/database/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/frameworks/flask/introduction/">Flask</a> / Databases with SQLAlchemy</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/frameworks/flask/introduction/">Flask</a></p>
+            <p class="learn-sidebar-progress">Lesson 3 of 4</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/frameworks/flask/introduction/"><span class="learn-sidebar-num">1</span>Introduction and Routes</a>
+          <a class="learn-sidebar-link is-done" href="/learn/frameworks/flask/templates-forms/"><span class="learn-sidebar-num">2</span>Templates and Forms</a>
+          <a class="learn-sidebar-link is-active" href="/learn/frameworks/flask/database/"><span class="learn-sidebar-num">3</span>Databases with SQLAlchemy</a>
+          <a class="learn-sidebar-link" href="/learn/frameworks/flask/blueprints-deploy/"><span class="learn-sidebar-num">4</span>Blueprints, Testing and Deployment</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/frameworks/flask/introduction/">Flask</a> · Lesson 3 of 4</p>
+          <h1>Databases with SQLAlchemy</h1>
+          <p class="learn-summary">Models, queries and migrations with Flask-SQLAlchemy.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>16</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/frameworks/flask/templates-forms/">Lesson 2: Templates and Forms</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>Define models</li><li>Query and commit</li><li>Understand migrations</li></ul>
+          </div>
+      <p>Most apps need a database. The usual choice with Flask is <strong>Flask-SQLAlchemy</strong>, which wraps SQLAlchemy, Python's leading ORM, so you work with classes instead of raw SQL.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>pip install flask flask-sqlalchemy flask-migrate</code></pre></div>
+      <h2>Setup and models</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timezone
+
+app = Flask(__name__)
+app.config[&quot;SQLALCHEMY_DATABASE_URI&quot;] = &quot;sqlite:///app.db&quot;
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    posts = db.relationship(&quot;Post&quot;, backref=&quot;author&quot;, lazy=True)
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    body = db.Column(db.Text)
+    created = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    user_id = db.Column(db.Integer, db.ForeignKey(&quot;user.id&quot;), nullable=False)
+
+with app.app_context():
+    db.create_all()</code></pre></div>
+      <h2>Create, read, update, delete</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>with app.app_context():
+    ada = User(email=&quot;ada@example.com&quot;, name=&quot;Ada&quot;)
+    db.session.add(ada)
+    db.session.commit()
+
+    db.session.add(Post(title=&quot;Hello&quot;, body=&quot;First&quot;, user_id=ada.id))
+    db.session.commit()
+
+    User.query.all()
+    User.query.filter_by(email=&quot;ada@example.com&quot;).first()
+    db.session.get(User, 1)
+    Post.query.filter(Post.title.contains(&quot;Hel&quot;)).order_by(Post.created.desc()).limit(10).all()
+
+    ada.name = &quot;Ada Lovelace&quot;       # update by changing attributes
+    db.session.commit()
+
+    db.session.delete(ada)
+    db.session.commit()</code></pre></div>
+      <p>Changes are staged in the <em>session</em> and only written when you call <code>commit()</code>. If something fails, call <code>db.session.rollback()</code>.</p>
+      <h2>Using it in routes</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>@app.route(&quot;/posts&quot;)
+def posts():
+    posts = Post.query.order_by(Post.created.desc()).all()
+    return jsonify([{&quot;id&quot;: p.id, &quot;title&quot;: p.title, &quot;author&quot;: p.author.name} for p in posts])
+
+@app.route(&quot;/posts/&lt;int:post_id&gt;&quot;)
+def post_detail(post_id):
+    post = db.get_or_404(Post, post_id)
+    return jsonify(id=post.id, title=post.title)</code></pre></div>
+      <h2>Migrations</h2>
+      <p>When models change, <code>create_all</code> will not alter existing tables. <strong>Flask-Migrate</strong> (Alembic) records schema changes as versioned scripts.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>flask db init
+flask db migrate -m &quot;add posts&quot;
+flask db upgrade</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>N+1 queries</p><p class="learn-callout-body">Looping over posts and reading <code>p.author</code> triggers one query per post. Load related rows in one go with <code>Post.query.options(joinedload(Post.author))</code>.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>Comment</code> model belonging to a <code>Post</code>, then a route that returns a post with its comments as JSON.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey(&quot;post.id&quot;), nullable=False)
+    post = db.relationship(&quot;Post&quot;, backref=&quot;comments&quot;)
+
+@app.route(&quot;/posts/&lt;int:pid&gt;/full&quot;)
+def full(pid):
+    p = db.get_or_404(Post, pid)
+    return jsonify(title=p.title, comments=[c.text for c in p.comments])"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/frameworks/flask/blueprints-deploy/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Blueprints, Testing and Deployment</strong><small>Structure larger apps, test them and run with gunicorn.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/frameworks/flask/templates-forms/">← Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/frameworks/flask/blueprints-deploy/">Next lesson →</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
+  <script src="/script.js" defer></script>
+</body>
+</html>

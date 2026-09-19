@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Arrays | Data Structures | stackcone Learn</title>
+  <meta name="description" content="Contiguous memory, index access, and resize costs.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/data-structures/arrays/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a> / Arrays</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a></p>
+            <p class="learn-sidebar-progress">Lesson 2 of 8</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/ds-algo/data-structures/introduction/"><span class="learn-sidebar-num">1</span>What Are Data Structures?</a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/data-structures/arrays/"><span class="learn-sidebar-num">2</span>Arrays</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/linked-lists/"><span class="learn-sidebar-num">3</span>Linked Lists</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/stacks-queues/"><span class="learn-sidebar-num">4</span>Stacks and Queues</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/trees/"><span class="learn-sidebar-num">5</span>Trees</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/hash-tables/"><span class="learn-sidebar-num">6</span>Hash Tables</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/graphs/"><span class="learn-sidebar-num">7</span>Graphs</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/big-o/"><span class="learn-sidebar-num">8</span>Big O Notation</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a> · Lesson 2 of 8</p>
+          <h1>Arrays</h1>
+          <p class="learn-summary">Contiguous memory, index access, and resize costs.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><strong>12</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/data-structures/introduction/">Lesson 1: What Are Data Structures?</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>O(1) index access</li><li>Understand fixed vs dynamic arrays</li><li>Know when cache locality helps</li></ul>
+          </div>
+      <p>An <strong>array</strong> stores elements one after another in a single block of memory. Because every element takes the same amount of space, the computer can calculate the address of element <code>i</code> directly: start address plus <code>i</code> times the element size. That is why reading <code>arr[i]</code> takes the same tiny amount of time whether the array has ten items or ten million.</p>
+      <h2>What is fast and what is slow</h2>
+      <ul><li><strong>Read or write by index</strong>: O(1).</li><li><strong>Append at the end</strong>: O(1) on average.</li><li><strong>Insert or delete in the middle or front</strong>: O(n), because everything after it must shift.</li><li><strong>Search for a value</strong> in an unsorted array: O(n), since you may check every element.</li></ul>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [10, 20, 30, 40]
+print(nums[2])        # O(1) access
+nums.append(50)       # O(1) amortized
+nums.insert(1, 15)    # O(n) shifts 20, 30, 40, 50
+print(nums)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>30
+[10, 15, 20, 30, 40, 50]</pre></div>
+      <h2>Fixed versus dynamic arrays</h2>
+      <p>In C or Java a plain array has a fixed length. Python lists, Java's <code>ArrayList</code> and JavaScript arrays are <em>dynamic arrays</em>: when they run out of room they allocate a bigger block (usually double), copy everything over and continue. Each resize is O(n), but they are rare, so appends average out to O(1).</p>
+      <h2>Why arrays are fast in practice</h2>
+      <p>Contiguous memory is friendly to the CPU cache. When you read one element, its neighbors come along for free, so scanning an array is often faster than scanning a linked list even when the Big O is the same.</p>
+      <h2>A classic technique: two pointers</h2>
+      <p>Many array problems can be solved with two indexes that move toward each other, avoiding nested loops. Reversing an array in place is the simplest example.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def reverse(a):
+    left, right = 0, len(a) - 1
+    while left &lt; right:
+        a[left], a[right] = a[right], a[left]
+        left += 1
+        right -= 1
+
+vals = [1, 2, 3, 4, 5]
+reverse(vals)
+print(vals)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[5, 4, 3, 2, 1]</pre></div>
+      <p>This runs in O(n) time and O(1) extra space, because it swaps in place instead of building a second array.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body">Off-by-one errors and reading past the end (<code>IndexError</code>). Remember valid indexes run from <code>0</code> to <code>len(a) - 1</code>.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Reverse an array in place without using <code>reverse()</code> or slicing. Then write a function that returns the second largest value in one pass.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def second_largest(a):
+    first = second = float(&quot;-inf&quot;)
+    for x in a:
+        if x &gt; first:
+            first, second = x, first
+        elif first &gt; x &gt; second:
+            second = x
+    return second
+
+print(second_largest([4, 9, 1, 7, 9]))  # 7"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/ds-algo/data-structures/linked-lists/"><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Linked Lists</strong><small>Nodes, pointers, singly vs doubly linked, and tradeoffs vs arrays.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/data-structures/introduction/">← Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/data-structures/linked-lists/">Next lesson →</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
+  <script src="/script.js" defer></script>
+</body>
+</html>

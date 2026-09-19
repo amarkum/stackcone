@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Greedy Algorithms | Algorithms | stackcone Learn</title>
+  <meta name="description" content="Make the locally best choice at each step, and know when that is enough.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/greedy/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / Greedy Algorithms</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+            <p class="learn-sidebar-progress">Lesson 4 of 6</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/ds-algo/algorithms/searching/"><span class="learn-sidebar-num">1</span>Searching</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ds-algo/algorithms/sorting/"><span class="learn-sidebar-num">2</span>Sorting</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ds-algo/algorithms/recursion/"><span class="learn-sidebar-num">3</span>Recursion</a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/greedy/"><span class="learn-sidebar-num">4</span>Greedy Algorithms</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/"><span class="learn-sidebar-num">5</span>Backtracking</a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/"><span class="learn-sidebar-num">6</span>Dynamic Programming</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 4 of 6</p>
+          <h1>Greedy Algorithms</h1>
+          <p class="learn-summary">Make the locally best choice at each step, and know when that is enough.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>14</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/recursion/">Lesson 3: Recursion</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>Explain the greedy choice property</li><li>Solve interval scheduling</li><li>Spot when greedy fails</li></ul>
+          </div>
+      <p>A <strong>greedy algorithm</strong> builds a solution one step at a time, always taking the choice that looks best right now, and never reconsidering. When it works, greedy is wonderfully simple and fast. The catch is that it works only for problems with the <em>greedy choice property</em>: a locally best choice can always be extended to a globally best solution.</p>
+      <h2>Example: making change</h2>
+      <p>With standard coins, always take the largest coin that fits.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def make_change(amount, coins=(25, 10, 5, 1)):
+    result = []
+    for c in coins:
+        while amount &gt;= c:
+            amount -= c
+            result.append(c)
+    return result
+
+print(make_change(63))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[25, 25, 10, 1, 1, 1]</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>When greedy fails</p><p class="learn-callout-body">With coins (4, 3, 1) and amount 6, greedy picks 4+1+1 (three coins), but 3+3 needs only two. That case needs dynamic programming. Always look for a counterexample before trusting a greedy idea.</p></aside>
+      <h2>Interval scheduling</h2>
+      <p>Given meetings with start and end times, attend as many as possible. The winning rule: <strong>always pick the meeting that ends earliest</strong> among those that do not overlap, because that leaves the most room for the rest.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def max_meetings(meetings):
+    chosen, last_end = [], float(&quot;-inf&quot;)
+    for start, end in sorted(meetings, key=lambda m: m[1]):
+        if start &gt;= last_end:
+            chosen.append((start, end))
+            last_end = end
+    return chosen
+
+print(max_meetings([(1, 4), (3, 5), (0, 6), (5, 7), (8, 9), (5, 9)]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[(1, 4), (5, 7), (8, 9)]</pre></div>
+      <h2>Jump game</h2>
+      <p>Each number says how far you may jump. Can you reach the end? Track the farthest index reachable so far.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def can_reach_end(nums):
+    farthest = 0
+    for i, jump in enumerate(nums):
+        if i &gt; farthest:
+            return False
+        farthest = max(farthest, i + jump)
+    return True
+
+print(can_reach_end([2, 3, 1, 1, 4]), can_reach_end([3, 2, 1, 0, 4]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True False</pre></div>
+      <h2>How to justify a greedy choice</h2>
+      <ul><li><strong>Exchange argument</strong>: show that any optimal solution can be transformed to use your greedy choice without getting worse.</li><li><strong>Stays ahead</strong>: show that after each step greedy is at least as good as any other strategy.</li></ul>
+      <p>Famous greedy algorithms you will meet later include Dijkstra's shortest paths, Kruskal's and Prim's minimum spanning trees and Huffman coding.</p>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given <code>prices</code> for consecutive days, compute the maximum profit if you may buy and sell as many times as you like (but hold one share at a time). Hint: add every positive day-to-day rise.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def max_profit(prices):
+    return sum(max(0, b - a) for a, b in zip(prices, prices[1:]))
+
+print(max_profit([7, 1, 5, 3, 6, 4]))   # 7"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/backtracking/"><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Backtracking</strong><small>Explore choices, undo them, and generate permutations and subsets.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/recursion/">← Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/backtracking/">Next lesson →</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
+  <script src="/script.js" defer></script>
+</body>
+</html>

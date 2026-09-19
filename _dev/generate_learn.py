@@ -400,7 +400,7 @@ def lesson_html(les: dict) -> str:
         active = " is-active" if t["slug"] == les["slug"] else ""
         done = " is-done" if t["lesson_num"] < les["lesson_num"] else ""
         sidebar_items.append(
-            f'          <a class="learn-sidebar-link{active}{done}" href="/learn/courses/{t["slug"]}/">'
+            f'          <a class="learn-sidebar-link{active}{done}" href="{lesson_url(t)}">'
             f'<span class="learn-sidebar-num">{t["lesson_num"]}</span>{esc(t["title"])}</a>'
         )
     sidebar = "\n".join(sidebar_items)
@@ -410,11 +410,11 @@ def lesson_html(les: dict) -> str:
     if les["prev"]:
         pv = by_slug[les["prev"]]
         prereq = (f'<p class="learn-prereq"><span>Before this lesson</span>'
-                  f'<a href="/learn/courses/{pv["slug"]}/">Lesson {pv["lesson_num"]}: {esc(pv["title"])}</a></p>')
+                  f'<a href="{lesson_url(pv)}">Lesson {pv["lesson_num"]}: {esc(pv["title"])}</a></p>')
     upnext = ""
     if les["next"]:
         nx = by_slug[les["next"]]
-        upnext = (f'<a class="learn-upnext" href="/learn/courses/{nx["slug"]}/">'
+        upnext = (f'<a class="learn-upnext" href="{lesson_url(nx)}">'
                   f'<span class="learn-upnext-label">Up next · Lesson {nx["lesson_num"]}</span>'
                   f'<strong>{esc(nx["title"])}</strong><small>{esc(nx["summary"])}</small></a>')
     else:
@@ -425,11 +425,11 @@ def lesson_html(les: dict) -> str:
     objectives = "".join(f"<li>{esc(o)}</li>" for o in les["objectives"])
     sections = render_sections(les["sections"])
     prev_link = (
-        f'<a class="learn-nav-btn" href="/learn/courses/{les["prev"]}/">← Previous</a>'
+        f'<a class="learn-nav-btn" href="{lesson_url(by_slug[les["prev"]])}">← Previous</a>'
         if les["prev"] else '<span class="learn-nav-btn is-disabled">← Previous</span>'
     )
     next_link = (
-        f'<a class="learn-nav-btn learn-nav-btn--primary" href="/learn/courses/{les["next"]}/">Next lesson →</a>'
+        f'<a class="learn-nav-btn learn-nav-btn--primary" href="{lesson_url(by_slug[les["next"]])}">Next lesson →</a>'
         if les["next"] else '<span class="learn-nav-btn is-disabled">Next lesson →</span>'
     )
     breadcrumb_track = ""
@@ -445,7 +445,7 @@ def lesson_html(les: dict) -> str:
   <meta name="robots" content="index, follow">
   <title>{esc(les["title"])} | {esc(track["label"])} | stackcone Learn</title>
   <meta name="description" content="{esc(les["summary"])}">
-  <link rel="canonical" href="https://stackcone.com/learn/courses/{les["slug"]}/">
+  <link rel="canonical" href="https://stackcone.com{lesson_url(les)}">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -585,6 +585,12 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
 LEVEL_ORDER = {"Beginner": 0, "Intermediate": 1, "Advanced": 2}
 
 
+def lesson_url(les) -> str:
+    """/learn/{category}/{track}/{lesson}/ — e.g. /learn/programming/python/variables-and-types/"""
+    cat_id = TRACKS[les["track"]]["category"]
+    return f"/learn/{cat_id}/{les['track']}/{les['slug'].split('-', 1)[1]}/"
+
+
 def track_url(track_id: str) -> str:
     """Courses have no intro page: every course link goes straight to lesson 1."""
     return first_lesson_url(track_id)
@@ -625,7 +631,7 @@ def category_of(track_id: str) -> tuple[str, str]:
 
 
 def first_lesson_url(track_id: str) -> str:
-    return f"/learn/courses/{by_track[track_id][0]['slug']}/"
+    return lesson_url(by_track[track_id][0])
 
 
 def _framework_cards() -> str:
@@ -734,7 +740,7 @@ def courses_json() -> dict:
             "id": les["slug"],
             "title": les["title"],
             "description": les["summary"],
-            "href": f"./courses/{les['slug']}/",
+            "href": "." + lesson_url(les)[len("/learn"):],
             "track": les["track"],
             "trackLabel": track["label"],
             "parent": track.get("parent"),
@@ -748,7 +754,6 @@ def courses_json() -> dict:
 
 def main() -> None:
     LEARN.mkdir(exist_ok=True)
-    (LEARN / "courses").mkdir(exist_ok=True)
     (LEARN / "index.html").write_text(catalog_html(), encoding="utf-8")
     (LEARN / "courses.json").write_text(json.dumps(courses_json(), indent=2) + "\n", encoding="utf-8")
     for cat_id in CATEGORIES:
@@ -756,7 +761,7 @@ def main() -> None:
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(category_html(cat_id), encoding="utf-8")
     for les in LESSONS:
-        out = LEARN / "courses" / les["slug"] / "index.html"
+        out = ROOT / lesson_url(les).strip("/") / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(lesson_html(les), encoding="utf-8")
     print(f"Generated {len(LESSONS)} lessons + {len(TRACKS)} tracks + {len(CATEGORIES)} categories + catalog")

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Classes and Objects | Python | stackcone Learn</title>
+  <meta name="description" content="Model data with classes, __init__, methods, and self.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/python/oop-classes/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / Classes and Objects</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
+            <p class="learn-sidebar-progress">Lesson 7 of 9</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/hello-world/"><span class="learn-sidebar-num">1</span>Hello, Python</a>
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/variables-and-types/"><span class="learn-sidebar-num">2</span>Variables and Types</a>
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/control-flow/"><span class="learn-sidebar-num">3</span>Control Flow</a>
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/functions/"><span class="learn-sidebar-num">4</span>Functions</a>
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/lists-tuples/"><span class="learn-sidebar-num">5</span>Lists and Tuples</a>
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/dictionaries/"><span class="learn-sidebar-num">6</span>Dictionaries and Sets</a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/oop-classes/"><span class="learn-sidebar-num">7</span>Classes and Objects</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/file-handling/"><span class="learn-sidebar-num">8</span>File Handling</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/"><span class="learn-sidebar-num">9</span>Error Handling</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 7 of 9</p>
+          <h1>Classes and Objects</h1>
+          <p class="learn-summary">Model data with classes, __init__, methods, and self.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>18</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/dictionaries/">Lesson 6: Dictionaries and Sets</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>Define a class with __init__</li><li>Add instance methods</li><li>Understand self</li></ul>
+          </div>
+      <p>A <strong>class</strong> is a blueprint that bundles data (attributes) with the functions that work on it (methods). An <strong>object</strong>, or instance, is one thing built from that blueprint. Classes help when several related values travel together, such as a bank account with an owner and a balance, and when behavior belongs with that data.</p>
+      <h2>Your first class</h2>
+      <p><code>__init__</code> runs automatically when you create an instance and sets up its starting state. The first parameter of every method is <code>self</code>, which refers to the specific object the method is being called on. You do not pass it yourself; Python does.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+
+acct = BankAccount(&quot;Amar&quot;, 100)
+acct.deposit(50)
+print(acct.owner, acct.balance)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Amar 150</pre></div>
+      <h2>Each object has its own state</h2>
+      <p>Two instances of the same class do not share attribute values. Changing one account leaves the other untouched.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>a = BankAccount(&quot;Ann&quot;, 10)
+b = BankAccount(&quot;Bob&quot;, 500)
+a.deposit(5)
+print(a.balance, b.balance)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>15 500</pre></div>
+      <h2>Making objects printable</h2>
+      <p>Special methods with double underscores customize behavior. <code>__repr__</code> controls how an object is displayed, which makes debugging much easier than the default <code>&lt;BankAccount object at 0x...&gt;</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner, self.balance = owner, balance
+
+    def __repr__(self):
+        return f&quot;BankAccount({self.owner!r}, {self.balance})&quot;
+
+print(BankAccount(&quot;Amar&quot;, 100))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>BankAccount(&#x27;Amar&#x27;, 100)</pre></div>
+      <h2>Inheritance in one minute</h2>
+      <p>A subclass reuses and extends another class. Put the parent in parentheses and call <code>super()</code> to run its logic.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class SavingsAccount(BankAccount):
+    def add_interest(self, rate):
+        self.deposit(self.balance * rate)
+
+s = SavingsAccount(&quot;Amar&quot;, 1000)
+s.add_interest(0.05)
+print(s.balance)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1050.0</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>When to use a class</p><p class="learn-callout-body">If you only need to group a few values, a dictionary or a <code>dataclass</code> is simpler. Reach for a full class when behavior and data belong together.</p></aside>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>withdraw(amount)</code> method that refuses to make the balance negative. Return <code>True</code> when it works and <code>False</code> when it does not.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def withdraw(self, amount):
+        if amount &gt; self.balance:
+            return False
+        self.balance -= amount
+        return True
+
+acct = BankAccount(&quot;Amar&quot;, 100)
+print(acct.withdraw(150), acct.withdraw(40), acct.balance)"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/programming/python/file-handling/"><span class="learn-upnext-label">Up next · Lesson 8</span><strong>File Handling</strong><small>Read and write text files safely with context managers.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/dictionaries/">← Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/file-handling/">Next lesson →</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
+  <script src="/script.js" defer></script>
+</body>
+</html>
