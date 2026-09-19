@@ -16,7 +16,7 @@ After testing Payoneer, Wise, direct bank transfer, and **[Infinity](https://www
 | Mulya | ~1% flat + 0% markup | Strong alternative; hold USD option |
 | **Infinity (our pick)** | **0.5% all-inclusive** | Google/live FX, free FIRA, fast INR |
 
-*Illustrative at ~₹85.5/USD after Upwork 10% fee. Verify live rates before each withdrawal.*
+*Illustrative at ~₹95/USD after Upwork 10% fee. Verify live rates before each withdrawal.*
 
 ## Best method: US virtual account + ACH
 
@@ -87,15 +87,15 @@ After Upwork 10% ($100 fee), **$900** reaches payout stage:
 
 | Route | Est. INR received* |
 |-------|-------------------|
-| Infinity (0.5%) | ~₹76,500 |
-| Wise (~1.5%) | ~₹75,800 |
-| Mulya (~1%) | ~₹76,100 |
-| Payoneer (~2.5% FX) | ~₹75,000 |
-| Upwork direct INR (~2%) | ~₹75,300 |
+| Infinity (0.5%) | ~₹85,100 |
+| Wise (~1.5%) | ~₹84,200 |
+| Mulya (~1%) | ~₹84,600 |
+| Payoneer (~2.5% FX) | ~₹83,400 |
+| Upwork direct INR (~2%) | ~₹83,800 |
 
-*At ₹85.5/USD illustrative. Use each platform's calculator before withdrawing.*
+*At ₹95/USD illustrative. Use each platform's calculator before withdrawing.*
 
-**₹1,500 difference per $1,000** between best and worst option — ₹15,000/month on $10k earnings.
+**₹1,700 difference per $1,000** between best and worst option — ₹17,000/month on $10k earnings.
 
 ## Related guides
 

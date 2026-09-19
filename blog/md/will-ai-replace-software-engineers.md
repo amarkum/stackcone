@@ -76,7 +76,7 @@ Macro hiring (rates, IPO windows, Big Tech headcount cycles) still moves these b
 
 ## Remote US pay from India {#remote}
 
-US companies that hire in India — contractor, employer of record, or an India entity — often pay **$50–120k+ USD**. That is usually **above domestic India CTC bands** at the same years of experience, and still below US-onshore TC for the same level. Currency, benefits, and tax treatment differ; take-home is not “multiply CTC by 83.”
+US companies that hire in India — contractor, employer of record, or an India entity — often pay **$50–120k+ USD**. That is usually **above domestic India CTC bands** at the same years of experience, and still below US-onshore TC for the same level. Currency, benefits, and tax treatment differ; take-home is not “multiply CTC by 95.”
 
 The catch is the same as it was before agents: you need a signal US teams trust (English writing, overlapping hours, a portfolio, a referral) and you need to survive payroll legality. A practical playbook is [How to Get a Remote Software Job from India](/blog/posts/how-to-get-a-remote-software-job-from-india/). If you price yourself as a contractor on Upwork, work backwards from in-hand INR after fees and tax — [Upwork hourly rate in India (new tax regime)](/blog/posts/upwork-hourly-rate-india-new-tax-regime/) — not from a Twitter USD vanity rate.
 
@@ -84,9 +84,9 @@ AI made the remote interview slightly stranger: some take-homes are easier to fa
 
 ## India vs US mid-level {#chart}
 
-To put one number next to another, convert a planning midpoint. **India mid ~₹32 LPA** (inside the ₹15–35 LPA band; toward product / stronger GCCs, not a services floor). **US mid ~$185k TC** (midpoint of $150–220k). At a **planning FX of about ₹84 per USD**, ₹32 Lakh is roughly **$38k**. That FX gap is real for imported goods and travel. It is not PPP: rent and food in many Indian cities go further than $38k implies on a San Francisco spreadsheet.
+To put one number next to another, convert a planning midpoint. **India mid ~₹32 LPA** (inside the ₹15–35 LPA band; toward product / stronger GCCs, not a services floor). **US mid ~$185k TC** (midpoint of $150–220k). At a **planning FX of ₹95 per USD**, ₹32 Lakh is roughly **$34k**. That FX gap is real for imported goods and travel. It is not PPP: rent and food in many Indian cities go further than $34k implies on a San Francisco spreadsheet.
 
-Chart (published HTML): India mid (FX) ~$38k, remote US-hire in India midpoint of $50–120k (~$85k), US mid ~$185k TC. Planning bands converted to USD, not offers. FX is not purchasing-power parity.
+Chart (published HTML): India mid (FX) ~$34k, remote US-hire in India midpoint of $50–120k (~$85k), US mid ~$185k TC. Planning bands converted to USD, not offers. FX is not purchasing-power parity.
 
 Read the chart as **three labor markets**, not as “Indian engineers are underpaid by 5× so AI will equalize them.” Domestic India, remote-for-US from India, and US onshore buy different hours, legal risk, and scope. Models did not create that wedge; they did make it easier for a US team to try a smaller, higher-leverage remote hire instead of a larger junior bench onshore.
 

@@ -28,7 +28,7 @@ Clients see **$X/hr**. You care about **₹Y/month in hand**.
 Three layers sit between them:
 
 1. **Platform and payout fees** — Upwork commission, TDS withholding, forex app fee
-2. **USD → INR** — live exchange rate (we use ~₹85.5 in examples below)
+2. **USD → INR** — live exchange rate (we use ₹95 in examples below)
 3. **Income tax** — new regime slabs on **50% of receipts** (Section 44ADA), minus rebate if under ₹12L presumptive income
 
 Skip any layer and you under-quote by 20–40%.
@@ -43,7 +43,7 @@ On each dollar the client pays (simplified model matching the calculator):
 | TDS | 0.1% of after-Upwork | −$0.90 → $899.10 |
 | Infinity app forex fee | 0.5% of after-TDS | −$4.50 → **$894.60 convertible** |
 
-**~89.5%** of client USD reaches INR conversion. At ₹85.5/USD, $894.60 ≈ **₹76,489/week** before Indian income tax.
+**~89.5%** of client USD reaches INR conversion. At ₹95/USD, $894.60 ≈ **₹84,987** before Indian income tax.
 
 > Real Upwork tiers, bank wires, and GST may differ. Treat this as a planning baseline, not a CA-signed return.
 
@@ -75,31 +75,31 @@ Above that, tax ramps quickly. At $85/hr × 40 hrs/week you are well past the re
 
 ## Worked example: $85/hr at 40 hrs/week {#worked-example}
 
-Assumptions: **$85/hr**, **40 hrs/week**, **₹85.5/USD**, FY 2025-26 new regime.
+Assumptions: **$85/hr**, **40 hrs/week**, **₹95/USD**, FY 2025-26 new regime.
 
 | Line | Monthly (approx.) |
 |------|-----------------|
 | Client pays (gross USD) | $14,774 |
-| After Upwork + TDS + forex | $13,224 → **₹11.3L** received |
-| Presumptive taxable (50%) | ₹67.8L / year |
-| Income tax + cess | ₹16.8L / year |
-| **Monthly in hand** | **~₹9.9L** |
+| After Upwork + TDS + forex | $13,224 → **₹12.6L** received |
+| Presumptive taxable (50%) | ₹75.4L / year |
+| Income tax + cess | ₹19.1L / year |
+| **Monthly in hand** | **~₹11.0L** |
 
-So **$85/hr full-time** lands near **₹10 lakh/month in hand** — not ₹15 lakh+ you might guess from gross USD × FX.
+So **$85/hr full-time** lands near **₹11 lakh/month in hand** — not ₹14 lakh+ you might guess from gross USD × FX.
 
 ## Rate table: hourly to monthly in-hand {#rate-table}
 
-40 hours/week · ₹85.5/USD · new regime · Section 44ADA · fee chain as above.
+40 hours/week · ₹95/USD · new regime · Section 44ADA · fee chain as above.
 
 | Hourly (USD) | Hrs/week | Monthly in-hand (₹) | Tax rebate? |
 |--------------|----------|---------------------|-------------|
-| $30 | 20 | ~₹2.0L | Yes (≤ ₹12L presumptive) |
-| $50 | 30 | ~₹4.6L | No |
-| $65 | 40 | ~₹7.7L | No |
-| $85 | 40 | ~₹9.9L | No |
-| $100 | 40 | ~₹11.6L | No |
+| $30 | 20 | ~₹2.1L | No |
+| $50 | 30 | ~₹5.0L | No |
+| $65 | 40 | ~₹8.5L | No |
+| $85 | 40 | ~₹11.0L | No |
+| $100 | 40 | ~₹12.8L | No |
 
-Part-time at **$30/hr × 20 hrs** stays inside the **zero tax** band. Full-time at **$65+** does not.
+At ₹95/USD, **$30/hr × 20 hrs** is already past the **₹12L rebate** (presumptive ~₹13.3L). Full-time at **$65+** is well past it.
 
 ## Reverse rates: target in-hand to hourly {#reverse-rates}
 
@@ -107,13 +107,13 @@ What hourly rate do you need for a **monthly in-hand target**? (40 hrs/week, sam
 
 | Target in-hand (₹/month) | Required hourly (USD) |
 |--------------------------|------------------------|
-| ₹2,00,000 | ~$15.50 |
-| ₹3,00,000 | ~$24 |
-| ₹5,00,000 | ~$41 |
-| ₹7,50,000 | ~$64 |
-| ₹10,00,000 | ~$86 |
+| ₹2,00,000 | ~$14 |
+| ₹3,00,000 | ~$21 |
+| ₹5,00,000 | ~$37 |
+| ₹7,50,000 | ~$57 |
+| ₹10,00,000 | ~$77 |
 
-**Rule of thumb:** For ₹5L/month in hand at full-time hours, you need **low‑$40s/hr**, not $25.
+**Rule of thumb:** For ₹5L/month in hand at full-time hours, you need **high‑$30s/hr**, not $25.
 
 Add **10–15% buffer** for dry months, rate cuts, and FX drift before quoting clients.
 

@@ -1,6 +1,6 @@
 # ChatGPT Plus vs Claude Pro vs Gemini Advanced
 
-Twenty dollars a month is the new default for consumer AI. OpenAI, Anthropic, and Google all parked a flagship plan in that band. The question is not which logo is “best.” It is whether paying beats the free tier for the work you actually do — and whether India’s ~₹1,700 hits differently than a US salary.
+Twenty dollars a month is the new default for consumer AI. OpenAI, Anthropic, and Google all parked a flagship plan in that band. The question is not which logo is “best.” It is whether paying beats the free tier for the work you actually do — and whether India’s ~₹1,900 hits differently than a US salary.
 
 **Prices below are list prices and change.** Confirm on [OpenAI](https://openai.com/chatgpt/pricing/), [Anthropic](https://www.anthropic.com/pricing), and [Google AI plans](https://one.google.com/about) before you subscribe. This is not a review of every model version, and it is not a set of fake user testimonials.
 
@@ -20,7 +20,7 @@ Twenty dollars a month is the new default for consumer AI. OpenAI, Anthropic, an
 6. [When $100 and $200 plans make sense](#power)
 7. [A decision tree](#decide)
 8. [Illustrative monthly cost](#cost-chart)
-9. [India: ₹1,700 vs salary](#india)
+9. [India: ₹1,900 vs salary](#india)
 10. [Students](#students)
 11. [When free is enough](#free-enough)
 12. [When to pay for two](#two-plans)
@@ -30,21 +30,21 @@ Twenty dollars a month is the new default for consumer AI. OpenAI, Anthropic, an
 
 ## The $20 club at a glance {#glance}
 
-Approximate consumer list prices. Converted INR uses ~₹85/USD for orientation only — your bank’s rate and any GST on digital services will differ.
+Approximate consumer list prices. Converted INR uses ~₹95/USD for orientation only — your bank’s rate and any GST on digital services will differ.
 
 | Plan (common name) | Vendor name you may see | List USD / month | Rough INR / month | Typical buyer |
 |--------------------|-------------------------|------------------|-------------------|---------------|
 | ChatGPT Free | ChatGPT | $0 | ₹0 | Occasional questions; ads in some markets |
-| ChatGPT Go | ChatGPT Go | ~$8 | ~₹680 | People who hit Free limits but do not need Plus |
-| ChatGPT Plus | ChatGPT Plus | $20 | ~₹1,700 | Daily driver: tools, images, custom GPTs, agents |
-| ChatGPT Pro / Max-class | ChatGPT Pro / Pro Max | ~$100–$200 | ~₹8,500–₹17,000 | Heavy research, coding agents, all-day use |
+| ChatGPT Go | ChatGPT Go | ~$8 | ~₹760 | People who hit Free limits but do not need Plus |
+| ChatGPT Plus | ChatGPT Plus | $20 | ~₹1,900 | Daily driver: tools, images, custom GPTs, agents |
+| ChatGPT Pro / Max-class | ChatGPT Pro / Pro Max | ~$100–$200 | ~₹9,500–₹19,000 | Heavy research, coding agents, all-day use |
 | Claude Free | Claude | $0 | ₹0 | Writing and coding in short bursts |
-| Claude Pro | Claude Pro | $20 (~$17 annual) | ~₹1,700 | Long docs, careful reasoning, Claude Code |
-| Claude Max | Claude Max 5× / 20× | ~$100–$200 | ~₹8,500–₹17,000 | All-day Claude Code; no cheap middle tier below Pro |
+| Claude Pro | Claude Pro | $20 (~$17 annual) | ~₹1,900 | Long docs, careful reasoning, Claude Code |
+| Claude Max | Claude Max 5× / 20× | ~$100–$200 | ~₹9,500–₹19,000 | All-day Claude Code; no cheap middle tier below Pro |
 | Gemini Free | Gemini | $0 | ₹0 | Search-adjacent chat; 15 GB Google storage |
-| Google AI Plus | Google AI Plus | ~$4.99 | ~₹425 | Cheapest paid AI + extra Drive/Photos storage |
-| Google AI Pro (was Gemini Advanced) | Google AI Pro | $19.99 | ~₹1,700 | Workspace AI + large Google One storage |
-| Google AI Ultra | Google AI Ultra | ~$100–$200 | ~₹8,500–₹17,000 | Highest Gemini limits, video/research extras |
+| Google AI Plus | Google AI Plus | ~$4.99 | ~₹475 | Cheapest paid AI + extra Drive/Photos storage |
+| Google AI Pro (was Gemini Advanced) | Google AI Pro | $19.99 | ~₹1,900 | Workspace AI + large Google One storage |
+| Google AI Ultra | Google AI Ultra | ~$100–$200 | ~₹9,500–₹19,000 | Highest Gemini limits, video/research extras |
 
 Same headline price, different boxes. ChatGPT Plus is a **toolkit**. Claude Pro is a **thinking and writing surface** (and the on-ramp to Claude Code). Google AI Pro is an **AI + storage + Workspace** bundle.
 
@@ -129,7 +129,7 @@ The power tier has three honest use cases. Most people do not have them.
 
 They do **not** make sense because a YouTuber called the $200 plan “the only way to get the real model.” Flagship quality at $20 is already the product most professionals use. Max/Pro/Ultra are **capacity and extras**, not a secret IQ upgrade for casual chat.
 
-If you freelance from India, compare the seat to **one hour of your rate**, not to Silicon Valley disposable income. A $200 plan is ~₹17,000/month. That is a serious line item until your [in-hand Upwork math](/blog/posts/upwork-hourly-rate-india-new-tax-regime/) says otherwise.
+If you freelance from India, compare the seat to **one hour of your rate**, not to Silicon Valley disposable income. A $200 plan is ~₹19,000/month. That is a serious line item until your [in-hand Upwork math](/blog/posts/upwork-hourly-rate-india-new-tax-regime/) says otherwise.
 
 ## A decision tree {#decide}
 
@@ -172,11 +172,11 @@ USD list prices, not discounted annual, not INR GST. Use the chart as a **shape*
 | Power tier | ~$100 | 5×-class capacity |
 | Top consumer tier | ~$200 | 20×-class / Ultra |
 
-## India: ₹1,700 vs salary {#india}
+## India: ₹1,900 vs salary {#india}
 
-At ~₹85/USD, **$20 ≈ ₹1,700/month** (card conversion and GST on online services can push it higher). Context:
+At ~₹95/USD, **$20 ≈ ₹1,900/month** (card conversion and GST on online services can push it higher). Context:
 
-| Situation | Monthly money (order of magnitude) | ₹1,700 feels like |
+| Situation | Monthly money (order of magnitude) | ₹1,900 feels like |
 |-----------|------------------------------------|-------------------|
 | Student / first job | ₹15k–₹40k in-hand | A visible bill — run the [cancel test](#cancel) |
 | Early-career engineer | ₹50k–₹90k | 2–3% of in-hand; easy to justify if it saves a few hours |
@@ -211,7 +211,7 @@ Free is also enough as a **second vendor**. Many people should pay for one model
 
 ## When to pay for two {#two-plans}
 
-Two ~$20 seats ≈ **$40 / ~₹3,400**. That is rational when the vendors fail in different ways.
+Two ~$20 seats ≈ **$40 / ~₹3,800**. That is rational when the vendors fail in different ways.
 
 | Combo | Why it exists | Who it is for |
 |-------|----------------|---------------|
@@ -275,7 +275,7 @@ No. Claude’s consumer ladder is Free, Pro (~$20), then Max (~$100–$200). If 
 
 When you already saturate the $20 cap with agents, deep research, or video, and the wait costs more than the seat. It is a capacity purchase. It is a poor first subscription.
 
-### Is ₹1,700 a lot in India?
+### Is ₹1,900 a lot in India?
 
 It is a lot on a student stipend and a rounding error on a US-billed freelance month. Compare it to hours saved and to [your real in-hand rate](/blog/posts/upwork-hourly-rate-india-new-tax-regime/), not to the US sticker shock debate.
 

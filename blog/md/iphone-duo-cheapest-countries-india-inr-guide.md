@@ -8,7 +8,7 @@ Alongside **iPhone 18 Pro** and **iPhone 18 Pro Max**, Apple unveiled **iPhone D
 
 That ~₹1 lakh gap is what this post is about. Not hype. Not “Apple bad.” Just the INR math, the cheapest countries, how Duo stacks up against 18 Pro Max, and whether buying abroad is actually worth it.
 
-> Prices and FX move. Conversions below use ~₹95–₹96 per USD from mid-September 2026 coverage. Always confirm Apple Store / authorised retailer prices before you buy or travel.
+> Prices and FX move. Conversions below use ₹95 per USD from mid-September 2026 coverage. Always confirm Apple Store / authorised retailer prices before you buy or travel.
 
 ## Quick take (if you only have 60 seconds)
 
