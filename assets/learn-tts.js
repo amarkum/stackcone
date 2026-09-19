@@ -70,21 +70,52 @@
   // Novelty voices shipped with macOS make a poor reading voice; keep them out of the menu.
   var NOVELTY = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|fred|kathy|grandma|grandpa|rocko|eddy|reed)\b/i;
 
+  // "Microsoft Aria Online (Natural) - English (United States)" -> "Aria (Natural)",
+  // "Flo (English (United Kingdom))" -> "Flo".
+  function voiceLabel(v) {
+    var natural = /natural|neural/i.test(v.name);
+    var name = v.name
+      .replace(/^(Microsoft|Google|Apple)\s+/i, "")
+      .replace(/\s*-\s*English.*$/i, "")
+      .replace(/\s*\((English|Natural|Enhanced|Premium)[^)]*\)+/gi, "")
+      .replace(/\s+Online\b/i, "")
+      .trim();
+    return natural ? name + " (Natural)" : name;
+  }
+
+  // One entry per label; US English wins over other accents with the same name.
+  function langRank(v) {
+    var l = v.lang.toLowerCase();
+    return l === "en-us" ? 0 : l === "en-gb" ? 1 : 2;
+  }
+
   function fillVoices() {
     if (!voiceSel) return;
-    var pool = englishVoices().filter(function (v) { return !NOVELTY.test(v.name); });
-    if (!pool.length) { voiceSel.hidden = true; return; }
+    var byLabel = {};
+    englishVoices().forEach(function (v) {
+      if (NOVELTY.test(v.name) || !/^en/i.test(v.lang)) return;
+      var key = voiceLabel(v);
+      if (!byLabel[key] || langRank(v) < langRank(byLabel[key])) byLabel[key] = v;
+    });
+    var labels = Object.keys(byLabel).sort(function (x, y) {
+      // Natural voices first, then alphabetical.
+      var nx = /\(Natural\)$/.test(x) ? 0 : 1, ny = /\(Natural\)$/.test(y) ? 0 : 1;
+      return nx - ny || x.localeCompare(y);
+    });
+    if (!labels.length) { voiceSel.hidden = true; return; }
     var current = pickVoice();
+    var currentLabel = current ? voiceLabel(current) : "";
     voiceSel.innerHTML = "";
-    pool.forEach(function (v) {
+    labels.forEach(function (label) {
       var o = document.createElement("option");
-      o.value = v.name;
-      o.textContent = v.name.replace(/^Microsoft /, "").replace(/ Online \(Natural\)/, " (Natural)") + (v.lang ? " · " + v.lang : "");
-      if (current && v.name === current.name) o.selected = true;
+      o.value = byLabel[label].name;
+      o.textContent = label;
+      if (label === currentLabel) o.selected = true;
       voiceSel.appendChild(o);
     });
     voiceSel.hidden = false;
   }
+
 
   function collect() {
     var out = [];
