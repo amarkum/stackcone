@@ -57,6 +57,12 @@ TRACKS = {
         "description": "Typed, fast Python APIs with validation and automatic docs."},
     "express": {"label": "Express", "parent": "Frameworks", "category": "frameworks",
         "description": "Routes, middleware and REST APIs on Node.js."},
+    "one-course": {
+        "label": "AI: One Course",
+        "parent": "AI",
+        "category": "ai",
+        "description": "LLMs, tokens, prompts, embeddings, vector search, BM25, hybrid search, RAG, agents, harnesses, LangGraph, streaming and interview prep. Beginner to expert, in one place.",
+    },
     "data-structures": {
         "label": "Data Structures",
         "parent": "DS & Algo",
@@ -73,6 +79,10 @@ CATEGORIES = {
     "ds-algo": {
         "label": "DS & Algo",
         "description": "Data structures, algorithms and system design — the thinking behind interviews and real systems.",
+    },
+    "ai": {
+        "label": "AI",
+        "description": "Everything about modern AI in one course: LLMs, embeddings, RAG, agents and interview prep.",
     },
     "frameworks": {
         "label": "Frameworks",
@@ -280,6 +290,7 @@ LESSONS = [
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from content_python import CONTENT as _PY
+from content_ai import META as _MAI, CONTENT as _CAI
 from content_python_more import META as _MPY, CONTENT as _PY2
 from content_java import CONTENT as _JAVA
 from content_ds import CONTENT as _DS
@@ -289,9 +300,9 @@ from content_frameworks import META as _M3, CONTENT as _C3
 from content_web_tools import META as _M4, CONTENT as _C4
 from content_more import META as _M5, CONTENT as _C5
 from content_batch3 import META as _M6, CONTENT as _C6
-for _m in (*_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
+for _m in (*_MAI, *_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
     LESSONS.append({**_m, "sections": []})
-_RICH = {**_PY, **_PY2, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
+_RICH = {**_CAI, **_PY, **_PY2, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
 for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
@@ -790,7 +801,7 @@ def catalog_html() -> str:
     <div class="learn-main-inner learn-catalog">
       <div class="learn-hero">
         <h1>Learn</h1>
-        <p class="learn-hero-desc">Hands-on courses in Programming, DS &amp; Algo, and Frameworks. Short lessons, runnable examples, and exercises after every topic.</p>
+        <p class="learn-hero-desc">Hands-on courses in Programming, DS &amp; Algo, Frameworks and AI. Short lessons, runnable examples, and exercises after every topic.</p>
       </div>
       <div class="learn-tracks">
 {"".join(cat_cards)}
@@ -799,7 +810,7 @@ def catalog_html() -> str:
   </main>"""
     return _page_shell(
         "Learn Coding &amp; Data Structures | stackcone",
-        "Free coding courses — Programming, DS & Algo, and Frameworks. Interactive lessons with exercises.",
+        "Free coding and AI courses — Programming, DS & Algo, Frameworks and the AI: One Course guide from LLMs to agents. Interactive lessons with exercises.",
         "https://stackcone.com/learn/",
         body,
     )
@@ -815,6 +826,10 @@ def category_html(cat_id: str) -> str:
       </div>"""
     elif cat_id == "ds-algo":
         catalog_body = _ds_algo_catalog()
+    elif cat_id == "ai":
+        catalog_body = f"""      <div class="learn-tracks">
+{"".join(_lesson_card(les, TRACKS[les["track"]]["label"]) for tid in track_ids for les in by_track[tid])}
+      </div>"""
     else:
         track_block = _track_cards(track_ids)
         catalog_body = f"""      <div class="learn-tracks">

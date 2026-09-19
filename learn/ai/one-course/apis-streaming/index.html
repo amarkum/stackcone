@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>APIs, SSE, WebSockets and Streaming | AI: One Course | stackcone Learn</title>
+  <meta name="description" content="How apps talk to models over HTTP, and how streaming works: polling, SSE, WebSockets, with a working parser.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/one-course/apis-streaming/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/one-course/what-is-an-llm/">AI: One Course</a> / APIs, SSE, WebSockets and Streaming</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/ai/one-course/what-is-an-llm/">AI: One Course</a></p>
+            <p class="learn-sidebar-progress">Lesson 5 of 20</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/what-is-an-llm/"><span class="learn-sidebar-num">1</span>What Is AI? What Is an LLM?</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/tokens-context/"><span class="learn-sidebar-num">2</span>Tokens, Context Windows and Cost</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/prompts-sampling/"><span class="learn-sidebar-num">3</span>Prompts, Temperature and Sampling</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/hallucinations/"><span class="learn-sidebar-num">4</span>Hallucinations: Why and How to Reduce Them</a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/one-course/apis-streaming/"><span class="learn-sidebar-num">5</span>APIs, SSE, WebSockets and Streaming</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/embeddings/"><span class="learn-sidebar-num">6</span>Vectors and Embeddings</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/vector-search/"><span class="learn-sidebar-num">7</span>Chunking, Vector Databases and ANN Search</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/bm25/"><span class="learn-sidebar-num">8</span>Keyword Search and BM25</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/hybrid-rerank/"><span class="learn-sidebar-num">9</span>Hybrid Search and Reranking</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/rag/"><span class="learn-sidebar-num">10</span>RAG: Retrieval-Augmented Generation</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/rag-evaluation/"><span class="learn-sidebar-num">11</span>Evaluating and Improving RAG</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/tool-calling/"><span class="learn-sidebar-num">12</span>Tool Calling and Structured Output</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/agentic/"><span class="learn-sidebar-num">13</span>Agentic AI: From Chatbots to Agents</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/agent-harness/"><span class="learn-sidebar-num">14</span>The Agent Harness and Agent SDKs</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/langgraph-llamaindex/"><span class="learn-sidebar-num">15</span>LangGraph, LlamaIndex and LangChain</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/multi-agent-mcp-safety/"><span class="learn-sidebar-num">16</span>Multi-Agent Systems, MCP and AI Safety</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/production/"><span class="learn-sidebar-num">17</span>Shipping AI to Production</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/interview-basics/"><span class="learn-sidebar-num">18</span>Interview Special I: LLM, Embeddings, RAG and Search Questions</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/interview-advanced/"><span class="learn-sidebar-num">19</span>Interview Special II: Agents, System Design and Live Scenarios</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/glossary-roadmap/"><span class="learn-sidebar-num">20</span>Glossary, Cheat Sheet and Learning Roadmap</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/ai/one-course/what-is-an-llm/">AI: One Course</a> · Lesson 5 of 20</p>
+          <h1>APIs, SSE, WebSockets and Streaming</h1>
+          <p class="learn-summary">How apps talk to models over HTTP, and how streaming works: polling, SSE, WebSockets, with a working parser.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><strong>26</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/one-course/hallucinations/">Lesson 4: Hallucinations: Why and How to Reduce Them</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>Call an LLM API correctly</li><li>Explain SSE and how it differs from WebSockets</li><li>Choose the right transport</li></ul>
+          </div>
+      <p>So far we treated the model as a magic box. Now let us open the plumbing. How does your app actually talk to an LLM? Why does ChatGPT type out its answer word by word instead of making you wait? And what are SSE and WebSockets, the two words everyone throws around when discussing real-time AI apps? This lesson answers all of it, with a working streaming parser you can run.</p>
+      <h2>APIs in one minute</h2>
+      <p>An <strong>API</strong> (application programming interface) is a doorway that lets one program use another program's abilities. The web mostly speaks <strong>HTTP</strong>: your program sends a <em>request</em> (a URL, a method like <code>POST</code>, headers, a body), and gets back a <em>response</em> (a status code, headers, a body). The body is usually <strong>JSON</strong>, a simple text format for structured data.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Your app                                          LLM provider
+   |  POST /v1/chat/completions                       |
+   |  Authorization: Bearer sk-...                    |
+   |  Content-Type: application/json                  |
+   |  {&quot;model&quot;:&quot;...&quot;,&quot;messages&quot;:[...]}   ------------&gt;|
+   |                                                  |  (model thinks)
+   |&lt;------------  200 OK  {&quot;choices&quot;:[{&quot;message&quot;:...}]}</code></pre></div>
+      <ul><li><strong>Method</strong>: <code>GET</code> reads, <code>POST</code> sends data (LLM calls are POSTs).</li><li><strong>Status codes</strong>: <code>200</code> ok, <code>400</code> you sent something wrong, <code>401</code> bad API key, <code>429</code> rate limited (slow down!), <code>500/503</code> the server had a problem.</li><li><strong>API key</strong>: a secret that identifies you and bills you. Keep it on your <em>server</em>. Never put it in browser JavaScript or commit it to Git.</li><li><strong>Rate limits</strong>: providers cap requests and tokens per minute. Handle <code>429</code> with retry and <em>exponential backoff</em> (wait 1s, 2s, 4s, with a little randomness).</li></ul>
+      <p>A minimal call with Python's <code>requests</code> library looks like this (shown for reading; it needs a real key so it has no Run button):</p>
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>import os, requests
+
+response = requests.post(
+    &quot;https://api.example.com/v1/chat/completions&quot;,
+    headers={&quot;Authorization&quot;: f&quot;Bearer {os.environ[&#x27;API_KEY&#x27;]}&quot;},
+    json={
+        &quot;model&quot;: &quot;some-model&quot;,
+        &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Explain RAG in one sentence.&quot;}],
+        &quot;max_tokens&quot;: 100,
+    },
+    timeout=30,
+)
+response.raise_for_status()
+print(response.json()[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;])</code></pre></div>
+      <h2>The waiting problem</h2>
+      <p>A 500-token answer takes ten seconds to generate. If your app waits for the <em>whole</em> answer before showing anything, users stare at a spinner for ten seconds and assume it is broken. The fix is <strong>streaming</strong>: the server sends each token (or small group of tokens) the moment it is produced, and the UI paints them as they arrive. Total time is the same, but the first words appear in half a second. Perceived speed is what matters.</p>
+      <h2>Four ways to move data in real time</h2>
+      <p>How can a server push data to a browser as it becomes available? There are four classic answers:</p>
+      <ul><li><strong>Polling.</strong> The client asks again and again: "anything new? anything new?" Simple, wasteful, laggy.</li><li><strong>Long polling.</strong> The client asks; the server holds the request open until it has something, then replies, and the client immediately asks again. Better, but clunky.</li><li><strong>Server-Sent Events (SSE).</strong> One normal HTTP request that the server <em>keeps open</em>, streaming a text feed of events down it, one direction only (server to client).</li><li><strong>WebSockets.</strong> A permanent, two-way connection upgraded from HTTP. Both sides can send messages at any time.</li></ul>
+      <h2>SSE in detail: the format of LLM streaming</h2>
+      <p>SSE is what most LLM APIs use for streaming, so it is worth understanding at the byte level. The response has the header <code>Content-Type: text/event-stream</code> and the connection stays open. The body is plain text made of <em>events</em>, each a few lines, separated by a blank line:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>event: token
+data: {&quot;text&quot;: &quot;Hel&quot;}
+
+event: token
+data: {&quot;text&quot;: &quot;lo&quot;}
+
+data: {&quot;text&quot;: &quot; world&quot;}
+
+data: [DONE]
+</code></pre></div>
+      <ul><li>A line starting with <code>data:</code> carries the payload (often JSON).</li><li><code>event:</code> optionally names the event type.</li><li><code>id:</code> optionally sets an ID, so a reconnecting client can say "resume after event 42" using the <code>Last-Event-ID</code> header.</li><li>A <strong>blank line</strong> ends the event.</li><li>Lines starting with <code>:</code> are comments, often used as keep-alive heartbeats.</li></ul>
+      <p>Let us write a real SSE parser and feed it a simulated LLM stream, chopped at awkward places, the way real network chunks arrive:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import json
+
+def sse_events(chunks):
+    &quot;&quot;&quot;Turn arbitrary network chunks into complete SSE events.&quot;&quot;&quot;
+    buffer = &quot;&quot;
+    for chunk in chunks:
+        buffer += chunk
+        # an event is finished when we see a blank line
+        while &quot;\n\n&quot; in buffer:
+            raw, buffer = buffer.split(&quot;\n\n&quot;, 1)
+            event = {&quot;event&quot;: &quot;message&quot;, &quot;data&quot;: []}
+            for line in raw.split(&quot;\n&quot;):
+                if line.startswith(&quot;:&quot;):          # comment / heartbeat
+                    continue
+                field, _, value = line.partition(&quot;:&quot;)
+                value = value.lstrip(&quot; &quot;)
+                if field == &quot;data&quot;:
+                    event[&quot;data&quot;].append(value)
+                elif field == &quot;event&quot;:
+                    event[&quot;event&quot;] = value
+            if event[&quot;data&quot;]:
+                event[&quot;data&quot;] = &quot;\n&quot;.join(event[&quot;data&quot;])
+                yield event
+
+# A stream that arrives in badly cut pieces (mid-line, mid-event)
+network_chunks = [
+    &#x27;event: token\ndata: {&quot;te&#x27;,
+    &#x27;xt&quot;: &quot;Hel&quot;}\n\nevent: token\nda&#x27;,
+    &#x27;ta: {&quot;text&quot;: &quot;lo&quot;}\n\n: heartbeat\n\n&#x27;,
+    &#x27;data: {&quot;text&quot;: &quot; world&quot;}\n\ndata: [DONE]\n\n&#x27;,
+]
+
+answer = &quot;&quot;
+for event in sse_events(network_chunks):
+    if event[&quot;data&quot;] == &quot;[DONE]&quot;:
+        print(&quot;stream finished&quot;)
+        break
+    token = json.loads(event[&quot;data&quot;])[&quot;text&quot;]
+    answer += token
+    print(f&quot;got {event[&#x27;event&#x27;]!r:8} -&gt; {token!r:9} so far: {answer!r}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>got &#x27;token&#x27;  -&gt; &#x27;Hel&#x27;     so far: &#x27;Hel&#x27;
+got &#x27;token&#x27;  -&gt; &#x27;lo&#x27;      so far: &#x27;Hello&#x27;
+got &#x27;message&#x27; -&gt; &#x27; world&#x27;  so far: &#x27;Hello world&#x27;
+stream finished</pre></div>
+      <p>Notice how the parser copes with network chunks that cut an event in half: it buffers until it sees the blank line. Getting this right is the classic bug in hand-written streaming clients.</p>
+      <h2>The server side: streaming with SSE</h2>
+      <p>On the server, streaming means returning a generator that yields events. Here is the shape in FastAPI (read-only, needs the framework):</p>
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+import json, asyncio
+
+app = FastAPI()
+
+async def token_stream(prompt: str):
+    # in real life: async for chunk in llm.stream(prompt): ...
+    for word in [&quot;RAG&quot;, &quot; retrieves&quot;, &quot; then&quot;, &quot; generates.&quot;]:
+        yield f&quot;data: {json.dumps({&#x27;text&#x27;: word})}\n\n&quot;
+        await asyncio.sleep(0.1)
+    yield &quot;data: [DONE]\n\n&quot;
+
+@app.post(&quot;/chat&quot;)
+async def chat(body: dict):
+    return StreamingResponse(token_stream(body[&quot;prompt&quot;]), media_type=&quot;text/event-stream&quot;)</code></pre></div>
+      <p>And in the browser. Note that <code>EventSource</code> only supports GET and cannot set headers, so for POST-based chat APIs people use <code>fetch()</code> and read the response body as a stream:</p>
+      <div class="learn-code-wrap" data-lang="jsfile"><pre><code>const response = await fetch(&quot;/chat&quot;, {
+  method: &quot;POST&quot;,
+  headers: { &quot;Content-Type&quot;: &quot;application/json&quot; },
+  body: JSON.stringify({ prompt: &quot;Explain SSE&quot; }),
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+let buffer = &quot;&quot;;
+
+while (true) {
+  const { value, done } = await reader.read();
+  if (done) break;
+  buffer += decoder.decode(value, { stream: true });
+
+  let idx;
+  while ((idx = buffer.indexOf(&quot;\n\n&quot;)) !== -1) {
+    const raw = buffer.slice(0, idx);
+    buffer = buffer.slice(idx + 2);
+    if (raw.startsWith(&quot;data: &quot;)) {
+      const data = raw.slice(6);
+      if (data === &quot;[DONE]&quot;) return;
+      output.textContent += JSON.parse(data).text;   // paint each token
+    }
+  }
+}</code></pre></div>
+      <h2>WebSockets: the two-way street</h2>
+      <p>A WebSocket starts as a normal HTTP request with an <code>Upgrade: websocket</code> header. If the server agrees, the connection stops being HTTP and becomes a persistent pipe where either side can send <em>frames</em> at any moment. There is no request/response pairing.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Client                                   Server
+  | GET /chat  Upgrade: websocket  -------&gt;|
+  |&lt;------ 101 Switching Protocols ---------|
+  |                                         |
+  |======== persistent two-way pipe =======|
+  |--- {&quot;type&quot;:&quot;user_message&quot;...} --------&gt;|
+  |&lt;-- {&quot;type&quot;:&quot;token&quot;,&quot;text&quot;:&quot;Hel&quot;} ------|
+  |&lt;-- {&quot;type&quot;:&quot;token&quot;,&quot;text&quot;:&quot;lo&quot;} --------|
+  |--- {&quot;type&quot;:&quot;cancel&quot;} -----------------&gt;|   &lt;- client can interrupt mid-answer
+  |&lt;-- {&quot;type&quot;:&quot;done&quot;} ---------------------|</code></pre></div>
+      <h2>SSE vs WebSocket: how to choose</h2>
+      <ul><li><strong>Direction.</strong> SSE is one-way (server to client). WebSocket is two-way. A chatbot that streams an answer needs mostly one-way, so SSE is enough.</li><li><strong>Simplicity.</strong> SSE is plain HTTP: works with standard proxies, load balancers, auth cookies, and auto-reconnects for free. WebSockets need special handling in infrastructure.</li><li><strong>Reconnection.</strong> SSE has built-in reconnect with <code>Last-Event-ID</code>. With WebSockets you build it yourself.</li><li><strong>Data types.</strong> SSE is text only. WebSocket can carry binary (audio, images).</li><li><strong>Scale and cost.</strong> Many long-lived connections cost memory on the server either way; SSE is generally lighter to operate.</li><li><strong>Choose WebSockets when</strong> the client must send frequent messages <em>while</em> receiving: live voice conversations, collaborative editing, multiplayer, interrupt/cancel controls, browser agents streaming screenshots.</li><li><strong>Choose SSE when</strong> the client sends one request and the server streams back a response: chat answers, progress updates, live logs.</li></ul>
+      <p>A useful mental model: <strong>SSE is a radio broadcast you tune into. A WebSocket is a phone call.</strong></p>
+      <h2>Beyond text: what real-time AI apps also use</h2>
+      <ul><li><strong>WebRTC</strong> for low-latency audio and video (voice assistants that you can interrupt mid-sentence).</li><li><strong>Webhooks</strong>: the server calls <em>your</em> URL when a long job finishes (batch jobs, background agents).</li><li><strong>Job queues + polling</strong> for tasks that take minutes: return a job ID immediately, let the client poll for status, or push the result when done.</li></ul>
+      <h2>Production checklist for streaming</h2>
+      <ul><li>Disable proxy buffering (for nginx: <code>X-Accel-Buffering: no</code>), or your tokens arrive in one lump.</li><li>Send periodic heartbeats so idle connections are not closed.</li><li>Handle client disconnects: stop generating, and stop paying for tokens nobody will read.</li><li>Show a stop button and support cancellation.</li><li>Time out and retry with backoff on <code>429</code> and <code>5xx</code>.</li><li>Log token counts and time-to-first-token per request.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend the SSE parser so it also captures the <code>id:</code> field and remembers the last one it saw. Print it at the end. This is exactly what a client needs to send as <code>Last-Event-ID</code> when it reconnects.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def sse_events(chunks):
+    buffer, last_id = &quot;&quot;, None
+    for chunk in chunks:
+        buffer += chunk
+        while &quot;\n\n&quot; in buffer:
+            raw, buffer = buffer.split(&quot;\n\n&quot;, 1)
+            data = []
+            for line in raw.split(&quot;\n&quot;):
+                field, _, value = line.partition(&quot;:&quot;)
+                value = value.lstrip(&quot; &quot;)
+                if field == &quot;id&quot;:
+                    last_id = value
+                elif field == &quot;data&quot;:
+                    data.append(value)
+            if data:
+                yield &quot;\n&quot;.join(data), last_id
+
+chunks = [&quot;id: 41\ndata: a\n\nid: 42\nda&quot;, &quot;ta: b\n\n&quot;]
+for data, last_id in sse_events(chunks):
+    print(data, &quot;last id:&quot;, last_id)"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/ai/one-course/embeddings/"><span class="learn-upnext-label">Up next · Lesson 6</span><strong>Vectors and Embeddings</strong><small>What a vector is, how text becomes numbers that capture meaning, and how cosine similarity finds related text.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/one-course/hallucinations/">Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ai/one-course/embeddings/">Next lesson</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

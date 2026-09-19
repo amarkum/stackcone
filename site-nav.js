@@ -51,6 +51,15 @@
         { href: "/learn/frameworks/", label: "All Frameworks", separator: true }
       ]
     },
+    {
+      id: "ai",
+      label: "AI",
+      href: "/learn/ai/",
+      children: [
+        { href: "/learn/ai/one-course/what-is-an-llm/", label: "AI: One Course", matches: ["/learn/ai/one-course"] },
+        { href: "/learn/ai/", label: "All AI lessons", separator: true }
+      ]
+    },
     { href: "/blog/", label: "Blog" },
     { href: "/about/", label: "About" },
     { href: "/contact/", label: "Contact" }
@@ -58,7 +67,7 @@
 
   // Merge Programming / DS & Algo / Frameworks into a single nested "Learn" menu
   (function () {
-    var ids = ["programming", "ds-algo", "frameworks"];
+    var ids = ["programming", "ds-algo", "frameworks", "ai"];
     var subs = [];
     var at = -1;
     NAV_ITEMS = NAV_ITEMS.filter(function (it, i) {

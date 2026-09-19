@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Interview Special II: Agents, System Design and Live Scenarios | AI: One Course | stackcone Learn</title>
+  <meta name="description" content="Agent and harness questions, five system design walkthroughs, live debugging scenarios and coding-round exercises.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/one-course/interview-advanced/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/one-course/what-is-an-llm/">AI: One Course</a> / Interview Special II: Agents, System Design and Live Scenarios</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/ai/one-course/what-is-an-llm/">AI: One Course</a></p>
+            <p class="learn-sidebar-progress">Lesson 19 of 20</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/what-is-an-llm/"><span class="learn-sidebar-num">1</span>What Is AI? What Is an LLM?</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/tokens-context/"><span class="learn-sidebar-num">2</span>Tokens, Context Windows and Cost</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/prompts-sampling/"><span class="learn-sidebar-num">3</span>Prompts, Temperature and Sampling</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/hallucinations/"><span class="learn-sidebar-num">4</span>Hallucinations: Why and How to Reduce Them</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/apis-streaming/"><span class="learn-sidebar-num">5</span>APIs, SSE, WebSockets and Streaming</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/embeddings/"><span class="learn-sidebar-num">6</span>Vectors and Embeddings</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/vector-search/"><span class="learn-sidebar-num">7</span>Chunking, Vector Databases and ANN Search</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/bm25/"><span class="learn-sidebar-num">8</span>Keyword Search and BM25</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/hybrid-rerank/"><span class="learn-sidebar-num">9</span>Hybrid Search and Reranking</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/rag/"><span class="learn-sidebar-num">10</span>RAG: Retrieval-Augmented Generation</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/rag-evaluation/"><span class="learn-sidebar-num">11</span>Evaluating and Improving RAG</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/tool-calling/"><span class="learn-sidebar-num">12</span>Tool Calling and Structured Output</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/agentic/"><span class="learn-sidebar-num">13</span>Agentic AI: From Chatbots to Agents</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/agent-harness/"><span class="learn-sidebar-num">14</span>The Agent Harness and Agent SDKs</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/langgraph-llamaindex/"><span class="learn-sidebar-num">15</span>LangGraph, LlamaIndex and LangChain</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/multi-agent-mcp-safety/"><span class="learn-sidebar-num">16</span>Multi-Agent Systems, MCP and AI Safety</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/production/"><span class="learn-sidebar-num">17</span>Shipping AI to Production</a>
+          <a class="learn-sidebar-link is-done" href="/learn/ai/one-course/interview-basics/"><span class="learn-sidebar-num">18</span>Interview Special I: LLM, Embeddings, RAG and Search Questions</a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/one-course/interview-advanced/"><span class="learn-sidebar-num">19</span>Interview Special II: Agents, System Design and Live Scenarios</a>
+          <a class="learn-sidebar-link" href="/learn/ai/one-course/glossary-roadmap/"><span class="learn-sidebar-num">20</span>Glossary, Cheat Sheet and Learning Roadmap</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/ai/one-course/what-is-an-llm/">AI: One Course</a> · Lesson 19 of 20</p>
+          <h1>Interview Special II: Agents, System Design and Live Scenarios</h1>
+          <p class="learn-summary">Agent and harness questions, five system design walkthroughs, live debugging scenarios and coding-round exercises.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><strong>45</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/one-course/interview-basics/">Lesson 18: Interview Special I: LLM, Embeddings, RAG and Search Questions</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>Design a RAG chatbot and an agent on a whiteboard</li><li>Debug production scenarios out loud</li><li>Solve the common coding-round tasks</li></ul>
+          </div>
+      <p>Part II is where offers are won. It covers agents and harnesses, five full <strong>system design</strong> walkthroughs, <strong>live debugging scenarios</strong> (the 'real-time questions' interviewers throw at you), and the <strong>coding tasks</strong> that come up most. For system design, use this skeleton every time: <strong>clarify requirements, sketch the pipeline, dive into the risky parts, then cover evaluation, cost, latency and security.</strong> Saying the structure out loud is itself a signal of seniority.</p>
+      <h2>Part A: Agents, tools and harnesses</h2>
+      <p><strong>1. What is an agent? How is it different from a workflow?</strong></p>
+      <p>An agent is an LLM that decides its own next steps in a loop, using tools, until a goal is met. A workflow is LLM calls orchestrated by predefined code paths. Workflows are predictable and cheap; agents are flexible for open-ended tasks but slower, costlier and harder to control. I default to the simplest thing that works and add autonomy only where the steps genuinely cannot be listed in advance.</p>
+      <p><strong>2. Describe the ReAct loop.</strong></p>
+      <p>Reason, act, observe. The model emits a short thought and a tool call, the harness executes it and appends the observation, and the model continues until it produces a final answer or hits a limit. The loop plus tool feedback is what lets an agent correct itself.</p>
+      <p><strong>3. How does tool calling work, and who executes the tool?</strong></p>
+      <p>You describe tools with a name, description and JSON Schema. The model returns a structured request to call one. Your application executes it (never the model), appends the result as a tool message, and calls the model again. Because your code is in the middle, it is where you validate arguments, enforce permissions and log.</p>
+      <p><strong>4. What is an agent harness?</strong></p>
+      <p>Everything around the model that makes it an agent: the loop, tool registry and execution, context management (trimming, compaction, retrieval), memory, permissions and approvals, budgets and limits, streaming, and tracing. The same model behaves very differently in different harnesses, so quality is largely harness design.</p>
+      <p><strong>5. What is context engineering?</strong></p>
+      <p>Deciding exactly what the model sees each turn. Techniques: stable prefix for prompt caching, trimming and summarising tool outputs, compaction of old turns, just-in-time retrieval via search tools instead of preloading, scratchpad files, and delegating messy subtasks to sub-agents that return short results.</p>
+      <p><strong>6. How do you stop an agent from looping or running away?</strong></p>
+      <p>Hard step limit, token and dollar budgets, wall-clock timeouts, loop detection on repeated identical calls, a cancellation path, and clear stop conditions. Also design tools to return actionable errors so the model can change strategy instead of repeating.</p>
+      <p><strong>7. Why do multi-step agents fail so often?</strong></p>
+      <p>Errors compound: 95 percent per-step reliability is about 60 percent over ten steps and 36 percent over twenty. Plus context bloat, wrong tool choice, and prompt injection. Mitigate with short loops, verification steps, checkpoints, human approval on risky actions, and evals over full trajectories.</p>
+      <p><strong>8. When would you use multiple agents?</strong></p>
+      <p>When subtasks are parallelisable or need different tools, models or contexts: orchestrator-worker for broad research or repo-wide coding, handoffs for routing between specialised agents. Not by default: it multiplies cost and coordination complexity.</p>
+      <p><strong>9. What is MCP and why does it exist?</strong></p>
+      <p>The Model Context Protocol is an open JSON-RPC standard for connecting AI apps (clients) to tool and data servers, so an integration written once works in any MCP-capable app. Servers expose tools, resources and prompts. It solves the N-apps times M-integrations problem. Security still matters: a connected server is a capability and a trust boundary.</p>
+      <p><strong>10. Explain the 'lethal trifecta'.</strong></p>
+      <p>An agent that combines access to private data, exposure to untrusted content and the ability to communicate externally can be tricked by prompt injection into exfiltrating that data. Removing any one of the three breaks the attack, so I split privileges across separate agents and never give one agent all three.</p>
+      <p><strong>11. LangGraph vs a plain while-loop?</strong></p>
+      <p>A while-loop is fine for a simple agent. LangGraph models control flow as an explicit graph with shared state, conditional edges and checkpointing, which pays off with branching, retries, human approval pauses, resumable or long-running work, parallel branches and multi-agent composition, and it makes each step inspectable and testable.</p>
+      <p><strong>12. LlamaIndex vs LangChain?</strong></p>
+      <p>LlamaIndex is data-first: loaders, parsing, chunking, indexes, retrievers and query engines for RAG over varied sources. LangChain is a broad toolkit of model, prompt, parser, retriever and tool abstractions, with LangGraph for agents. They overlap, and many teams use pieces of each or neither.</p>
+      <p><strong>13. How would you evaluate an agent?</strong></p>
+      <p>Build tasks with verifiable outcomes and grade end state (did the tests pass, was the ticket resolved) plus trajectory quality (unnecessary steps, dangerous calls, cost, latency). Run each task multiple times because behaviour is stochastic, track pass rate and variance, and add every real failure as a new task.</p>
+      <p><strong>14. How do you make an agent safe to deploy?</strong></p>
+      <p>Least-privilege scoped tools, sandboxed execution, human approval for irreversible or external actions, input and output validation, prompt-injection testing, full audit logs, budgets and rate limits, and a kill switch.</p>
+      <h2>Part B: System design walkthroughs</h2>
+      <p><strong>Design 1: A customer-support RAG chatbot for 10 million documents.</strong> Start with requirements: who are the users, latency target (say time-to-first-token under 1.5 seconds), accuracy and citation needs, multi-tenancy, languages, freshness. Then the pipeline:</p>
+      <ul><li><strong>Ingestion</strong>: connectors, layout-aware parsing, dedupe, structure-based chunking (300 to 500 tokens, overlap), metadata (tenant, ACL, doc type, timestamps), embeddings plus a BM25 index. Incremental updates by content hash; deletions propagate.</li><li><strong>Storage</strong>: vector DB with HNSW and in-index metadata filters (10M chunks at 1,024 dims is roughly 40 GB raw, so consider quantisation), plus the text store and keyword index.</li><li><strong>Query path</strong>: auth, rate limit, query rewrite with history, hybrid retrieval (top 50), cross-encoder rerank (top 5), prompt assembly with citations, streamed generation over SSE, semantic cache in front.</li><li><strong>Safety</strong>: ACL filtering at retrieval, retrieved text treated as untrusted, PII redaction in logs, refusal when retrieval confidence is low.</li><li><strong>Quality</strong>: golden set in CI, online feedback, faithfulness judge on a sample, weekly failure review.</li><li><strong>Cost and latency</strong>: prompt caching, small model for rewrite and routing, larger model for hard questions, budget alerts.</li></ul>
+      <p><strong>Design 2: A coding agent that fixes failing tests.</strong> Tools: read file, search, edit, run tests (sandboxed). Loop with a step and token budget. Success signal is the test suite, which is what makes this a good agent problem. Context engineering: repo map, just-in-time file reads, trimmed test output. Safety: container sandbox, no network, allow-listed commands, changes proposed as a diff for review. Evaluate on a held-out set of real failing-test tasks and measure pass rate, cost and steps.</p>
+      <p><strong>Design 3: Real-time voice assistant.</strong> Requirements: sub-second turn latency and interruptibility. Two-way audio needs WebRTC or WebSockets, not SSE. Pipeline: streaming speech-to-text, LLM streaming tokens, streaming text-to-speech, with voice-activity detection to allow barge-in (cancel generation when the user speaks). Discuss latency budget per stage, and what to do on dropped connections.</p>
+      <p><strong>Design 4: 'Chat with your documents' for one user, 200 pages.</strong> Do not over-engineer. For one document, long-context with prompt caching may beat RAG on simplicity and quality; use RAG when the corpus exceeds context, cost matters, or you need citations at scale. Showing you can choose the <em>simpler</em> design is a strong signal.</p>
+      <p><strong>Design 5: An AI support triage system (classification plus actions).</strong> This is a workflow, not an agent: classify (small model, structured output), route, look up order data via read-only tools, draft a reply, and require human approval before refunds above a threshold. Discuss evaluation with a labelled ticket set and monitoring for drift.</p>
+      <h2>Part C: Live scenarios, the &#x27;real-time questions&#x27;</h2>
+      <p>Interviewers give you a situation and watch how you reason. Talk through: <strong>measure, hypothesise, isolate, fix, verify.</strong></p>
+      <h2>Scenarios</h2>
+      <p><strong>Scenario 1. 'Our RAG bot is wrong on about 8% of questions.'</strong></p>
+      <p>First I would not touch the prompt. I would pull a sample of failing questions and, for each, read the retrieved chunks. That splits failures into: not indexed or badly parsed, not retrieved (chunking, no keyword matching for IDs, vague query), retrieved but ignored (prompt or conflicting context) or genuinely unanswerable (should have refused). I would compute recall@k on a labelled set to confirm retrieval is the main problem, then apply the fix for the biggest bucket, usually hybrid search, better chunking and a reranker, and re-measure.</p>
+      <p><strong>Scenario 2. 'Responses take 12 seconds. Fix it.'</strong></p>
+      <p>Break latency into spans with tracing: retrieval, rerank, time to first token, generation. Then act on the largest: stream tokens so users see output in under a second; cache or shrink the prompt and use prompt caching to cut time-to-first-token; parallelise independent steps (retrieval and query rewriting where possible); use a smaller model for rewrite and routing; cap output length; run reranking on fewer candidates. Report time-to-first-token and total time separately.</p>
+      <p><strong>Scenario 3. 'The bill is 10 times what we forecast.'</strong></p>
+      <p>Look at cost per request by feature and by prompt length. Common culprits: ever-growing conversation history re-sent each turn, too many retrieved chunks, an agent looping, retries without backoff, and everything going to the biggest model. Fixes: compaction and history summarisation, fewer chunks after reranking, step and budget limits, prompt and semantic caching, model routing, output caps, and per-user budgets with alerts.</p>
+      <p><strong>Scenario 4. 'A user saw another customer's document in an answer.'</strong></p>
+      <p>Treat as a security incident. Contain (disable the path if needed), then find the root cause: almost certainly retrieval without a tenant or permission filter, a shared cache key ignoring the tenant, or logs and embeddings mixing tenants. Fix by enforcing filters inside the vector query, namespacing caches by tenant, adding automated cross-tenant leakage tests, and reviewing what else shares the same index.</p>
+      <p><strong>Scenario 5. 'The agent keeps repeating the same failing tool call.'</strong></p>
+      <p>Add loop detection and a step limit, return richer tool errors that suggest alternatives, add a reflection step ('what have you tried, what will you change?') and escalate to a human after N failures. Examine the tool description: unclear tool docs are a frequent cause.</p>
+      <p><strong>Scenario 6. 'Quality dropped after the model provider updated their model.'</strong></p>
+      <p>That is why we pin model versions and keep an eval suite. Run the eval on old versus new, find which categories regressed, adjust prompts, and roll forward only when scores are back. Alert on eval scores and on production quality proxies like thumbs-down rate.</p>
+      <p><strong>Scenario 7. 'The model ignores an instruction in the middle of a long prompt.'</strong></p>
+      <p>Long context degrades in the middle. Shorten the context by retrieving fewer, better chunks, move critical instructions to the start and repeat key ones at the end, structure the prompt with clear sections, and test whether a smaller prompt reproduces the behaviour.</p>
+      <p><strong>Scenario 8. 'Search cannot find product code XJ-4471 but finds everything else.'</strong></p>
+      <p>Embeddings blur exact identifiers. Add BM25 or keyword search and fuse with RRF (hybrid), keep the code as its own token (do not split on hyphens during tokenisation), and consider a metadata or exact-match lookup path for identifiers.</p>
+      <h2>Part D: The coding round</h2>
+      <p>Typical tasks: implement cosine similarity and top-k retrieval, write RRF, chunk text with overlap, build BM25, implement a retry with backoff, parse an SSE stream, or write a tool-call loop. You have practised most of them in this course. Here are two more, with the traps interviewers look for.</p>
+      <p><strong>Task: chunk text with overlap.</strong> Edge cases: overlap greater than or equal to chunk size (infinite loop), empty text, last short chunk.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def chunk_words(text, size, overlap):
+    if size &lt;= 0:
+        raise ValueError(&quot;size must be positive&quot;)
+    if not 0 &lt;= overlap &lt; size:
+        raise ValueError(&quot;overlap must be &gt;= 0 and &lt; size&quot;)   # else the window never advances
+    words = text.split()
+    step = size - overlap
+    chunks = []
+    for start in range(0, max(len(words), 1), step):
+        piece = words[start:start + size]
+        if piece:
+            chunks.append(&quot; &quot;.join(piece))
+        if start + size &gt;= len(words):
+            break
+    return chunks
+
+text = &quot;one two three four five six seven eight nine ten&quot;
+for c in chunk_words(text, size=4, overlap=1):
+    print(&quot;|&quot;, c)
+print(chunk_words(&quot;&quot;, 4, 1))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>| one two three four
+| four five six seven
+| seven eight nine ten
+[]</pre></div>
+      <p><strong>Task: efficient top-k.</strong> Do not sort everything when you only need the best k. A heap does it in O(n log k):</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import heapq
+
+def top_k(scored_items, k):
+    &quot;&quot;&quot;scored_items: iterable of (score, item). Returns the k best, highest score first.&quot;&quot;&quot;
+    return heapq.nlargest(k, scored_items)
+
+docs = [(0.31, &quot;shipping&quot;), (0.92, &quot;refunds&quot;), (0.55, &quot;warranty&quot;), (0.87, &quot;returns&quot;), (0.12, &quot;careers&quot;)]
+print(top_k(docs, 2))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[(0.92, &#x27;refunds&#x27;), (0.87, &#x27;returns&#x27;)]</pre></div>
+      <h2>Behavioural questions specific to AI roles</h2>
+      <ul><li><strong>"Tell me about a time an AI system failed in production."</strong> Use the structure: what happened, how you detected it, root cause, fix, and the eval or guardrail you added so it cannot recur.</li><li><strong>"How do you decide whether AI is the right solution?"</strong> Clear success metric, tolerance for errors, a non-AI baseline to beat, and a human fallback. Sometimes a rule or a SQL query wins.</li><li><strong>"How do you keep up with this field?"</strong> Read primary sources (model cards, provider changelogs, key papers), rebuild things from scratch to understand them, and keep a personal eval set to test new models on your own tasks.</li><li><strong>"How do you explain hallucinations to a non-technical stakeholder?"</strong> It is a very well-read autocomplete that always answers confidently. We reduce it by giving it the documents to read and telling it to admit when the answer is not there, and we measure how often it still goes wrong.</li></ul>
+      <h2>Red-flag answers to avoid</h2>
+      <ul><li>"Just fine-tune it on our data" as the answer to a knowledge problem.</li><li>"Set temperature to 0 and it will not hallucinate."</li><li>"Use the biggest model for everything."</li><li>Proposing an autonomous agent for a task a fixed workflow handles.</li><li>No mention of evaluation, cost, latency or security. Always bring these up unprompted.</li><li>Trusting the model to enforce permissions or hide data.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Pick one of the five system designs and present it out loud in five minutes to a friend (or a mirror), using the skeleton: requirements, pipeline, risky parts, evaluation, cost, latency, security. Record yourself and count how many times you mention a <em>trade-off</em>. Aim for at least five.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def recall_at_k(retrieved, relevant, k):
+    return len(set(retrieved[:k]) &amp; set(relevant)) / len(relevant)
+
+def rrf(rankings, k=60):
+    from collections import defaultdict
+    s = defaultdict(float)
+    for r in rankings:
+        for i, d in enumerate(r, 1):
+            s[d] += 1 / (k + i)
+    return [d for d, _ in sorted(s.items(), key=lambda kv: -kv[1])]
+
+print(rrf([[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], [&quot;b&quot;, &quot;c&quot;, &quot;a&quot;]]))
+print(recall_at_k([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;], [&quot;c&quot;], 2))"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/ai/one-course/glossary-roadmap/"><span class="learn-upnext-label">Up next · Lesson 20</span><strong>Glossary, Cheat Sheet and Learning Roadmap</strong><small>Every term from the course in one place, a one-page cheat sheet, and a roadmap for what to learn and build next.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/one-course/interview-basics/">Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ai/one-course/glossary-roadmap/">Next lesson</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>
