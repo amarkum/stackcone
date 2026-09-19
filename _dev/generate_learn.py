@@ -493,7 +493,7 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=18">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -589,7 +589,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/learn/learn.css?v=18">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -714,6 +714,40 @@ def _track_cards(track_ids: list[str]) -> str:
     return "\n".join(cards)
 
 
+DS_ALGO_TRACK_ORDER = ["data-structures", "algorithms", "sysdesign"]
+
+
+def _lesson_card(les: dict, track_label: str) -> str:
+    return f"""
+      <a class="learn-track-card" href="{lesson_url(les)}">
+        <span class="learn-track-parent">{esc(track_label)}</span>
+        <h2>{esc(les["title"])}</h2>
+        <p>{esc(les["summary"])}</p>
+        <span class="learn-track-count">{les["minutes"]} min · {esc(les["level"])}</span>
+        <span class="learn-track-open">Start lesson</span>
+      </a>"""
+
+
+def _ds_algo_catalog() -> str:
+    sections = []
+    for track_id in DS_ALGO_TRACK_ORDER:
+        track = TRACKS[track_id]
+        lessons = by_track[track_id]
+        cards = "\n".join(_lesson_card(les, track["label"]) for les in lessons)
+        sections.append(f"""
+      <section class="learn-catalog-section" aria-label="{esc(track["label"])}">
+        <div class="learn-catalog-section-head">
+          <h2>{esc(track["label"])}</h2>
+          <p>{esc(track["description"])}</p>
+          <span class="learn-track-count">{len(lessons)} lessons · {fmt_minutes(sum(l["minutes"] for l in lessons))}</span>
+        </div>
+        <div class="learn-tracks">
+{cards}
+        </div>
+      </section>""")
+    return "\n".join(sections)
+
+
 def catalog_html() -> str:
     cat_cards = []
     for cat_id, cat in CATEGORIES.items():
@@ -754,7 +788,18 @@ def catalog_html() -> str:
 def category_html(cat_id: str) -> str:
     cat = CATEGORIES[cat_id]
     track_ids = [tid for tid, t in TRACKS.items() if t.get("category") == cat_id]
-    track_block = _framework_cards() if cat_id == "frameworks" else _track_cards(track_ids)
+    if cat_id == "frameworks":
+        track_block = _framework_cards()
+        catalog_body = f"""      <div class="learn-tracks">
+{track_block}
+      </div>"""
+    elif cat_id == "ds-algo":
+        catalog_body = _ds_algo_catalog()
+    else:
+        track_block = _track_cards(track_ids)
+        catalog_body = f"""      <div class="learn-tracks">
+{track_block}
+      </div>"""
     body = f"""  <main class="learn-main">
     <div class="learn-main-inner learn-catalog">
       <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / {esc(cat["label"])}</p>
@@ -762,9 +807,7 @@ def category_html(cat_id: str) -> str:
         <h1>{esc(cat["label"])}</h1>
         <p class="learn-hero-desc">{esc(cat["description"])}</p>
       </div>
-      <div class="learn-tracks">
-{track_block}
-      </div>
+{catalog_body}
     </div>
   </main>"""
     return _page_shell(
