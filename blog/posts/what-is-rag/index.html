@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>What Is RAG</title>
+  <meta name="description" content="RAG is retrieval-augmented generation: search your docs, then ask an LLM. Pipeline, embeddings, chunking, failure modes, and a tiny Python example.">
+  <meta name="keywords" content="what is RAG, retrieval augmented generation, embeddings, vector search, LLM retrieval, chunking, RAG vs fine-tuning">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/what-is-rag/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/what-is-rag/">
+  <meta property="og:title" content="What Is RAG">
+  <meta property="og:description" content="RAG is retrieval-augmented generation: search your docs, then ask an LLM. Pipeline, embeddings, chunking, failure modes, and a tiny Python example.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="What Is RAG">
+  <meta name="twitter:description" content="Search your docs, then ask an LLM. The RAG pipeline, embeddings, chunking, and why models invent answers without retrieval.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=4">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "What Is RAG",
+    "description": "RAG is retrieval-augmented generation: search your docs, then ask an LLM. Pipeline, embeddings, chunking, failure modes, and a tiny Python example.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-09-19",
+    "dateModified": "2026-09-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/what-is-rag/" },
+    "image": "https://stackcone.com/logo/stackcone.png",
+    "keywords": ["RAG", "embeddings", "retrieval", "LLM", "vector search"],
+    "articleSection": "RAG",
+    "about": { "@type": "Thing", "name": "Retrieval-Augmented Generation" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What does RAG stand for?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Retrieval-Augmented Generation. You retrieve relevant document snippets, add them to the prompt, and let the language model generate an answer from that context instead of from memory alone." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is RAG the same as fine-tuning?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Fine-tuning changes the model's weights so it tends to talk in a certain style or format. RAG leaves the model alone and injects fresh documents at question time. Use RAG when facts change; use fine-tuning when you need a stable voice or a structured output style." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I still need RAG if the model has a huge context window?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Often yes. Long context can hold a handful of files, not a knowledge base. It is slower and more expensive, it does not solve stale or missing docs, and models still get lost when you dump thousands of tokens of mixed relevance. Retrieval is how you pick the few pages that matter." }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do RAG chatbots still hallucinate?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Usually because retrieval returned the wrong chunk, the right document was never ingested, or the prompt did not tell the model to refuse when context is missing. Generation is only as grounded as the snippets you retrieve." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is an embedding in RAG?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A list of numbers that represents the meaning of a piece of text. Similar sentences land near each other in that space, so you can search by meaning instead of by exact keywords." }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "What Is RAG", "item": "https://stackcone.com/blog/posts/what-is-rag/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>What Is RAG</h1>
+    <p class="meta">September 2026 · Published by Amar Kumar</p>
+
+    <p>Ask a language model a question about <em>your</em> product and it will often invent a confident, well-written wrong answer. That is not a bug in the chat UI. The model was trained on public text. It does not have your wiki, your contracts, or last Tuesday&rsquo;s policy change sitting in its weights.</p>
+    <p><strong>RAG (retrieval-augmented generation)</strong> is the pattern that fixes that: look up the relevant pages first, then ask the model to answer from those pages. This post is the simple explainer. The later RAG posts on this site assume you already have this picture.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#open-book">The open-book exam</a></li>
+        <li><a href="#hallucinate">Why models hallucinate without docs</a></li>
+        <li><a href="#pipeline">The pipeline: query, retrieve, rerank, generate</a></li>
+        <li><a href="#embeddings">Embeddings and vector search</a></li>
+        <li><a href="#chunking">Chunking: why you do not embed whole PDFs</a></li>
+        <li><a href="#example">A tiny retrieve-and-prompt example</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#vs">RAG vs fine-tune vs long context</a></li>
+        <li><a href="#failures">Failure modes</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="open-book">The open-book exam</h2>
+    <p>A closed-book exam is what you get from ChatGPT out of the box. The student (the model) studied a huge pile of books years ago and now answers from memory. If the question is about a book that was not in that pile &mdash; or that was revised after the exam paper was printed &mdash; you get a guess dressed up as an essay.</p>
+    <p>RAG is an <strong>open-book exam</strong>. The student may still be smart, but they are allowed to flip to the relevant chapter before writing. You do not re-train the student every time the handbook changes. You update the handbook and let them look it up.</p>
+    <p>That analogy carries further than it first looks:</p>
+    <ul>
+      <li><strong>The book is your knowledge base</strong> &mdash; markdown, PDFs, tickets, Notion exports, API docs.</li>
+      <li><strong>The index at the back is embeddings plus a vector database</strong> &mdash; a way to find the right page without reading every page.</li>
+      <li><strong>The citation is the retrieved chunk</strong> &mdash; you can show the user which paragraph the answer came from.</li>
+      <li><strong>A bad index fails the exam even if the student is brilliant</strong> &mdash; if you hand them the wrong chapter, they will write a wrong answer with great grammar.</li>
+    </ul>
+    <p>Teams often blame the model when the index is the problem. Keep that in mind as you read the rest of this explainer, and when you later get to <a href="/blog/posts/how-to-evaluate-rag-retrieval/">evaluating retrieval</a>.</p>
+
+    <h2 id="hallucinate">Why models hallucinate without docs</h2>
+    <p>Language models predict the next token. They are extremely good at producing text that <em>looks</em> like an answer. They are not a database. When they have no source, they still complete the sentence, because that is the only job they were trained to do.</p>
+    <p>Three common failure shapes follow from that:</p>
+    <ol>
+      <li><strong>Invented policy.</strong> &ldquo;Refunds are available within 30 days.&rdquo; Sounds right. Your actual policy is 14 days for digital goods. The model has seen thousands of refund policies and averaged them.</li>
+      <li><strong>Invented API.</strong> A plausible function name that does not exist in your SDK. Coding agents do this constantly unless the right docs or source files are in context.</li>
+      <li><strong>Stale memory.</strong> A fact that used to be true on the public web and is now wrong. Training cutoffs are not a product feature you can schedule around.</li>
+    </ol>
+    <p>Telling the model &ldquo;do not hallucinate&rdquo; in the system prompt helps a little. It does not substitute for giving it the paragraph that contains the answer. RAG is how you put that paragraph in the prompt at question time.</p>
+    <p>There is a second, quieter reason RAG exists: <strong>privacy and control</strong>. You often cannot fine-tune a frontier model on internal documents, and you should not paste the entire drive into a 200k-token window. Retrieval lets you send only the few snippets needed for this question.</p>
+
+    <h2 id="pipeline">The pipeline: query, retrieve, rerank, generate</h2>
+    <p>Every RAG system, from a weekend demo to a production chatbot, is the same four beats. Some skip rerank. None skip retrieve.</p>
+    <table>
+      <thead><tr><th>Step</th><th>What happens</th><th>What can go wrong</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Query</strong></td><td>The user asks a question. You may rewrite it (&ldquo;password reset&rdquo; from &ldquo;I can&rsquo;t log in&rdquo;).</td><td>A vague question retrieves the wrong topic.</td></tr>
+        <tr><td><strong>Retrieve</strong></td><td>Embed the query, search the vector index, take the top-k similar chunks.</td><td>The right chunk is not in the top-k, or was never ingested.</td></tr>
+        <tr><td><strong>Rerank</strong> (optional)</td><td>A second model scores those chunks against the query and keeps the best few.</td><td>Skipped on cheap demos; worth it when top-k is noisy. See <a href="/blog/posts/cohere-reranking-production-rag-retrieval/">Cohere reranking</a>.</td></tr>
+        <tr><td><strong>Generate</strong></td><td>The LLM writes an answer using the kept chunks as context, plus your system prompt.</td><td>Context is right but the prompt does not say &ldquo;if it is not here, say so.&rdquo;</td></tr>
+      </tbody>
+    </table>
+    <p>Two jobs run on different clocks:</p>
+    <ul>
+      <li><strong>Ingest (offline).</strong> When docs change: parse &rarr; chunk &rarr; embed &rarr; upsert into the index. This is a batch job, a webhook, or a nightly crawl.</li>
+      <li><strong>Ask (online).</strong> On every user message: embed query &rarr; retrieve &rarr; optional rerank &rarr; generate. This is the request path you measure for latency.</li>
+    </ul>
+    <p>If you remember only one design rule: <strong>get retrieval right before you tune the prompt.</strong> A beautiful system prompt cannot quote a paragraph that never arrived.</p>
+
+    <h2 id="embeddings">Embeddings and vector search</h2>
+    <p>An <strong>embedding</strong> is a list of numbers that stands in for meaning. You send a sentence to an embedding model and get back something like 1,536 floats. Sentences about the same topic land close together in that space; unrelated sentences land far apart.</p>
+    <pre><code>"How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
+"Password recovery steps"      →  [0.11, -0.42, 0.91, ...]   ← close
+"Office wifi password"         →  [0.09, -0.40, 0.70, ...]   ← also close (trap)
+"Weather in Tokyo"             →  [-0.67, 0.22, -0.11, ...]  ← far</code></pre>
+    <p>Vector search is nearest-neighbour lookup: embed the question, find the stored chunks whose vectors are closest, return their text. That is why RAG can match &ldquo;I can&rsquo;t get into my account&rdquo; to a page titled &ldquo;Password recovery&rdquo; even when the words barely overlap.</p>
+    <p>Keyword search (BM25, Postgres <code>tsvector</code>) is still useful. It wins on exact IDs, error codes, and product SKUs. Many production systems run <strong>hybrid search</strong>: vector + keyword, then merge. You do not need hybrid on day one. You do need to know that embeddings are not magic &mdash; they miss rare tokens that a keyword index would catch.</p>
+    <p>You store embeddings in a <strong>vector database</strong> (Pinecone, Qdrant, pgvector, Chroma). Each record is usually: an id, the vector, and metadata (source title, URL, the raw text). The database&rsquo;s only job at query time is &ldquo;here are the k nearest rows.&rdquo;</p>
+
+    <h2 id="chunking">Chunking: why you do not embed whole PDFs</h2>
+    <p>If you embed a 40-page handbook as one vector, the nearest-neighbour hit is the whole handbook. The model then either overflows the context window or drowns in irrelevant sections. <strong>Chunking</strong> splits documents into pieces small enough to retrieve precisely and large enough to stay coherent.</p>
+    <p>Practical defaults that are good enough to start:</p>
+    <ul>
+      <li><strong>Size:</strong> roughly 500&ndash;1,000 tokens per chunk (a few paragraphs).</li>
+      <li><strong>Overlap:</strong> 50&ndash;200 tokens so a sentence that straddles a boundary is not lost.</li>
+      <li><strong>Boundaries:</strong> split on headings and paragraphs, not mid-sentence, when you can.</li>
+      <li><strong>Metadata:</strong> keep title, URL, and section heading on every chunk so you can cite it.</li>
+    </ul>
+    <p>Chunking is the unglamorous half of RAG quality. Too small, and you retrieve a fragment with no subject. Too large, and you retrieve a chapter that buries the answer. Tables, code, and API reference pages often need different rules than prose. That is a later post. For this explainer, know that <em>ingest quality is retrieval quality</em>.</p>
+
+    <h2 id="example">A tiny retrieve-and-prompt example</h2>
+    <p>This is the whole idea in Python-shaped pseudocode. <code>embed</code>, <code>index</code>, and <code>llm</code> are stand-ins for your vendor of choice. There is no framework required.</p>
+    <pre><code><span class="kw">def</span> <span class="fn">retrieve</span>(query, index, k=<span class="num">5</span>):
+    qvec = <span class="fn">embed</span>(query)
+    <span class="kw">return</span> index.search(qvec, top_k=k)
+
+<span class="kw">def</span> <span class="fn">answer</span>(query, index):
+    chunks = <span class="fn">retrieve</span>(query, index)
+    context = <span class="str">"\n\n"</span>.join(c[<span class="str">"text"</span>] <span class="kw">for</span> c <span class="kw">in</span> chunks)
+    prompt = (
+        <span class="str">"Answer using only this context. "</span>
+        <span class="str">"If the answer is not there, say you do not know.\n\n"</span>
+        <span class="str">"Context:\n"</span> + context +
+        <span class="str">"\n\nQuestion: "</span> + query
+    )
+    <span class="kw">return</span> llm.generate(prompt)</code></pre>
+    <p>That is RAG. Production adds chunking at ingest, metadata filters, reranking, evals, citations in the UI, and a model choice that does not bankrupt you. Those are covered in <a href="/blog/posts/how-to-build-a-production-rag-chatbot/">how to build a production RAG chatbot</a> and <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">economical models for RAG</a>.</p>
+
+    <h2 id="architecture">Architecture</h2>
+    <div class="diagram-wrap" data-diagram-title="RAG architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef ingest fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef query fill:#fce7f3,stroke:#db2777,color:#9f1239
+  classDef gen fill:#dcfce7,stroke:#16a34a,color:#166534
+  Docs[Documents]:::ingest
+  Chunk[Chunk]:::ingest
+  Emb[Embed chunks]:::ingest
+  VDB[(Vector DB)]:::ingest
+  Q[User query]:::query
+  QE[Embed query]:::query
+  Ret[Retrieve top-k]:::query
+  RR[Optional rerank]:::query
+  LLM[LLM generate]:::gen
+  A[Grounded answer]:::gen
+  Docs --> Chunk --> Emb --> VDB
+  Q --> QE --> Ret
+  VDB --> Ret --> RR --> LLM --> A</div>
+      </div>
+      <p class="diagram-caption">Ingest runs when docs change. The ask path runs on every question: retrieve, optionally rerank, then generate.</p>
+    </div>
+
+    <h2 id="vs">RAG vs fine-tune vs long context</h2>
+    <p>These three techniques solve different problems. Mixing them up is how teams spend a quarter fine-tuning when they needed a search index.</p>
+    <table>
+      <thead><tr><th></th><th>RAG</th><th>Fine-tune</th><th>Long context</th></tr></thead>
+      <tbody>
+        <tr><td><strong>What you change</strong></td><td>Documents in an index</td><td>Model weights</td><td>How much you paste into one prompt</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Facts that update; citations; private corpora</td><td>Voice, format, a narrow skill</td><td>A handful of files already in hand</td></tr>
+        <tr><td><strong>Freshness</strong></td><td>Re-ingest; minutes to hours</td><td>Re-train; days and a dataset</td><td>Only as fresh as what you pasted</td></tr>
+        <tr><td><strong>Cost shape</strong></td><td>Embed + retrieve cheap; generate on a small prompt</td><td>Upfront training; inference similar to base</td><td>Every token of the dump, every question</td></tr>
+        <tr><td><strong>Failure mode</strong></td><td>Wrong or missing chunk</td><td>Still invents facts; expensive to update</td><td>Lost-in-the-middle; cost; still no index</td></tr>
+      </tbody>
+    </table>
+    <div class="chart-wrap">
+      <canvas id="ragVsChart" height="170" aria-label="Chart comparing RAG, fine-tuning, and long context on freshness, cost control, and citation"></canvas>
+      <p class="diagram-caption">Indicative fit, not a benchmark. RAG wins when the knowledge base changes and you need to show sources.</p>
+    </div>
+    <p>Use them together when you have a reason. A light fine-tune can teach the model to always emit citations in your JSON shape. A long context window can hold the top eight chunks plus the last five chat turns. Neither replaces the index.</p>
+    <p>If your question is &ldquo;how do I make the bot know our refund policy,&rdquo; the answer is RAG. If the question is &ldquo;how do I make every reply a structured ticket summary in our tone,&rdquo; fine-tune (or a strict prompt plus constrained decoding) is closer. If the question is &ldquo;I have three PDFs open and I want a summary,&rdquo; just paste them.</p>
+
+    <h2 id="failures">Failure modes</h2>
+    <p>When a RAG bot is wrong, it is usually one of these &mdash; not &ldquo;the LLM is dumb.&rdquo;</p>
+    <h3>Wrong chunk</h3>
+    <p>The index returned something <em>near</em> the question. &ldquo;Office wifi password&rdquo; beat &ldquo;account password reset&rdquo; because both talk about passwords. Fix with better chunk metadata, hybrid search, a reranker, or query rewriting. Measure with hit@k on a golden set, not vibes &mdash; that is the <a href="/blog/posts/how-to-evaluate-rag-retrieval/">evaluation post</a>.</p>
+    <h3>Stale knowledge base</h3>
+    <p>The right document existed last quarter. Legal updated the PDF. Nobody re-ran ingest. The bot cites last quarter with a straight face. Fix with an ingest pipeline tied to the source of truth: a git repo, a Drive webhook, a CMS publish hook. Treat the index like a cache. Caches that nobody invalidates become lies.</p>
+    <h3>Never ingested</h3>
+    <p>The answer lives in a Slack thread or a spreadsheet the crawler never saw. Retrieval cannot find what you did not store. This looks identical to hallucination from the user&rsquo;s seat. Log &ldquo;no high-scoring hits&rdquo; and teach the model to abstain.</p>
+    <h3>Right chunk, wrong generation</h3>
+    <p>The paragraph is in the prompt and the model still paraphrases it into a different number. Tighten the system prompt: answer only from context, quote figures, cite the source id. If it still drifts, the generator is too creative for this job &mdash; switch models or lower temperature. Do not start here. Start with retrieval.</p>
+    <h3>Context stuffing</h3>
+    <p>You retrieve 30 chunks &ldquo;to be safe&rdquo; and the model skims. Rerank down to a handful. Diversity (MMR) helps when several sections are all somewhat relevant. More tokens is not more truth.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>RAG</strong></td><td>Retrieve relevant docs, add them to the prompt, generate an answer.</td></tr>
+        <tr><td><strong>LLM</strong></td><td>Large language model that writes the answer.</td></tr>
+        <tr><td><strong>Embedding</strong></td><td>Numeric vector that represents the meaning of a text span.</td></tr>
+        <tr><td><strong>Vector database</strong></td><td>Store of embeddings with fast nearest-neighbour search.</td></tr>
+        <tr><td><strong>Chunk</strong></td><td>A slice of a document stored and retrieved as a unit.</td></tr>
+        <tr><td><strong>top-k</strong></td><td>How many nearest chunks retrieval returns (for example 20).</td></tr>
+        <tr><td><strong>Reranker</strong></td><td>A second model that re-orders retrieved chunks by true relevance.</td></tr>
+        <tr><td><strong>Ingest</strong></td><td>Offline parse &rarr; chunk &rarr; embed &rarr; upsert.</td></tr>
+        <tr><td><strong>Context window</strong></td><td>Maximum tokens the LLM can read in one request.</td></tr>
+        <tr><td><strong>Hallucination</strong></td><td>Fluent text that is not supported by sources (or by reality).</td></tr>
+        <tr><td><strong>Hybrid search</strong></td><td>Vector similarity plus keyword search, merged.</td></tr>
+        <tr><td><strong>Grounding</strong></td><td>Forcing the answer to follow retrieved context, often with citations.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>What does RAG stand for?</h3>
+    <p>Retrieval-Augmented Generation. You retrieve relevant document snippets, add them to the prompt, and let the language model generate an answer from that context instead of from memory alone.</p>
+    <h3>Is RAG the same as fine-tuning?</h3>
+    <p>No. Fine-tuning changes the model&rsquo;s weights so it tends to talk in a certain style or format. RAG leaves the model alone and injects fresh documents at question time. Use RAG when facts change; use fine-tuning when you need a stable voice or a structured output style.</p>
+    <h3>Do I still need RAG if the model has a huge context window?</h3>
+    <p>Often yes. Long context can hold a handful of files, not a knowledge base. It is slower and more expensive, it does not solve stale or missing docs, and models still get lost when you dump thousands of tokens of mixed relevance. Retrieval is how you pick the few pages that matter.</p>
+    <h3>Why do RAG chatbots still hallucinate?</h3>
+    <p>Usually because retrieval returned the wrong chunk, the right document was never ingested, or the prompt did not tell the model to refuse when context is missing. Generation is only as grounded as the snippets you retrieve.</p>
+    <h3>What is an embedding in RAG?</h3>
+    <p>A list of numbers that represents the meaning of a piece of text. Similar sentences land near each other in that space, so you can search by meaning instead of by exact keywords.</p>
+
+    <aside class="blog-related">
+      <h2>Related guides</h2>
+      <ul>
+        <li><a href="/blog/posts/how-to-build-a-production-rag-chatbot/">How to Build a Production RAG Chatbot</a></li>
+        <li><a href="/blog/posts/how-to-evaluate-rag-retrieval/">How to Evaluate RAG Retrieval</a></li>
+        <li><a href="/blog/posts/cohere-reranking-production-rag-retrieval/">Cohere Reranking for Production RAG</a></li>
+        <li><a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Best Economical LLM Models for RAG</a></li>
+      </ul>
+    </aside>
+    <p class="closing">RAG is an open-book exam for models that otherwise guess. Index the handbook, retrieve the chapter, then let the model write. Everything else in the RAG series is how to keep that chapter the right one.</p>
+
+    <aside class="blog-cta">
+      <h2>Shipping a RAG system?</h2>
+      <p>stackcone designs and ships retrieval pipelines, evals, and production chatbots that stay grounded in your docs &mdash; not in the model&rsquo;s memory.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="/contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=13"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js?v=2" defer></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    new Chart(document.getElementById('ragVsChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Freshness', 'Cost control', 'Citations'],
+        datasets: [
+          { label: 'RAG', data: [9, 8, 9], backgroundColor: '#2563eb', borderRadius: 4 },
+          { label: 'Fine-tune', data: [3, 5, 2], backgroundColor: '#94a3b8', borderRadius: 4 },
+          { label: 'Long context', data: [5, 3, 4], backgroundColor: '#cbd5e1', borderRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true, max: 10, title: { display: true, text: 'Indicative fit (0–10)' } } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785" crossorigin="anonymous"></script>
+</body>
+</html>
