@@ -28,16 +28,16 @@
     } catch (e) {}
   }
 
-  // Default voice: Microsoft's natural voices first (Edge / Windows), then other
+  // Default voice: Google US English (Ava) in Chrome, Microsoft's natural voices (Edge / Windows), then other
   // well-known female voices, then whatever the device offers. Browsers do not expose
   // a voice's gender, so this goes by name.
   var PREFERRED = [
+    /^google us english$/i,
     /microsoft (aria|jenny|ava|emma|michelle|sonia|libby|natasha|neerja).*natural/i,
     /microsoft (aria|jenny|ava|emma|michelle|sonia|libby|natasha|neerja)/i,
     /microsoft .*natural/i,
     /microsoft (zira|hazel|susan|heera|catherine)/i,
     /google uk english female/i,
-    /google us english/i,
     /^samantha\b/i,
     /^(karen|moira|tessa|serena|fiona|veena)\b/i
   ];
