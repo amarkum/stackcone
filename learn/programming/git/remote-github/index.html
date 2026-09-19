@@ -62,6 +62,10 @@
             <ul><li>Push and pull</li><li>Open a pull request</li><li>Keep a fork up to date</li></ul>
           </div>
       <p>So far everything lived on your machine. A <strong>remote</strong> is a copy of the repository hosted elsewhere, usually on GitHub, GitLab or Bitbucket. It is how you back up work, share it and collaborate.</p>
+      <h2>Your computer is not the only copy</h2>
+      <p>So far your history lives only on your laptop. A <strong>remote</strong> is another copy of the repository hosted elsewhere, usually on GitHub. It is your backup, the place teammates fetch your work from, and the home of code review. The whole collaboration model is just two motions: <strong>push</strong> your commits up and <strong>pull</strong> theirs down.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>your laptop  --git push--&gt;  GitHub (origin)  &lt;--git push--  teammate
+your laptop  &lt;--git pull--  GitHub (origin)  --git pull--&gt;  teammate</code></pre></div>
       <h2>Connecting a remote</h2>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>git clone https://github.com/user/repo.git        # copy an existing repo
 
@@ -92,6 +96,30 @@ gh pr create --fill              # open a PR from the current branch
 gh pr checkout 123              # try someone else&#x27;s PR locally
 gh pr merge --squash</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Protect main</p><p class="learn-callout-body">Turn on branch protection: require PRs, reviews and passing checks before merging. It prevents accidents.</p></aside>
+      <h2>Publishing a project to GitHub, step by step</h2>
+      <ul><li>Create an empty repository on GitHub and copy its URL.</li><li>Connect your local project to it and give the connection the conventional name <code>origin</code>.</li><li>Push your branch, and set it up to track so later pushes are just <code>git push</code>.</li></ul>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git remote add origin git@github.com:ada/my-site.git
+$ git remote -v
+origin  git@github.com:ada/my-site.git (fetch)
+origin  git@github.com:ada/my-site.git (push)
+
+$ git push -u origin main
+Enumerating objects: 3, done.
+To github.com:ada/my-site.git
+ * [new branch]      main -&gt; main
+branch &#x27;main&#x27; set up to track &#x27;origin/main&#x27;.</code></pre></div>
+      <h2>Getting a copy of someone else&#x27;s project</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git clone https://github.com/ada/my-site.git
+Cloning into &#x27;my-site&#x27;...
+$ cd my-site
+$ git log --oneline   # the full history came with it</code></pre></div>
+      <h2>The pull request workflow, in plain steps</h2>
+      <ul><li><strong>Branch</strong>: <code>git switch -c fix-typo</code>.</li><li><strong>Commit</strong> your change and <strong>push</strong> the branch: <code>git push -u origin fix-typo</code>.</li><li><strong>Open a pull request</strong> on GitHub: a page where teammates review, comment on and discuss your changes.</li><li><strong>Update</strong> it by pushing more commits to the same branch if reviewers ask for changes.</li><li><strong>Merge</strong> the pull request once approved, then delete the branch and <code>git pull</code> on <code>main</code>.</li></ul>
+      <h2>fetch versus pull</h2>
+      <p><code>git fetch</code> downloads new commits but does not touch your files, so you can look first (<code>git log origin/main</code>). <code>git pull</code> is fetch plus merge in one step. When in doubt, fetch first; it is always safe.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Rejected push?</p><p class="learn-callout-body">A message like <code>rejected: non-fast-forward</code> just means the remote has commits you do not. Run <code>git pull</code>, resolve any conflict, and push again. Avoid <code>--force</code> on shared branches.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li>A remote (usually <code>origin</code> on GitHub) is a shared copy of your repository.</li><li><code>git push</code> sends your commits; <code>git pull</code> brings others' commits down.</li><li><code>git clone</code> copies a whole repository with its history.</li><li>Pull requests are branches proposed for review before merging.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a repo on GitHub, clone it, create a branch, push a change and open a pull request from it.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="git clone git@github.com:you/practice.git &amp;&amp; cd practice
 git switch -c docs/add-notes

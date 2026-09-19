@@ -62,6 +62,9 @@
             <ul><li>Undo safely</li><li>Use stash</li><li>Recover with reflog</li></ul>
           </div>
       <p>Everyone makes mistakes: a commit in the wrong branch, a bad edit, a message typo. Git gives you many ways to undo, but they behave differently. Knowing which is safe on <em>shared</em> history versus <em>local</em> history keeps you out of trouble.</p>
+      <h2>Mistakes are cheap in Git</h2>
+      <p>The reason experienced developers are relaxed about Git is that almost everything can be undone, as long as it was committed. The trick is choosing the right undo for the situation. Ask two questions: <strong>Has it been committed?</strong> and <strong>Has it been pushed and shared?</strong> The answers pick the tool.</p>
+      <ul><li>Not committed yet → <code>git restore</code> (throws away edits).</li><li>Committed, not pushed → <code>git commit --amend</code> or <code>git reset</code> (rewrites your own history).</li><li>Already pushed and shared → <code>git revert</code> (adds a new commit that cancels the old one; never rewrites shared history).</li></ul>
       <h2>Discard uncommitted changes</h2>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>git restore file.txt              # throw away edits to a file (cannot be undone!)
 git restore --staged file.txt     # unstage, keep the edits
@@ -97,6 +100,42 @@ git reset --hard 9f8e7d6      # jump back to before the mistake</code></pre></di
       <ul><li><code>git cherry-pick &lt;sha&gt;</code>: copy one commit onto the current branch.</li><li><code>git bisect</code>: binary search through history to find the commit that introduced a bug.</li><li><code>git tag v1.0.0</code>: mark a release.</li></ul>
       <h2>Team workflow summary</h2>
       <ul><li><strong>GitHub Flow</strong>: short-lived branches and PRs into <code>main</code>, deploy from main. Simple and popular.</li><li><strong>Trunk-based</strong>: very small changes merged to main daily, behind feature flags.</li><li><strong>Git Flow</strong>: long-lived develop and release branches. Heavier; suited to versioned releases.</li></ul>
+      <h2>Situation 1: I edited a file and want the old version back</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git status
+  modified:   index.html
+$ git restore index.html          # discards the edits (cannot be undone!)
+$ git status
+nothing to commit, working tree clean</code></pre></div>
+      <h2>Situation 2: I committed too early or with a typo in the message</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git commit -m &quot;Add serch box&quot;
+$ git commit --amend -m &quot;Add search box&quot;   # fixes the last commit message
+
+$ git add forgotten-file.css
+$ git commit --amend --no-edit               # adds the file to the last commit</code></pre></div>
+      <h2>Situation 3: a bad commit is already on GitHub</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git log --oneline
+9d1e4b7 Break the login page
+3f2a91c Create homepage
+
+$ git revert 9d1e4b7        # creates a new commit that undoes it
+[main c07be21] Revert &quot;Break the login page&quot;</code></pre></div>
+      <p>Because <code>revert</code> only adds history, teammates who already pulled the bad commit are not affected, and the story stays honest.</p>
+      <h2>Situation 4: I need to switch tasks but my work is half done</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git stash                 # sets your edits aside, working tree is clean
+$ git switch hotfix         # fix something urgent...
+$ git switch main
+$ git stash pop             # bring your unfinished work back</code></pre></div>
+      <h2>Situation 5: &quot;I lost a commit!&quot;</h2>
+      <p>Git keeps a private diary of everywhere your branch has pointed, called the <strong>reflog</strong>. Even after a bad reset the commit is usually still there for weeks.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git reflog
+c07be21 HEAD@{0}: revert: Revert &quot;Break the login page&quot;
+9d1e4b7 HEAD@{1}: commit: Break the login page
+3f2a91c HEAD@{2}: commit (initial): Create homepage
+
+$ git reset --hard 3f2a91c   # jump back to any of those points</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>reset --hard is the sharp knife</p><p class="learn-callout-body"><code>git reset --hard</code> and <code>git restore</code> discard uncommitted work permanently. Commit or stash first if you are not sure.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li>Pick the undo by asking: committed? pushed?</li><li><code>restore</code> for edits, <code>amend</code>/<code>reset</code> for local commits, <code>revert</code> for shared ones.</li><li><code>stash</code> parks unfinished work; <code>reflog</code> finds "lost" commits.</li><li>Never rewrite history that others have already pulled.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Make two commits, then use <code>git reset --hard HEAD~1</code> to lose the second. Recover it using <code>git reflog</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="echo 1 &gt; f &amp;&amp; git add f &amp;&amp; git commit -m &quot;one&quot;
 echo 2 &gt;&gt; f &amp;&amp; git commit -am &quot;two&quot;

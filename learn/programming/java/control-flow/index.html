@@ -63,6 +63,8 @@
             <ul><li>Write if/else chains</li><li>Use for and while</li><li>Iterate arrays with for-each</li></ul>
           </div>
       <p>Control flow decides which code runs and how many times. Java's syntax will feel familiar if you know any C-style language: conditions go in parentheses and blocks go in braces. Unlike Python, indentation is only for humans; the braces are what the compiler reads.</p>
+      <h2>Decisions and repetition</h2>
+      <p>Control flow is how a program chooses what to do next and how it repeats work. Java uses the same building blocks as most languages: <code>if</code>/<code>else</code> to decide, <code>switch</code> to pick among many fixed options, and <code>for</code>/<code>while</code> loops to repeat. Blocks are wrapped in curly braces (indentation is only for humans), so a missing brace is a classic beginner error.</p>
       <h2>if / else</h2>
       <div class="learn-code-wrap" data-lang="java"><pre><code>int score = 87;
 String grade;
@@ -109,8 +111,86 @@ tick 1
 tick 2
 27</pre></div>
       <p>Use <code>break</code> to exit a loop early and <code>continue</code> to jump to the next iteration.</p>
+      <h2>if / else if / else, traced</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        int score = 78;
+
+        if (score &gt;= 90) {
+            System.out.println(&quot;A&quot;);
+        } else if (score &gt;= 75) {
+            System.out.println(&quot;B&quot;);
+        } else {
+            System.out.println(&quot;C&quot;);
+        }
+
+        boolean passed = score &gt;= 50 &amp;&amp; score &lt;= 100;
+        System.out.println(&quot;passed = &quot; + passed);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>B
+passed = true</pre></div>
+      <h2>The classic loops</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i &lt;= 3; i++) {
+            System.out.println(&quot;round &quot; + i);
+        }
+
+        int n = 3;
+        while (n &gt; 0) {
+            System.out.println(&quot;countdown &quot; + n);
+            n--;
+        }
+
+        String[] names = {&quot;Ada&quot;, &quot;Linus&quot;, &quot;Grace&quot;};
+        for (String name : names) {
+            System.out.println(&quot;Hi &quot; + name);
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>round 1
+round 2
+round 3
+countdown 3
+countdown 2
+countdown 1
+Hi Ada
+Hi Linus
+Hi Grace</pre></div>
+      <p>A <code>for</code> loop has three parts in its parentheses: start (<code>int i = 1</code>), keep-going test (<code>i &lt;= 3</code>) and step (<code>i++</code>). The <em>enhanced for</em> loop at the end reads as "for each name in names" and is the cleanest way to walk an array or list.</p>
+      <h2>switch for many fixed choices</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        String day = &quot;SAT&quot;;
+        String type = switch (day) {
+            case &quot;SAT&quot;, &quot;SUN&quot; -&gt; &quot;weekend&quot;;
+            case &quot;MON&quot;, &quot;TUE&quot;, &quot;WED&quot;, &quot;THU&quot;, &quot;FRI&quot; -&gt; &quot;weekday&quot;;
+            default -&gt; &quot;unknown&quot;;
+        };
+        System.out.println(day + &quot; is a &quot; + type);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>SAT is a weekend</pre></div>
+      <h2>Worked example: sum and average</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        int[] scores = {72, 88, 95, 61};
+        int sum = 0;
+        for (int s : scores) {
+            sum += s;
+        }
+        double average = (double) sum / scores.length;
+        System.out.println(&quot;sum = &quot; + sum);
+        System.out.println(&quot;average = &quot; + average);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>sum = 316
+average = 79.0</pre></div>
       <h2>Common mistakes</h2>
       <ul><li>Using <code>=</code> instead of <code>==</code> in a condition. Java usually catches this for non-booleans, but not for boolean variables.</li><li>Off-by-one errors: <code>i &lt;= nums.length</code> reads one past the end and throws <code>ArrayIndexOutOfBoundsException</code>.</li><li>A stray semicolon after <code>if (x);</code> makes the block run unconditionally.</li><li>Forgetting to change the loop variable in <code>while</code>, causing an infinite loop.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li><code>if</code>/<code>else if</code>/<code>else</code> decide; conditions must be <code>boolean</code>.</li><li><code>for</code>, enhanced <code>for</code> and <code>while</code> repeat work; watch off-by-one errors.</li><li>Modern <code>switch</code> with <code>-&gt;</code> is a compact way to map values to results.</li><li>Always use braces, even for one-line bodies.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Print the sum of all even numbers from 1 to 100 using a <code>for</code> loop and an <code>if</code>. Then rewrite the loop to step by 2 without the <code>if</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="int sum = 0;
 for (int i = 1; i &lt;= 100; i++) {

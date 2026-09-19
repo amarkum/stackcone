@@ -62,6 +62,9 @@
             <ul><li>Navigate with cd and ls</li><li>Create, copy and delete safely</li><li>Use pipes and grep</li></ul>
           </div>
       <p>The <strong>command line</strong> (terminal, shell) lets you control your computer by typing commands. Developers use it constantly because it is fast, scriptable and the same on servers as on laptops. Git, Docker, npm and most tools are driven from it. The examples use bash/zsh (macOS, Linux, WSL, Git Bash).</p>
+      <h2>Why learn the terminal at all?</h2>
+      <p>Every graphical app you use is a friendly layer on top of commands. The terminal is the plain, direct way to talk to your computer: you type a short instruction, press Enter and it answers. It looks intimidating for a day and then becomes the fastest tool you own. Nearly every developer tool (Git, Docker, Python, Node, cloud services) is driven from it, and it is the same on servers where there is no mouse at all.</p>
+      <p>One rule makes it less scary: <strong>a command is a verb plus optional details</strong>. <code>ls</code> lists, <code>cd</code> changes folder, <code>mkdir</code> makes a folder. Add a flag such as <code>-l</code> for options and a path for the target.</p>
       <h2>Where am I? Moving around</h2>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>pwd                 # print working directory
 ls                  # list files
@@ -108,6 +111,31 @@ which python3                             # where is this command?</code></pre><
       <div class="learn-code-wrap" data-lang="bash"><pre><code>man ls           # the manual page
 ls --help        # quick usage
 history | grep git</code></pre></div>
+      <h2>Anatomy of a command</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>ls -la ~/projects
+#  |  |    |
+#  |  |    +-- argument: what to act on
+#  |  +------- flags: change how it behaves (-l long list, -a include hidden)
+#  +---------- command: what to do</code></pre></div>
+      <h2>A first session, step by step</h2>
+      <p>Type these one at a time and read what each prints. <code>$</code> is the prompt, not part of the command.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ pwd                    # where am I?
+/Users/ada
+$ mkdir practice         # make a folder
+$ cd practice            # go into it
+$ echo &quot;hello&quot; &gt; a.txt   # create a file containing hello
+$ ls
+a.txt
+$ cat a.txt              # show its contents
+hello
+$ cd ..                  # go back up one level</code></pre></div>
+      <h2>Paths: absolute and relative</h2>
+      <ul><li><strong>Absolute</strong> paths start at the root: <code>/Users/ada/practice/a.txt</code>. They work from anywhere.</li><li><strong>Relative</strong> paths start from where you are: <code>practice/a.txt</code>. <code>.</code> means here, <code>..</code> means the parent folder, and <code>~</code> means your home folder.</li></ul>
+      <h2>Keyboard shortcuts that save hours</h2>
+      <ul><li><strong>Tab</strong> completes file and folder names. Press it constantly; it prevents typos.</li><li><strong>Up arrow</strong> brings back previous commands; <strong>Ctrl+R</strong> searches your history.</li><li><strong>Ctrl+C</strong> stops a running command; <strong>Ctrl+L</strong> clears the screen.</li><li><code>man ls</code> or <code>ls --help</code> shows the manual for any command.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Be careful with rm</p><p class="learn-callout-body"><code>rm</code> deletes permanently; there is no recycle bin. <code>rm -rf folder</code> removes a folder and everything in it without asking. Read the command twice before pressing Enter, and never run one you copied without understanding it.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li>A command is a verb, optional flags and arguments: <code>ls -la folder</code>.</li><li><code>pwd</code>, <code>ls</code>, <code>cd</code>, <code>mkdir</code>, <code>cat</code> are the survival kit.</li><li>Use Tab to complete, the Up arrow for history and <code>--help</code> when stuck.</li><li><code>rm</code> is permanent; double-check before deleting.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">In a scratch folder, create a directory <code>demo</code>, write three lines into <code>demo/list.txt</code> with <code>echo</code> and <code>&gt;&gt;</code>, then use <code>grep</code> to print only the lines containing a chosen word.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="mkdir demo
 echo &quot;apple pie&quot; &gt;&gt; demo/list.txt

@@ -63,6 +63,8 @@
             <ul><li>Use ArrayList add/get</li><li>Store key-value in HashMap</li><li>Iterate with for-each</li></ul>
           </div>
       <p>Arrays have a fixed size. Real programs need data structures that grow, shrink and search efficiently, and Java's <strong>Collections Framework</strong> provides them in <code>java.util</code>. The three interfaces to know are <code>List</code> (ordered, duplicates allowed), <code>Set</code> (no duplicates) and <code>Map</code> (key-value pairs).</p>
+      <h2>Arrays are fixed, collections grow</h2>
+      <p>A plain array has a size that never changes. Real programs constantly add and remove items, look things up and remove duplicates. The Java <strong>Collections Framework</strong> provides ready-made containers for these jobs. The three you will use most: <code>List</code> (ordered, allows duplicates), <code>Set</code> (no duplicates) and <code>Map</code> (key to value, like a dictionary).</p>
       <h2>List and ArrayList</h2>
       <p><code>ArrayList</code> is the default list. The angle brackets are <strong>generics</strong>: they tell the compiler what the list holds, so mistakes are caught at compile time instead of at runtime.</p>
       <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
@@ -113,6 +115,76 @@ System.out.println(big);</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 5, 9]
 [5, 9]</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Program to the interface</p><p class="learn-callout-body">Declare variables as <code>List</code>, <code>Set</code> or <code>Map</code>, not the concrete class. You can then swap <code>ArrayList</code> for <code>LinkedList</code> in one place without touching the rest of the code.</p></aside>
+      <h2>List: an ordered, growable sequence</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;String&gt; tasks = new ArrayList&lt;&gt;();
+        tasks.add(&quot;write&quot;);
+        tasks.add(&quot;test&quot;);
+        tasks.add(&quot;ship&quot;);
+        tasks.remove(&quot;test&quot;);
+
+        System.out.println(tasks);
+        System.out.println(tasks.size() + &quot; tasks, first = &quot; + tasks.get(0));
+        System.out.println(tasks.contains(&quot;ship&quot;));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[write, ship]
+2 tasks, first = write
+true</pre></div>
+      <p>The <code>&lt;String&gt;</code> is a <em>generic</em>: it tells the compiler this list only holds strings, so adding a number is a compile error.</p>
+      <h2>Set: uniqueness for free</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Set&lt;String&gt; tags = new TreeSet&lt;&gt;();
+        tags.add(&quot;java&quot;);
+        tags.add(&quot;sql&quot;);
+        tags.add(&quot;java&quot;);        // duplicate ignored
+        System.out.println(tags);
+        System.out.println(tags.size());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[java, sql]
+2</pre></div>
+      <h2>Map: look things up by key</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Map&lt;String, Integer&gt; stock = new TreeMap&lt;&gt;();
+        stock.put(&quot;apple&quot;, 5);
+        stock.put(&quot;pear&quot;, 2);
+        stock.merge(&quot;apple&quot;, 3, Integer::sum);   // add to existing
+
+        for (Map.Entry&lt;String, Integer&gt; e : stock.entrySet()) {
+            System.out.println(e.getKey() + &quot; -&gt; &quot; + e.getValue());
+        }
+        System.out.println(stock.getOrDefault(&quot;kiwi&quot;, 0));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>apple -&gt; 8
+pear -&gt; 2
+0</pre></div>
+      <h2>Worked example: count word frequency</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        String text = &quot;the cat and the hat and the bat&quot;;
+        Map&lt;String, Integer&gt; counts = new TreeMap&lt;&gt;();
+        for (String w : text.split(&quot; &quot;)) {
+            counts.merge(w, 1, Integer::sum);
+        }
+        System.out.println(counts);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{and=2, bat=1, cat=1, hat=1, the=3}</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li><code>List</code> keeps order and allows duplicates; <code>Set</code> rejects duplicates; <code>Map</code> stores key-value pairs.</li><li>Generics like <code>List&lt;String&gt;</code> make the compiler check element types.</li><li>Program to the interface (<code>List</code>) and choose the implementation (<code>ArrayList</code>) on the right.</li><li><code>Map.merge</code> is a neat way to count things.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given a list of words, use a <code>Map&lt;String, Integer&gt;</code> to count occurrences, then print the word with the highest count.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="List&lt;String&gt; words = List.of(&quot;a&quot;, &quot;b&quot;, &quot;a&quot;, &quot;c&quot;, &quot;a&quot;, &quot;b&quot;);
 Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();

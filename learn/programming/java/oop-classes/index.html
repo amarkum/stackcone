@@ -63,6 +63,8 @@
             <ul><li>Define a class with fields</li><li>Write a constructor</li><li>Add getters/setters</li></ul>
           </div>
       <p>Java is object-oriented from the ground up. A <strong>class</strong> describes the shape of something (its fields) and what it can do (its methods). An <strong>object</strong> is a concrete instance created with <code>new</code>. Good classes hide their internal data and expose a small, safe set of operations. That idea is called <strong>encapsulation</strong>.</p>
+      <h2>Objects model real things</h2>
+      <p>Java is built around <strong>object-oriented programming</strong>. Rather than a long list of separate variables and functions, you describe a kind of thing once as a <em>class</em> (its data and its abilities) and then create as many <em>objects</em> from it as you need. A <code>BankAccount</code> class describes what every account has (an owner, a balance) and can do (deposit, withdraw). Each customer's account is a separate object with its own numbers.</p>
       <h2>A class with a constructor</h2>
       <p>A constructor has the same name as the class and no return type. It runs when you call <code>new</code> and sets the object up. Marking fields <code>private</code> stops outside code from changing them directly.</p>
       <div class="learn-code-wrap" data-lang="java"><pre><code>public class BankAccount {
@@ -116,6 +118,89 @@ for (Shape sh : shapes) {
 4.00</pre></div>
       <p>Calling <code>sh.area()</code> runs the right version for each object. That is <strong>polymorphism</strong>: one call, many behaviors.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Access modifiers</p><p class="learn-callout-body"><code>private</code>: this class only. <code>protected</code>: same package and subclasses. <code>public</code>: everywhere. No modifier: same package. Start with <code>private</code> and open up only as needed.</p></aside>
+      <h2>A class, an object, and encapsulation</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>class BankAccount {
+    private final String owner;
+    private double balance;
+
+    BankAccount(String owner, double balance) {
+        this.owner = owner;
+        this.balance = balance;
+    }
+
+    void deposit(double amount) {
+        if (amount &lt;= 0) throw new IllegalArgumentException(&quot;amount must be positive&quot;);
+        balance += amount;
+    }
+
+    double getBalance() { return balance; }
+    String getOwner() { return owner; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        BankAccount a = new BankAccount(&quot;Ada&quot;, 100);
+        BankAccount b = new BankAccount(&quot;Linus&quot;, 50);
+        a.deposit(25);
+        System.out.println(a.getOwner() + &quot;: &quot; + a.getBalance());
+        System.out.println(b.getOwner() + &quot;: &quot; + b.getBalance());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada: 125.0
+Linus: 50.0</pre></div>
+      <ul><li><code>private</code> fields can only be touched from inside the class. This is <strong>encapsulation</strong>: outsiders must go through methods, so the class can enforce its rules (no negative deposits).</li><li>The <em>constructor</em> has the class name and no return type; it runs when you write <code>new BankAccount(...)</code>.</li><li><code>this</code> refers to the object being built or used, and disambiguates fields from parameters.</li><li>Each <code>new</code> creates an independent object: depositing into <code>a</code> never changes <code>b</code>.</li></ul>
+      <h2>Inheritance and polymorphism</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>class Animal {
+    String speak() { return &quot;...&quot;; }
+}
+
+class Dog extends Animal {
+    @Override
+    String speak() { return &quot;Woof&quot;; }
+}
+
+class Cat extends Animal {
+    @Override
+    String speak() { return &quot;Meow&quot;; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Animal[] pets = { new Dog(), new Cat(), new Animal() };
+        for (Animal p : pets) {
+            System.out.println(p.speak());
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Woof
+Meow
+...</pre></div>
+      <p>The loop only knows about <code>Animal</code>, yet each object answers in its own way. That is <strong>polymorphism</strong>: the same call, different behaviour depending on the real object. It lets you add a new kind of animal without changing the loop.</p>
+      <h2>Interfaces: promises about behaviour</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>interface Shape {
+    double area();
+}
+
+record Circle(double r) implements Shape {
+    public double area() { return Math.PI * r * r; }
+}
+
+record Rect(double w, double h) implements Shape {
+    public double area() { return w * h; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Shape[] shapes = { new Circle(1), new Rect(3, 4) };
+        for (Shape s : shapes) {
+            System.out.printf(&quot;%.2f%n&quot;, s.area());
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3.14
+12.00</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A class is a blueprint; <code>new</code> makes independent objects from it.</li><li>Keep fields <code>private</code> and expose behaviour through methods (encapsulation).</li><li>Subclasses <code>extend</code> and <code>@Override</code>; interfaces declare what a class can do.</li><li>Polymorphism lets code work with the general type while objects behave as their real type.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>withdraw(double amount)</code> method to <code>BankAccount</code> that throws <code>IllegalStateException</code> if the balance would go negative.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="public void withdraw(double amount) {
     if (amount &gt; balance) {

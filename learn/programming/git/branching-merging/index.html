@@ -62,6 +62,11 @@
             <ul><li>Create and switch branches</li><li>Resolve a merge conflict</li><li>Choose merge vs rebase</li></ul>
           </div>
       <p>A <strong>branch</strong> is an independent line of development. Branches let you build a feature or fix a bug without disturbing the stable code, then combine the work when it is ready. In Git, branches are extremely cheap: just a movable pointer to a commit.</p>
+      <h2>Branches let you experiment safely</h2>
+      <p>Imagine you want to try a risky redesign but the site must keep working for visitors. A <strong>branch</strong> is a separate line of development: you copy the current state, work on your copy, and if it goes well you merge it back. If it goes badly you delete the branch and nothing was harmed. Branches are cheap in Git (just a pointer), so professional teams create one for every feature and bug fix.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>main:     A---B---C
+               \
+feature:        D---E     &lt;- your experiment, isolated from main</code></pre></div>
       <h2>Working with branches</h2>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>git branch                     # list branches
 git switch -c feature/login    # create AND switch to a new branch
@@ -94,6 +99,34 @@ git merge feature/login  # now a clean fast-forward</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Golden rule of rebasing</p><p class="learn-callout-body">Never rebase commits that others have already pulled. Rebase rewrites history, which causes chaos for anyone who has the old version. Rebase your own local work freely.</p></aside>
       <h2>Naming and habits</h2>
       <ul><li>Prefix names by intent: <code>feature/</code>, <code>fix/</code>, <code>chore/</code>.</li><li>Keep branches short-lived: days, not months.</li><li>Keep <code>main</code> always working.</li></ul>
+      <h2>A full feature workflow</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ git switch -c add-search        # create a branch and move to it
+Switched to a new branch &#x27;add-search&#x27;
+
+$ # ...edit files...
+$ git add .
+$ git commit -m &quot;Add search box&quot;
+
+$ git switch main               # go back to main
+$ git merge add-search          # bring the feature in
+Updating 3f2a91c..9d1e4b7
+Fast-forward
+ search.html | 12 ++++++++++++
+
+$ git branch -d add-search      # tidy up, the work is now on main</code></pre></div>
+      <h2>Fast-forward versus merge commit</h2>
+      <p>If <code>main</code> has not moved since you branched, Git simply slides the pointer forward: a <strong>fast-forward</strong>, no extra commit. If <code>main</code> also gained new commits, Git creates a <strong>merge commit</strong> that joins the two lines and has two parents.</p>
+      <h2>Conflicts are normal, not a disaster</h2>
+      <p>A conflict happens only when two branches change the <em>same lines</em> of the same file, and Git cannot decide which to keep. It stops and marks the file. Your job is to choose, then finish the merge.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+&lt;h1&gt;Welcome to our shop&lt;/h1&gt;
+=======
+&lt;h1&gt;Welcome to the store&lt;/h1&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; add-search</code></pre></div>
+      <ul><li>Everything between <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> and <code>=======</code> is what is on your current branch.</li><li>Everything between <code>=======</code> and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> is what the other branch has.</li><li>Edit the file to the version you want, deleting all three marker lines.</li><li>Then <code>git add file</code> and <code>git commit</code> to complete the merge.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Stuck mid-merge?</p><p class="learn-callout-body"><code>git merge --abort</code> returns to the state before you started, so it is always safe to try again.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li>A branch is an isolated line of work; create one per feature or fix.</li><li><code>git switch -c name</code> creates and enters a branch; <code>git merge name</code> combines it.</li><li>Conflicts only occur when the same lines changed; you resolve them by editing and committing.</li><li><code>git merge --abort</code> cancels a merge you are not ready to finish.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a branch, change the same line of a file on both the branch and main, merge, then resolve the conflict by keeping both changes.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="echo &quot;hi&quot; &gt; f.txt &amp;&amp; git add f.txt &amp;&amp; git commit -m &quot;init&quot;
 git switch -c feature

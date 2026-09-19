@@ -63,6 +63,8 @@
             <ul><li>Catch NumberFormatException</li><li>Use finally</li><li>Throw IllegalArgumentException</li></ul>
           </div>
       <p>When something goes wrong at runtime, Java throws an <strong>exception</strong> object and unwinds the call stack until some code catches it. If nothing does, the thread ends with a stack trace. Handling exceptions well is the difference between a program that crashes mysteriously and one that fails clearly.</p>
+      <h2>When things go wrong</h2>
+      <p>Files are missing, numbers arrive as text, networks fail. An <strong>exception</strong> is Java's way of saying "something went wrong here" and unwinding until some code decides how to handle it. Without handling, the program prints a stack trace and stops. With <code>try</code>/<code>catch</code> you keep control and respond sensibly, for example by showing a friendly message or trying again.</p>
       <h2>Checked and unchecked</h2>
       <ul><li><strong>Checked</strong> exceptions (such as <code>IOException</code>) describe problems outside your control. The compiler forces you to catch them or declare them with <code>throws</code>.</li><li><strong>Unchecked</strong> exceptions extend <code>RuntimeException</code> (such as <code>NullPointerException</code> or <code>IllegalArgumentException</code>). They usually signal a bug, and you are not forced to catch them.</li></ul>
       <h2>try / catch / finally</h2>
@@ -98,9 +100,70 @@ try (BufferedReader in = Files.newBufferedReader(Path.of(&quot;notes.txt&quot;))
         throw new IllegalArgumentException(&quot;not a number: &quot; + raw, e);
     }
 }</code></pre></div>
+      <h2>Catching a specific exception</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        String[] inputs = {&quot;42&quot;, &quot;abc&quot;, &quot;7&quot;};
+        for (String s : inputs) {
+            try {
+                int n = Integer.parseInt(s);
+                System.out.println(&quot;parsed &quot; + n);
+            } catch (NumberFormatException e) {
+                System.out.println(&quot;not a number: &quot; + s);
+            } finally {
+                System.out.println(&quot;(done with &quot; + s + &quot;)&quot;);
+            }
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>parsed 42
+(done with 42)
+not a number: abc
+(done with abc)
+parsed 7
+(done with 7)</pre></div>
+      <p>The loop keeps going after the bad input; the exception was contained. <code>finally</code> runs whether or not an exception happened, which is the right place for cleanup.</p>
+      <h2>Reading a stack trace</h2>
+      <p>An uncaught exception prints where it started and how the program got there. Read the first line (the type and message) and then the first line that mentions <em>your</em> code.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Exception in thread &quot;main&quot; java.lang.ArithmeticException: / by zero
+	at Main.divide(Main.java:4)
+	at Main.main(Main.java:9)</code></pre></div>
+      <h2>Throwing an exception with a clear message</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    static double average(int[] nums) {
+        if (nums.length == 0) {
+            throw new IllegalArgumentException(&quot;need at least one number&quot;);
+        }
+        int sum = 0;
+        for (int n : nums) sum += n;
+        return (double) sum / nums.length;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(average(new int[]{2, 4, 6}));
+        try {
+            average(new int[]{});
+        } catch (IllegalArgumentException e) {
+            System.out.println(&quot;Error: &quot; + e.getMessage());
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4.0
+Error: need at least one number</pre></div>
+      <h2>Checked versus unchecked, in plain words</h2>
+      <ul><li><strong>Checked</strong> exceptions (such as <code>IOException</code>) are things the compiler forces you to deal with, because they can happen even in correct code (a file may be missing).</li><li><strong>Unchecked</strong> exceptions (such as <code>NullPointerException</code>) usually mean a bug in the code; you fix the code rather than catch them everywhere.</li></ul>
+      <h2>Letting Java close resources for you</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>try (BufferedReader reader = new BufferedReader(new FileReader(&quot;data.txt&quot;))) {
+    System.out.println(reader.readLine());
+} catch (IOException e) {
+    System.out.println(&quot;could not read file: &quot; + e.getMessage());
+}
+// the reader is closed automatically, even if an exception was thrown</code></pre></div>
       <h2>Common mistakes</h2>
       <ul><li>Empty catch blocks (<code>catch (Exception e) {}</code>) hide failures. At least log the error.</li><li>Catching <code>Exception</code> or <code>Throwable</code> too broadly, which also swallows bugs.</li><li>Using exceptions for normal control flow; they are slow and obscure intent.</li><li>Losing the original cause by not passing it to the new exception.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>NullPointerException</p><p class="learn-callout-body">The most common runtime error. It happens when you call a method on a <code>null</code> reference. Check for null at boundaries, or return <code>Optional</code> from methods that may have no result.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li>Wrap risky code in <code>try</code> and catch the <em>specific</em> exception you expect.</li><li><code>finally</code> always runs; try-with-resources closes files and connections automatically.</li><li>Throw your own exceptions with clear messages when input is invalid.</li><li>Read stack traces top-down: type and message first, then the first line of your own code.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>int safeDivide(int a, int b)</code> that returns 0 when <code>b</code> is zero by catching <code>ArithmeticException</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="public static int safeDivide(int a, int b) {
     try {

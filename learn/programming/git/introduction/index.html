@@ -62,6 +62,9 @@
             <ul><li>Init a repo and commit</li><li>Understand the staging area</li><li>Read git log and diff</li></ul>
           </div>
       <p><strong>Git</strong> is a version control system: it records the history of your project so you can see what changed, when and why, go back to any earlier state, and work with others without overwriting each other. Almost every software team uses it.</p>
+      <h2>The problem Git solves</h2>
+      <p>You have probably saved files called <code>report_final.docx</code>, <code>report_final2.docx</code> and <code>report_REALLY_final.docx</code>. Now imagine ten people editing the same project. Git is a system that remembers every version of every file, who changed what and why, and lets you go back to any point. Instead of copies of files, you keep <strong>one folder plus a complete history</strong>.</p>
+      <p>Git is also what makes teamwork possible. Everyone works on their own copy, and Git combines the changes. It is the industry standard, used by essentially every software team and hosted by services such as GitHub and GitLab.</p>
       <h2>Setup</h2>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>git --version
 git config --global user.name &quot;Your Name&quot;
@@ -105,6 +108,45 @@ __pycache__/
 .DS_Store
 dist/</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Never commit secrets</p><p class="learn-callout-body">API keys and passwords committed once stay in history even after you delete them. Keep them in <code>.env</code> (ignored) and rotate any key that leaks.</p></aside>
+      <h2>Think of commits as save points in a game</h2>
+      <p>A <strong>commit</strong> is a snapshot of your project at one moment, with a message explaining it. You can always return to an earlier save point. A history is simply a chain of these snapshots, each pointing at the one before it.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>commit 3  &quot;Add contact form&quot;      &lt;- you are here
+   |
+commit 2  &quot;Style the header&quot;
+   |
+commit 1  &quot;Create homepage&quot;</code></pre></div>
+      <h2>A complete first walkthrough</h2>
+      <p>Follow along in an empty folder. Each command is explained so nothing is magic.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ mkdir my-site &amp;&amp; cd my-site
+$ git init                       # start tracking this folder
+Initialized empty Git repository in .../my-site/.git/
+
+$ echo &quot;&lt;h1&gt;Hello&lt;/h1&gt;&quot; &gt; index.html
+$ git status                     # what has changed?
+Untracked files:
+        index.html
+
+$ git add index.html             # stage: choose what goes in the next snapshot
+$ git commit -m &quot;Create homepage&quot; # commit: take the snapshot
+[main (root-commit) 3f2a91c] Create homepage
+ 1 file changed, 1 insertion(+)
+
+$ git log --oneline              # view the history
+3f2a91c Create homepage</code></pre></div>
+      <h2>Why is there a staging area?</h2>
+      <p>You may have edited five files but only want two of them in this commit because they belong to one idea. <code>git add</code> lets you pick exactly what goes into the snapshot. It feels like an extra step at first; later it is what keeps your history clean and understandable.</p>
+      <h2>The three states of a file</h2>
+      <ul><li><strong>Modified</strong>: you changed it, but Git has not been told to include it yet.</li><li><strong>Staged</strong>: you ran <code>git add</code>; it will be in the next commit.</li><li><strong>Committed</strong>: it is safely stored in the history.</li></ul>
+      <p><code>git status</code> tells you which state each file is in. When you are lost, run it. It is the most useful Git command and also suggests what to do next.</p>
+      <h2>Seeing what changed</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>$ echo &quot;&lt;p&gt;Welcome&lt;/p&gt;&quot; &gt;&gt; index.html
+$ git diff                       # changes not yet staged
++&lt;p&gt;Welcome&lt;/p&gt;
+
+$ git add index.html
+$ git diff --staged              # changes that will be committed</code></pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Git keeps a complete history of your project as a chain of commits (snapshots).</li><li>The everyday loop: edit, <code>git add</code>, <code>git commit -m</code>.</li><li><code>git status</code>, <code>git diff</code> and <code>git log --oneline</code> tell you where you are.</li><li>Write commit messages that explain <em>why</em>; your future self will thank you.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a repo, make three commits (add a file, edit it, add another), then use <code>git log --oneline</code> and <code>git show</code> to view the second commit.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="git init demo &amp;&amp; cd demo
 echo &quot;one&quot; &gt; a.txt &amp;&amp; git add a.txt &amp;&amp; git commit -m &quot;Add a.txt&quot;

@@ -63,6 +63,8 @@
             <ul><li>Declare typed variables</li><li>Use String concatenation</li><li>Know int vs long vs double</li></ul>
           </div>
       <p>In Java you must <strong>declare the type</strong> of every variable, and the compiler enforces it. That feels strict compared with Python, but it catches a whole class of mistakes before the program ever runs. A variable declaration has the shape <code>type name = value;</code>.</p>
+      <h2>Every variable has a declared type</h2>
+      <p>In Java you must say what <em>kind</em> of value a variable holds when you create it: <code>int count = 5;</code>. The compiler then refuses anything that does not fit, so you cannot accidentally store text in a number. This feels like extra typing at first, but it turns a whole class of runtime surprises into immediate, clear compile errors. Think of variables as labelled containers with a fixed shape: an <code>int</code> box holds whole numbers, a <code>String</code> box holds text.</p>
       <h2>Primitive types</h2>
       <p>Primitives hold raw values directly and are very fast. The ones you will use most:</p>
       <ul><li><code>int</code>: 32-bit whole numbers (about ±2.1 billion). <code>long</code> is the 64-bit version.</li><li><code>double</code>: 64-bit decimals. <code>float</code> is the less precise 32-bit version.</li><li><code>boolean</code>: <code>true</code> or <code>false</code>.</li><li><code>char</code>: a single character in single quotes, like <code>'A'</code>.</li></ul>
@@ -99,6 +101,76 @@ String b = &quot;java&quot;;
 System.out.println(a == b);       // false (different objects)
 System.out.println(a.equals(b));  // true</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>final</p><p class="learn-callout-body">Add <code>final</code> to a variable that should never change: <code>final int MAX = 100;</code>. The compiler will reject any later assignment.</p></aside>
+      <h2>The everyday types side by side</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        int age = 28;
+        long population = 8_000_000_000L;
+        double price = 19.99;
+        boolean active = true;
+        char grade = &#x27;A&#x27;;
+        String name = &quot;Ada&quot;;
+
+        System.out.println(name + &quot; is &quot; + age + &quot;, grade &quot; + grade);
+        System.out.println(price * 2);
+        System.out.println(population);
+        System.out.println(active);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada is 28, grade A
+39.98
+8000000000
+true</pre></div>
+      <h2>Whole-number division surprises everyone once</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        System.out.println(7 / 2);          // int / int = int
+        System.out.println(7 / 2.0);        // one double makes it double
+        System.out.println(7 % 2);          // remainder
+        int total = 7, people = 2;
+        double each = (double) total / people;
+        System.out.println(each);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3
+3.5
+1
+3.5</pre></div>
+      <p>When both operands are <code>int</code>, Java throws away the fraction. Convert one side to <code>double</code> (with a <em>cast</em>) before dividing when you want a decimal answer.</p>
+      <h2>Comparing text: equals, not ==</h2>
+      <p>For objects such as <code>String</code>, <code>==</code> asks "are these the very same object in memory?", not "do they contain the same text?". Always use <code>.equals()</code>.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        String a = &quot;hello&quot;;
+        String b = new String(&quot;hello&quot;);
+        System.out.println(a == b);
+        System.out.println(a.equals(b));
+        System.out.println(&quot;Java&quot;.equalsIgnoreCase(&quot;JAVA&quot;));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>false
+true
+true</pre></div>
+      <h2>Useful String methods</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        String s = &quot;  Hello, World  &quot;;
+        System.out.println(s.trim());
+        System.out.println(s.trim().toUpperCase());
+        System.out.println(s.trim().length());
+        System.out.println(s.contains(&quot;World&quot;));
+        System.out.println(s.trim().substring(0, 5));
+        System.out.println(String.join(&quot;-&quot;, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, World
+HELLO, WORLD
+12
+true
+Hello
+a-b-c</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Declare every variable with a type: <code>int</code>, <code>double</code>, <code>boolean</code>, <code>char</code>, <code>String</code>.</li><li>Integer division drops the fraction; cast to <code>double</code> for decimals.</li><li>Compare strings with <code>.equals()</code>, never <code>==</code>.</li><li>The compiler catches type mismatches before your program runs.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Declare an <code>int</code> price in cents and a <code>double</code> tax rate. Compute the total as a double and print it formatted like <code>Total: 1080.00</code> using <code>System.out.printf</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="int cents = 1000;
 double rate = 0.08;

@@ -63,6 +63,8 @@
             <ul><li>Understand public class and main</li><li>Compile with javac</li><li>Run with java</li></ul>
           </div>
       <p>Java is a <strong>compiled, statically typed</strong> language. You write source code in <code>.java</code> files, the compiler (<code>javac</code>) turns it into bytecode (<code>.class</code> files), and the Java Virtual Machine (JVM) runs that bytecode. Because the JVM exists on every major platform, the same compiled program runs on Windows, macOS and Linux. That portability, plus speed and a huge ecosystem, is why Java powers so many banks, Android apps and backend services.</p>
+      <h2>Why Java?</h2>
+      <p>Java has been one of the most widely used languages for almost 30 years. It powers Android apps, banking and payment systems, large web backends and huge data platforms. Its design goal was <em>write once, run anywhere</em>: your program is compiled to an intermediate form that any computer with a Java Virtual Machine can run. Java is also <strong>strictly typed</strong>, meaning the compiler checks your code before it ever runs, which catches a whole category of mistakes early. That makes it a demanding first language but an excellent way to learn how programming really works.</p>
       <h2>JDK, JRE and JVM</h2>
       <ul><li><strong>JVM</strong>: the engine that runs bytecode.</li><li><strong>JRE</strong>: the JVM plus the standard libraries needed to run programs.</li><li><strong>JDK</strong>: the JRE plus developer tools such as the compiler. Install a JDK (17 or newer) to follow this course.</li></ul>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>java -version
@@ -81,8 +83,45 @@ javac -version</code></pre></div>
 java Hello</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, stackcone!</pre></div>
       <p><code>javac</code> produces <code>Hello.class</code>; <code>java Hello</code> runs it (note: no <code>.class</code> extension). Since Java 11 you can also run a single file directly with <code>java Hello.java</code>.</p>
+      <h2>What every word in Hello World means</h2>
+      <p>Java programs look wordy at first. Here is the smallest program, with each piece explained so none of it stays a mystery:</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        System.out.println(&quot;Hello, Java!&quot;);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, Java!</pre></div>
+      <ul><li><code>public class Main</code>: all Java code lives inside a class. The file must be named <code>Main.java</code> to match.</li><li><code>public static void main(String[] args)</code>: the entry point. Java starts running here. <code>void</code> means it returns nothing; <code>args</code> holds any command-line arguments.</li><li><code>System.out.println(...)</code>: prints text followed by a new line. <code>System.out.print</code> omits the new line.</li><li>Every statement ends with a semicolon, and blocks are wrapped in curly braces.</li></ul>
+      <h2>Compile, then run</h2>
+      <p>Unlike Python, Java is normally compiled first: <code>javac</code> turns your <code>.java</code> file into <code>.class</code> bytecode, and <code>java</code> runs that bytecode on the JVM. Modern Java (11 and later) can also run a single file directly.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>javac Main.java     # compile -&gt; creates Main.class
+java Main           # run the bytecode
+java Main.java      # or compile and run a single file in one step</code></pre></div>
+      <h2>Reading your first compiler error</h2>
+      <p>The compiler is strict, and its messages are precise. Forget a semicolon and it tells you the file, the line and the problem.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Main.java:3: error: &#x27;;&#x27; expected
+        System.out.println(&quot;Hello, Java!&quot;)
+                                          ^
+1 error</code></pre></div>
+      <p>The <code>^</code> marks where Java noticed the problem. Fix that spot and compile again. Because the compiler refuses to build broken code, many bugs never reach a running program.</p>
+      <h2>Printing values</h2>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    public static void main(String[] args) {
+        int apples = 3;
+        System.out.println(&quot;Apples: &quot; + apples);
+        System.out.println(2 + 3);
+        System.out.println(&quot;2 + 3 = &quot; + (2 + 3));
+        System.out.printf(&quot;Pi is about %.2f%n&quot;, 3.14159);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Apples: 3
+5
+2 + 3 = 5
+Pi is about 3.14</pre></div>
       <h2>Common mistakes</h2>
       <ul><li><strong>Missing semicolon</strong>: every statement ends with <code>;</code>.</li><li><strong>Class and file name mismatch</strong>: <code>class Hello</code> in <code>hello.java</code> fails to compile.</li><li><strong>Case sensitivity</strong>: <code>system.out.println</code> is an error; it is <code>System</code> with a capital S.</li><li><strong>Braces</strong>: every <code>{</code> needs a matching <code>}</code>.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Java is compiled to bytecode and runs on the JVM, so the same program runs everywhere.</li><li>Code lives in classes; execution starts at <code>public static void main</code>.</li><li>Statements end with <code>;</code>, blocks use <code>{ }</code>, and the compiler checks types before running.</li><li><code>javac</code> compiles, <code>java</code> runs; read compiler errors from the file and line number.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Modify the program to print your name on one line and your favorite language on the next, using two <code>println</code> calls.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="public class Hello {
     public static void main(String[] args) {
