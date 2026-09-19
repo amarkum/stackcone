@@ -106,6 +106,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -185,7 +186,7 @@
     <p>Per-workspace copies: <code>User/workspaceStorage/&lt;hash&gt;/state.vscdb</code> — includes <code>aiService.prompts</code> (verbatim prompt history).</p>
 
     <h3>Agent transcripts (what this migrator reads)</h3>
-    <pre><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/&lt;runId&gt;/&lt;runId&gt;.jsonl</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>~/.cursor/projects/&lt;slug&gt;/agent-transcripts/&lt;runId&gt;/&lt;runId&gt;.jsonl</code></pre></div>
     <p>One folder per agent run. The migrator reads the main <code>&lt;runId&gt;.jsonl</code> only — not subagent sidechains.</p>
 
     <h3>Other useful paths</h3>
@@ -231,12 +232,12 @@
 
     <h2 id="format">Format differences</h2>
     <p><strong>Cursor agent transcript (per line)</strong></p>
-    <pre><code>{"role": "user",
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{"role": "user",
   "message": { "content": "..." }
-}</code></pre>
+}</code></pre></div>
 
     <p><strong>Claude Code session (per line)</strong></p>
-    <pre><code>{"type": "user",
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{"type": "user",
   "message": { "role": "user", "content": "..." },
   "uuid": "...",
   "timestamp": "2026-06-17T12:00:00Z",
@@ -244,13 +245,13 @@
   "entrypoint": "cursor-migrated",
   "cwd": "/Users/you/dev/my-app",
   "version": "migrated-from-cursor"
-}</code></pre>
+}</code></pre></div>
 
     <p>Each session file starts and ends with <code>queue-operation</code> lines (<code>enqueue</code> / <code>dequeue</code>).</p>
 
     <h2 id="script">Migration script</h2>
     <p>Save as <code>migrate_cursor_to_claude.py</code>. Python 3.10+, stdlib only.</p>
-    <pre><code>#!/usr/bin/env python3
+    <div class="learn-code-wrap" data-lang="python"><pre><code>#!/usr/bin/env python3
 """Migrate Cursor agent transcripts and plans into Claude Code storage.
 
 Scans ~/.cursor/projects/*/agent-transcripts/, converts JSONL to Claude Code
@@ -618,32 +619,31 @@ def main() -&gt; None:
 
 
 if __name__ == "__main__":
-    main()
-</code></pre>
+    main()</code></pre></div>
 
     <h2 id="run">How to run</h2>
 
     <h3>1. Dry run (recommended)</h3>
-    <pre><code>python3 migrate_cursor_to_claude.py --dry-run
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>python3 migrate_cursor_to_claude.py --dry-run
 
 # Only one repo
-python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre>
+python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre></div>
     <p>Lists pending chats with sizes and target Claude project folders. Skips already-migrated files unless the source <code>mtime</code> changed.</p>
 
     <h3>2. Migrate everything</h3>
-    <pre><code>python3 migrate_cursor_to_claude.py --yes</code></pre>
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>python3 migrate_cursor_to_claude.py --yes</code></pre></div>
     <p>Migrates <strong>chats first</strong>, then <strong>plans</strong>. Per-item status: <code>ok</code>, <code>skip</code>, or <code>fail</code>.</p>
 
     <h3>3. Chats or plans only</h3>
-    <pre><code>python3 migrate_cursor_to_claude.py --chats-only --yes
-python3 migrate_cursor_to_claude.py --plans-only --yes</code></pre>
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>python3 migrate_cursor_to_claude.py --chats-only --yes
+python3 migrate_cursor_to_claude.py --plans-only --yes</code></pre></div>
 
     <h3>Before / after</h3>
-    <pre><code># Cursor agent runs (unchanged)
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Cursor agent runs (unchanged)
 find ~/.cursor/projects -path '*/agent-transcripts/*/*.jsonl' | wc -l
 
 # Claude sessions for one repo
-ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
+ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre></div>
 
     <h2 id="verify">Verify in Claude Code</h2>
     <ol>
@@ -669,7 +669,7 @@ ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
     </ul>
 
     <h2 id="rollback">Rollback</h2>
-    <pre><code>grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre></div>
     <p>Delete those JSONL files to remove migrated sessions. Deleting the entire project folder also removes native Claude sessions for that repo. Remove <code>~/.claude/.cursor-migration-manifest.json</code> to force a full re-migration.</p>
 
     <h2 id="troubleshooting">Troubleshooting</h2>
@@ -728,6 +728,7 @@ ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

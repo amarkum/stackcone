@@ -64,6 +64,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page blog-article-page">
   <header class="header">
@@ -183,7 +184,7 @@ flowchart TD
         </ul>
 
         <h3>Example golden dataset entry</h3>
-<pre><code>{
+<div class="learn-code-wrap" data-lang="json"><pre><code>{
   "id": "create-api-endpoint",
   "input": "Add a POST /users endpoint that accepts email and name",
   "context": {
@@ -194,11 +195,11 @@ flowchart TD
     "files_modified": ["app/main.py"],
     "test_pass": true
   }
-}</code></pre>
+}</code></pre></div>
 
         <h3>Evaluation harness</h3>
         <p>Run the agent on each example, capture traces, and score results:</p>
-<pre><code>def evaluate_agent(dataset, agent):
+<div class="learn-code-wrap" data-lang="python"><pre><code>def evaluate_agent(dataset, agent):
     results = []
     for example in dataset:
         # Set up context
@@ -214,7 +215,7 @@ flowchart TD
     return {
         "pass_rate": sum(results) / len(results),
         "details": results
-    }</code></pre>
+    }</code></pre></div>
 
         <h3>When to run</h3>
         <ul>
@@ -229,7 +230,7 @@ flowchart TD
         <p>Agent tools are functions the agent calls. Test them like any API — inputs, outputs, error handling, and permission boundaries.</p>
 
         <h3>Tool test example</h3>
-<pre><code>def test_search_codebase():
+<div class="learn-code-wrap" data-lang="python"><pre><code>def test_search_codebase():
     # Setup
     workspace = create_test_workspace({
         "main.py": "def hello(): pass"
@@ -243,7 +244,7 @@ flowchart TD
     
     # Assert
     assert len(result["matches"]) == 1
-    assert result["matches"][0]["file"] == "main.py"</code></pre>
+    assert result["matches"][0]["file"] == "main.py"</code></pre></div>
 
         <h3>What to test</h3>
         <ul>
@@ -280,7 +281,7 @@ flowchart TD
         </ol>
 
         <h3>Replay assertion example</h3>
-<pre><code>def test_trace_replay():
+<div class="learn-code-wrap" data-lang="python"><pre><code>def test_trace_replay():
     # Load golden trace
     trace = load_trace("golden/add-endpoint-001.json")
     
@@ -289,7 +290,7 @@ flowchart TD
     
     # Assert key outcomes match
     assert new_trace["tool_calls"] == trace["tool_calls"]
-    assert new_trace["files_modified"] == trace["files_modified"]</code></pre>
+    assert new_trace["files_modified"] == trace["files_modified"]</code></pre></div>
 
         <p>Trace replay catches regressions fast. If a prompt tweak breaks a working flow, the test fails.</p>
       </section>
@@ -299,7 +300,7 @@ flowchart TD
         <p>Regression gates block deploys when agent quality drops below a threshold. Run golden dataset eval + trace replay in CI, and fail the build if pass rate falls.</p>
 
         <h3>CI pipeline example</h3>
-<pre><code># .github/workflows/agent-eval.yml
+<div class="learn-code-wrap" data-lang="yaml"><pre><code># .github/workflows/agent-eval.yml
 name: Agent Evaluation
 on: [pull_request]
 
@@ -316,7 +317,7 @@ jobs:
           if (( $(echo "$PASS_RATE &lt; 0.85" | bc -l) )); then
             echo "Pass rate $PASS_RATE below threshold"
             exit 1
-          fi</code></pre>
+          fi</code></pre></div>
 
         <h3>Threshold tuning</h3>
         <ul>
@@ -391,7 +392,7 @@ jobs:
 
         <h3>Logging setup</h3>
         <p>Log every agent run with structured fields:</p>
-<pre><code>{
+<div class="learn-code-wrap" data-lang="json"><pre><code>{
   "run_id": "run_abc123",
   "timestamp": "2026-09-14T10:30:00Z",
   "input": "Add user endpoint",
@@ -400,7 +401,7 @@ jobs:
   "turns": 3,
   "cost_usd": 0.12,
   "latency_ms": 4500
-}</code></pre>
+}</code></pre></div>
 
         <p>Push logs to Datadog, Grafana, or CloudWatch. Set up alerts when metrics cross thresholds.</p>
       </section>
@@ -515,5 +516,6 @@ jobs:
   <script src="/scroll-reveal.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js"></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
 </body>
 </html>

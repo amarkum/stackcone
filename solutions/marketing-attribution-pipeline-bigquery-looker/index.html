@@ -71,6 +71,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page solutions-page">
   <header class="header">
@@ -285,7 +286,7 @@
     <p><strong>Why pre-aggregated marts?</strong> Looker Studio blends on wide raw tables are slow and error-prone. <code>mart_campaign_daily</code> at the correct grain gives sub-second dashboard loads and prevents accidental many-to-many spend inflation.</p>
 
     <p>Attribution matching logic (simplified SQL pattern for <code>fact_lead_attribution</code>):</p>
-    <pre><code>SELECT
+    <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT
   l.lead_id,
   l.created_at,
   COALESCE(g.campaign_id, u.campaign_id, s.campaign_id) AS campaign_id,
@@ -301,7 +302,7 @@ LEFT JOIN dim_source_campaign_map u
   ON l.utm_source = u.source AND l.utm_campaign = u.utm_campaign
 LEFT JOIN dim_source_campaign_map s
   ON l.utm_source = s.source AND s.utm_campaign IS NULL
-WHERE l.client_id = @client_id</code></pre>
+WHERE l.client_id = @client_id</code></pre></div>
 
     <h2 id="agent-design">Component design</h2>
 
@@ -486,6 +487,7 @@ WHERE l.client_id = @client_id</code></pre>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../diagrams.js?v=14"></script>
   <script src="../../site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="../../script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

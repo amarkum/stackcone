@@ -91,6 +91,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -123,7 +124,7 @@
         <p>Connects to external systems — tools, resources, prompts.</p>
       </div>
       <div class="agent-stack-card">
-        <img src="../../images/skills-vs-mcp-vs-subagents/cursor.svg" alt="Cursor app icon" width="64" height="64" loading="lazy">
+        <img src="../../images/skills-vs-mcp-vs-subagents/cursor.png" alt="Cursor app icon" width="64" height="64" loading="lazy">
         <h3>Skills</h3>
         <p>Playbooks in <code>SKILL.md</code> — when and how to work.</p>
       </div>
@@ -206,7 +207,7 @@
 
     <h2 id="skill-example">Skill example</h2>
     <p>A minimal project skill lives at <code>.cursor/skills/ship-blog-post/SKILL.md</code>. The YAML <code>description</code> is the trigger — make it specific so the agent loads it at the right time.</p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 description: Ship a stackcone blog post — md source, HTML publish, posts.json, sitemap, highlights.
 ---
 
@@ -215,7 +216,7 @@ description: Ship a stackcone blog post — md source, HTML publish, posts.json,
 1. Write `blog/md/{slug}.md` and `blog/posts/{slug}.html`.
 2. Download any hero images to `blog/images/{slug}/` (no hotlinks).
 3. Update `blog/posts.json` and `sitemap.xml`.
-5. Verify internal links point to `.html` only.</code></pre>
+5. Verify internal links point to `.html` only.</code></pre></div>
     <p>Skills are <strong>instructions</strong>. They do not open network ports. Pair them with MCP when the checklist needs live GitHub or Figma access.</p>
 
     <h3>Subagents</h3>
@@ -278,16 +279,16 @@ description: Ship a stackcone blog post — md source, HTML publish, posts.json,
 
     <h2 id="compose">How they compose</h2>
     <p>The winning pattern in 2026 is <strong>composition</strong>, not picking one:</p>
-    <pre><code>Skill: "Ship a blog post"
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Skill: "Ship a blog post"
   → tells agent the checklist
   → calls MCP: GitHub (open PR) + Figma (optional)
   → may spawn Subagent: explore (find related posts)
-  → main agent writes files and summarizes</code></pre>
+  → main agent writes files and summarizes</code></pre></div>
     <p>Another pattern:</p>
-    <pre><code>User: "Fix failing CI on this PR"
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>User: "Fix failing CI on this PR"
   → Subagent: ci-investigator (isolated logs)
   → Skill: "how we fix flaky tests"
-  → MCP: GitHub (re-run checks, comment)</code></pre>
+  → MCP: GitHub (re-run checks, comment)</code></pre></div>
     <p><strong>Rule of thumb:</strong> MCP = <em>can</em>, Skill = <em>should</em>, Subagent = <em>elsewhere</em>.</p>
 
     <h2 id="mistakes">Common mistakes</h2>
@@ -300,13 +301,13 @@ description: Ship a stackcone blog post — md source, HTML publish, posts.json,
     </ol>
 
     <h2 id="flowchart">Decision flowchart</h2>
-    <pre><code>Need live external system access?
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Need live external system access?
   YES → MCP (plus a thin skill for how to use it)
   NO  → Need reusable team procedure?
           YES → Skill
           NO  → Will this flood context or need isolation/parallelism?
                   YES → Subagent
-                  NO  → Just prompt the main agent</code></pre>
+                  NO  → Just prompt the main agent</code></pre></div>
 
     <h2>Bottom line</h2>
     <ul>
@@ -372,6 +373,7 @@ description: Ship a stackcone blog post — md source, HTML publish, posts.json,
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

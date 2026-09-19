@@ -14,7 +14,7 @@ When the user pastes a **problem statement** or asks for a **solution post**, pr
 2. `solutions/md/{slug}.md` — markdown source for authoring (not linked, not in sitemap)
 3. Update `solutions/solutions.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the new HTML page only
-5. Run `python3 _dev/apply_highlights.py solutions/{slug}.html` if the page has code blocks
+5. Code blocks use Monaco via `.learn-code-wrap` + `data-lang`. Include `/assets/monaco-code.css` and `/assets/monaco-code.js`.
 
 **Slug:** lowercase, hyphenated (e.g. `wordpress-seo-multi-agent-pipeline`). Published HTML: `solutions/{slug}/index.html`. Source markdown: `solutions/md/{slug}.md` — **never** put `.md` next to `.html` in `solutions/`.
 
@@ -66,7 +66,8 @@ Add a bottom-of-page CTA block before `</article>` — same markup as blog posts
 | `solutions/solutions.css` | Diagram cards, lightbox, `.impl-phase`, `.pipeline`, chart wrappers |
 | `solutions/diagrams.js` | Mermaid render, fullscreen lightbox, zoom/fit, drag-to-pan |
 | `solutions/icons/*.svg` | Lucide toolbar icons (loaded by `diagrams.js`) |
-| `blog/blog.css` | Article typography, tables, TOC, CTA, **code token colors** |
+| `blog/blog.css` | Article typography, tables, TOC, CTA |
+| `assets/monaco-code.css` / `assets/monaco-code.js` | Monaco syntax highlighting |
 | `styles.css` | Site chrome |
 | `site-nav.js`, `script.js` | Nav + shared site JS |
 
@@ -121,6 +122,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
   <link rel="stylesheet" href="../blog/blog.css">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
   <link rel="stylesheet" href="solutions.css">
   <script type="application/ld+json">
   {
@@ -202,6 +204,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
 
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="diagrams.js?v={N}"></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="../site-nav.js"></script>
   <script src="../script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
@@ -221,7 +224,7 @@ Copy this structure; replace `{placeholders}`. Content sections go inside `<arti
 </html>
 ```
 
-**Footer script order (required):** `mermaid.min.js` → `diagrams.js` → `site-nav.js` → `script.js` → `chart.js` → inline Chart init.
+**Footer script order (required):** `mermaid.min.js` → `diagrams.js` → `monaco-code.js` → `site-nav.js` → `script.js` → `chart.js` → inline Chart init.
 
 ## Exact HTML — Mermaid diagram card
 
@@ -295,27 +298,17 @@ Use `.chart-wrap--architecture` on the architecture/component map chart only. Ot
 - Use `class="mermaid"` on diagram source nodes
 - Root-absolute script paths (`/solutions/diagrams.js`) in `solutions/*.html`
 - Duplicate lightbox HTML/JS (handled by `diagrams.js`)
-- Add highlight.js, Prism, or client-side syntax highlighters
+- Add highlight.js or Prism (use shared Monaco: `monaco-code.css` / `monaco-code.js`)
 
 ## Syntax highlighting (code in solution posts)
 
-Solution pages use `.blog-article` and the same **span-based** code style as blog posts. Reference: `blog/posts/how-to-build-a-production-rag-chatbot.html`.
+Solution pages use the same **Monaco** markup as Learn and blog posts. Monaco tokenizes `data-lang` natively.
 
-| Class | Use |
-|-------|-----|
-| `kw` | Keywords |
-| `fn` | Functions, builtins, types |
-| `str` | Strings |
-| `num` | Numbers |
-| `cm` | Comments |
-
-**Workflow:** put plain code in `<pre><code>…</code></pre>`, then run:
-
-```bash
-python3 _dev/apply_highlights.py solutions/{slug}.html
+```html
+<div class="learn-code-wrap" data-lang="python"><pre><code>from fastapi import FastAPI, Depends</code></pre></div>
 ```
 
-`_dev/apply_highlights.py` accepts a file or directory path — use it for any `solutions/*.html` with new code blocks. Do not hand-highlight long scripts or use CDN highlighters. See `.cursor/rules/blog-posts.mdc` for full rules and `_dev/highlight_code.py` / `blog/blog.css` details.
+Include `/assets/monaco-code.css` and `/assets/monaco-code.js`. Escape `<` / `&` in code. Do not use span token classes or `apply_highlights.py`. See `.cursor/rules/blog-posts.mdc`.
 
 ## Tone and framing
 

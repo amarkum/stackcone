@@ -60,6 +60,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -143,13 +144,13 @@
       </tbody>
     </table>
 
-    <pre><code>docs/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>docs/
 ├── drafts/                 ← staging (not indexed)
 ├── published/              ← approved .md — sync source
 ├── site/                   ← static site output (generated)
 ├── metadata/
 │   └── sync-state.json
-└── assets/                 ← images and attachments</code></pre>
+└── assets/                 ← images and attachments</code></pre></div>
 
     <h2 id="two-pipelines">Two pipelines: ingest and publish</h2>
     <p>Content enters through human or AI-assisted review. Only the publish pipeline touches the vector index and GitHub.</p>
@@ -221,7 +222,7 @@
     </div>
     <p>Each page should have a clear title, concise body, and optional front matter (status, topic). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new published files automatically.</p>
 
-    <pre><code># drafts/new-page.md
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code># drafts/new-page.md
 ---
 status: draft
 ---
@@ -230,12 +231,12 @@ status: draft
 
 Body text goes here.
 
-# After review → published/new-page.md</code></pre>
+# After review → published/new-page.md</code></pre></div>
 
     <h2 id="incremental-sync">Incremental sync</h2>
     <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per published file. Only files whose hash changed (or are new) go through embed + upsert.</p>
 
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "last_sync": "2026-06-12T14:30:00Z",
   "files": {
     "/published/page-a.md": {
@@ -249,7 +250,7 @@ Body text goes here.
       "indexed_at": "2026-06-12T14:30:00Z"
     }
   }
-}</code></pre>
+}</code></pre></div>
 
     <p>On delete: remove the file entry from the tracker, delete its chunk IDs from the vector index, and drop the mirrored MkDocs page. Unchanged files are skipped entirely.</p>
 
@@ -267,7 +268,7 @@ Body text goes here.
       <p class="chart-caption">Average storage API call latency: new connection vs pooled session (ms)</p>
     </div>
 
-    <pre><code>import requests
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import requests
 
 # One session per sync run — reuse across all storage API calls
 session = requests.Session()
@@ -277,13 +278,13 @@ session.headers.update({
 })
 
 def download_file(path: str) -&gt; bytes:
-    return session.get(f"{STORAGE_API_BASE}/files/download", params={"path": path}).content</code></pre>
+    return session.get(f"{STORAGE_API_BASE}/files/download", params={"path": path}).content</code></pre></div>
 
     <h2 id="sse-progress">SSE progress streaming</h2>
     <p>Sync jobs can run several minutes. Expose progress via <strong>Server-Sent Events (SSE)</strong> so the admin UI shows live status without polling.</p>
     <p>Each stage emits a JSON event: stage name, percent complete, files processed, and optional error detail. The client opens <code>EventSource('/sync/stream')</code> and updates a progress bar.</p>
 
-    <pre><code>// SSE events during sync
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>// SSE events during sync
 event: progress
 data: {"stage":"embed","file":"page-b.md","done":3,"total":5,"pct":60}
 
@@ -291,7 +292,7 @@ event: progress
 data: {"stage":"vector","file":"page-b.md","chunks":4,"pct":72}
 
 event: complete
-data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
+data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre></div>
 
     <p>Stages map cleanly to the sync pipeline: <code>list</code> → <code>load</code> → <code>embed</code> → <code>vector</code> → <code>mkdocs</code> → <code>github</code> → <code>complete</code>.</p>
 
@@ -316,7 +317,7 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
 
     <h2 id="code-snippets">Code snippets</h2>
     <h3>Sync job pseudocode</h3>
-    <pre><code>def run_sync(emit):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def run_sync(emit):
     tracker = load_tracker()                    # download sync-state.json
     session = create_storage_session()          # pooled HTTP
 
@@ -339,10 +340,10 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
 
     build_and_push_github_pages()
     save_tracker(tracker)
-    emit("complete", indexed=len(diff.new) + len(diff.changed))</code></pre>
+    emit("complete", indexed=len(diff.new) + len(diff.changed))</code></pre></div>
 
     <h3>Incremental diff logic</h3>
-    <pre><code>def compute_diff(remote_files, tracker):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def compute_diff(remote_files, tracker):
     remote_paths = {f.path for f in remote_files}
     tracked_paths = set(tracker.files.keys())
 
@@ -353,7 +354,7 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
         if f.path in tracked_paths
         and f.hash != tracker.files[f.path].hash
     ]
-    return Diff(new=new, changed=changed, deleted=deleted)</code></pre>
+    return Diff(new=new, changed=changed, deleted=deleted)</code></pre></div>
 
     <h2 id="glossary">Glossary</h2>
     <table>
@@ -402,6 +403,7 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

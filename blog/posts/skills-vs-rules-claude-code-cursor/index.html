@@ -92,6 +92,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -221,7 +222,7 @@
 
     <h2 id="example-rule">Example: a rule file</h2>
     <p><strong>File:</strong> <code>.claude/rules/testing.md</code></p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 paths:
   - "**/*.test.ts"
   - "**/*.spec.ts"
@@ -234,20 +235,20 @@ paths:
 - One `describe` block per exported function
 - Mock external HTTP at the boundary, not internal helpers
 - Run `pnpm test path/to/file.test.ts` after editing a test file
-- Never skip tests without a comment explaining why</code></pre>
+- Never skip tests without a comment explaining why</code></pre></div>
     <p><strong>Why this is a rule:</strong> Constraints that apply whenever Claude edits test files — no multi-step workflow.</p>
 
     <h3>Cursor equivalent</h3>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 globs: "**/*.{test,spec}.ts,tests/**"
 ---
 
 # Testing conventions
-(same bullets)</code></pre>
+(same bullets)</code></pre></div>
 
     <h2 id="example-skill">Example: a skill file</h2>
     <p><strong>File:</strong> <code>.claude/skills/ship-blog-post/SKILL.md</code></p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 name: ship-blog-post
 description: &gt;-
   Publish a stackcone blog post — md source, HTML page, posts.json,
@@ -269,12 +270,12 @@ description: &gt;-
 ## Do not
 
 - Create redirect stub files
-- Generate AI hero images when real logos exist</code></pre>
+- Generate AI hero images when real logos exist</code></pre></div>
     <p><strong>Optional supporting files:</strong></p>
-    <pre><code>.claude/skills/ship-blog-post/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>.claude/skills/ship-blog-post/
 ├── SKILL.md
 ├── template-snippet.md
-└── scripts/check-sitemap.sh</code></pre>
+└── scripts/check-sitemap.sh</code></pre></div>
     <p>Invoke manually: <code>/ship-blog-post my-new-slug</code></p>
 
     <h2 id="wrong-vs-right">Same task — wrong vs right</h2>
@@ -289,11 +290,11 @@ description: &gt;-
     </table>
 
     <h2 id="compose">How they compose with CLAUDE.md</h2>
-    <pre><code>CLAUDE.md          → facts true everywhere (build cmd, layout, git rules)
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>CLAUDE.md          → facts true everywhere (build cmd, layout, git rules)
 .claude/rules/     → conventions scoped by topic or file path
-.claude/skills/    → procedures you run on demand</code></pre>
+.claude/skills/    → procedures you run on demand</code></pre></div>
     <p><strong>Example stack:</strong></p>
-    <pre><code>CLAUDE.md                    # pnpm test, never push main, project map
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>CLAUDE.md                    # pnpm test, never push main, project map
 .claude/rules/
   ├── python-style.md        # no paths → loads every session
   ├── api-design.md          # paths: src/api/**
@@ -301,17 +302,17 @@ description: &gt;-
 .claude/skills/
   ├── add-endpoint/SKILL.md
   ├── run-migration/SKILL.md
-  └── incident/SKILL.md</code></pre>
+  └── incident/SKILL.md</code></pre></div>
     <p>Run <code>/context</code> to see what's loaded. If the list is huge, move procedures to skills and narrow rules with <code>paths</code>.</p>
 
     <h2 id="flowchart">Decision flowchart</h2>
-    <pre><code>Is this a multi-step procedure (5+ ordered steps)?
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Is this a multi-step procedure (5+ ordered steps)?
   YES → Skill
   NO  → Does it apply every session regardless of task?
           YES → CLAUDE.md or unconditional .claude/rules/*.md
           NO  → Does it apply only when editing certain files?
                   YES → Path-scoped rule (paths: or globs:)
-                  NO  → CLAUDE.md if short; skill if rare workflow</code></pre>
+                  NO  → CLAUDE.md if short; skill if rare workflow</code></pre></div>
 
     <h2 id="mistakes">Common mistakes</h2>
     <ol>
@@ -376,6 +377,7 @@ description: &gt;-
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

@@ -112,6 +112,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -195,12 +196,12 @@
     </ul>
 
     <h2 id="create-project">Create the Flutter project</h2>
-    <pre><code>flutter create my_app
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>flutter create my_app
 cd my_app
-flutter pub get</code></pre>
+flutter pub get</code></pre></div>
     <p>Use a reverse-DNS bundle ID from day one — you will register the same ID in Firebase, Apple Developer, and Google Cloud (e.g. <code>com.example.myapp</code>).</p>
     <p>Organize <code>lib/</code> by feature early:</p>
-    <pre><code>lib/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>lib/
 ├── main.dart
 ├── app.dart
 ├── firebase_options.dart      # generated; gitignore in prod
@@ -214,7 +215,7 @@ flutter pub get</code></pre>
 └── features/
     └── auth/
         ├── auth_repository.dart
-        └── presentation/</code></pre>
+        └── presentation/</code></pre></div>
 
     <h2 id="firebase-console">Firebase Console setup</h2>
     <ol>
@@ -226,8 +227,8 @@ flutter pub get</code></pre>
     </ol>
 
     <h2 id="flutterfire">Wire Firebase with FlutterFire CLI</h2>
-    <pre><code>dart pub global activate flutterfire_cli
-flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>dart pub global activate flutterfire_cli
+flutterfire configure --project=YOUR_PROJECT_ID</code></pre></div>
     <p>Select the platforms you target. The CLI generates:</p>
     <table>
       <thead><tr><th>File</th><th>Purpose</th></tr></thead>
@@ -241,7 +242,7 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     <p>Gitignore generated secrets in team repos. Commit a <code>firebase_options.dart.example</code> with placeholder keys. New clones run <code>flutterfire configure</code> locally.</p>
 
     <h2 id="dependencies">Dependencies</h2>
-    <pre><code>dependencies:
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>dependencies:
   flutter:
     sdk: flutter
   firebase_core: ^3.13.0
@@ -253,7 +254,7 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
   crypto: ^3.0.7
   flutter_riverpod: ^2.6.1
   go_router: ^15.1.2
-  shared_preferences: ^2.5.3</code></pre>
+  shared_preferences: ^2.5.3</code></pre></div>
     <table>
       <thead><tr><th>Package</th><th>Role</th></tr></thead>
       <tbody>
@@ -270,7 +271,7 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
 
     <h2 id="main-dart">Initialize Firebase in main.dart</h2>
     <p>Firebase must initialize <strong>before</strong> <code>runApp</code>. Wrap the app in <code>ProviderScope</code> for Riverpod:</p>
-    <pre><code>import 'package:firebase_core/firebase_core.dart';
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_app/app.dart';
@@ -286,17 +287,17 @@ Future&lt;void&gt; main() async {
       child: MyApp(),
     ),
   );
-}</code></pre>
+}</code></pre></div>
     <p><code>DefaultFirebaseOptions.currentPlatform</code> picks web, Android, iOS, or macOS options automatically.</p>
 
     <h2 id="android-config">Android platform config</h2>
     <h3>google-services plugin</h3>
     <p>In <code>android/settings.gradle.kts</code>:</p>
-    <pre><code>plugins {
+    <div class="learn-code-wrap" data-lang="kotlin"><pre><code>plugins {
     id("com.google.gms.google-services") version "4.3.15" apply false
-}</code></pre>
+}</code></pre></div>
     <p>In <code>android/app/build.gradle.kts</code>:</p>
-    <pre><code>plugins {
+    <div class="learn-code-wrap" data-lang="kotlin"><pre><code>plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
 }
@@ -306,17 +307,17 @@ android {
     defaultConfig {
         applicationId = "com.example.myapp"
     }
-}</code></pre>
+}</code></pre></div>
     <h3>SHA-1 fingerprint (critical for Google Sign-In)</h3>
     <p>Google Sign-In on Android fails with <code>ApiException: 10</code> / <code>DEVELOPER_ERROR</code> if Firebase does not know your signing certificate.</p>
-    <pre><code>keytool -list -v -keystore ~/.android/debug.keystore \
-  -alias androiddebugkey -storepass android -keypass android</code></pre>
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>keytool -list -v -keystore ~/.android/debug.keystore \
+  -alias androiddebugkey -storepass android -keypass android</code></pre></div>
     <p>Copy the <strong>SHA-1</strong> into Firebase Console → Project settings → Your Android app → <strong>Add fingerprint</strong>. Add release keystore SHA-1 before shipping. Re-download <code>google-services.json</code> after adding fingerprints.</p>
 
     <h2 id="ios-config">iOS platform config</h2>
     <h3>Google Sign-In URL scheme</h3>
     <p>Add the <strong>reversed client ID</strong> from <code>GoogleService-Info.plist</code> to <code>ios/Runner/Info.plist</code>:</p>
-    <pre><code>&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
+    <div class="learn-code-wrap" data-lang="xml"><pre><code>&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
 &lt;array&gt;
   &lt;dict&gt;
     &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
@@ -326,30 +327,30 @@ android {
   &lt;/dict&gt;
 &lt;/array&gt;
 &lt;key&gt;GIDClientID&lt;/key&gt;
-&lt;string&gt;YOUR_IOS_CLIENT_ID.apps.googleusercontent.com&lt;/string&gt;</code></pre>
+&lt;string&gt;YOUR_IOS_CLIENT_ID.apps.googleusercontent.com&lt;/string&gt;</code></pre></div>
     <h3>Sign in with Apple entitlement</h3>
     <p>In Xcode: <strong>Runner target → Signing &amp; Capabilities → + Capability → Sign in with Apple</strong>. This updates <code>ios/Runner/Runner.entitlements</code>:</p>
-    <pre><code>&lt;key&gt;com.apple.developer.applesignin&lt;/key&gt;
+    <div class="learn-code-wrap" data-lang="xml"><pre><code>&lt;key&gt;com.apple.developer.applesignin&lt;/key&gt;
 &lt;array&gt;
   &lt;string&gt;Default&lt;/string&gt;
-&lt;/array&gt;</code></pre>
+&lt;/array&gt;</code></pre></div>
     <p>Configure the Apple provider in Firebase Console with your Apple Services ID, team ID, and key.</p>
     <h3>Podfile</h3>
-    <pre><code>target 'Runner' do
+    <div class="learn-code-wrap" data-lang="ruby"><pre><code>target 'Runner' do
   use_frameworks! :linkage =&gt; :static
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-end</code></pre>
+end</code></pre></div>
 
     <h2 id="google-sign-in">Google Sign-In implementation</h2>
     <p>Centralize OAuth client IDs (extract from plist and json):</p>
-    <pre><code>class GoogleAuthConfig {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>class GoogleAuthConfig {
   static const iosClientId =
       'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
   static const webClientId =
       'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
-}</code></pre>
+}</code></pre></div>
     <p>The <strong>web client ID</strong> is <code>serverClientId</code> on mobile — Firebase verifies the ID token server-side. Find it as <code>client_type: 3</code> in <code>google-services.json</code>.</p>
-    <pre><code>Future&lt;void&gt; signInWithGoogle() async {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>Future&lt;void&gt; signInWithGoogle() async {
   if (kIsWeb) {
     await _auth.signInWithPopup(GoogleAuthProvider());
     return;
@@ -378,7 +379,7 @@ end</code></pre>
     idToken: auth.idToken,
   );
   await _auth.signInWithCredential(credential);
-}</code></pre>
+}</code></pre></div>
     <ul>
       <li><strong>iOS</strong> needs explicit <code>clientId</code>.</li>
       <li><strong>Android</strong> uses <code>serverClientId</code> plus SHA-1 in Console.</li>
@@ -388,7 +389,7 @@ end</code></pre>
 
     <h2 id="apple-sign-in">Apple Sign-In implementation</h2>
     <p>Apple Sign-In is <strong>iOS/macOS only</strong>. Firebase requires a <strong>nonce</strong>: SHA-256 goes to Apple, raw nonce goes to Firebase.</p>
-    <pre><code>import 'dart:convert';
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -422,14 +423,14 @@ Future&lt;void&gt; signInWithApple() async {
     rawNonce: rawNonce,
   );
   await _auth.signInWithCredential(oauthCredential);
-}</code></pre>
+}</code></pre></div>
     <p>Show the Apple button only where supported:</p>
-    <pre><code>bool get showAppleSignIn =&gt;
-    !kIsWeb &amp;&amp; (Platform.isIOS || Platform.isMacOS);</code></pre>
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>bool get showAppleSignIn =&gt;
+    !kIsWeb &amp;&amp; (Platform.isIOS || Platform.isMacOS);</code></pre></div>
     <p>Apple sends the user's name <strong>once</strong> — capture it on first sign-in and write to Firestore immediately if you need display names.</p>
 
     <h2 id="email-auth">Email/password auth</h2>
-    <pre><code>Future&lt;void&gt; signInWithEmail(String email, String password) async {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>Future&lt;void&gt; signInWithEmail(String email, String password) async {
   await _auth.signInWithEmailAndPassword(email: email, password: password);
 }
 
@@ -438,7 +439,7 @@ Future&lt;void&gt; signUpWithEmail(String email, String password) async {
 }
 
 // Password reset
-await FirebaseAuth.instance.sendPasswordResetEmail(email: email);</code></pre>
+await FirebaseAuth.instance.sendPasswordResetEmail(email: email);</code></pre></div>
 
     <h2 id="auth-errors">Auth repository and error handling</h2>
     <table>
@@ -455,7 +456,7 @@ await FirebaseAuth.instance.sendPasswordResetEmail(email: email);</code></pre>
     <p>A dedicated <code>authErrorMessage(Object error)</code> function keeps UI widgets thin — buttons catch errors and show SnackBars.</p>
 
     <h2 id="riverpod">Riverpod providers for Firebase</h2>
-    <pre><code>final firebaseAuthProvider = Provider&lt;FirebaseAuth&gt;(
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>final firebaseAuthProvider = Provider&lt;FirebaseAuth&gt;(
   (ref) =&gt; FirebaseAuth.instance,
 );
 
@@ -476,12 +477,12 @@ final authUidProvider = StreamProvider&lt;String?&gt;((ref) {
 
 final currentUserIdProvider = Provider&lt;String?&gt;((ref) {
   return ref.watch(authUidProvider).valueOrNull;
-});</code></pre>
+});</code></pre></div>
     <p><code>authStateChanges()</code> is the single source of truth. Every Firestore provider gates on <code>currentUserIdProvider</code> — if UID is null, return <code>Stream.empty()</code>.</p>
 
     <h2 id="gorouter">GoRouter auth-gated routing</h2>
     <p>Do not call <code>context.go('/')</code> manually after sign-in. Let <strong>GoRouter redirect</strong> react to auth stream changes.</p>
-    <pre><code>const _publicAuthPaths = ['/welcome', '/sign-in', '/sign-up'];
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>const _publicAuthPaths = ['/welcome', '/sign-in', '/sign-up'];
 
 final routerProvider = Provider&lt;GoRouter&gt;((ref) {
   final authState = ref.watch(authUidProvider);
@@ -520,33 +521,33 @@ final routerProvider = Provider&lt;GoRouter&gt;((ref) {
       GoRoute(path: '/sign-in', builder: (_, __) =&gt; const SignInScreen()),
     ],
   );
-});</code></pre>
+});</code></pre></div>
     <p>Pattern: <strong>auth stream + profile stream → redirect function</strong>. UI only triggers sign-in; routing follows state.</p>
 
     <h2 id="firestore-model">Firestore data model</h2>
     <p>Use a <strong>user-scoped hierarchy</strong> — every document lives under the authenticated UID:</p>
-    <pre><code>users/{uid}/profile/settings     ← single profile doc
-users/{uid}/items/{itemId}       ← user-owned collection</code></pre>
-    <pre><code>class FirestorePaths {
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>users/{uid}/profile/settings     ← single profile doc
+users/{uid}/items/{itemId}       ← user-owned collection</code></pre></div>
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>class FirestorePaths {
   static String userRoot(String uid) =&gt; 'users/$uid';
   static String profile(String uid) =&gt; '${userRoot(uid)}/profile/settings';
   static String items(String uid) =&gt; '${userRoot(uid)}/items';
-}</code></pre>
+}</code></pre></div>
     <p>Subcollections under <code>users/{uid}</code> give one-line security rules, scoped deletes, and no accidental cross-user queries.</p>
 
     <h2 id="security-rules">Security rules</h2>
-    <pre><code>rules_version = '2';
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
     }
   }
-}</code></pre>
+}</code></pre></div>
     <p>Test in Firebase Console <strong>Rules playground</strong>. Never ship with <code>allow read, write: if true</code> except local emulators.</p>
 
     <h2 id="models">Models: fromFirestore and toFirestore</h2>
-    <pre><code>class UserProfile {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>class UserProfile {
   const UserProfile({
     required this.displayName,
     this.createdAt,
@@ -576,11 +577,11 @@ service cloud.firestore {
         'createdAt': Timestamp.fromDate(createdAt!),
     };
   }
-}</code></pre>
+}</code></pre></div>
     <p>Use <code>Timestamp</code> for dates — not ISO strings — so queries and indexes work natively.</p>
 
     <h2 id="repositories">Repository pattern with real-time streams</h2>
-    <pre><code>class ProfileRepository {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>class ProfileRepository {
   ProfileRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
@@ -597,24 +598,24 @@ service cloud.firestore {
   Future&lt;void&gt; save(String uid, UserProfile profile) async {
     await _ref(uid).set(profile.toFirestore(), SetOptions(merge: true));
   }
-}</code></pre>
-    <pre><code>final userProfileProvider = StreamProvider&lt;UserProfile?&gt;((ref) {
+}</code></pre></div>
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>final userProfileProvider = StreamProvider&lt;UserProfile?&gt;((ref) {
   final uid = ref.watch(currentUserIdProvider);
   if (uid == null) return const Stream.empty();
   return ref.watch(profileRepositoryProvider).watch(uid);
-});</code></pre>
+});</code></pre></div>
     <p>Widgets use <code>ref.watch(userProfileProvider)</code> — they rebuild when Firestore pushes changes. No manual refresh for sync.</p>
 
     <h2 id="batch-writes">Batch writes and atomic updates</h2>
-    <pre><code>final batch = _firestore.batch();
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>final batch = _firestore.batch();
 batch.set(itemRef, item.toFirestore());
 batch.update(summaryRef, {'count': FieldValue.increment(1)});
-await batch.commit();</code></pre>
+await batch.commit();</code></pre></div>
     <p><code>FieldValue.increment</code> is atomic — safe under concurrent writes. Firestore batches cap at <strong>500 operations</strong>; paginate bulk deletes at ~400 per batch.</p>
 
     <h2 id="profile-stub">Post-auth profile stub</h2>
     <p>After any sign-in, ensure a Firestore profile document exists before routing home:</p>
-    <pre><code>Future&lt;void&gt; ensureAuthProfileStub(WidgetRef ref) async {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>Future&lt;void&gt; ensureAuthProfileStub(WidgetRef ref) async {
   final uid = ref.read(firebaseAuthProvider).currentUser?.uid;
   if (uid == null) return;
 
@@ -631,16 +632,16 @@ await batch.commit();</code></pre>
     ),
   );
   ref.invalidate(userProfileProvider);
-}</code></pre>
+}</code></pre></div>
     <p>Call after <code>signInWithGoogle()</code> succeeds. Do not navigate manually — GoRouter redirect picks up the new profile stream.</p>
 
     <h2 id="sign-out">Sign out</h2>
-    <pre><code>Future&lt;void&gt; signOut() async {
+    <div class="learn-code-wrap" data-lang="dart"><pre><code>Future&lt;void&gt; signOut() async {
   if (!kIsWeb) {
     await GoogleSignIn().signOut();
   }
   await _auth.signOut();
-}</code></pre>
+}</code></pre></div>
     <p>Missing Google sign-out causes the next sign-in to reuse the old Google account silently.</p>
 
     <h2 id="platform-diff">Platform differences</h2>
@@ -726,6 +727,7 @@ await batch.commit();</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

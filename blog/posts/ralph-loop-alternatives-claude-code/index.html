@@ -49,6 +49,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -153,7 +154,7 @@
     <h3 id="worked-example-rate-limiting-on-login">Worked example: rate limiting on login</h3>
     <p><strong>Task:</strong> Add rate limiting to <code>POST /api/login</code> in a Node/Express API.</p>
     <p><strong>Prompt:</strong></p>
-    <pre><code>Add rate limiting to POST /api/login — max 10 requests per minute per IP.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Add rate limiting to POST /api/login — max 10 requests per minute per IP.
 
 Requirements:
 - Use express-rate-limit (already in package.json)
@@ -163,12 +164,12 @@ Requirements:
 Verification:
 Run `pnpm test src/api/login.rate-limit.test.ts` and fix until green.
 Do not stop until the test passes.
-Show me the final test output.</code></pre>
+Show me the final test output.</code></pre></div>
     <p><strong>Why this beats Ralph:</strong> Claude loops internally on test failures within a single session. You are not re-pasting &quot;continue&quot; every five minutes.</p>
     <p><strong>Soft limit:</strong> Claude can still skip the test or misread output. For hard enforcement, add a Stop hook (Alternative 3).</p>
     <h3 id="worked-example-claudemd-verification-block">Worked example: <code>CLAUDE.md</code> verification block</h3>
     <p>Add a standing verification instruction so every session inherits it:</p>
-    <pre><code># acme-api
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># acme-api
 
 ## Commands
 - Test: `pnpm test`
@@ -181,18 +182,18 @@ After any code change:
 2. Run `pnpm test` for the touched package
 3. If either fails, fix and re-run until green
 
-Do not declare the task complete until both commands exit 0.</code></pre>
+Do not declare the task complete until both commands exit 0.</code></pre></div>
     <p>Pair with prompts that reference the verification block:</p>
-    <pre><code>@CLAUDE.md Add OAuth callback handler per issue #412.
-Follow the Verification section before stopping.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>@CLAUDE.md Add OAuth callback handler per issue #412.
+Follow the Verification section before stopping.</code></pre></div>
     <h2 id="alternative-2-goal-condition">Alternative 2: <code>/goal</code> condition</h2>
     <p>Claude Code <code>/goal</code> sets a <strong>completion condition</strong> evaluated after every turn. A separate evaluator checks whether the goal is met; Claude keeps working until it resolves or hits a stall limit.</p>
     <h3 id="worked-example-scoped-diff-green-tests">Worked example: scoped diff + green tests</h3>
     <p><strong>Scenario:</strong> Fix login bug but only touch files under <code>src/api/login/</code>.</p>
-    <pre><code>/goal All tests in `pnpm test` pass AND `git diff --name-only` only lists paths under src/api/login/</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>/goal All tests in `pnpm test` pass AND `git diff --name-only` only lists paths under src/api/login/</code></pre></div>
     <p>Then your implementation prompt:</p>
-    <pre><code>Fix the session expiry bug in src/api/login/session.ts (issue #842).
-The refresh token should rotate on use. Match error handling in session.test.ts.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Fix the session expiry bug in src/api/login/session.ts (issue #842).
+The refresh token should rotate on use. Match error handling in session.test.ts.</code></pre></div>
     <p><strong>What happens:</strong></p>
     <ol>
     <li>Claude implements the fix</li>
@@ -202,9 +203,9 @@ The refresh token should rotate on use. Match error handling in session.test.ts.
     <li>If yes → turn ends</li>
     </ol>
     <h3 id="worked-example-documentation-goal">Worked example: documentation goal</h3>
-    <pre><code>/goal README.md contains a "Rate limiting" section with curl example, and `pnpm test` exits 0</code></pre>
-    <pre><code>Document the new POST /api/login rate limit in README.md.
-Include a curl example that shows a 429 response.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>/goal README.md contains a "Rate limiting" section with curl example, and `pnpm test` exits 0</code></pre></div>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Document the new POST /api/login rate limit in README.md.
+Include a curl example that shows a 429 response.</code></pre></div>
     <h3 id="when-to-use-goal">When to use <code>/goal</code></h3>
     <table>
 <thead><tr><th>Use <code>/goal</code></th><th>Skip <code>/goal</code></th></tr></thead>
@@ -225,7 +226,7 @@ Include a curl example that shows a 429 response.</code></pre>
 </tbody></table>
     <p>Hooks live in <code>.claude/settings.json</code> (team) or <code>.claude/settings.local.json</code> (personal, gitignored).</p>
     <h3 id="complete-settingsjson-all-three-hook-types">Complete <code>settings.json</code> — all three hook types</h3>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "permissions": {
     "allow": [
       "Bash(pnpm test *)",
@@ -272,10 +273,10 @@ Include a curl example that shows a 429 response.</code></pre>
       }
     ]
   }
-}</code></pre>
+}</code></pre></div>
     <h3 id="hook-script-prevent-dangerous-gitsh-pretooluse">Hook script: <code>prevent-dangerous-git.sh</code> (PreToolUse)</h3>
     <p>Blocks destructive git commands before they run:</p>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # .claude/hooks/prevent-dangerous-git.sh
 # PreToolUse — reads tool input from stdin (JSON)
 
@@ -304,11 +305,11 @@ for pattern in "${BLOCKED_PATTERNS[@]}"; do
   fi
 done
 
-exit 0</code></pre>
+exit 0</code></pre></div>
     <p>Make executable: <code>chmod +x .claude/hooks/prevent-dangerous-git.sh</code></p>
     <h3 id="hook-script-lint-touched-filessh-posttooluse">Hook script: <code>lint-touched-files.sh</code> (PostToolUse)</h3>
     <p>Runs ESLint on edited TypeScript files immediately after each edit:</p>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # .claude/hooks/lint-touched-files.sh
 # PostToolUse — lint files Claude just edited
 
@@ -327,10 +328,10 @@ if [[ "$FILE_PATH" == src/*.ts ]] || [[ "$FILE_PATH" == src/*.tsx ]]; then
   pnpm exec eslint "$FILE_PATH" --max-warnings 0
 fi
 
-exit 0</code></pre>
+exit 0</code></pre></div>
     <h3 id="hook-script-verify-before-stopsh-stop">Hook script: <code>verify-before-stop.sh</code> (Stop)</h3>
     <p>Full verification gate — tests, lint, typecheck — before any turn ends:</p>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # .claude/hooks/verify-before-stop.sh
 # Stop hook — must pass before Claude ends a turn
 
@@ -354,10 +355,10 @@ pnpm test --passWithNoTests || {
 }
 
 echo "Stop hook: all checks passed" &gt;&amp;2
-exit 0</code></pre>
+exit 0</code></pre></div>
     <h3 id="stop-hook-minimal-test-only-variant">Stop hook — minimal test-only variant</h3>
     <p>For repos where full lint on every stop is too slow:</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "hooks": {
     "Stop": [
       {
@@ -371,10 +372,10 @@ exit 0</code></pre>
       }
     ]
   }
-}</code></pre>
+}</code></pre></div>
     <h3 id="stop-hook-scoped-to-api-changes">Stop hook — scoped to API changes</h3>
     <p>Run heavier checks only when API files changed:</p>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # .claude/hooks/verify-api-stop.sh
 
 set -euo pipefail
@@ -385,8 +386,8 @@ if git diff --name-only | grep -q '^src/api/'; then
 else
   echo "No api changes — running smoke tests" &gt;&amp;2
   pnpm test --passWithNoTests --testPathIgnorePatterns=integration
-fi</code></pre>
-    <pre><code>{
+fi</code></pre></div>
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "hooks": {
     "Stop": [{
       "matcher": "",
@@ -396,10 +397,10 @@ fi</code></pre>
       }]
     }]
   }
-}</code></pre>
+}</code></pre></div>
     <h3 id="posttooluse-format-on-save">PostToolUse — format on save</h3>
     <p>Auto-format after every write:</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "hooks": {
     "PostToolUse": [
       {
@@ -413,7 +414,7 @@ fi</code></pre>
       }
     ]
   }
-}</code></pre>
+}</code></pre></div>
     <p>For production, prefer a wrapper script that validates <code>file_path</code> exists before formatting.</p>
     <h3 id="hook-behavior-limits">Hook behavior limits</h3>
     <ul>
@@ -427,12 +428,12 @@ fi</code></pre>
     <p>Spawn a <strong>fresh subagent</strong> to review work the main agent cannot grade itself. The subagent gets a clean context window — no 200k tokens of failed attempts.</p>
     <h3 id="worked-example-diff-review-against-plan">Worked example: diff review against plan</h3>
     <p><strong>Phase 1 — plan (main agent or plan mode):</strong></p>
-    <pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
-Output a numbered plan with files to create/modify. Do not edit yet.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
+Output a numbered plan with files to create/modify. Do not edit yet.</code></pre></div>
     <p><strong>Phase 2 — implement:</strong></p>
-    <pre><code>Implement the OAuth callback plan. Run pnpm test src/auth/ after.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Implement the OAuth callback plan. Run pnpm test src/auth/ after.</code></pre></div>
     <p><strong>Phase 3 — verification subagent:</strong></p>
-    <pre><code>Use a subagent to review the current git diff against this plan:
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>Use a subagent to review the current git diff against this plan:
 
 1. src/auth/oauth/google.ts — callback handler
 2. src/auth/oauth/google.test.ts — happy path + invalid state
@@ -444,17 +445,17 @@ Reject if:
 - State parameter is not validated
 - Any file outside src/auth/ or src/api/routes/ was modified
 
-Return PASS or a bullet list of blockers.</code></pre>
+Return PASS or a bullet list of blockers.</code></pre></div>
     <p>If the subagent returns blockers, the main agent fixes and re-runs review.</p>
     <h3 id="worked-example-code-review-skill">Worked example: <code>/code-review</code> skill</h3>
     <p>Claude Code&#x27;s built-in review skill isolates the diff:</p>
-    <pre><code>/code-review
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>/code-review
 
 Focus on:
 - SQL injection in new query builders
-- Missing input validation on POST /api/users</code></pre>
+- Missing input validation on POST /api/users</code></pre></div>
     <h3 id="subagent-prompt-template">Subagent prompt template</h3>
-    <pre><code>Subagent task: verification only — do not edit files.
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>Subagent task: verification only — do not edit files.
 
 Context:
 - Plan: [paste plan]
@@ -468,44 +469,44 @@ Check:
 VERDICT: PASS | FAIL
 TESTS: pass | fail (paste last 20 lines if fail)
 SCOPE: ok | drift (list extra files)
-BLOCKERS: (empty if PASS)</code></pre>
+BLOCKERS: (empty if PASS)</code></pre></div>
     <p><strong>Use when:</strong> Correctness checks need a second opinion; main transcript is already bloated.</p>
     <p><strong>vs Ralph:</strong> Fresh context for review; Ralph reuses the same bloated thread and re-argues old mistakes.</p>
     <h2 id="alternative-5-plan-mode-then-implement">Alternative 5: Plan mode then implement</h2>
     <p>Press <code>Shift+Tab</code> for plan mode (or start with <code>claude --permission-mode plan</code>). Claude explores and plans <strong>without editing</strong>. Approve the plan, switch to implement mode, verify against the plan.</p>
     <h3 id="worked-example-oauth-callback-two-phase">Worked example: OAuth callback (two-phase)</h3>
     <p><strong>Phase 1 — plan mode:</strong></p>
-    <pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
 List files to create/modify, error cases, and test strategy.
-Do not edit any files.</code></pre>
+Do not edit any files.</code></pre></div>
     <p>Example plan output (abbreviated):</p>
-    <pre><code>1. Create src/auth/oauth/google.ts — exchange code, validate state
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>1. Create src/auth/oauth/google.ts — exchange code, validate state
 2. Create src/auth/oauth/google.test.ts — mock Google token endpoint
 3. Update src/api/routes/auth.ts — add GET /auth/google/callback
 4. Update CLAUDE.md — document env vars GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
-5. Tests: pnpm test src/auth/oauth/</code></pre>
+5. Tests: pnpm test src/auth/oauth/</code></pre></div>
     <p><strong>Phase 2 — implement mode:</strong></p>
-    <pre><code>Implement the OAuth plan above exactly.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Implement the OAuth plan above exactly.
 After each file, run pnpm test src/auth/oauth/.
-Do not add files not in the plan without asking.</code></pre>
+Do not add files not in the plan without asking.</code></pre></div>
     <p><strong>Phase 3 — optional Stop hook or subagent review</strong> (Alternatives 3 and 4).</p>
     <h3 id="worked-example-plan-mode-for-database-migration">Worked example: plan mode for database migration</h3>
-    <pre><code>Plan mode: Design a migration to add `last_login_at` to users table.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Plan mode: Design a migration to add `last_login_at` to users table.
 - Drizzle schema change in src/db/schema/users.ts
 - Migration file naming convention: YYYYMMDD_description.sql
 - Backfill strategy for existing rows
 - Rollback plan
 
-Do not run migrations or edit files.</code></pre>
+Do not run migrations or edit files.</code></pre></div>
     <p>After approval:</p>
-    <pre><code>Implement the migration plan. Run pnpm test src/db/ and pnpm typecheck before stopping.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Implement the migration plan. Run pnpm test src/db/ and pnpm typecheck before stopping.</code></pre></div>
     <p><strong>Use when:</strong> Ralph loops fail because Claude solves the wrong problem each iteration.</p>
     <p><strong>vs Ralph:</strong> Separates exploration from execution — fewer wrong-direction loops.</p>
     <h2 id="alternative-6-headless-ci-claude--p">Alternative 6: Headless CI (<code>claude -p</code>)</h2>
     <p><code>claude -p</code> runs a single prompt non-interactively and exits. Pair with <code>CLAUDE.md</code> for project context. Wrap in a shell script for <strong>bounded retries</strong> — the CI-native alternative to infinite Ralph loops.</p>
     <h3 id="complete-ci-script-with-bounded-retries">Complete CI script with bounded retries</h3>
     <p>Save as <code>scripts/claude-fix-loop.sh</code>:</p>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # scripts/claude-fix-loop.sh
 # Bounded agent retry loop for CI — NOT an unbounded Ralph loop.
 #
@@ -579,10 +580,10 @@ done
 
 echo "FAILED: exhausted $MAX_ATTEMPTS attempts" &gt;&amp;2
 echo "Logs in $LOG_DIR" &gt;&amp;2
-exit 1</code></pre>
+exit 1</code></pre></div>
     <p>Make executable: <code>chmod +x scripts/claude-fix-loop.sh</code></p>
     <h3 id="github-actions-workflow">GitHub Actions workflow</h3>
-    <pre><code># .github/workflows/claude-fix.yml
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code># .github/workflows/claude-fix.yml
 name: Claude fix loop
 
 on:
@@ -623,10 +624,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: claude-ci-logs
-          path: .claude-ci-logs/</code></pre>
+          path: .claude-ci-logs/</code></pre></div>
     <h3 id="claudemd-for-ci-context"><code>CLAUDE.md</code> for CI context</h3>
     <p>CI sessions do not have your chat history. Put standing instructions in the repo:</p>
-    <pre><code># acme-api
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># acme-api
 
 ## CI agent instructions
 - Run `pnpm test` after every fix attempt
@@ -636,17 +637,17 @@ jobs:
 
 ## Commands
 - Test: `pnpm test`
-- Lint: `pnpm lint`</code></pre>
+- Lint: `pnpm lint`</code></pre></div>
     <h3 id="single-shot-claude--p-no-retry-wrapper">Single-shot <code>claude -p</code> (no retry wrapper)</h3>
     <p>For simple, bounded tasks:</p>
-    <pre><code>claude -p "Fix failing test in src/api/health.test.ts. Run pnpm test after. Stop when green."</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>claude -p "Fix failing test in src/api/health.test.ts. Run pnpm test after. Stop when green."</code></pre></div>
     <p><strong>Use when:</strong> Scheduled fix loops, PR comment bots, nightly maintenance.</p>
     <p><strong>vs Ralph:</strong> Bounded retries, explicit exit codes, enriched prompts on failure instead of copy-paste &quot;continue.&quot;</p>
     <h2 id="cursor-specific-patterns">Cursor-specific patterns</h2>
     <p>Cursor Agent does not have Claude Code&#x27;s Stop hooks yet. You replicate &quot;keep working until done&quot; with <strong>rules</strong>, <strong>explicit prompts</strong>, <strong>@ file context</strong>, and <strong>CI re-runs</strong>.</p>
     <h3 id="project-rule-verification-before-finish">Project rule: verification before finish</h3>
     <p><code>.cursor/rules/verify-before-done.mdc</code>:</p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 description: Require test verification before completing agent tasks
 alwaysApply: true
 ---
@@ -660,10 +661,10 @@ When implementing code changes:
 3. Run lint on touched files if the project has a linter
 4. Summarize what you ran and paste the final passing output
 
-Never say "done" or "complete" without evidence of passing verification.</code></pre>
+Never say "done" or "complete" without evidence of passing verification.</code></pre></div>
     <h3 id="path-scoped-rule-for-api-work">Path-scoped rule for API work</h3>
     <p><code>.cursor/rules/api-changes.mdc</code>:</p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 description: API handler conventions and verification
 globs: src/api/**/*
 ---
@@ -673,12 +674,12 @@ globs: src/api/**/*
 - Handlers return `{ data, error }` envelope
 - Add or update tests in `src/api/**/*.test.ts` for every behavior change
 - After edits, run: `pnpm test src/api/`
-- Do not modify files outside `src/api/` unless the user explicitly asks</code></pre>
+- Do not modify files outside `src/api/` unless the user explicitly asks</code></pre></div>
     <h3 id="user-rule-global">User rule (global)</h3>
     <p>Cursor Settings → Rules → User Rules:</p>
-    <pre><code>For multi-file tasks: outline a short plan before editing.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>For multi-file tasks: outline a short plan before editing.
 After implementation, run tests and show output.
-If tests fail, fix without asking permission unless blocked.</code></pre>
+If tests fail, fix without asking permission unless blocked.</code></pre></div>
     <h3 id="agent-settings-that-help-persistence">Agent settings that help persistence</h3>
     <table>
 <thead><tr><th>Setting</th><th>Recommendation</th></tr></thead>
@@ -690,7 +691,7 @@ If tests fail, fix without asking permission unless blocked.</code></pre>
 <tr><td><strong>@ mentions</strong></td><td><code>@src/foo.test.ts</code> anchors the done condition to a real file</td></tr>
 </tbody></table>
     <h3 id="cursor-prompt-pattern-verification-loop">Cursor prompt pattern (verification loop)</h3>
-    <pre><code>@src/api/login.ts @src/api/login.test.ts
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>@src/api/login.ts @src/api/login.test.ts
 
 Fix the 401 on valid refresh tokens (issue #842).
 
@@ -698,7 +699,7 @@ Done when:
 - pnpm test src/api/login.test.ts exits 0
 - You paste the final test summary
 
-Keep fixing until done. Do not ask me to run tests.</code></pre>
+Keep fixing until done. Do not ask me to run tests.</code></pre></div>
     <h3 id="cursor-ci-re-run-headless-equivalent">Cursor + CI re-run (headless equivalent)</h3>
     <p>Cursor does not ship <code>cursor -p</code> for CI the same way Claude Code does. Options:</p>
     <ol>
@@ -707,14 +708,14 @@ Keep fixing until done. Do not ask me to run tests.</code></pre>
     <li><strong>GitHub Action</strong> that comments &quot;tests failed&quot; and triggers a manual agent session</li>
     </ol>
     <p>Bridge shared instructions:</p>
-    <pre><code># CLAUDE.md
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># CLAUDE.md
 @AGENTS.md
 
 ## Verification
-Run `pnpm test` before stopping.</code></pre>
-    <pre><code># AGENTS.md (read by Cursor via rules import or manual copy)
+Run `pnpm test` before stopping.</code></pre></div>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># AGENTS.md (read by Cursor via rules import or manual copy)
 ## Verification
-Run `pnpm test` before stopping.</code></pre>
+Run `pnpm test` before stopping.</code></pre></div>
     <h3 id="cursor-vs-claude-code-feature-matrix">Cursor vs Claude Code feature matrix</h3>
     <table>
 <thead><tr><th>Capability</th><th>Claude Code</th><th>Cursor</th></tr></thead>
@@ -732,13 +733,13 @@ Run `pnpm test` before stopping.</code></pre>
     <h3 id="symptom-stop-hook-blocks-8-times-then-gives-up">Symptom: Stop hook blocks 8 times then gives up</h3>
     <p><strong>Cause:</strong> Verification fails every time; Claude cannot fix the underlying issue (flaky test, missing dependency, wrong architecture).</p>
     <p><strong>Debug:</strong></p>
-    <pre><code># Run the hook script manually
+    <div class="learn-code-wrap" data-lang="shell"><pre><code># Run the hook script manually
 .claude/hooks/verify-before-stop.sh
 echo "exit code: $?"
 
 # Check what Claude last changed
 git diff --stat
-git diff</code></pre>
+git diff</code></pre></div>
     <p><strong>Fix:</strong></p>
     <ul>
     <li>Narrow the Stop hook (scope tests to touched package)</li>
@@ -778,12 +779,12 @@ git diff</code></pre>
     <p><strong>Cause:</strong> <code>CLAUDE_TIMEOUT</code> too low for task size.</p>
     <p><strong>Fix:</strong> Increase timeout; reduce scope per prompt; split into multiple CI jobs.</p>
     <h3 id="debugging-checklist">Debugging checklist</h3>
-    <pre><code>□ Run verification command manually — does it pass on current branch?
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>□ Run verification command manually — does it pass on current branch?
 □ Run hook scripts manually — same exit code as in session?
 □ Check /context — is CLAUDE.md overloaded?
 □ git diff — did agent edit unexpected files?
 □ Read .claude-ci-logs/ — what did agent try on each attempt?
-□ Reproduce in plan mode — is the approach wrong, not the implementation?</code></pre>
+□ Reproduce in plan mode — is the approach wrong, not the implementation?</code></pre></div>
     <h2 id="decision-tree-which-alternative-to-pick">Decision tree: which alternative to pick</h2>
     <div class="diagram-wrap" data-diagram-title="Which Ralph alternative to pick">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
@@ -931,6 +932,7 @@ git diff</code></pre>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

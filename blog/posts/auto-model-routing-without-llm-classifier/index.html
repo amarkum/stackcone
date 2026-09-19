@@ -92,6 +92,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -214,7 +215,7 @@
       </tbody>
     </table>
 
-    <pre><code>_TIER_LADDER = (
+    <div class="learn-code-wrap" data-lang="python"><pre><code>_TIER_LADDER = (
     "gemini-2.5-flash-lite",   # 0 economy
     "deepseek-chat-v3.1",      # 1 standard
     "gemini-2.5-flash",        # 2 capable
@@ -223,7 +224,7 @@
 
 def _bump_model_tier(model: str, steps: int = 1) -&gt; str:
     new_idx = min(_ladder_index(model) + steps, len(_TIER_LADDER) - 1)
-    return _TIER_LADDER[new_idx]</code></pre>
+    return _TIER_LADDER[new_idx]</code></pre></div>
 
     <div class="chart-wrap">
       <canvas id="tierDistChart" aria-label="Typical Auto routing distribution by tier"></canvas>
@@ -247,7 +248,7 @@ def _bump_model_tier(model: str, steps: int = 1) -&gt; str:
 
     <p>Hard troubleshoot runs <strong>before</strong> support keywords — so "My license export keeps failing with an error" routes to debug tier, not routine support.</p>
 
-    <pre><code>_HARD_RE = re.compile(
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>_HARD_RE = re.compile(
     r"\b(not working|doesn't work|error|bug|broken|crash|"
     r"troubleshoot|debug|fix this|still failing)\b",
     re.I,
@@ -264,7 +265,7 @@ _DEEP_RE = re.compile(
     r"\b(in detail|step by step|walk me through|"
     r"full explanation|tell me more|elaborate)\b",
     re.I,
-)</code></pre>
+)</code></pre></div>
 
     <h3>Length and structure signals</h3>
     <table>
@@ -282,7 +283,7 @@ _DEEP_RE = re.compile(
     <h2 id="complexity-score">Complexity scoring</h2>
     <p>A numeric score aggregates structural features before rule matching:</p>
 
-    <pre><code>def _complexity_score(lower, words, chars, prior_assistant, conversation_summary=None):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def _complexity_score(lower, words, chars, prior_assistant, conversation_summary=None):
     score = 0
     if words &gt; 12:  score += 1
     if words &gt; 28:  score += 1
@@ -295,7 +296,7 @@ _DEEP_RE = re.compile(
     if _HARD_RE.search(lower): score += 2
     if conversation_summary and len(conversation_summary.strip()) &gt; 800:
         score += 1
-    return score</code></pre>
+    return score</code></pre></div>
 
     <p>Score ≥ 6 routes to Capable tier regardless of other rules.</p>
 
@@ -353,7 +354,7 @@ _DEEP_RE = re.compile(
       </tbody>
     </table>
 
-    <pre><code>RERANK_UPGRADE_THRESHOLD = 0.15
+    <div class="learn-code-wrap" data-lang="python"><pre><code>RERANK_UPGRADE_THRESHOLD = 0.15
 RERANK_STRONG_UPGRADE_THRESHOLD = 0.08
 COSINE_UPGRADE_THRESHOLD = 0.72
 
@@ -372,7 +373,7 @@ def adjust_auto_model_for_retrieval(
             bumps = 1
     elif top_cosine &gt; 0 and top_cosine &lt; COSINE_UPGRADE_THRESHOLD:
         bumps = 1
-    return _bump_model_tier(model, bumps) if bumps &gt; 0 else model</code></pre>
+    return _bump_model_tier(model, bumps) if bumps &gt; 0 else model</code></pre></div>
 
     <p>Example: economy model selected for a short question, but rerank top score is 0.04 → bump +2 from tier 0 to tier 2. This catches the gray zone between the soft no-results gate (score &lt; 0.05) and confident retrieval — where a stronger model can synthesize weak context.</p>
 
@@ -395,7 +396,7 @@ def adjust_auto_model_for_retrieval(
       </tbody>
     </table>
 
-    <pre><code>AUTO_MODEL_POOL = frozenset({
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>AUTO_MODEL_POOL = frozenset({
     "gemini-2.5-flash-lite",
     "gemini-3.1-flash-lite",
     "deepseek-v4-flash",
@@ -405,12 +406,12 @@ def adjust_auto_model_for_retrieval(
     "qwen3-235b-a22b",
     "gemini-3-flash-preview",
 })
-# Claude models: manual picker only, never Auto</code></pre>
+# Claude models: manual picker only, never Auto</code></pre></div>
 
     <h2 id="pipeline">Wiring into the chat pipeline</h2>
     <p>In the FastAPI chat handler, routing fits between request parsing and retrieval:</p>
 
-    <pre><code>def _resolve_chat_model(request):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def _resolve_chat_model(request):
     requested = request.model or default_chat_model()
     if requested == "auto":
         resolved = resolve_auto_model(
@@ -428,7 +429,7 @@ if auto_requested == "auto":
         top_rerank_score=top_rerank_score,
         rerank_ran=rerank_scores is not None,
         top_cosine=top_cosine,
-    )</code></pre>
+    )</code></pre></div>
 
     <p>Return both <code>requested_model: "auto"</code> and <code>resolved_model</code> in usage headers so billing dashboards show what Auto picked.</p>
 
@@ -449,7 +450,7 @@ if auto_requested == "auto":
     <h2 id="testing">Testing with pytest</h2>
     <p>Heuristic routers are fully deterministic — write table-driven tests and run them on every PR:</p>
 
-    <pre><code>def test_heuristic_short_faq():
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def test_heuristic_short_faq():
     assert resolve_auto_model("how do I zoom in?") in (
         "deepseek-v4-flash",
         "gemini-2.5-flash-lite",
@@ -477,7 +478,7 @@ def test_retrieval_upgrade_skips_when_confident():
         "gemini-2.5-flash-lite",
         top_rerank_score=0.42,
         rerank_ran=True,
-    ) == "gemini-2.5-flash-lite"</code></pre>
+    ) == "gemini-2.5-flash-lite"</code></pre></div>
 
     <p>When you tune a regex or threshold, update the test — the test suite <em>is</em> your routing spec.</p>
 
@@ -556,6 +557,7 @@ def test_retrieval_upgrade_skips_when_confident():
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

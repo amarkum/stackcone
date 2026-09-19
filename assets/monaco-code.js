@@ -39,25 +39,117 @@
     markdown: 'markdown',
     md: 'markdown',
     plaintext: 'plaintext',
-    text: 'plaintext'
+    text: 'plaintext',
+    ini: 'ini',
+    env: 'ini',
+    toml: 'ini',
+    plist: 'xml',
+    podfile: 'ruby',
+    gradle: 'kotlin',
+    kts: 'kotlin',
+    groovy: 'java',
+    pubspec: 'yaml',
+    firestore: 'javascript',
+    rules: 'javascript',
+    graphql: 'graphql',
+    proto: 'protobuf',
+    hcl: 'hcl',
+    terraform: 'hcl',
+    mermaid: 'plaintext'
   };
 
   function detectLang(code, hint) {
     if (hint) {
-      var mapped = LANG_MAP[hint.toLowerCase().trim()];
-      if (mapped) return mapped;
+      var key = hint.toLowerCase().trim();
+      if (key !== 'mermaid' && key !== 'auto') {
+        var mapped = LANG_MAP[key];
+        if (mapped) return mapped;
+      }
     }
-    if (/^\s*#!\/usr\/bin\/env\s+(python|bash|sh)/m.test(code)) {
-      return /python/.test(code) ? 'python' : 'shell';
+    var text = code || '';
+
+    if (/[├└│]/.test(text)) return 'plaintext';
+    if (/^\s*#!\/usr\/bin\/env\s+python/m.test(text)) return 'python';
+    if (/^\s*#!\//.test(text)) return 'shell';
+
+    if (/\b(public|private|protected)\s+(class|interface|void|static)/.test(text) || /\bSystem\.out\b/.test(text)) {
+      return 'java';
     }
-    if (/^\s*(def |import |from |class |print\(|async def )/m.test(code)) return 'python';
-    if (/^\s*(public |private |protected |class |void |int |String |System\.out)/m.test(code)) return 'java';
-    if (/^\s*(function |const |let |var |=>|import |export )/m.test(code)) return 'javascript';
-    if (/^\s*(SELECT|INSERT|CREATE|WITH|UPDATE|DELETE)\s/im.test(code)) return 'sql';
-    if (/^\s*\{[\s\S]*"[^"]+"\s*:/m.test(code)) return 'json';
-    if (/^\s*---\s*$/m.test(code) || /:\s*\n/m.test(code)) return 'yaml';
-    if (/^<\?xml|<html|<div|<!DOCTYPE/i.test(code)) return 'html';
-    if (/^\s*#\s/.test(code) && /\b(apt|npm|pip|curl|cd |echo )/m.test(code)) return 'shell';
+
+    // Dart before Python/JS — `import` and `class` match all three.
+    if (
+      /import\s+['"]package:/.test(text) ||
+      /import\s+['"]dart:/.test(text) ||
+      /\b(StatelessWidget|StatefulWidget|WidgetRef|BuildContext|kIsWeb|FlutterFire)\b/.test(text) ||
+      /Future<\w+>/.test(text) ||
+      /\bbool get\b/.test(text) ||
+      (/\bstatic const\b/.test(text) && /;\s*$/m.test(text)) ||
+      /^\s*final\s+\w+/.test(text) ||
+      /^\s*const _\w+/.test(text) ||
+      /\b(StreamProvider|GoRouter|WidgetRef)\b/.test(text) ||
+      (/\bstatic String\b/.test(text) && /=>/.test(text))
+    ) {
+      return 'dart';
+    }
+
+    if (/rules_version\s*=/.test(text) || /service cloud\.firestore/.test(text)) return 'javascript';
+    if (/<\/?(key|plist|string|dict|array)>/.test(text) || /^\s*<\?xml/i.test(text)) return 'xml';
+    if (/<!DOCTYPE html|<html[\s>]|<div[\s>]/i.test(text)) return 'html';
+    if (/\buse_frameworks!/.test(text) || /^\s*target\s+['"][^'"]+['"]\s+do\b/m.test(text)) return 'ruby';
+    if (/^\s*plugins\s*\{/m.test(text) || /id\(["']com\.(android|google)/.test(text) || /\bfun\s+\w+\s*\(/.test(text)) {
+      return 'kotlin';
+    }
+    if (
+      /\{\{\s*config\(/.test(text) ||
+      /^\s*SELECT\s+/im.test(text) ||
+      /^\s*INSERT\s+INTO\b/im.test(text) ||
+      /^\s*UPDATE\s+\S+\s+SET\b/im.test(text) ||
+      /^\s*DELETE\s+FROM\b/im.test(text) ||
+      /^\s*MERGE\s+INTO\b/im.test(text) ||
+      /^\s*CREATE\s+(TABLE|INDEX|VIEW|OR|UNIQUE|SCHEMA|DATABASE|MATERIALIZED)\b/im.test(text) ||
+      /^\s*WITH\s+\w+\s+AS\s*\(/im.test(text)
+    ) {
+      return 'sql';
+    }
+    if (/^\s*package\s+\w+/m.test(text) || /^\s*func\s+\(/.test(text) || /^\s*func\s+\w+\s*\(/.test(text)) {
+      return 'go';
+    }
+    if (/^\s*[\{\[]/.test(text) && /"[^"]+"\s*:/.test(text)) return 'json';
+    if (
+      /^\s*---\s*$/m.test(text) ||
+      /^\s*(dependencies|dev_dependencies|name|on|jobs|services):\s*$/m.test(text)
+    ) {
+      return 'yaml';
+    }
+    if (
+      /^\s*(def |async def |from \w|class \w+\s*[:\(])/m.test(text) ||
+      (/^\s*import\s+[A-Za-z_]\w*/m.test(text) && !/import\s+['"]/.test(text)) ||
+      /^\s*yield\s+/m.test(text) ||
+      /^\s*with\s+.+\s+as\s+/m.test(text) ||
+      /^\s*for\s+\w+\s+in\s+/m.test(text)
+    ) {
+      return 'python';
+    }
+    if (/\b(public|private|protected)\s+(class|interface|void|static)/.test(text) || /\bSystem\.out\b/.test(text)) {
+      return 'java';
+    }
+    if (/\b(interface|type)\s+\w+\s*[{=]/.test(text) || /:\s*(string|number|boolean|Promise)</.test(text)) {
+      return 'typescript';
+    }
+    if (
+      /^\s*(function |const |let |var |export |async function )/m.test(text) ||
+      /=>\s*\{/.test(text) ||
+      /import\s+['"]/.test(text)
+    ) {
+      return 'javascript';
+    }
+    if (/^\s*(FROM|RUN|CMD|COPY|WORKDIR)\s/m.test(text)) return 'dockerfile';
+    if (
+      /^\s*(flutter |dart |npm |npx |pip3? |python3 |curl |cd |export |echo |git |keytool |chmod |sudo |brew |mkdir |cat |docker )/m.test(text)
+    ) {
+      return 'shell';
+    }
+    if (/:\s*\n\s+\S/.test(text)) return 'yaml';
     return 'plaintext';
   }
 
@@ -72,6 +164,8 @@
     if (pre.classList.contains('monaco-replaced')) return true;
     if (pre.closest('.learn-code-wrap.monaco-ready, .learn-code-wrap.monaco-booting')) return true;
     if (pre.previousElementSibling && pre.previousElementSibling.classList.contains('monaco-code-host')) return true;
+    var codeEl = pre.querySelector('code');
+    if (codeEl && /language-mermaid|\bmermaid\b/.test(codeEl.className || '')) return true;
     return false;
   }
 
@@ -226,7 +320,8 @@
     python: 'Python', javascript: 'JavaScript', typescript: 'TypeScript', java: 'Java',
     shell: 'Terminal', sql: 'SQL', json: 'JSON', yaml: 'YAML', html: 'HTML', css: 'CSS',
     xml: 'XML', dockerfile: 'Dockerfile', go: 'Go', rust: 'Rust', kotlin: 'Kotlin',
-    dart: 'Dart', ruby: 'Ruby', plaintext: 'Text'
+    dart: 'Dart', ruby: 'Ruby', plaintext: 'Text', ini: 'Config', graphql: 'GraphQL',
+    protobuf: 'Protobuf', hcl: 'HCL'
   };
 
   function resolveBlockTitle(block) {
@@ -340,10 +435,12 @@
     } else {
       var shell = document.createElement('div');
       shell.className = 'monaco-code-block';
-      if (block.hint) {
+      var lang = detectLang(block.code, block.hint);
+      var label = LANG_LABELS[lang];
+      if (label && lang !== 'plaintext') {
         var badge = document.createElement('span');
         badge.className = 'monaco-code-lang';
-        badge.textContent = block.hint;
+        badge.textContent = label;
         shell.appendChild(badge);
       }
       shell.appendChild(host);

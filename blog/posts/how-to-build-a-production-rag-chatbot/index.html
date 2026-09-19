@@ -76,6 +76,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -160,9 +161,9 @@
       <li>"Reset password" and "weather forecast" → far apart</li>
     </ul>
     <p>An <strong>embedding model</strong> (separate from your chat LLM) creates these vectors. You embed all docs at ingest time and embed each user question at query time, then find the closest doc vectors.</p>
-    <pre><code>"How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>"How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
 "Password recovery steps"      →  [0.11, -0.42, 0.91, ...]   ← relevant
-"Weather in Tokyo"             →  [-0.67, 0.22, -0.11, ...]  ← not relevant</code></pre>
+"Weather in Tokyo"             →  [-0.67, 0.22, -0.11, ...]  ← not relevant</code></pre></div>
 
     <h2 id="what-is-a-vector-database">What is a vector database?</h2>
     <p>Stores millions of vectors and returns <strong>nearest neighbors</strong> quickly.</p>
@@ -235,11 +236,11 @@
     </table>
 
     <p><strong>Project layout:</strong></p>
-    <pre><code>docs/           ← your source markdown/PDF exports
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>docs/           ← your source markdown/PDF exports
 ingest/         ← chunk.py, index.py (run when docs change)
 app/            ← retrieve.py, main.py (chat API)
 frontend/       ← chat UI
-.env            ← API keys (never commit)</code></pre>
+.env            ← API keys (never commit)</code></pre></div>
 
     <p><strong>LangChain?</strong> Optional. Plain Python is fine for v1 — you'll see every step clearly.</p>
 
@@ -335,7 +336,7 @@ frontend/       ← chat UI
 
     <h3>Step 1 — Environment</h3>
     <p><strong>.env</strong></p>
-    <pre><code>OPENAI_API_KEY=sk-...
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>OPENAI_API_KEY=sk-...
 EMBEDDING_MODEL=text-embedding-3-small
 DEFAULT_MODEL=gpt-4o-mini
 
@@ -344,20 +345,20 @@ PINECONE_INDEX=kb-prod
 PINECONE_NAMESPACE=default
 
 RETRIEVAL_TOP_K=30
-MAX_CONTEXT_CHUNKS=8</code></pre>
+MAX_CONTEXT_CHUNKS=8</code></pre></div>
 
     <p><strong>requirements.txt</strong></p>
-    <pre><code>fastapi
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>fastapi
 uvicorn
 python-dotenv
 openai
 pinecone-client
-tiktoken</code></pre>
+tiktoken</code></pre></div>
     <p>Add <code>cohere</code> if you use reranking.</p>
 
     <h3>Step 2 — Chunk documents</h3>
     <p><strong>ingest/chunk.py</strong></p>
-    <pre><code>from pathlib import Path
+    <div class="learn-code-wrap" data-lang="python"><pre><code>from pathlib import Path
 
 CHUNK_SIZE = 1000
 OVERLAP = 200
@@ -380,11 +381,11 @@ def load_docs(folder: str) -&gt; list[dict]:
     out = []
     for path in Path(folder).glob("**/*.md"):
         out.extend(chunk_text(path.read_text(encoding="utf-8"), path.stem, path.stem))
-    return out</code></pre>
+    return out</code></pre></div>
 
     <h3>Step 3 — Embed and index</h3>
     <p><strong>ingest/index.py</strong></p>
-    <pre><code>import os
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import os
 from openai import OpenAI
 from pinecone import Pinecone
 from chunk import load_docs
@@ -412,12 +413,12 @@ def upsert_chunks(chunks: list[dict], batch_size=50):
 
 if __name__ == "__main__":
     upsert_chunks(load_docs("docs"))
-    print("Indexed.")</code></pre>
+    print("Indexed.")</code></pre></div>
     <p>Run after docs change: <code>python ingest/index.py</code></p>
 
     <h3>Step 4 — Retrieve relevant chunks</h3>
     <p><strong>app/retrieve.py</strong></p>
-    <pre><code>import os
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import os
 from openai import OpenAI
 
 client = OpenAI()
@@ -429,12 +430,12 @@ def embed_query(text: str) -&gt; list[float]:
 def retrieve(query: str, index, top_k: int | None = None) -&gt; list[dict]:
     k = top_k or int(os.environ.get("RETRIEVAL_TOP_K", "30"))
     hits = index.query(vector=embed_query(query), top_k=k, include_metadata=True)
-    return [{"text": m.metadata["text"], **m.metadata} for m in hits.matches]</code></pre>
+    return [{"text": m.metadata["text"], **m.metadata} for m in hits.matches]</code></pre></div>
     <p><strong>Optional rerank</strong> (Cohere) — call after vector search, keep top 8. Big quality win for little code.</p>
 
     <h3>Step 5 — Chat API</h3>
     <p><strong>app/main.py</strong></p>
-    <pre><code>import os
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 from openai import OpenAI
@@ -473,19 +474,19 @@ async def chat(req: ChatRequest):
     return {
         "response": out.choices[0].message.content,
         "sources": [{"title": d.get("title")} for d in docs[:5]],
-    }</code></pre>
+    }</code></pre></div>
     <p>Run: <code>uvicorn app.main:app --reload --port 8000</code></p>
 
     <h3>Step 6 — Chat UI</h3>
     <p><strong>frontend/chat.js</strong></p>
-    <pre><code>async function sendMessage(message, history = []) {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>async function sendMessage(message, history = []) {
   const res = await fetch("/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, conversation_history: history }),
   });
   return res.json();
-}</code></pre>
+}</code></pre></div>
     <p>Render <code>response</code> as markdown. Show <code>sources</code> as links below the answer.</p>
 
     <h2 id="going-to-production">Going to production</h2>
@@ -579,21 +580,21 @@ async def chat(req: ChatRequest):
     </div>
 
     <h2 id="api-reference">API reference</h2>
-    <pre><code>curl -X POST http://localhost:8000/chat \
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
-  -d '{"message": "How do I reset my password?"}'</code></pre>
+  -d '{"message": "How do I reset my password?"}'</code></pre></div>
 
     <p><strong>Request</strong></p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "message": "How do I reset my password?",
   "conversation_history": []
-}</code></pre>
+}</code></pre></div>
 
     <p><strong>Response</strong></p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "response": "To reset your password, go to Settings → Account...",
   "sources": [{ "title": "account-settings" }]
-}</code></pre>
+}</code></pre></div>
 
     <h2 id="glossary">Glossary</h2>
     <table>
@@ -644,6 +645,7 @@ async def chat(req: ChatRequest):
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

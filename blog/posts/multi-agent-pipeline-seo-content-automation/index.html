@@ -49,6 +49,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -129,7 +130,7 @@
     <p><strong>Does not:</strong> Write prose, pick titles, or edit files</p>
     <p>The intent agent answers: <em>Should we write this post, for whom, and how does it differ from what already ranks?</em></p>
     <p><strong>Example brief (stackcone.com):</strong></p>
-    <pre><code>Query: "multi-agent pipeline seo" — 48 impressions, 0 clicks, avg position 14
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>Query: "multi-agent pipeline seo" — 48 impressions, 0 clicks, avg position 14
 Gap: no dedicated post on stackcone.com/blog/ covering agent roles + static workflow
 Intent: informational / how-to (developer audience)
 Angle: practical agent roles + GitHub Pages workflow, not framework hype
@@ -141,15 +142,15 @@ Internal links (HTML only):
   - /blog/posts/skills-vs-rules-claude-code-cursor/
   - /blog/posts/how-to-use-claude-code-effectively/
   - /blog/posts/ai-agent-mcp-data-engineering-automation/
-Exclude: brand-only queries, pages we already rank #1–3 for</code></pre>
+Exclude: brand-only queries, pages we already rank #1–3 for</code></pre></div>
     <p><strong>Data sources the intent agent should read:</strong></p>
-    <pre><code># Existing slugs — avoid duplicate topics
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Existing slugs — avoid duplicate topics
 jq -r '.posts[].id' blog/posts.json
 
 # Sitemap — confirm URL not already claimed
 grep -o 'blog/posts/[^/]*/' sitemap.xml | sort -u
 
-# GSC export (manual or API): queries.csv with query, impressions, clicks, position</code></pre>
+# GSC export (manual or API): queries.csv with query, impressions, clicks, position</code></pre></div>
     <p>Runs first. Output is a structured brief the outline agent consumes. See <a href="#intent-prompt">Intent agent prompt template</a> for the full copy-paste prompt.</p>
     <h3 id="2-outline-agent-structure">2. Outline agent (structure)</h3>
     <p><strong>Input:</strong> Topic brief from intent agent</p>
@@ -157,7 +158,7 @@ grep -o 'blog/posts/[^/]*/' sitemap.xml | sort -u
     <p><strong>Does not:</strong> Write full paragraphs or metadata</p>
     <p>The outline agent maps <strong>SERP expectations</strong> to your brief. If every top result has a comparison table and you skip it, you are missing a ranking signal.</p>
     <p><strong>Example outline fragment:</strong></p>
-    <pre><code>## H2: Five agent roles
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>## H2: Five agent roles
 ### H3: Intent agent (research)
 ### H3: Outline agent (structure)
 ...
@@ -169,7 +170,7 @@ grep -o 'blog/posts/[^/]*/' sitemap.xml | sort -u
 ## H2: FAQ (min 8 questions)
 - Do I need LangGraph?
 - Which agent writes JSON-LD?
-- ...</code></pre>
+- ...</code></pre></div>
     <p><strong>Outline agent verification:</strong></p>
     <ul>
     <li>Every H2 in the brief’s “angle” section has a matching H2 in the outline</li>
@@ -192,16 +193,16 @@ grep -o 'blog/posts/[^/]*/' sitemap.xml | sort -u
     <li>Meta line: <code>August 2026 · Published by Amar Kumar</code> (date label only; no “in 2026” in title/body)</li>
     </ul>
     <p><strong>Example writer invocation:</strong></p>
-    <pre><code>Write blog/md/multi-agent-pipeline-seo-content-automation.md from the approved outline
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Write blog/md/multi-agent-pipeline-seo-content-automation.md from the approved outline
 at _pipeline/briefs/multi-agent-pipeline-seo.json.
 
 Follow .cursor/rules/blog-posts.mdc. Target 2,800 words. Include real file paths,
 bash snippets, and a complete SKILL.md example. Link only to HTML post paths.
-Do not create HTML or update posts.json — writer phase only.</code></pre>
+Do not create HTML or update posts.json — writer phase only.</code></pre></div>
     <p>If the repo has linters or spell-check, the writer agent runs them before handoff:</p>
-    <pre><code># Optional: word count gate
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Optional: word count gate
 wc -w blog/md/multi-agent-pipeline-seo-content-automation.md
-# Target band from brief, e.g. 2500–3500</code></pre>
+# Target band from brief, e.g. 2500–3500</code></pre></div>
     <h3 id="4-seo-metadata-agent-publish-layer">4. SEO metadata agent (publish layer)</h3>
     <p><strong>Input:</strong> Markdown draft + site SEO rules (<code>.cursor/rules/seo-google.mdc</code>)</p>
     <p><strong>Output:</strong> <code>blog/posts/{slug}/index.html</code>, <code>posts.json</code>, <code>sitemap.xml</code>, <code>blog/index.html</code> card</p>
@@ -224,20 +225,20 @@ wc -w blog/md/multi-agent-pipeline-seo-content-automation.md
 </tbody></table>
     <p>Also updates static blog listing (<code>blog/index.html</code> post card) if the site uses a static index.</p>
     <p><strong>Publish-phase commands:</strong></p>
-    <pre><code># After HTML written
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># After HTML written
 
 # Fail if any public HTML links to markdown source
 grep -r 'blog/md/' blog/posts/ blog/index.html &amp;&amp; echo "FAIL: .md links in HTML" &amp;&amp; exit 1
 
 # Confirm sitemap has entry
-grep "multi-agent-pipeline-seo-content-automation" sitemap.xml</code></pre>
+grep "multi-agent-pipeline-seo-content-automation" sitemap.xml</code></pre></div>
     <p>See <a href="#html-head">Metadata HTML head example</a> and <a href="#registry-samples">Sample posts.json and sitemap entries</a>.</p>
     <h3 id="5-qa-agent-verification">5. QA agent (verification)</h3>
     <p><strong>Input:</strong> All published files from metadata agent</p>
     <p><strong>Output:</strong> Pass/fail report with file:line fixes</p>
     <p><strong>Does not:</strong> Edit files (read-only); returns actionable errors to upstream agent</p>
     <p><strong>QA checklist (automatable):</strong></p>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # _pipeline/scripts/qa-blog-post.sh
 set -euo pipefail
 SLUG="${1:?slug required}"
@@ -261,11 +262,11 @@ TITLE=$(grep -o '&lt;title&gt;[^&lt;]*&lt;/title&gt;' "$BASE" | sed 's/&lt;[^&gt
 # 5. JSON-LD Article block
 grep -q '"@type": "Article"' "$BASE"
 
-echo "QA PASS: ${SLUG}"</code></pre>
+echo "QA PASS: ${SLUG}"</code></pre></div>
     <p>QA agent runs read-only. If fail → routes back to metadata agent (head/sitemap/registry issues) or writer agent (content/link issues) with specific fixes.</p>
     <h2 id="intent-agent-prompt-template">Intent agent prompt template</h2>
     <p>Save as <code>_pipeline/prompts/intent-agent.md</code> or pass directly to a subagent. Replace <code>{SITE}</code>, <code>{GSC_EXPORT}</code>, <code>{POSTS_JSON}</code> with real paths.</p>
-    <pre><code>You are the Intent agent for {SITE} content pipeline. You produce topic briefs only.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>You are the Intent agent for {SITE} content pipeline. You produce topic briefs only.
 You do NOT write article prose, titles for publication, or edit any files.
 
 ## Inputs
@@ -310,22 +311,22 @@ Identify ONE content gap worth filling this week. Prefer:
 - Do not propose YMYL medical/financial advice unless brief explicitly allows
 - If no gap qualifies, set exclude_reason_if_skip and slug to null
 
-Return JSON only.</code></pre>
+Return JSON only.</code></pre></div>
     <p><strong>Example Claude Code invocation:</strong></p>
-    <pre><code>claude -p "$(cat _pipeline/prompts/intent-agent.md)" \
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>claude -p "$(cat _pipeline/prompts/intent-agent.md)" \
   --add-dir blog \
-  --output-format json &gt; _pipeline/queue/intent-$(date +%Y%m%d).json</code></pre>
+  --output-format json &gt; _pipeline/queue/intent-$(date +%Y%m%d).json</code></pre></div>
     <p>Validate output before queuing outline work:</p>
-    <pre><code>jq -e '.slug != null and (.internal_links | length) &gt;= 3' _pipeline/queue/intent-20260830.json</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>jq -e '.slug != null and (.internal_links | length) &gt;= 3' _pipeline/queue/intent-20260830.json</code></pre></div>
     <h2 id="serp-analysis-steps">SERP analysis steps</h2>
     <p>The outline agent (or an <code>explore</code> subagent) runs SERP analysis <strong>after</strong> intent brief approval. Goal: map what Google rewards for the primary keyword, not to copy competitors.</p>
     <h3 id="step-1-collect-top-results">Step 1 — Collect top results</h3>
-    <pre><code># Manual: search primary keyword in browser, incognito, US or target geo
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Manual: search primary keyword in browser, incognito, US or target geo
 # Record top 10 organic URLs (skip ads, forums, video carousels unless dominant)
 
-# Optional: Ahrefs/Semrush API via MCP — export top 10 titles + H2s</code></pre>
+# Optional: Ahrefs/Semrush API via MCP — export top 10 titles + H2s</code></pre></div>
     <p>Create <code>_pipeline/serp/{slug}-serp.md</code>:</p>
-    <pre><code># SERP: multi-agent pipeline seo
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># SERP: multi-agent pipeline seo
 Date: 2026-08-30
 Primary keyword: multi-agent pipeline seo
 
@@ -349,7 +350,7 @@ Primary keyword: multi-agent pipeline seo
 ## Our outline must include
 - Five agent roles with verification criteria
 - claude -p orchestration
-- posts.json + sitemap samples</code></pre>
+- posts.json + sitemap samples</code></pre></div>
     <h3 id="step-2-extract-structure-signals">Step 2 — Extract structure signals</h3>
     <p>For each of the top 5 URLs, note:</p>
     <table>
@@ -362,11 +363,11 @@ Primary keyword: multi-agent pipeline seo
 <tr><td>Schema types</td><td>Article, FAQPage, HowTo</td></tr>
 <tr><td>Freshness</td><td>last updated if visible</td></tr>
 </tbody></table>
-    <pre><code># Quick word count on competitor (respect robots.txt)
-curl -sL "https://example.com/post" | wc -w</code></pre>
+    <div class="learn-code-wrap" data-lang="shell"><pre><code># Quick word count on competitor (respect robots.txt)
+curl -sL "https://example.com/post" | wc -w</code></pre></div>
     <h3 id="step-3-diff-against-our-brief">Step 3 — Diff against our brief</h3>
     <p>Outline agent prompt core:</p>
-    <pre><code>Given brief at _pipeline/queue/intent-20260830.json and SERP notes at
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>Given brief at _pipeline/queue/intent-20260830.json and SERP notes at
 _pipeline/serp/multi-agent-pipeline-seo-serp.md:
 
 1. Produce H2/H3 outline that covers all "Common H2 patterns" PLUS our gaps.
@@ -375,7 +376,7 @@ _pipeline/serp/multi-agent-pipeline-seo-serp.md:
 4. List internal_links from brief as a "Related context" section in outline.
 5. Do not write full paragraphs.
 
-Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre>
+Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre></div>
     <h3 id="step-4-human-gate-optional">Step 4 — Human gate (optional)</h3>
     <p>For high-stakes topics, stop after outline and approve in GitHub issue or Slack before writer agent runs. Low-volume static blogs can auto-approve if brief + SERP files exist.</p>
     <h2 id="pipeline-flow">Pipeline flow</h2>
@@ -418,7 +419,7 @@ Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre>
     <p>You do not need LangGraph on day one. A well-written skill with five numbered phases <strong>is</strong> a multi-agent pipeline when each phase gets a fresh context or subagent. See <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents</a> for when to add MCP data tools.</p>
     <h2 id="seo-metadata-agent-checklist">SEO metadata agent checklist</h2>
     <p>Copy into <code>.claude/rules/seo-publish.md</code> or the publisher skill:</p>
-    <pre><code>## Before marking publish complete
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>## Before marking publish complete
 
 - [ ] Unique `&lt;title&gt;` and meta description (no duplicate across site)
 - [ ] Canonical URL = `https://stackcone.com/blog/posts/{slug}/`
@@ -430,11 +431,11 @@ Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre>
 - [ ] blog/index.html static card updated (href, title, description, tags)
 - [ ] No hotlinked images — all assets in blog/images/{slug}/
 - [ ] No links to /blog/md/ from HTML
-- [ ] QA script passes: _pipeline/scripts/qa-blog-post.sh {slug}</code></pre>
+- [ ] QA script passes: _pipeline/scripts/qa-blog-post.sh {slug}</code></pre></div>
     <p>The metadata agent should treat unchecked boxes as <strong>fail</strong> — not “looks good enough.”</p>
     <h2 id="metadata-html-head-example">Metadata HTML head example</h2>
     <p>Minimal <code>&lt;head&gt;</code> for <code>blog/posts/multi-agent-pipeline-seo-content-automation/index.html</code>. Title and description strings are copied verbatim from the approved brief — not rewritten.</p>
-    <pre><code>&lt;!DOCTYPE html&gt;
+    <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
 &lt;head&gt;
   &lt;meta charset="UTF-8"&gt;
@@ -487,12 +488,12 @@ Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre>
     ]
   }
   &lt;/script&gt;
-&lt;/head&gt;</code></pre>
+&lt;/head&gt;</code></pre></div>
     <p>Add <code>FAQPage</code> JSON-LD when the article body includes an FAQ section — mirror exact question/answer text from the HTML, not paraphrased.</p>
     <h2 id="sample-postsjson-and-sitemap-entries">Sample posts.json and sitemap entries</h2>
     <h3 id="postsjson-entry">posts.json entry</h3>
     <p>Insert at the top of the <code>posts</code> array in <code>blog/posts.json</code> (newest first):</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "id": "multi-agent-pipeline-seo-content-automation",
   "title": "Multi-Agent Pipeline for SEO and Content Automation",
   "description": "Multi-agent pipeline for SEO and content automation — five agent roles, metadata checklist, static site workflow, and GSC feedback loop with copy-paste patterns.",
@@ -509,17 +510,17 @@ Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre>
     "SEO metadata",
     "Content automation"
   ]
-}</code></pre>
+}</code></pre></div>
     <p>Validate JSON after edit:</p>
-    <pre><code>jq empty blog/posts.json &amp;&amp; echo "posts.json OK"</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>jq empty blog/posts.json &amp;&amp; echo "posts.json OK"</code></pre></div>
     <h3 id="sitemapxml-entry">sitemap.xml entry</h3>
     <p>Add inside <code>&lt;urlset&gt;</code> in root <code>sitemap.xml</code>:</p>
-    <pre><code>&lt;url&gt;
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>&lt;url&gt;
   &lt;loc&gt;https://stackcone.com/blog/posts/multi-agent-pipeline-seo-content-automation/&lt;/loc&gt;
   &lt;lastmod&gt;2026-08-30&lt;/lastmod&gt;
   &lt;changefreq&gt;monthly&lt;/changefreq&gt;
   &lt;priority&gt;0.8&lt;/priority&gt;
-&lt;/url&gt;</code></pre>
+&lt;/url&gt;</code></pre></div>
     <p>Rules:</p>
     <ul>
     <li><code>&lt;loc&gt;</code> must match <code>rel=&quot;canonical&quot;</code> exactly (trailing slash included)</li>
@@ -530,7 +531,7 @@ Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre>
     <p>Add a <code>&lt;a class=&quot;post-card&quot;&gt;</code> block matching sibling cards — same <code>href</code>, title, description, and <code>data-tags</code> as <code>posts.json</code>. The metadata agent must keep these in sync or the blog index drifts from the registry.</p>
     <h2 id="static-site-pattern-github-pages">Static site pattern (GitHub Pages)</h2>
     <p>stackcone.com uses this layout — one URL per post, no redirect stubs:</p>
-    <pre><code>blog/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>blog/
 ├── md/{slug}.md                    ← source (stripped at deploy)
 ├── posts/{slug}/index.html         ← canonical public URL
 ├── posts.json                      ← blog registry
@@ -547,7 +548,7 @@ _pipeline/                          ← optional orchestration (not deployed)
 sitemap.xml                         ← root sitemap
 robots.txt                          ← Disallow: /blog/md/
 _dev/
-└── sync_blog_index.py</code></pre>
+└── sync_blog_index.py</code></pre></div>
     <p>Deploy script (<code>.github/scripts/prepare-pages.sh</code>) removes <code>blog/md/</code>, <code>_dev/</code>, <code>_pipeline/</code>, and legacy redirect stubs before GitHub Pages upload. Only HTML is public.</p>
     <p><strong>Intent agent data source:</strong> Google Search Console → Queries with impressions but zero clicks = content gaps worth filling.</p>
     <p><strong>Writer agent rules:</strong> <code>.cursor/rules/blog-posts.mdc</code> — md source + html publish, never link to <code>.md</code>.</p>
@@ -561,7 +562,7 @@ _dev/
     </ol>
     <h2 id="complete-ship-blog-post-skillmd">Complete ship-blog-post SKILL.md</h2>
     <p>Place at <code>.claude/skills/ship-blog-post/SKILL.md</code> (Claude Code) or <code>.cursor/skills/ship-blog-post/SKILL.md</code> (Cursor). This skill covers <strong>metadata + QA agents</strong>; run intent/outline/writer phases separately or via <code>claude -p</code> first.</p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>---
 name: ship-blog-post
 description: &gt;-
   Publish a stackcone blog post — convert md to HTML, update posts.json,
@@ -623,14 +624,14 @@ You are the SEO metadata + QA agent. Markdown draft already exists at
 .claude/skills/ship-blog-post/
 ├── SKILL.md
 ├── check-sitemap.sh          # grep slug in sitemap + canonical match
-└── template-head.html        # head fragment with {TITLE} placeholders</code></pre>
+└── template-head.html        # head fragment with {TITLE} placeholders</code></pre></div>
     <p>Invoke manually:</p>
-    <pre><code>/ship-blog-post multi-agent-pipeline-seo-content-automation</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>/ship-blog-post multi-agent-pipeline-seo-content-automation</code></pre></div>
     <p>See <a href="/blog/posts/skills-vs-rules-claude-code-cursor/">Skills vs Rules in Claude Code and Cursor</a> for when to use skills vs rules for SEO constraints.</p>
     <h2 id="orchestration-with-claude--p">Orchestration with claude -p</h2>
     <p>Headless Claude Code runs each pipeline phase in CI or a local script. Pattern from <a href="/blog/posts/ralph-loop-alternatives-claude-code/">Ralph Loop Alternatives</a> and <a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively</a>: one phase per invocation, fresh context, exit code gates the next step.</p>
     <h3 id="directory-layout-for-headless-runs">Directory layout for headless runs</h3>
-    <pre><code>_pipeline/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>_pipeline/
 ├── run-pipeline.sh
 ├── prompts/
 │   ├── intent-agent.md
@@ -638,9 +639,9 @@ You are the SEO metadata + QA agent. Markdown draft already exists at
 │   ├── writer-agent.md
 │   └── qa-agent.md
 └── queue/
-    └── {slug}.state.json</code></pre>
+    └── {slug}.state.json</code></pre></div>
     <h3 id="example-orchestrator-script">Example orchestrator script</h3>
-    <pre><code>#!/usr/bin/env bash
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
 # _pipeline/run-pipeline.sh
 set -euo pipefail
 SLUG="${1:?usage: run-pipeline.sh &lt;slug&gt;}"
@@ -673,9 +674,9 @@ Run ship-blog-post skill for slug: $SLUG
 run_phase qa
 
 jq '.phase = "done"' "$STATE" | sponge "$STATE"
-echo "Pipeline complete: $SLUG"</code></pre>
+echo "Pipeline complete: $SLUG"</code></pre></div>
     <h3 id="ci-workflow-github-actions">CI workflow (GitHub Actions)</h3>
-    <pre><code># .github/workflows/content-pipeline.yml
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code># .github/workflows/content-pipeline.yml
 name: Content pipeline
 on:
   workflow_dispatch:
@@ -697,7 +698,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           title: "content: ship ${{ github.event.inputs.slug }}"
-          branch: "content/${{ github.event.inputs.slug }}"</code></pre>
+          branch: "content/${{ github.event.inputs.slug }}"</code></pre></div>
     <p><strong>Rules for <code>claude -p</code> orchestration:</strong></p>
     <ul>
     <li>One agent role per invocation — do not combine writer + publisher in one prompt</li>
@@ -710,7 +711,7 @@ jobs:
     <p>Without state, agents lose track of which phase failed and retry from scratch. Use a small JSON state file per slug (or PostgreSQL at scale).</p>
     <h3 id="per-slug-state-file">Per-slug state file</h3>
     <p><code>_pipeline/queue/multi-agent-pipeline-seo-content-automation.state.json</code>:</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "slug": "multi-agent-pipeline-seo-content-automation",
   "phase": "writer",
   "attempts": { "intent": 1, "outline": 1, "writer": 2, "metadata": 0, "qa": 0 },
@@ -723,23 +724,23 @@ jobs:
   },
   "errors": [],
   "updated_at": "2026-08-30T14:22:00Z"
-}</code></pre>
+}</code></pre></div>
     <h3 id="file-based-queue-solo-dev">File-based queue (solo dev)</h3>
-    <pre><code>_pipeline/queue/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>_pipeline/queue/
 ├── pending/
 │   └── 001-multi-agent-pipeline-seo-content-automation.json
 ├── in_progress/
 ├── done/
-└── failed/</code></pre>
+└── failed/</code></pre></div>
     <p>Promotion rules:</p>
-    <pre><code># Move job to in_progress when intent starts
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Move job to in_progress when intent starts
 mv "_pipeline/queue/pending/001-${SLUG}.json" "_pipeline/queue/in_progress/"
 
 # On QA pass
 mv "_pipeline/queue/in_progress/${SLUG}.json" "_pipeline/queue/done/"
 
 # On max retries
-mv "_pipeline/queue/in_progress/${SLUG}.json" "_pipeline/queue/failed/"</code></pre>
+mv "_pipeline/queue/in_progress/${SLUG}.json" "_pipeline/queue/failed/"</code></pre></div>
     <h3 id="postgresql-queue-team-wordpress">PostgreSQL queue (team / WordPress)</h3>
     <p>For high volume or YMYL human-review gates, use a <code>content_jobs</code> table:</p>
     <table>
@@ -758,14 +759,14 @@ mv "_pipeline/queue/in_progress/${SLUG}.json" "_pipeline/queue/failed/"</code></
     <h2 id="error-handling-between-agents">Error handling between agents</h2>
     <p>Agents should return <strong>structured errors</strong>, not prose apologies. The orchestrator routes failures to the correct upstream agent.</p>
     <h3 id="error-object-schema">Error object schema</h3>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "agent": "qa",
   "code": "CANONICAL_SITEMAP_MISMATCH",
   "message": "canonical https://stackcone.com/blog/posts/foo/ not in sitemap.xml",
   "file": "blog/posts/foo/index.html",
   "fix_owner": "metadata",
   "retryable": true
-}</code></pre>
+}</code></pre></div>
     <h3 id="routing-table">Routing table</h3>
     <table>
 <thead><tr><th>Error code</th><th>Fix owner</th><th>Action</th></tr></thead>
@@ -781,15 +782,15 @@ mv "_pipeline/queue/in_progress/${SLUG}.json" "_pipeline/queue/failed/"</code></
 <tr><td><code>INTERNAL_LINK_404</code></td><td>writer</td><td>Fix href or remove link</td></tr>
 </tbody></table>
     <h3 id="retry-policy">Retry policy</h3>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "max_attempts": { "intent": 2, "outline": 2, "writer": 3, "metadata": 3, "qa": 1 },
   "backoff_seconds": [0, 30, 120]
-}</code></pre>
+}</code></pre></div>
     <p>After <code>max_attempts</code>, move job to <code>failed/</code> and notify (Slack webhook, GitHub issue). QA agent does not auto-fix — it reports. Metadata agent may auto-fix deterministic issues (run highlights, add sitemap line) once before failing.</p>
     <h3 id="verification-loops">Verification loops</h3>
     <p>Borrow from <a href="/blog/posts/ralph-loop-alternatives-claude-code/">Ralph Loop Alternatives</a>: Stop hooks or CI exit codes enforce “no green, no merge.” Example Stop hook message in <code>CLAUDE.md</code>:</p>
-    <pre><code>Before ending a publish session, confirm qa-blog-post.sh passed.
-If not, list failing checks and continue fixing.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Before ending a publish session, confirm qa-blog-post.sh passed.
+If not, list failing checks and continue fixing.</code></pre></div>
     <h2 id="measuring-pipeline-success">Measuring pipeline success</h2>
     <p>Publishing more posts is not success. Track whether the pipeline improves <strong>discovery, clicks, and efficiency</strong>.</p>
     <h3 id="search-outcomes-monthly-from-gsc">Search outcomes (monthly, from GSC)</h3>
@@ -802,7 +803,7 @@ If not, list failing checks and continue fixing.</code></pre>
 <tr><td>Indexed pages vs submitted sitemap</td><td>Discovery broken if gap grows</td></tr>
 </tbody></table>
     <p><strong>Per-post scorecard</strong> (<code>_pipeline/reports/{slug}-90d.md</code>):</p>
-    <pre><code># 90-day report: multi-agent-pipeline-seo-content-automation
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># 90-day report: multi-agent-pipeline-seo-content-automation
 Target query: multi-agent pipeline seo
 Published: 2026-08-30
 
@@ -812,7 +813,7 @@ Published: 2026-08-30
 | 3–4 | 31 | 1 | 17 |
 | 5–8 | 48 | 3 | 12 |
 
-Actions: refresh meta description (CTR low), add link from /blog/posts/skills-vs-mcp-vs-subagents/</code></pre>
+Actions: refresh meta description (CTR low), add link from /blog/posts/skills-vs-mcp-vs-subagents/</code></pre></div>
     <p>Feed scorecards back into the <strong>intent agent</strong> for refresh briefs (title tests, new internal links, content updates).</p>
     <h3 id="pipeline-efficiency-per-ship">Pipeline efficiency (per ship)</h3>
     <table>
@@ -824,11 +825,11 @@ Actions: refresh meta description (CTR low), add link from /blog/posts/skills-vs
 <tr><td>Rework loops</td><td>writer vs metadata retry counts</td></tr>
 <tr><td>Cost</td><td>API usage per phase (optional)</td></tr>
 </tbody></table>
-    <pre><code># Ships last 30 days
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Ships last 30 days
 ls _pipeline/queue/done/ | wc -l
 
 # QA failure rate from logs
-grep -c '"fix_owner":"writer"' _pipeline/logs/*.jsonl</code></pre>
+grep -c '"fix_owner":"writer"' _pipeline/logs/*.jsonl</code></pre></div>
     <h3 id="quality-gates-before-calling-a-ship-successful">Quality gates (before calling a ship “successful”)</h3>
     <ul>
     <li>[ ] QA passed on first or second metadata attempt</li>
@@ -849,7 +850,7 @@ grep -c '"fix_owner":"writer"' _pipeline/logs/*.jsonl</code></pre>
 </tbody></table>
     <p>The five agent roles stay the same. Only the publish layer changes. For YMYL sites (health, finance), add a human-review gate between Writer and Publisher agents (<code>status: blocked_review</code> in queue).</p>
     <p><strong>WordPress metadata agent sketch:</strong></p>
-    <pre><code>curl -X POST "https://example.com/wp-json/wp/v2/posts" \
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>curl -X POST "https://example.com/wp-json/wp/v2/posts" \
   -u "$WP_USER:$WP_APP_PASSWORD" \
   -H "Content-Type: application/json" \
   -d '{
@@ -857,7 +858,7 @@ grep -c '"fix_owner":"writer"' _pipeline/logs/*.jsonl</code></pre>
     "content": "&lt;!-- rendered HTML --&gt;",
     "status": "draft",
     "meta": { "_yoast_wpseo_metadesc": "..." }
-  }'</code></pre>
+  }'</code></pre></div>
     <p>See the full <a href="/solutions/wordpress-seo-multi-agent-pipeline/">WordPress multi-agent SEO pipeline architecture</a> for LangGraph orchestration, PostgreSQL queue, and GSC reporting agents.</p>
     <h2 id="agent-design-patterns-that-work">Agent design patterns that work</h2>
     <table>
@@ -889,15 +890,15 @@ grep -c '"fix_owner":"writer"' _pipeline/logs/*.jsonl</code></pre>
     <li>Flag <strong>404 or redirect URLs</strong> in coverage report → fix canonicals, remove stubs</li>
     <li>Queue refresh or new post in content backlog</li>
     </ol>
-    <pre><code>Publish → wait 2–4 weeks → GSC data → Intent agent → next brief</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Publish → wait 2–4 weeks → GSC data → Intent agent → next brief</code></pre></div>
     <p><strong>Refresh brief example (existing post):</strong></p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "slug": "multi-agent-pipeline-seo-content-automation",
   "job_type": "refresh",
   "reason": "CTR 0.4% at position 11 — test new meta description",
   "changes": ["meta description", "add FAQ question on claude -p"],
   "internal_links_to_add": ["/blog/posts/ralph-loop-alternatives-claude-code/"]
-}</code></pre>
+}</code></pre></div>
     <p>Without this loop, the pipeline produces content but does not learn what searchers actually query.</p>
     <h2 id="common-mistakes">Common mistakes</h2>
     <ol>
@@ -971,6 +972,7 @@ grep -c '"fix_owner":"writer"' _pipeline/logs/*.jsonl</code></pre>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

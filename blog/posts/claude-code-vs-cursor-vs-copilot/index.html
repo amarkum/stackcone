@@ -92,6 +92,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -221,11 +222,11 @@
     </table>
     <p><strong>Avoid conflicts:</strong> only one tool editing a folder at a time; mirror rules in <code>CLAUDE.md</code> and <code>.cursor/rules</code>; always <code>git status</code> before and after agent runs.</p>
 
-    <pre><code># Claude Code on a feature branch
+    <div class="learn-code-wrap" data-lang="shell"><pre><code># Claude Code on a feature branch
 git checkout -b feature/api-health
 claude "Add GET /health returning {status: ok}. Run tests after."
 
-# Cursor for follow-up UI tweak after Claude Code commits</code></pre>
+# Cursor for follow-up UI tweak after Claude Code commits</code></pre></div>
 
     <h2 id="pricing">Pricing</h2>
     <table>
@@ -240,9 +241,9 @@ claude "Add GET /health returning {status: ok}. Run tests after."
 
     <h2 id="setup">Setup in 5 minutes each</h2>
     <h3>Claude Code</h3>
-    <pre><code>npm install -g @anthropic-ai/claude-code
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>npm install -g @anthropic-ai/claude-code
 cd your-repo
-claude</code></pre>
+claude</code></pre></div>
     <p>Add <code>CLAUDE.md</code> at repo root with build and test commands.</p>
     <h3>Cursor</h3>
     <ol>
@@ -306,6 +307,7 @@ claude</code></pre>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";

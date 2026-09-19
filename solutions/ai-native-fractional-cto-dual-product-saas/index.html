@@ -69,6 +69,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page solutions-page">
   <header class="header">
@@ -291,7 +292,7 @@
 
     <h3>Engineering baseline (code)</h3>
     <p>TypeScript strict mode would be enforced at the compiler and CI level — not optional per package:</p>
-    <pre><code>// tsconfig.json — customer app and agent services
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>// tsconfig.json — customer app and agent services
 {
   "compilerOptions": {
     "strict": true,
@@ -299,7 +300,7 @@
     "noImplicitReturns": true,
     "exactOptionalPropertyTypes": true
   }
-}</code></pre>
+}</code></pre></div>
 
     <h2 id="agent-design">Agent &amp; component design</h2>
     <h3>Customer platform components</h3>
@@ -330,7 +331,7 @@
 
     <h3>Agent registry entry (YAML)</h3>
     <p>Each internal workflow would be registered with owner, schedule, and rollback — not buried in a cron comment:</p>
-    <pre><code>workflows:
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>workflows:
   - id: finance-weekly-reconcile
     owner: fractional-cto
     schedule: "0 6 * * 1"   # Monday 06:00 CT
@@ -341,7 +342,7 @@
     outputs: [notion_draft, slack_approval_request]
     human_gate: true
     idempotent: true
-    on_failure: dead_letter_queue + sentry_alert</code></pre>
+    on_failure: dead_letter_queue + sentry_alert</code></pre></div>
 
     <h3>Human vs agent boundary</h3>
     <table>
@@ -500,6 +501,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../diagrams.js?v=14"></script>
   <script src="../../site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="../../script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

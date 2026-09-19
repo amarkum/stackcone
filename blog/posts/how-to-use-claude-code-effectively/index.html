@@ -106,6 +106,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -189,7 +190,7 @@
     </ul>
 
     <h3>Starter template</h3>
-    <pre><code># Project: acme-api
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Project: acme-api
 
 ## Commands
 - Install: `pnpm install`
@@ -214,35 +215,35 @@
 
 ## Verification
 After any change under `src/api/`, run:
-`pnpm test src/api/`</code></pre>
+`pnpm test src/api/`</code></pre></div>
 
     <h3>Generate a first draft</h3>
-    <pre><code>cd your-repo
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>cd your-repo
 claude
 # then inside Claude Code:
-/init</code></pre>
+/init</code></pre></div>
     <p><code>/init</code> scans your repo and proposes a starter <code>CLAUDE.md</code>. Refine from there — add only what Claude got wrong twice.</p>
 
     <p>Use <code>@path/to/file</code> imports to pull in shared docs without duplicating:</p>
-    <pre><code>@AGENTS.md
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>@AGENTS.md
 
 ## Claude-specific
 - Use plan mode for changes under `src/billing/`
-- Run `pnpm test src/billing/` after billing edits</code></pre>
+- Run `pnpm test src/billing/` after billing edits</code></pre></div>
 
     <h2 id="agents-md">What AGENTS.md should contain</h2>
     <p><code>AGENTS.md</code> is an <strong>open standard</strong> used by Cursor, Codex, Devin, and other agents. <strong>Claude Code does not read <code>AGENTS.md</code> automatically</strong> — it reads <code>CLAUDE.md</code>.</p>
     <p>If your team already maintains <code>AGENTS.md</code>, don't duplicate. Bridge them:</p>
 
     <h3>Option A — import (recommended)</h3>
-    <pre><code>@AGENTS.md
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>@AGENTS.md
 
 ## Claude Code
 - Prefer plan mode for database migrations
-- Use `claude -p` in CI for automated fix loops</code></pre>
+- Use `claude -p` in CI for automated fix loops</code></pre></div>
 
     <h3>Option B — symlink (macOS/Linux)</h3>
-    <pre><code>ln -s AGENTS.md CLAUDE.md</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>ln -s AGENTS.md CLAUDE.md</code></pre></div>
 
     <h3>Option C — one-time import</h3>
     <p>Run <code>/import</code> inside Claude Code (v2.1.213+) to copy supported agent configs including <code>AGENTS.md</code>, <code>.cursor/rules/</code>, MCP servers, and skills.</p>
@@ -264,13 +265,13 @@ claude
     <p>Keep Claude-only or Cursor-only quirks in <code>CLAUDE.md</code> or <code>.cursor/rules/</code> — not in <code>AGENTS.md</code>.</p>
 
     <h3>Mirror with Cursor</h3>
-    <pre><code>AGENTS.md              ← shared team rules (committed)
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>AGENTS.md              ← shared team rules (committed)
 CLAUDE.md              ← @AGENTS.md + Claude-specific notes
-.cursor/rules/*.mdc    ← Cursor-specific (Tab, Composer hints)</code></pre>
+.cursor/rules/*.mdc    ← Cursor-specific (Tab, Composer hints)</code></pre></div>
 
     <h2 id="rules">Path-scoped rules in <code>.claude/rules/</code></h2>
     <p>When <code>CLAUDE.md</code> grows past ~150 lines, split topic-specific instructions into <code>.claude/rules/</code>. One file per topic:</p>
-    <pre><code>.claude/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>.claude/
 ├── CLAUDE.md
 └── rules/
     ├── testing.md
@@ -278,12 +279,12 @@ CLAUDE.md              ← @AGENTS.md + Claude-specific notes
     ├── frontend/
     │   └── react.md
     └── backend/
-        └── database.md</code></pre>
+        └── database.md</code></pre></div>
 
     <p>Rules <strong>without</strong> frontmatter load every session. Rules <strong>with</strong> <code>paths</code> load only when Claude reads matching files — saving context.</p>
 
     <h3>Path-scoped example</h3>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 paths:
   - "src/api/**/*.ts"
   - "src/api/**/*.tsx"
@@ -293,7 +294,7 @@ paths:
 
 - All endpoints return `{ data, error }` envelope
 - Validate input with Zod schemas in `src/api/schemas/`
-- Add OpenAPI comments on every exported handler</code></pre>
+- Add OpenAPI comments on every exported handler</code></pre></div>
 
     <h3>When to use rules vs skills</h3>
     <table>
@@ -308,19 +309,19 @@ paths:
     <h2 id="personal">Personal and user-level config</h2>
     <h3><code>CLAUDE.local.md</code> (project, gitignored)</h3>
     <p>Personal sandbox URLs, test accounts, local DB names. Add to <code>.gitignore</code>:</p>
-    <pre><code>CLAUDE.local.md</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>CLAUDE.local.md</code></pre></div>
 
     <h3><code>~/.claude/CLAUDE.md</code> (user, all projects)</h3>
-    <pre><code># Personal preferences
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Personal preferences
 - Prefer concise commit messages
-- Always show git diff summary before committing</code></pre>
+- Always show git diff summary before committing</code></pre></div>
 
     <h3><code>~/.claude/rules/</code> (user, all projects)</h3>
     <p>Same format as project rules. Loaded before project rules — project wins on conflict.</p>
 
     <h2 id="settings">Essential <code>settings.json</code></h2>
     <p>Project settings live in <code>.claude/settings.json</code>. Local overrides in <code>.claude/settings.local.json</code> (usually gitignored).</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "permissions": {
     "allow": [
       "Bash(pnpm test *)",
@@ -334,7 +335,7 @@ paths:
   "env": {
     "NODE_ENV": "development"
   }
-}</code></pre>
+}</code></pre></div>
     <table>
       <thead><tr><th>Key</th><th>Purpose</th></tr></thead>
       <tbody>
@@ -351,23 +352,23 @@ paths:
     <p>Press <code>Shift+Tab</code> for plan mode (or <code>claude --permission-mode plan</code>). Claude reads and plans without editing. Approve the plan, then implement. Skip planning for one-line fixes.</p>
 
     <h3>2. Give Claude a verification loop</h3>
-    <pre><code>Add rate limiting to POST /api/login.
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Add rate limiting to POST /api/login.
 Write a test that sends 11 requests and expects 429 on the 11th.
-Run pnpm test src/api/login.test.ts and fix until green.</code></pre>
+Run pnpm test src/api/login.test.ts and fix until green.</code></pre></div>
     <p>Without a check, you become the verification loop.</p>
 
     <h3>3. Scope prompts with <code>@</code> files</h3>
-    <pre><code>@src/auth/session.ts fix the token refresh bug described in #842.
-Match error handling in @src/auth/login.ts.</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>@src/auth/session.ts fix the token refresh bug described in #842.
+Match error handling in @src/auth/login.ts.</code></pre></div>
 
     <h3>4. Use <code>/doctor</code> on bloated CLAUDE.md</h3>
     <p>Claude proposes cuts for content it can derive from the codebase. Treat <code>CLAUDE.md</code> like code — review when behavior drifts.</p>
 
     <h3>5. Headless CI with <code>claude -p</code></h3>
-    <pre><code>claude -p "Fix the failing test in src/api/health.test.ts. Run pnpm test after."</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>claude -p "Fix the failing test in src/api/health.test.ts. Run pnpm test after."</code></pre></div>
 
     <h2 id="layout">Example repo layout</h2>
-    <pre><code>my-app/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>my-app/
 ├── AGENTS.md                 # Shared agent instructions (team)
 ├── CLAUDE.md                 # @AGENTS.md + Claude-specific
 ├── CLAUDE.local.md           # Personal (gitignored)
@@ -382,7 +383,7 @@ Match error handling in @src/auth/login.ts.</code></pre>
 │   │   └── release/SKILL.md
 │   └── commands/review.md
 ├── src/billing/CLAUDE.md     # Loads when editing billing/
-└── .cursor/rules/            # Cursor-only (optional)</code></pre>
+└── .cursor/rules/            # Cursor-only (optional)</code></pre></div>
 
     <h2 id="mistakes">Common mistakes</h2>
     <ol>
@@ -443,6 +444,7 @@ Match error handling in @src/auth/login.ts.</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

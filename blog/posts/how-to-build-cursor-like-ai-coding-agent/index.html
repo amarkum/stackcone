@@ -118,6 +118,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -230,7 +231,7 @@ index cache"]:::disk
       <p class="diagram-caption">Browser UI talks to Flask over SSE (turn lifecycle) and Socket.IO (structured progress) in parallel</p>
     </div>
 
-    <pre><code>livecode-ai/                    ~/livecode/  (runtime)
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>livecode-ai/                    ~/livecode/  (runtime)
 ├── src/livecode/
 │   ├── server.py               ├── settings.json
 │   ├── harness/turn.py         └── projects/{slug}/
@@ -239,7 +240,7 @@ index cache"]:::disk
 │   ├── session.py                  ├── symbols/symbols.json
 │   └── memory/                     └── memory/index.sqlite
 ├── templates/index.html
-└── static/js/bundle.js</code></pre>
+└── static/js/bundle.js</code></pre></div>
 
     <div class="diagram-wrap" data-diagram-title="Single turn sequence">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
@@ -281,7 +282,7 @@ index cache"]:::disk
     <h2 id="phase-1">Phase 1 — HTTP endpoint and SSE streaming</h2>
     <p>The turn endpoint accepts a POST with the user message, project path, session ID, and mode. It returns <code>text/event-stream</code> — a single long-lived HTTP connection that multiplexes progress events, command output, and the final <code>done</code> payload.</p>
 
-    <pre><code>@app.post("/livecode-agent")
+    <div class="learn-code-wrap" data-lang="python"><pre><code>@app.post("/livecode-agent")
 def agent_turn():
     body = request.get_json()
     question = body["question"]
@@ -314,7 +315,7 @@ def agent_turn():
         stream_with_context(generate()),
         mimetype="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )</code></pre>
+    )</code></pre></div>
 
     <p><strong>Why not EventSource?</strong> The browser's built-in <code>EventSource</code> only supports GET. The frontend uses <code>fetch()</code> + <code>ReadableStream</code>, decodes SSE <code>data:</code> lines manually, and handles progress, command output, and the final <code>done</code> payload in one loop.</p>
 
@@ -332,7 +333,7 @@ def agent_turn():
     <h2 id="phase-2">Phase 2 — The agent harness loop</h2>
     <p>The harness is a <strong>Python generator</strong> — <code>run_livecode_turn()</code> in <code>harness/turn.py</code> (~2,400 lines) — that yields SSE chunks and emits Socket.IO events. Up to <strong>100 iterations</strong> per user message.</p>
 
-    <pre><code>def run_livecode_turn(project_path, question, *, mode="agent", session_id, ...):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def run_livecode_turn(project_path, question, *, mode="agent", session_id, ...):
     classification = classify_turn(question)
     messages = build_base_messages(project_path, question, session_id)
     tools = filter_tools_for_mode(get_livecode_tools(), mode)
@@ -376,7 +377,7 @@ def agent_turn():
                     return
                 messages.append(nudge("user asked for code change but no edit succeeded"))
 
-    yield sse_done(answer=summarize_exhaustion(messages))</code></pre>
+    yield sse_done(answer=summarize_exhaustion(messages))</code></pre></div>
 
     <h3>Anti-loop guardrails</h3>
     <p>These are the difference between a demo and something you can leave running on a real repo:</p>
@@ -393,11 +394,11 @@ def agent_turn():
       </tbody>
     </table>
 
-    <pre><code>LIVECODE_MAX_ITERATIONS = 100
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>LIVECODE_MAX_ITERATIONS = 100
 LIVECODE_CONTEXT_WINDOW = 128_000
 STATIONARITY_NUDGE_AFTER = 8
 STATIONARITY_HARD_STOP = 16
-CLOSURE_ITERATIONS = 2</code></pre>
+CLOSURE_ITERATIONS = 2</code></pre></div>
 
     <div class="diagram-wrap" data-diagram-title="Harness iteration loop">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
@@ -449,7 +450,7 @@ CLOSURE_ITERATIONS = 2</code></pre>
       </tbody>
     </table>
 
-    <pre><code>def dispatch_tool(project_path, name, args, *, mode, session_id, ...):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def dispatch_tool(project_path, name, args, *, mode, session_id, ...):
     if mode_blocks_tool(mode, name):
         return {"error": mode_rejection_message(mode, name)}
 
@@ -466,7 +467,7 @@ CLOSURE_ITERATIONS = 2</code></pre>
         return apply_search_replace(
             project_path, args["file_path"],
             old=args["old_string"], new=args["new_string"],
-        )</code></pre>
+        )</code></pre></div>
 
     <h3>Batch execution rules</h3>
     <ol>
@@ -489,10 +490,10 @@ CLOSURE_ITERATIONS = 2</code></pre>
       </tbody>
     </table>
 
-    <pre><code>LIVECODE_AUTO_COMPACT_RATIO = 0.85
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>LIVECODE_AUTO_COMPACT_RATIO = 0.85
 LIVECODE_IN_TURN_COMPACT_RATIO = 0.70
 LIVECODE_INTER_COMPACT_RATIO = 0.65
-LIVECODE_KEEP_RECENT_TOOL_MSGS = 6</code></pre>
+LIVECODE_KEEP_RECENT_TOOL_MSGS = 6</code></pre></div>
 
     <p>Before full-replace compaction, a <strong>memory flush</strong> runs: important facts are written to <code>MEMORY.md</code> and indexed in SQLite (FTS + local embeddings) so they survive summarization.</p>
 
@@ -505,7 +506,7 @@ LIVECODE_KEEP_RECENT_TOOL_MSGS = 6</code></pre>
       </tbody>
     </table>
 
-    <pre><code>const resp = await fetch("/livecode-agent", {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>const resp = await fetch("/livecode-agent", {
   method: "POST",
   headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
   body: JSON.stringify({ project_path, question, session_id, mode }),
@@ -527,12 +528,12 @@ while (true) {
     if (payload.command_stream) appendTerminalOutput(payload.command_stream);
     if (payload.done) finalizeTurn(payload);
   }
-}</code></pre>
+}</code></pre></div>
 
     <h2 id="phase-6">Phase 6 — Permissions and safety</h2>
     <p>Destructive shell patterns (<code>git reset --hard</code>, <code>rm -rf</code>, force push) trigger a <strong>blocking permission gate</strong>:</p>
 
-    <pre><code>def create_permission_request(session_id, tool_name, tool_args, timeout_s=120):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def create_permission_request(session_id, tool_name, tool_args, timeout_s=120):
     request_id = f"perm_{uuid.uuid4().hex[:16]}"
     event = threading.Event()
     _PERMISSIONS[request_id] = {
@@ -548,12 +549,12 @@ def wait_for_permission(request_id) -&gt; bool | None:
     entry = _PERMISSIONS[request_id]
     if not entry["event"].wait(timeout=entry["timeout_s"]):
         return None
-    return bool(entry["approved"])</code></pre>
+    return bool(entry["approved"])</code></pre></div>
 
     <p>The frontend shows a modal; the user POSTs to <code>/livecode/permission</code> with <code>{request_id, approved}</code>; <code>resolve_permission()</code> calls <code>event.set()</code> and unblocks the harness thread. All file operations go through <code>resolve_safe_path()</code> — no traversal outside the project root.</p>
 
     <h2 id="phase-7">Phase 7 — Agent, Plan, and Ask modes</h2>
-    <pre><code>LIVECODE_MODES = ("agent", "plan", "ask")
+    <div class="learn-code-wrap" data-lang="python"><pre><code>LIVECODE_MODES = ("agent", "plan", "ask")
 
 def filter_tools_for_mode(tools, mode):
     if mode == "agent":
@@ -562,7 +563,7 @@ def filter_tools_for_mode(tools, mode):
     filtered = [t for t in tools if t["function"]["name"] in allowed]
     if mode == "plan":
         filtered.append(CREATE_PLAN_TOOL)
-    return filtered</code></pre>
+    return filtered</code></pre></div>
 
     <table>
       <thead><tr><th>Mode</th><th>Can edit files</th><th>Can run shell</th><th>Special tool</th></tr></thead>
@@ -576,7 +577,7 @@ def filter_tools_for_mode(tools, mode):
     <h2 id="phase-8">Phase 8 — Subagents and delegation</h2>
     <p><code>spawn_subagent</code> launches a nested mini-loop with its own ephemeral session — useful for "explore the codebase and report back" without polluting the main context.</p>
 
-    <pre><code>def run_subagent_turn(project_path, goal, parent_session_id, read_only=True, max_iterations=5):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def run_subagent_turn(project_path, goal, parent_session_id, read_only=True, max_iterations=5):
     child_session = f"{parent_session_id}_sub_{uuid.uuid4().hex[:8]}"
     question = (
         f"[Subagent — read_only={read_only}]\n{goal}\n"
@@ -591,33 +592,33 @@ def filter_tools_for_mode(tools, mode):
     ):
         collect_answer_from_sse_chunk(chunk)
 
-    return {"success": True, "result": answer, "child_session_id": child_session}</code></pre>
+    return {"success": True, "result": answer, "child_session_id": child_session}</code></pre></div>
 
     <h2 id="phase-9">Phase 9 — Sessions, memory, and rules</h2>
     <h3>JSONL session persistence</h3>
     <p>Each turn appends to <code>chat_history.jsonl</code> under <code>~/livecode/projects/{slug}/sessions/{id}/</code>:</p>
-    <pre><code>{"role":"user","content":"Add health check endpoint","ts":1725000000}
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{"role":"user","content":"Add health check endpoint","ts":1725000000}
 {"role":"assistant","content":null,"tool_calls":[{"id":"call_1","function":{"name":"grep_repo","arguments":"{\"pattern\":\"router\"}"}}]}
-{"role":"tool","tool_call_id":"call_1","content":"{\"matches\":[{\"file\":\"app.py\",\"line\":12}]}"}</code></pre>
+{"role":"tool","tool_call_id":"call_1","content":"{\"matches\":[{\"file\":\"app.py\",\"line\":12}]}"}</code></pre></div>
 
     <h3>Intelligent classifier</h3>
     <p>Before the loop, a fast model classifies the turn to drive model routing:</p>
-    <pre><code>class IntelligentClassification(TypedDict):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>class IntelligentClassification(TypedDict):
     goal_kind: str          # code_change, analysis, research, meta
     edit_scope: str         # none, single_line, single_file, multi_file, bulk
     needs_flagship_model: bool
     complexity: str         # simple, medium, complex
-    expects_multi_step: bool</code></pre>
+    expects_multi_step: bool</code></pre></div>
 
     <h3>Project rules discovery</h3>
-    <pre><code>RULES_FILES = ["AGENTS.md", "CLAUDE.md", ".cursor/rules", ".livecode/rules"]
+    <div class="learn-code-wrap" data-lang="python"><pre><code>RULES_FILES = ["AGENTS.md", "CLAUDE.md", ".cursor/rules", ".livecode/rules"]
 
 def discover_project_rules(project_path):
     for directory in path_chain(git_root, project_path):
         for rules_file in RULES_FILES:
             if exists(join(directory, rules_file)):
                 found.append(read(candidate))
-    return wrap_in_system_reminder(found)</code></pre>
+    return wrap_in_system_reminder(found)</code></pre></div>
     <p>Injected as a follow-up system message — same convention Cursor and Claude Code use for <code>AGENTS.md</code> and <code>.cursor/rules</code>.</p>
 
     <h2 id="phase-10">Phase 10 — Frontend IDE shell</h2>
@@ -741,6 +742,7 @@ def discover_project_rules(project_path):
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";

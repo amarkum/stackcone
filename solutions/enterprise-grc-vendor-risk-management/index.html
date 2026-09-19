@@ -71,6 +71,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page solutions-page">
   <header class="header">
@@ -303,7 +304,7 @@
     <p><strong>Why Compose on-prem instead of a separate Kubernetes fork?</strong> A documented Compose profile matches air-gapped / single-VM buyer reality and reuses the same images the team already runs.</p>
 
     <p>Illustrative tenant-scoped vendor query pattern (pagination + index-friendly filters):</p>
-    <pre><code># Pseudocode — extend existing repository; never cross tenant_id
+    <div class="learn-code-wrap" data-lang="python"><pre><code># Pseudocode — extend existing repository; never cross tenant_id
 async def list_vendors(
     session: AsyncSession,
     tenant_id: UUID,
@@ -322,7 +323,7 @@ async def list_vendors(
         stmt = stmt.where(Vendor.risk_tier == tier)
     if cursor:
         stmt = stmt.where(Vendor.id &lt; cursor)
-    return (await session.execute(stmt)).scalars().all()</code></pre>
+    return (await session.execute(stmt)).scalars().all()</code></pre></div>
 
     <h2 id="agent-design">Component design</h2>
 
@@ -535,6 +536,7 @@ async def list_vendors(
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../diagrams.js?v=14"></script>
   <script src="../../site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="../../script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

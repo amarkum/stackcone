@@ -99,6 +99,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -238,11 +239,11 @@
       <li><strong>One portfolio project</strong> &mdash; a RAG chatbot or a small tool-using agent over <em>your</em> documents, with citations, a short eval set, and a write-up.</li>
     </ol>
     <p>A sketch of the project shape (not a framework dump):</p>
-    <pre><code><span class="kw">def</span> <span class="fn">chunk_text</span>(text: <span class="fn">str</span>, size: <span class="fn">int</span> = <span class="num">800</span>) -&gt; <span class="fn">list</span>[<span class="fn">str</span>]:
-    <span class="kw">return</span> [text[i:i + size] <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="fn">len</span>(text), size)]
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def chunk_text(text: str, size: int = 800) -&gt; list[str]:
+    return [text[i:i + size] for i in range(0, len(text), size)]
 
-<span class="cm"># 1. chunk docs  2. embed  3. retrieve  4. answer only from context</span>
-<span class="cm"># 5. keep a 30-question eval set and score retrieval</span></code></pre>
+# 1. chunk docs  2. embed  3. retrieve  4. answer only from context
+# 5. keep a 30-question eval set and score retrieval</code></pre></div>
     <p>That last line is the one generic diplomas skip. Retrieval that you cannot score is a demo. Retrieval you can score is a skill. See <a href="/blog/posts/how-to-build-a-production-rag-chatbot/">how to build a production RAG chatbot</a> when you are ready to leave notebook-land.</p>
     <p>Self-serve cost is mostly <strong>time plus API spend</strong>. API spend for learning can stay in the low tens of USD per month if you are disciplined. The hiring signal is the public repo and the twenty-minute explanation. In US startups and Indian product companies, this signal often beats a certificate. In campus mass-hiring, it is a complement to the degree, not a replacement.</p>
 
@@ -380,6 +381,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=13"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";

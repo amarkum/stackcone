@@ -26,7 +26,7 @@ When the user asks for a **blog post**, **guide**, or **how-to**, produce a publ
 2. `blog/posts/{slug}/index.html` — published page
 3. Update `blog/posts.json` — add entry with `"author": "Amar Kumar"`
 4. Update `sitemap.xml` — add `<url>` for the HTML page only
-5. Run `python3 _dev/apply_highlights.py` on new/edited HTML (syntax highlighting)
+5. Code blocks use Monaco via `.learn-code-wrap` + `data-lang` (same as Learn). Include `/assets/monaco-code.css` and `/assets/monaco-code.js`.
 
 **Slug:** lowercase, hyphenated (e.g. `how-sse-streaming-works-chatbots-llm-tokens`).
 
@@ -111,82 +111,31 @@ Use **Mermaid** in published HTML — not ASCII box art in `<pre><code>`. See `.
 
 ## Syntax highlighting (required for code blocks)
 
-Blog code uses **static span classes** in published HTML — same style as `blog/posts/how-to-build-a-production-rag-chatbot.html`. **Do not** use highlight.js, Prism, hljs CDN, or client-side highlighters.
+Blog code uses **Monaco** — the same `.learn-code-wrap` + `data-lang` markup as Learn. Monaco tokenizes the language natively. **Do not** use highlight.js, Prism, static `kw`/`fn`/`str` spans, or `apply_highlights.py`.
 
-### Token classes (`blog/blog.css`)
-
-| Class | Use |
-|-------|-----|
-| `kw` | Keywords (`import`, `def`, `if`, `return`, `async`, …) |
-| `fn` | Function names, builtins, types (`Path`, `len`, `str`, `embed`, …) |
-| `str` | String literals (`"..."`, `'...'`, `f"..."`) |
-| `num` | Numeric literals |
-| `cm` | Comments (`# …`, `// …`) |
-
-Pre blocks use dark background `#1e1e2e` (Catppuccin-style) — defined in `blog/blog.css`. No extra CSS or JS per post.
-
-### Authoring workflow
-
-1. **`blog/md/{slug}.md`** — write fenced code blocks normally (` ```python `, ` ```bash `, ` ```json `). Markdown source stays plain; no spans in `.md`.
-2. **`blog/posts/{slug}.html`** — paste code inside `<pre><code>…</code></pre>` as **plain text** (escape `<` as `&lt;`, `&` as `&amp;` only where needed).
-3. **Run the highlighter** before commit:
-
-```bash
-python3 _dev/apply_highlights.py
-```
-
-This scans `blog/posts/*.html`, wraps tokens in spans, and strips any stray `language-*` / highlight.js artifacts. Blocks that **already** contain `<span class="` are left unchanged.
-
-4. Optional — highlight one file or re-run after edits:
-
-```bash
-python3 _dev/apply_highlights.py blog/posts/{slug}.html
-```
-
-### HTML shape (after `apply_highlights.py`)
+### HTML shape
 
 ```html
-<pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
+<div class="learn-code-wrap" data-lang="python"><pre><code>from pathlib import Path
 
-<span class="kw">def</span> <span class="fn">chunk_text</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    <span class="kw">return</span> []</code></pre>
+def chunk_text(text: str) -> list[dict]:
+    return []</code></pre></div>
 ```
 
-### Language detection (automatic)
+`data-lang` must be a Monaco language id: `python`, `javascript`, `typescript`, `java`, `dart`, `kotlin`, `ruby`, `go`, `sql`, `json`, `yaml`, `xml`, `html`, `shell`, `plaintext`. Escape `<` as `&lt;` and `&` as `&amp;` inside `<code>`.
 
-`_dev/highlight_code.py` infers language from content when no hint exists:
+### Page assets
 
-| Detected | Heuristic |
-|----------|-----------|
-| Python | `import` / `def` / shebang |
-| Bash | `python3`, `curl`, `grep`, `ls`, `mkdocs`, `#` comments |
-| JSON | starts with `{` or `[` |
-| JavaScript | `function`, `const`, `async` |
-| Dart | `import 'package:`, `class`, `Future<`, `final` |
-| Kotlin / Gradle | `plugins {`, `android {` |
-| Ruby / Podfile | `target 'Runner'`, `use_frameworks!` |
-| XML / plist | `<key>`, `<string>`, `<array>` |
-| Firestore rules | `rules_version`, `service cloud.firestore` |
-| SQL | `SELECT`, `FROM`, `JOIN`, `WHERE`, `GROUP BY` |
-| YAML | `name:`, `on:`, `jobs:` at line start |
-| Markdown | `---` frontmatter, `#` / `##` headings, `` `inline` `` code |
-| Text | directory trees, `.env` samples — comments only |
+```html
+<link rel="stylesheet" href="/assets/monaco-code.css?v=16">
+<script src="/assets/monaco-code.js?v=20" defer></script>
+```
 
-Optional hint (stripped after run): `<pre><code class="language-python">` — prefer plain `<pre><code>` + `apply_highlights.py`.
+`script.js` also lazy-loads Monaco when it finds `pre > code`, but new posts should include the assets explicitly.
 
 ### Do not
 
-- Hand-wrap every token manually in long scripts (use `apply_highlights.py`)
-- Add highlight.js / Prism CDN or `code-highlight.js` to post HTML
-- Use `class="hljs"` or `language-*` as the final published form (runner removes hints)
-- Put syntax-highlighted code only in `.md` and expect it on the live page without updating `.html`
-
-### Shared tooling (do not duplicate per post)
-
-| Path | Role |
-|------|------|
-| `_dev/highlight_code.py` | Span highlighter (python, dart, bash, json, js, sql, yaml, md, kotlin, ruby, xml, rules, text) |
-| `_dev/apply_highlights.py` | Batch-apply to `blog/posts/*.html` |
-| `blog/blog.css` | `.blog-article .kw` / `.fn` / `.str` / `.num` / `.cm` colors |
-
-When adding or editing code in a blog post, **always run `apply_highlights.py`** on affected HTML before finishing.
+- Hand-wrap tokens in `<span class="kw">` / `.fn` / `.str`
+- Add highlight.js / Prism CDN
+- Put a fenced block only in `.md` and expect it on the live page without updating `.html`
+- Wrap Mermaid diagrams in `.learn-code-wrap`

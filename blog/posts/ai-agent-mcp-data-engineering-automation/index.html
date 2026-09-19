@@ -107,6 +107,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -215,7 +216,7 @@
     </table>
     <p>Each tool returns <strong>structured JSON</strong> (status, error message, log excerpt) so the model can branch without parsing HTML consoles.</p>
     <p>Minimal MCP tool registration pattern (Python):</p>
-    <pre><code>@mcp.tool()
+    <div class="learn-code-wrap" data-lang="python"><pre><code>@mcp.tool()
 def airflow_trigger_dag(dag_id: str, conf: dict | None = None) -&gt; dict:
     """Trigger an Airflow DAG run and return run_id."""
     run_id = mwaa_client.trigger(dag_id, conf=conf or {})
@@ -225,11 +226,11 @@ def airflow_trigger_dag(dag_id: str, conf: dict | None = None) -&gt; dict:
 def sonar_list_issues(project_key: str, severities: list[str] | None = None) -&gt; dict:
     """List open SonarQube issues for a project."""
     issues = sonar_client.issues_search(project_key, severities=severities or ["BLOCKER", "CRITICAL"])
-    return {"count": len(issues), "issues": issues[:50]}</code></pre>
+    return {"count": len(issues), "issues": issues[:50]}</code></pre></div>
 
     <h2 id="github-ci">GitHub CI gates</h2>
     <p>CI is the objective signal for “code is acceptable.” My pipeline runs on every push and PR:</p>
-    <pre><code>name: data-pipeline-ci
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>name: data-pipeline-ci
 on: [push, pull_request]
 
 jobs:
@@ -253,12 +254,12 @@ jobs:
       - uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}</code></pre>
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}</code></pre></div>
     <p>The agent calls <code>github_get_check_runs</code> (or polls the Checks API via MCP) after push. <strong>Do not mark the task done</strong> until <code>conclusion == "success"</code> for lint and Sonar jobs.</p>
 
     <h2 id="agent-rules">Agent rules for Jira and Confluence</h2>
     <p>Project rules tell the agent to load ticket context before coding. In Cursor that is a <code>.mdc</code> file under <code>.cursor/rules/</code>; in Claude Code or other agents, use <code>AGENTS.md</code> or equivalent instructions — the pattern is the same:</p>
-    <pre><code>---
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>---
 description: Load Jira and Confluence context for data engineering tasks
 globs: cdm_dags/**,ads_dags/**,**/*.py
 alwaysApply: false
@@ -273,12 +274,12 @@ When the user gives a Jira key (e.g. DATA-1234):
 3. Summarize: acceptance criteria, affected DAGs, tables, and validation steps.
 4. Do not start edits until context is loaded.
 
-Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
+Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre></div>
     <p>Trigger with: <em>“Implement DATA-1234”</em> — the agent fetches spec first instead of guessing from filenames.</p>
 
     <h2 id="ai-engineer">The ai-engineer.md playbook</h2>
     <p><code>ai-engineer.md</code> lives at the repo root (or alongside your agent rules). It is the <strong>retry contract</strong> — what “done” means and which MCP tools to use in order.</p>
-    <pre><code># AI Engineer — data pipeline fix loop
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># AI Engineer — data pipeline fix loop
 
 ## Done criteria (ALL required)
 
@@ -304,19 +305,19 @@ Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
 - NEVER stop after a single failed DAG run — read logs and fix root cause.
 - NEVER stop while CI is red — iterate until green unless blocked on secrets/access.
 - Max 5 full loops per session; then summarize blockers for the human.
-- Prefer small commits per fix attempt so CI history is readable.</code></pre>
+- Prefer small commits per fix attempt so CI history is readable.</code></pre></div>
     <p>Reference this file from your agent rules so every session shares the same definition of finished.</p>
 
     <h2 id="connect-mcp">Connect your agent via MCP</h2>
     <p>MCP is client-agnostic — the same CodeBench server works with Cursor, Claude Desktop, Claude Code, and other MCP-capable agents. Point your client at the server:</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "mcpServers": {
     "codebench": {
       "url": "http://127.0.0.1:9193/mcp",
       "transport": "streamable-http"
     }
   }
-}</code></pre>
+}</code></pre></div>
     <p>In Cursor, add this to <code>.cursor/mcp.json</code>. In Claude Desktop, use <code>claude_desktop_config.json</code>. Start the CodeBench app (and MCP listener) before opening your agent client, then confirm tools appear in the MCP settings — you should see domains like Airflow, Sonar, MongoDB, and GitHub.</p>
 
     <h2 id="agent-loop">End-to-end agent loop</h2>
@@ -407,6 +408,7 @@ Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
      crossorigin="anonymous"></script>

@@ -106,6 +106,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -184,7 +185,7 @@
       <li><strong>Format:</strong> lines starting with <code>data:</code> (optional <code>event:</code> and <code>id:</code>)</li>
     </ul>
 
-    <pre><code>// Raw SSE over the wire
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>// Raw SSE over the wire
 data: {"type":"token","content":"The"}
 
 data: {"type":"token","content":" answer"}
@@ -192,7 +193,7 @@ data: {"type":"token","content":" answer"}
 data: {"type":"token","content":" is"}
 
 event: done
-data: {"finish_reason":"stop"}</code></pre>
+data: {"finish_reason":"stop"}</code></pre></div>
 
     <p>Each blank line separates events. The browser's stream parser fires as soon as a complete event arrives — no waiting for the full response body.</p>
 
@@ -247,7 +248,7 @@ data: {"finish_reason":"stop"}</code></pre>
     <p>Providers send <strong>token deltas</strong> (subword pieces), not whole words. Your server normalizes them into one text stream for the UI.</p>
 
     <h3>OpenAI / compatible APIs</h3>
-    <pre><code>stream = client.chat.completions.create(
+    <div class="learn-code-wrap" data-lang="python"><pre><code>stream = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=messages,
     stream=True,
@@ -255,33 +256,33 @@ data: {"finish_reason":"stop"}</code></pre>
 for chunk in stream:
     delta = chunk.choices[0].delta.content
     if delta:
-        yield delta  # → wrap in SSE data: line</code></pre>
+        yield delta  # → wrap in SSE data: line</code></pre></div>
     <p>Wire format: newline-delimited JSON lines, ends with <code>data: [DONE]</code>.</p>
 
     <h3>Anthropic Claude</h3>
-    <pre><code>with client.messages.stream(
+    <div class="learn-code-wrap" data-lang="python"><pre><code>with client.messages.stream(
     model="claude-haiku-4-5",
     messages=messages,
     max_tokens=1024,
 ) as s:
     for text in s.text_stream:
-        yield text</code></pre>
+        yield text</code></pre></div>
     <p>Events include <code>content_block_delta</code> with text fragments.</p>
 
     <h3>Google Gemini</h3>
-    <pre><code>for chunk in client.models.generate_content_stream(
+    <div class="learn-code-wrap" data-lang="python"><pre><code>for chunk in client.models.generate_content_stream(
     model="gemini-2.5-flash-lite",
     contents=prompt,
 ):
     if chunk.text:
-        yield chunk.text</code></pre>
+        yield chunk.text</code></pre></div>
 
     <p><strong>Your abstraction layer</strong> should emit uniform SSE JSON (<code>{"type":"token","content":"..."}</code>) so the frontend works with any provider.</p>
 
     <h2 id="build-api">Build an SSE streaming API</h2>
 
     <h3>FastAPI (Python)</h3>
-    <pre><code>from fastapi import FastAPI
+    <div class="learn-code-wrap" data-lang="python"><pre><code>from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import json
 
@@ -306,10 +307,10 @@ async def chat_stream(body: ChatRequest):
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },
-    )</code></pre>
+    )</code></pre></div>
 
     <h3>Node / Express</h3>
-    <pre><code>app.post("/api/chat/stream", async (req, res) =&gt; {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>app.post("/api/chat/stream", async (req, res) =&gt; {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
@@ -327,7 +328,7 @@ async def chat_stream(body: ChatRequest):
   }
   res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
   res.end();
-});</code></pre>
+});</code></pre></div>
 
     <p><strong>Headers that matter:</strong> <code>text/event-stream</code>, <code>Cache-Control: no-cache</code>, and <code>X-Accel-Buffering: no</code> on nginx. Without these, users see one big blob at the end — which feels like fake typing waiting to start.</p>
 
@@ -336,7 +337,7 @@ async def chat_stream(body: ChatRequest):
     <h3>fetch + ReadableStream (POST chat — recommended)</h3>
     <p><code>EventSource</code> only supports GET. Chat almost always POSTs the message body, so use <code>fetch</code>:</p>
 
-    <pre><code>async function streamChat(message, onToken) {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>async function streamChat(message, onToken) {
   const res = await fetch("/api/chat/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -361,23 +362,23 @@ async def chat_stream(body: ChatRequest):
       if (data.type === "token") onToken(data.content);
     }
   }
-}</code></pre>
+}</code></pre></div>
 
     <p>Append tokens immediately — <strong>no <code>setTimeout</code> between characters</strong>:</p>
 
-    <pre><code>let text = "";
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>let text = "";
 streamChat(userMsg, (token) =&gt; {
   text += token;
   bubble.textContent = text;
-});</code></pre>
+});</code></pre></div>
 
     <h3>EventSource (GET progress / live site updates)</h3>
-    <pre><code>const es = new EventSource("/api/sync/progress");
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>const es = new EventSource("/api/sync/progress");
 es.addEventListener("progress", (e) =&gt; {
   const { pct, stage } = JSON.parse(e.data);
   updateBar(pct, stage);
 });
-es.addEventListener("complete", () =&gt; es.close());</code></pre>
+es.addEventListener("complete", () =&gt; es.close());</code></pre></div>
 
     <h2 id="rag-streaming">RAG + streaming</h2>
     <p>RAG adds a <strong>retrieval phase</strong> before generation. Only the LLM phase streams.</p>
@@ -396,25 +397,25 @@ es.addEventListener("complete", () =&gt; es.close());</code></pre>
 
     <p><strong>UX pattern:</strong> show "Searching docs…" during retrieval, then switch to token stream. Optional multi-event SSE:</p>
 
-    <pre><code>event: status
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>event: status
 data: {"phase":"retrieval"}
 
 event: token
 data: {"content":"Based on"}
 
 event: citation
-data: {"source":"docs/api.md","chunk_id":"api_3"}</code></pre>
+data: {"source":"docs/api.md","chunk_id":"api_3"}</code></pre></div>
 
     <p>See <a href="/blog/posts/how-to-build-a-production-rag-chatbot/">How to Build a RAG Chatbot</a> and <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">economical model picks for RAG</a>.</p>
 
     <h2 id="live-updates">SSE for live site updates (not just chat)</h2>
     <p>The same transport powers <strong>sync progress</strong>, deploy logs, and indexing status on a dashboard — not only chat tokens.</p>
 
-    <pre><code>event: progress
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>event: progress
 data: {"stage":"embed","pct":60,"file":"page-b.md"}
 
 event: complete
-data: {"duration_s":94,"files_indexed":12}</code></pre>
+data: {"duration_s":94,"files_indexed":12}</code></pre></div>
 
     <p>We document this pattern in <a href="/blog/posts/publish-knowledge-base-github-pages-dropbox-sync/">Publish a Knowledge Base to GitHub Pages</a> — <code>EventSource('/sync/stream')</code> driving a progress bar while embeddings run in the background.</p>
 
@@ -519,6 +520,7 @@ data: {"duration_s":94,"files_indexed":12}</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

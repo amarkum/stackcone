@@ -92,6 +92,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -162,7 +163,7 @@
 
     <h3>REST for long tasks — polling anti-pattern</h3>
     <p>A background job runs for two minutes. The browser polls every second:</p>
-    <pre><code>// Client — polling (works, but wasteful)
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>// Client — polling (works, but wasteful)
 async function waitForTask(taskId) {
   while (true) {
     const res = await fetch(`/api/tasks/${taskId}`);
@@ -171,9 +172,9 @@ async function waitForTask(taskId) {
     if (task.status === "done" || task.status === "failed") return task;
     await new Promise((r) =&gt; setTimeout(r, 1000));
   }
-}</code></pre>
+}</code></pre></div>
 
-    <pre><code># Server — regular REST handler (FastAPI)
+    <div class="learn-code-wrap" data-lang="python"><pre><code># Server — regular REST handler (FastAPI)
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -192,7 +193,7 @@ def create_task(body: CreateTask):
 
 @app.get("/api/tasks/{task_id}")
 def get_task(task_id: str):
-    return TASKS.get(task_id, {"error": "not found"})</code></pre>
+    return TASKS.get(task_id, {"error": "not found"})</code></pre></div>
 
     <p><strong>Problems:</strong> up to 1s latency on updates, N users × poll rate = needless load, no way for the server to push <code>need_input</code> without the client guessing to poll faster.</p>
 
@@ -207,7 +208,7 @@ def get_task(task_id: str):
     </ul>
 
     <h3>SSE API example (FastAPI)</h3>
-    <pre><code>import asyncio
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import asyncio
 import json
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
@@ -233,10 +234,10 @@ async def stream_task(task_id: str):
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
         },
-    )</code></pre>
+    )</code></pre></div>
 
     <h3>Browser client — EventSource (GET)</h3>
-    <pre><code>const es = new EventSource(`/api/tasks/${taskId}/stream`);
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>const es = new EventSource(`/api/tasks/${taskId}/stream`);
 
 es.addEventListener("progress", (e) =&gt; {
   const data = JSON.parse(e.data);
@@ -252,11 +253,11 @@ es.addEventListener("done", (e) =&gt; {
 
 es.onerror = () =&gt; {
   log("Stream error — EventSource will retry");
-};</code></pre>
+};</code></pre></div>
 
     <h3>Browser client — fetch + ReadableStream (POST + SSE)</h3>
     <p>Chat APIs usually POST the user message, then read an SSE body from the response — <code>EventSource</code> only supports GET, so use <code>fetch</code>:</p>
-    <pre><code>async function streamChat(message) {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>async function streamChat(message) {
   const res = await fetch("/api/chat/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -279,7 +280,7 @@ es.onerror = () =&gt; {
       if (data.type === "done") return;
     }
   }
-}</code></pre>
+}</code></pre></div>
 
     <p><strong>SSE limitation:</strong> the server cannot receive user input on the same HTTP response. You need a separate POST (or a WebSocket) to send the next message.</p>
 
@@ -294,7 +295,7 @@ es.onerror = () =&gt; {
     </ul>
 
     <h3>WebSocket server (FastAPI)</h3>
-    <pre><code>import json
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import json
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 app = FastAPI()
@@ -323,10 +324,10 @@ async def agent_socket(ws: WebSocket, run_id: str):
                     await ws.send_json({"type": "done", "result": "cancelled"})
                 break
     except WebSocketDisconnect:
-        pass</code></pre>
+        pass</code></pre></div>
 
     <h3>WebSocket client (browser)</h3>
-    <pre><code>const ws = new WebSocket(`wss://api.example.com/ws/agent/${runId}`);
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>const ws = new WebSocket(`wss://api.example.com/ws/agent/${runId}`);
 const inputBox = document.getElementById("agent-input");
 const logEl = document.getElementById("log");
 
@@ -355,7 +356,7 @@ inputBox.addEventListener("keydown", (e) =&gt; {
   }));
   inputBox.value = "";
   inputBox.disabled = true;
-});</code></pre>
+});</code></pre></div>
 
     <h2 id="comparison">Side-by-side comparison</h2>
     <table>
@@ -398,19 +399,19 @@ inputBox.addEventListener("keydown", (e) =&gt; {
       <li><code>WebSocket /ws/runs/{id}</code> — control plane: <code>tool_call</code>, <code>need_input</code>, <code>error</code></li>
       <li><code>GET /api/runs/{id}/tokens</code> (SSE) — data plane: LLM token stream</li>
     </ol>
-    <pre><code>// After POST /api/runs returns { run_id }
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>// After POST /api/runs returns { run_id }
 const { run_id } = await (await fetch("/api/runs", { method: "POST", body })).json();
 
 const ws = new WebSocket(`/ws/runs/${run_id}`);
 ws.onmessage = (e) =&gt; handleControl(JSON.parse(e.data));
 
 const es = new EventSource(`/api/runs/${run_id}/tokens`);
-es.onmessage = (e) =&gt; appendToken(JSON.parse(e.data).content);</code></pre>
+es.onmessage = (e) =&gt; appendToken(JSON.parse(e.data).content);</code></pre></div>
     <p>Separating <strong>control</strong> (WebSocket) from <strong>content</strong> (SSE) keeps token parsers simple and avoids multiplexing text chunks with binary-ish frame ordering bugs.</p>
 
     <h2 id="browser-agent">Browser agent: ask input and continue</h2>
     <p>A minimal agent loop on the server:</p>
-    <pre><code>async def run_agent(ws: WebSocket, run_id: str):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>async def run_agent(ws: WebSocket, run_id: str):
     await ws.send_json({"type": "status", "state": "planning"})
     plan = await llm_plan(run_id)
     for step in plan.steps:
@@ -426,26 +427,26 @@ es.onmessage = (e) =&gt; appendToken(JSON.parse(e.data).content);</code></pre>
                 return
         result = await execute_tool(step)
         await ws.send_json({"type": "tool_result", "summary": result[:200]})
-    await ws.send_json({"type": "done", "state": "completed"})</code></pre>
+    await ws.send_json({"type": "done", "state": "completed"})</code></pre></div>
     <p>The browser enables the input box only when <code>need_input</code> arrives — not before. That is the UX difference between a chatbot (one message in, stream out) and an <strong>agent</strong> (multi-turn control on one session).</p>
 
     <h2 id="wire-formats">Wire formats</h2>
     <h3>SSE frame</h3>
-    <pre><code>event: progress
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>event: progress
 data: {"pct": 60, "message": "Indexing chunk 120/200"}
 
 event: token
 data: {"content": "The"}
 
 event: done
-data: {"finish_reason": "stop"}</code></pre>
+data: {"finish_reason": "stop"}</code></pre></div>
 
     <h3>WebSocket JSON message</h3>
-    <pre><code>{"type": "need_input", "prompt": "Confirm delete?", "resume_token": "abc"}
-{"type": "user_reply", "text": "yes", "resume_token": "abc"}</code></pre>
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{"type": "need_input", "prompt": "Confirm delete?", "resume_token": "abc"}
+{"type": "user_reply", "text": "yes", "resume_token": "abc"}</code></pre></div>
 
     <h3>REST JSON (single shot)</h3>
-    <pre><code>{"task_id": "t-1", "status": "done", "progress": 100, "result": {"files": 42}}</code></pre>
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{"task_id": "t-1", "status": "done", "progress": 100, "result": {"files": 42}}</code></pre></div>
 
     <h2 id="production">Production checklist</h2>
     <ul>
@@ -499,6 +500,7 @@ data: {"finish_reason": "stop"}</code></pre>
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

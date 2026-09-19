@@ -60,6 +60,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -141,23 +142,23 @@
     <h2 id="prerequisites">Prerequisites and installation</h2>
     <p>You need <strong>Python 3.9+</strong> and <code>pip</code>. Use a virtual environment so MkDocs does not pollute system Python.</p>
 
-    <pre><code>python3 -m venv .venv
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install --upgrade pip
-pip install mkdocs mkdocs-material</code></pre>
+pip install mkdocs mkdocs-material</code></pre></div>
 
     <p>Verify with <code>mkdocs --version</code>. Pin versions in production:</p>
 
-    <pre><code># requirements-docs.txt
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># requirements-docs.txt
 mkdocs&gt;=1.6,&lt;2
 mkdocs-material&gt;=9.5,&lt;10
 mkdocs-minify-plugin&gt;=0.8,&lt;1
-mkdocs-redirects&gt;=1.2,&lt;2</code></pre>
+mkdocs-redirects&gt;=1.2,&lt;2</code></pre></div>
 
     <h2 id="project-structure">Project structure</h2>
     <p>MkDocs expects a config file at the repo root. Markdown lives under <code>docs/</code> by default.</p>
 
-    <pre><code>my-docs/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>my-docs/
 ├── docs/                          ← all published .md pages
 │   ├── index.md                   ← site homepage (/)
 │   ├── getting-started/
@@ -170,17 +171,17 @@ mkdocs-redirects&gt;=1.2,&lt;2</code></pre>
 ├── mkdocs.yml                     ← site configuration
 ├── requirements-docs.txt
 ├── .github/workflows/docs.yml
-└── site/                          ← build output (gitignored)</code></pre>
+└── site/                          ← build output (gitignored)</code></pre></div>
 
     <p><strong>Rules:</strong> one <code>.md</code> file = one page; keep images under <code>docs/assets/</code>; never commit <code>site/</code> unless you deploy by pushing build output to <code>gh-pages</code>.</p>
 
     <h2 id="first-site">Create your first site</h2>
-    <pre><code>mkdocs new my-docs
+    <div class="learn-code-wrap" data-lang="shell"><pre><code>mkdocs new my-docs
 cd my-docs
-mkdocs serve</code></pre>
+mkdocs serve</code></pre></div>
     <p>Open <code>http://127.0.0.1:8000</code>. Edit <code>docs/index.md</code> — the browser auto-reloads.</p>
 
-    <pre><code># mkdocs.yml — minimal starting config
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code># mkdocs.yml — minimal starting config
 site_name: My Product Docs
 site_url: https://yourorg.github.io/my-docs/
 repo_url: https://github.com/yourorg/my-docs
@@ -193,22 +194,22 @@ nav:
   - Home: index.md
   - Getting started:
       - Overview: getting-started/index.md
-      - Installation: getting-started/installation.md</code></pre>
+      - Installation: getting-started/installation.md</code></pre></div>
 
     <h2 id="mkdocs-yml">mkdocs.yml in detail</h2>
     <p>The config file controls theme, nav, plugins, extensions, metadata, and build behavior.</p>
 
     <h3>Site metadata</h3>
-    <pre><code>site_name: My Product Docs
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>site_name: My Product Docs
 site_url: https://docs.example.com/       # trailing slash matters
 site_description: Official documentation for My Product API and SDK.
 copyright: Copyright &amp;copy; 2026 Example Inc.
 repo_url: https://github.com/yourorg/my-docs
-edit_uri: edit/main/docs/</code></pre>
+edit_uri: edit/main/docs/</code></pre></div>
     <p><code>site_url</code> drives sitemap generation, Open Graph tags, and absolute links. Set it to your <strong>final public URL</strong>, not localhost.</p>
 
     <h3>Theme block</h3>
-    <pre><code>theme:
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>theme:
   name: material
   logo: assets/logo.svg
   palette:
@@ -227,7 +228,7 @@ edit_uri: edit/main/docs/</code></pre>
     - navigation.sections
     - search.suggest
     - content.code.copy
-    - content.action.edit</code></pre>
+    - content.action.edit</code></pre></div>
 
     <table>
       <thead><tr><th>Feature</th><th>Effect</th></tr></thead>
@@ -240,7 +241,7 @@ edit_uri: edit/main/docs/</code></pre>
     </table>
 
     <h3>Navigation</h3>
-    <pre><code>nav:
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>nav:
   - Home: index.md
   - Getting started:
       - getting-started/index.md
@@ -248,11 +249,11 @@ edit_uri: edit/main/docs/</code></pre>
   - Guides:
       - guides/api-authentication.md
       - guides/webhooks.md
-  - Changelog: changelog.md</code></pre>
+  - Changelog: changelog.md</code></pre></div>
     <p>Omit <code>nav</code> and MkDocs auto-discovers files alphabetically — usually not what you want. External links work: <code>API: https://api.example.com/docs</code>.</p>
 
     <h3>Markdown extensions and plugins</h3>
-    <pre><code>markdown_extensions:
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
@@ -270,7 +271,7 @@ plugins:
       redirect_maps:
         old-page.md: new-page.md
 
-strict: true    # fail build on warnings — use in CI</code></pre>
+strict: true    # fail build on warnings — use in CI</code></pre></div>
 
     <div class="chart-wrap">
       <canvas id="buildTimeChart" aria-label="MkDocs build time by page count"></canvas>
@@ -286,19 +287,19 @@ strict: true    # fail build on warnings — use in CI</code></pre>
       <li>Versioning support for multiple doc releases</li>
     </ul>
     <p>Custom branding via <code>extra_css</code>:</p>
-    <pre><code>extra_css:
-  - stylesheets/extra.css</code></pre>
-    <pre><code>/* docs/stylesheets/extra.css */
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code>extra_css:
+  - stylesheets/extra.css</code></pre></div>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>/* docs/stylesheets/extra.css */
 :root {
   --md-primary-fg-color: #2563eb;
-}</code></pre>
+}</code></pre></div>
 
     <h2 id="navigation">Navigation patterns</h2>
     <p><strong>Small projects</strong> — flat nav with a handful of pages. <strong>Most products</strong> — folders with <code>index.md</code> per section; enable <code>navigation.sections</code> and <code>navigation.indexes</code>. <strong>Large repos (50+ pages)</strong> — generate nav in CI or use <code>mkdocs-awesome-pages-plugin</code> with per-folder <code>.pages</code> files.</p>
     <p>Split <strong>guides</strong> (narrative) from <strong>reference</strong> (API specs). Users search differently; nav should match mental models.</p>
 
     <h2 id="markdown-extensions">Markdown extensions and admonitions</h2>
-    <pre><code>!!! note "Beta feature"
+    <div class="learn-code-wrap" data-lang="python"><pre><code>!!! note "Beta feature"
     This endpoint is available on Pro plans only.
 
 !!! warning
@@ -314,15 +315,15 @@ strict: true    # fail build on warnings — use in CI</code></pre>
     ```bash
     curl -H "Authorization: Bearer $TOKEN" \
       https://api.example.com/v1/users
-    ```</code></pre>
+    ```</code></pre></div>
     <p>Mermaid diagrams: enable a custom fence in <code>pymdownx.superfences</code>, then write fenced <code>mermaid</code> blocks in Markdown.</p>
 
     <h2 id="assets">Images, assets, and static files</h2>
     <p>Place files under <code>docs/</code>. Reference with relative paths from the current page:</p>
-    <pre><code>![Dashboard overview](assets/screenshots/dashboard.png)
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>![Dashboard overview](assets/screenshots/dashboard.png)
 
 &lt;!-- from docs/guides/api-authentication.md --&gt;
-![Auth flow](../assets/diagrams/oauth-flow.png)</code></pre>
+![Auth flow](../assets/diagrams/oauth-flow.png)</code></pre></div>
     <p>Do not use absolute <code>/assets/...</code> paths unless you understand MkDocs URL rewriting with <code>use_directory_urls</code>.</p>
 
     <h2 id="local-dev">Local development workflow</h2>
@@ -337,8 +338,8 @@ strict: true    # fail build on warnings — use in CI</code></pre>
     <p>Add <code>site/</code> and <code>.venv/</code> to <code>.gitignore</code>.</p>
 
     <h2 id="build">Build and inspect output</h2>
-    <pre><code>mkdocs build --strict
-# site/ now contains static HTML + search/search_index.json</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>mkdocs build --strict
+# site/ now contains static HTML + search/search_index.json</code></pre></div>
     <p>Inspect <code>site/sitemap.xml</code> (requires <code>site_url</code>). Broken internal links surface as warnings — errors with <code>--strict</code>.</p>
 
     <h2 id="github-pages">Deploy to GitHub Pages</h2>
@@ -352,7 +353,7 @@ strict: true    # fail build on warnings — use in CI</code></pre>
     <h3>Method A — GitHub Actions (recommended)</h3>
     <p>Build in CI; deploy the <code>site/</code> artifact. Reproducible, reviewable, no force-push to <code>gh-pages</code>.</p>
 
-    <pre><code># .github/workflows/docs.yml
+    <div class="learn-code-wrap" data-lang="yaml"><pre><code># .github/workflows/docs.yml
 name: Deploy docs
 on:
   push:
@@ -384,11 +385,11 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - uses: actions/deploy-pages@v4</code></pre>
+      - uses: actions/deploy-pages@v4</code></pre></div>
     <p>Repo <strong>Settings → Pages → Build and deployment → GitHub Actions</strong>.</p>
 
     <h3>Method B — mkdocs gh-deploy</h3>
-    <pre><code>mkdocs gh-deploy --force</code></pre>
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>mkdocs gh-deploy --force</code></pre></div>
     <p>One command pushes <code>site/</code> to the <code>gh-pages</code> branch. Simple for solo devs; harder to review diffs.</p>
 
     <h3>Method C — Manual site/ commit</h3>
@@ -511,6 +512,7 @@ jobs:
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

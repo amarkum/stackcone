@@ -60,6 +60,7 @@
   }
   </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
 <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -301,7 +302,7 @@
 
     <h2 id="production-code">Production code</h2>
     <p><strong>app/rerank.py</strong> — Cohere v2 rerank API with conditional skip logic:</p>
-    <pre><code>import os
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import os
 import aiohttp
 
 COHERE_RERANK_URL = "https://api.cohere.com/v2/rerank"
@@ -402,10 +403,10 @@ async def retrieve_and_rank(
         return {"chunks": [], "skip_llm": True, "cost": cost}
 
     final = mmr_select(ranked) if cost["cohere_rerank"] &gt; 0 else ranked[:FINAL_TOP_K]
-    return {"chunks": final, "skip_llm": False, "top_rerank_score": top_score, "cost": cost}</code></pre>
+    return {"chunks": final, "skip_llm": False, "top_rerank_score": top_score, "cost": cost}</code></pre></div>
 
     <p><strong>Query rewrite heuristics</strong> — skip Flash Lite on clear first turns:</p>
-    <pre><code>import re
+    <div class="learn-code-wrap" data-lang="python"><pre><code>import re
 
 PRONOUNS = re.compile(r"\b(it|that|this|they|them|those|these|he|she)\b", re.I)
 ORDINALS = re.compile(r"\b(step\s+\d|option\s+[a-z]|first|second|third|the\s+other)\b", re.I)
@@ -415,7 +416,7 @@ def needs_query_rewrite(message: str, history: list) -&gt; bool:
         return False  # first turn — never rewrite
     if len(message.split()) &gt;= 8 and not PRONOUNS.search(message) and not ORDINALS.search(message):
         return False  # self-contained despite history
-    return True</code></pre>
+    return True</code></pre></div>
 
     <h2 id="tuning-checklist">Tuning checklist</h2>
     <div class="checklist-grid">
@@ -495,6 +496,7 @@ def needs_query_rewrite(message: str, history: list) -&gt; bool:
   </footer>
 
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>

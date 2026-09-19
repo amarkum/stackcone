@@ -94,6 +94,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -178,10 +179,10 @@
 
     <h2 id="embeddings">Embeddings and vector search</h2>
     <p>An <strong>embedding</strong> is a list of numbers that stands in for meaning. You send a sentence to an embedding model and get back something like 1,536 floats. Sentences about the same topic land close together in that space; unrelated sentences land far apart.</p>
-    <pre><code>"How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>"How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
 "Password recovery steps"      →  [0.11, -0.42, 0.91, ...]   ← close
 "Office wifi password"         →  [0.09, -0.40, 0.70, ...]   ← also close (trap)
-"Weather in Tokyo"             →  [-0.67, 0.22, -0.11, ...]  ← far</code></pre>
+"Weather in Tokyo"             →  [-0.67, 0.22, -0.11, ...]  ← far</code></pre></div>
     <p>Vector search is nearest-neighbour lookup: embed the question, find the stored chunks whose vectors are closest, return their text. That is why RAG can match &ldquo;I can&rsquo;t get into my account&rdquo; to a page titled &ldquo;Password recovery&rdquo; even when the words barely overlap.</p>
     <p>Keyword search (BM25, Postgres <code>tsvector</code>) is still useful. It wins on exact IDs, error codes, and product SKUs. Many production systems run <strong>hybrid search</strong>: vector + keyword, then merge. You do not need hybrid on day one. You do need to know that embeddings are not magic &mdash; they miss rare tokens that a keyword index would catch.</p>
     <p>You store embeddings in a <strong>vector database</strong> (Pinecone, Qdrant, pgvector, Chroma). Each record is usually: an id, the vector, and metadata (source title, URL, the raw text). The database&rsquo;s only job at query time is &ldquo;here are the k nearest rows.&rdquo;</p>
@@ -199,20 +200,20 @@
 
     <h2 id="example">A tiny retrieve-and-prompt example</h2>
     <p>This is the whole idea in Python-shaped pseudocode. <code>embed</code>, <code>index</code>, and <code>llm</code> are stand-ins for your vendor of choice. There is no framework required.</p>
-    <pre><code><span class="kw">def</span> <span class="fn">retrieve</span>(query, index, k=<span class="num">5</span>):
-    qvec = <span class="fn">embed</span>(query)
-    <span class="kw">return</span> index.search(qvec, top_k=k)
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def retrieve(query, index, k=5):
+    qvec = embed(query)
+    return index.search(qvec, top_k=k)
 
-<span class="kw">def</span> <span class="fn">answer</span>(query, index):
-    chunks = <span class="fn">retrieve</span>(query, index)
-    context = <span class="str">"\n\n"</span>.join(c[<span class="str">"text"</span>] <span class="kw">for</span> c <span class="kw">in</span> chunks)
+def answer(query, index):
+    chunks = retrieve(query, index)
+    context = "\n\n".join(c["text"] for c in chunks)
     prompt = (
-        <span class="str">"Answer using only this context. "</span>
-        <span class="str">"If the answer is not there, say you do not know.\n\n"</span>
-        <span class="str">"Context:\n"</span> + context +
-        <span class="str">"\n\nQuestion: "</span> + query
+        "Answer using only this context. "
+        "If the answer is not there, say you do not know.\n\n"
+        "Context:\n" + context +
+        "\n\nQuestion: " + query
     )
-    <span class="kw">return</span> llm.generate(prompt)</code></pre>
+    return llm.generate(prompt)</code></pre></div>
     <p>That is RAG. Production adds chunking at ingest, metadata filters, reranking, evals, citations in the UI, and a model choice that does not bankrupt you. Those are covered in <a href="/blog/posts/how-to-build-a-production-rag-chatbot/">how to build a production RAG chatbot</a> and <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">economical models for RAG</a>.</p>
 
     <h2 id="architecture">Architecture</h2>
@@ -345,6 +346,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";

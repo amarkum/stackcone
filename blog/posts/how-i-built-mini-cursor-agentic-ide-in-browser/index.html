@@ -94,6 +94,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -230,7 +231,7 @@ index cache"]:::disk
       </tbody>
     </table>
 
-    <pre><code>def agent_turn():
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def agent_turn():
     def generate():
         for chunk in run_livecode_turn(...):
             yield chunk  # "data: {...}\n\n"
@@ -242,7 +243,7 @@ index cache"]:::disk
             "Cache-Control": "no-cache",
             "X-Accel-Buffering": "no",
         },
-    )</code></pre>
+    )</code></pre></div>
     <p>After the generator exhausts, the route persists the turn to disk via append-only JSONL writes.</p>
 
     
@@ -415,7 +416,7 @@ audit trail"]:::file
     </table>
 
     <h3>Constants that drive the whole system</h3>
-    <pre><code>MAX_ITERATIONS = 20
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>MAX_ITERATIONS = 20
 CONTEXT_WINDOW = 128_000
 AUTO_COMPACT_RATIO = 0.85       # full-replace at 108,800 tokens
 INTER_COMPACT_RATIO = 0.65      # inter-turn at 83,200 tokens
@@ -423,7 +424,7 @@ IN_TURN_COMPACT_RATIO = 0.70    # in-turn budget 89,600 tokens
 KEEP_RECENT_TOOL_MSGS = 6
 STATIONARITY_NUDGE_AFTER = 8
 STATIONARITY_HARD_STOP = 16
-TOOL_RESULT_MAX_CHARS = 16_000</code></pre>
+TOOL_RESULT_MAX_CHARS = 16_000</code></pre></div>
 
     <h2 id="harness">The agent harness loop — build guide</h2>
     <p><code>run_livecode_turn()</code> in <code>harness.py</code> is a Python <strong>generator function</strong>. It yields raw SSE payload strings (<code>data: {...}\n\n</code>) directly. It never returns a value.</p>
@@ -441,36 +442,36 @@ TOOL_RESULT_MAX_CHARS = 16_000</code></pre>
     <p><code>run_livecode_turn()</code> is a Python <strong>generator</strong>: it <code>yield</code>s SSE strings many times per user message. Below, each step shows the code to write and what every identifier means.</p>
 
     <h4>Step 1 — Iteration ceiling</h4>
-    <pre><code>for iteration in range(1, MAX_ITERATIONS + 1):
-    # one LLM round-trip per iteration; hard cap prevents runaway token spend</code></pre>
+    <div class="learn-code-wrap" data-lang="python"><pre><code>for iteration in range(1, MAX_ITERATIONS + 1):
+    # one LLM round-trip per iteration; hard cap prevents runaway token spend</code></pre></div>
     <table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody>
     <tr><td><code>MAX_ITERATIONS</code></td><td>Hard cap (20) on LLM calls per user message</td></tr>
     <tr><td><code>iteration</code></td><td>1-based counter logged as <code>iteration 3/20</code></td></tr>
     </tbody></table>
 
     <h4>Step 2 — Stationarity gate</h4>
-    <pre><code>    if stationarity.count &gt;= STATIONARITY_HARD_STOP:
+    <div class="learn-code-wrap" data-lang="python"><pre><code>    if stationarity.count &gt;= STATIONARITY_HARD_STOP:
         yield sse_done("Stopped: repeated identical tool calls.")
         return
     if stationarity.count &gt;= STATIONARITY_NUDGE_AFTER:
-        messages.append({"role": "user", "content": STATIONARITY_NUDGE})</code></pre>
+        messages.append({"role": "user", "content": STATIONARITY_NUDGE})</code></pre></div>
 
     <h4>Step 3 — Model + context before each LLM call</h4>
-    <pre><code>    iteration_model = pick_model(model, classification, iteration, had_tool_errors)
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>    iteration_model = pick_model(model, classification, iteration, had_tool_errors)
     messages = compact_stale_tool_messages(messages, budget=89600)
     messages.extend(drain_interjection_queue(session_id))
-    messages = sanitize_messages_for_api(messages)</code></pre>
+    messages = sanitize_messages_for_api(messages)</code></pre></div>
 
     <h4>Step 4 — LLM call with tools</h4>
-    <pre><code>    response = call_llm_with_tools(
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>    response = call_llm_with_tools(
         model=iteration_model,
         messages=messages,
         tools=LIVECODE_TOOLS,
         tool_choice=pick_tool_choice(classification, iteration),
-    )</code></pre>
+    )</code></pre></div>
 
     <h4>Step 5 — Dispatch tools or finish</h4>
-    <pre><code>    if response.tool_calls:
+    <div class="learn-code-wrap" data-lang="python"><pre><code>    if response.tool_calls:
         results = dispatch_parallel_or_serial(response.tool_calls, session_id)
         for tool_call, result in zip(response.tool_calls, results):
             messages.append(tool_message(tool_call, compact_tool_result(result)))
@@ -486,14 +487,14 @@ TOOL_RESULT_MAX_CHARS = 16_000</code></pre>
     if response.content:
         yield from stream_tokens_as_sse(response.content)
         yield sse_done(answer=response.content, turn_messages=turn_persist)
-        return</code></pre>
+        return</code></pre></div>
 
     <h4>Step 6 — Exhaustion fallback</h4>
-    <pre><code>messages.append({"role": "user", "content": "Summarize without more tools."})
-yield sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre>
+    <div class="learn-code-wrap" data-lang="python"><pre><code>messages.append({"role": "user", "content": "Summarize without more tools."})
+yield sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre></div>
 
     <h4>Full skeleton</h4>
-    <pre><code>def run_livecode_turn(question, project_path, session_id, model="auto"):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def run_livecode_turn(question, project_path, session_id, model="auto"):
     messages = build_base_messages(question, project_path, session_id)
     turn_persist, stationarity = [], IdenticalToolCallRun()
     classification = classify_turn(question)
@@ -538,19 +539,19 @@ yield sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</
             return
 
     messages.append({"role": "user", "content": "Summarize without more tools."})
-    yield sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre>
+    yield sse_done(answer=call_llm_no_tools(messages), turn_messages=turn_persist)</code></pre></div>
 
     <h3>Stationarity detection</h3>
     <p>An tracker hashes every tool call as <code>tool_name:json(arguments)</code> and counts consecutive repeats. At 8 identical calls: inject a nudge. At 16: force-terminate. This prevents the model from spinning on a retry loop.</p>
 
     <h3>Parallel tool dispatch</h3>
     <p>When the model returns multiple independent tool calls, they run concurrently but results are reassembled in original order — the OpenAI function-calling contract requires tool results in the same order as the calls. I cap workers at six to avoid stampeding the filesystem or shell on large parallel batches.</p>
-    <pre><code>if len(tool_calls) &gt; 1:
+    <div class="learn-code-wrap" data-lang="python"><pre><code>if len(tool_calls) &gt; 1:
     with ThreadPoolExecutor(max_workers=min(len(tool_calls), 6)) as pool:
         futures = {pool.submit(execute_one, tc): i for i, tc in enumerate(tool_calls)}
         results = reassemble_in_original_order(futures)
 else:
-    results = [execute_one(tool_calls[0])]</code></pre>
+    results = [execute_one(tool_calls[0])]</code></pre></div>
 
     <h2 id="tools">Tool system</h2>
     <p>The tool schemas are standard OpenAI function-calling JSON schema objects. Fourteen core tools:</p>
@@ -576,7 +577,7 @@ else:
 
     <h3>edit_file — ambiguity-rejecting SEARCH/REPLACE</h3>
     <p>One of the most important correctness guarantees in the whole system:</p>
-    <pre><code>def edit_file(path, old_string, new_string):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def edit_file(path, old_string, new_string):
     content = read_file(path)
     occurrences = content.count(old_string)
 
@@ -592,11 +593,11 @@ else:
     new_content = content.replace(old_string, new_string, 1)
     write_file(path, new_content)
     diff_html, diff_text, adds, dels = create_diff_html(content, new_content)
-    return success(diff_html=diff_html, additions=adds, deletions=dels)</code></pre>
+    return success(diff_html=diff_html, additions=adds, deletions=dels)</code></pre></div>
     <p>An ambiguous edit is rejected rather than silently applied to the wrong occurrence — the same discipline Claude Code's Edit tool enforces.</p>
 
     <h3>run_command — blocklist and git-log redirect</h3>
-    <pre><code>BLOCKED_PATTERNS = ["rm -rf /", "mkfs", ":(){ :|:&amp; };:"]
+    <div class="learn-code-wrap" data-lang="python"><pre><code>BLOCKED_PATTERNS = ["rm -rf /", "mkfs", ":(){ :|:&amp; };:"]
 
 def run_command(command):
     if any(p in command for p in BLOCKED_PATTERNS):
@@ -612,10 +613,10 @@ def run_command(command):
     proc = Popen(command, shell=True, stdout=PIPE, stderr=STDOUT, cwd=project_root)
     for line in proc.stdout:
         emit_websocket("command_stream", line.decode())
-    # 600s timeout, output capped to last 12,000 chars</code></pre>
+    # 600s timeout, output capped to last 12,000 chars</code></pre></div>
 
     <h3>git_log — structured, not raw text</h3>
-    <pre><code>def git_log(path=None, grep=None, since=None, max_commits=80):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def git_log(path=None, grep=None, since=None, max_commits=80):
     cmd = ["git", "--no-pager", "log", f"-n{max_commits}",
            "--date=short", "--pretty=format:%h %ad %an %s"]
     if path: cmd += ["--", path]
@@ -627,7 +628,7 @@ def run_command(command):
         {"hash": m[1], "date": m[2], "author": m[3], "subject": m[4]}
         for line in output.splitlines()
         if (m := GIT_LOG_LINE_RE.match(line))
-    ]</code></pre>
+    ]</code></pre></div>
 
     <h3>Tool result compaction and UI labels</h3>
     <p>Every tool result passes through <code>compact_tool_result_for_llm()</code> before being appended to the message list — hard cap 16,000 chars with tool-specific truncation strategies for file reads and grep output.</p>
@@ -644,11 +645,11 @@ def run_command(command):
       <li><strong>Cache invalidation:</strong> max mtime of project root + top-level entries</li>
       <li><strong>Limits:</strong> 8,000 files, 512 KB per file</li>
     </ul>
-    <pre><code>def resolve_safe_path(project_root, requested_path):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def resolve_safe_path(project_root, requested_path):
     resolved = realpath(join(project_root, requested_path))
     if not resolved.startswith(realpath(project_root)):
         raise PermissionError(f"Path traversal attempt: {requested_path}")
-    return resolved</code></pre>
+    return resolved</code></pre></div>
 
     <h3>Symbol index</h3>
     <p>Python parsing uses <code>ast.walk()</code> for ClassDef, FunctionDef, AsyncFunctionDef. JavaScript/TypeScript uses a lightweight regex — deliberately avoiding a full TS parser dependency. Extensions: <code>.py</code>, <code>.js</code>, <code>.jsx</code>, <code>.ts</code>, <code>.tsx</code>, <code>.mjs</code>, <code>.cjs</code>.</p>
@@ -656,17 +657,17 @@ def run_command(command):
 
     <h2 id="sessions">Session persistence</h2>
     <p>Every conversation is a directory on disk — not a database row.</p>
-    <pre><code>~/.livecode/sessions/
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>~/.livecode/sessions/
 └── &lt;project_hash&gt;/
     └── &lt;session_id&gt;/
         ├── chat_history.jsonl    # append-only OpenAI-format messages
         ├── summary.json            # metadata + reminder state
         ├── compaction.json         # active compaction sidecar
-        └── compaction_checkpoints/ # audit trail per compaction event</code></pre>
+        └── compaction_checkpoints/ # audit trail per compaction event</code></pre></div>
 
     <h3>What gets fed to the LLM each turn</h3>
     <p>The harness never sends raw JSONL verbatim. It calls <code>get_projected_messages()</code>:</p>
-    <pre><code>def get_projected_messages(session_dir):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def get_projected_messages(session_dir):
     messages = load_jsonl("chat_history.jsonl")
     compaction = load_json("compaction.json")
 
@@ -677,7 +678,7 @@ def run_command(command):
         }
         return [summary_msg] + messages[compaction["boundary_index"]:]
 
-    return sanitize_messages_for_api(messages)</code></pre>
+    return sanitize_messages_for_api(messages)</code></pre></div>
     <p>Hash verification protects against stale summaries after session rewind — if the prefix no longer matches, fall back to full history.</p>
 
     <h3>Message sanitization for the OpenAI API</h3>
@@ -718,14 +719,14 @@ LLM 7-section summary"]:::hot
     <p>LLM-driven summarization with a seven-section prompt: Primary Request and Intent; Key Technical Concepts; Tool Usage and Verification; Files and Code Artifacts; Errors and Fixes; Problem Solving; All User Messages. Keeps the last 2–6 messages verbatim. Stores <code>prefix_hash</code> for staleness detection. Retries with a shorter prompt if the summary is degenerate (too short, repetitive, or template-echo).</p>
 
     <h3>Token estimation</h3>
-    <pre><code>def estimate_tokens(messages):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def estimate_tokens(messages):
     total_chars = sum(len(json.dumps(m)) for m in messages)
-    return total_chars // 4  # ~4 chars per token — cheap and conservative</code></pre>
+    return total_chars // 4  # ~4 chars per token — cheap and conservative</code></pre></div>
 
     <h2 id="memory">Memory system</h2>
     <p>Cross-session memory is intentionally simple — no embeddings.</p>
-    <pre><code>~/.livecode/memory/&lt;project_hash&gt;.md</code></pre>
-    <pre><code>MAX_MEMORY_READ = 2_048   # chars returned to system prompt
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>~/.livecode/memory/&lt;project_hash&gt;.md</code></pre></div>
+    <div class="learn-code-wrap" data-lang="python"><pre><code>MAX_MEMORY_READ = 2_048   # chars returned to system prompt
 MAX_MEMORY_STORE = 6_144  # chars kept on disk (3x read window)
 
 def load_project_memory(project_path):
@@ -737,12 +738,12 @@ def append_project_memory(project_path, note):
     new_content = existing + f"\n- {note}"
     if len(new_content) &gt; MAX_MEMORY_STORE:
         new_content = new_content[-MAX_MEMORY_STORE:]
-    write_memory_file(project_path, new_content)</code></pre>
+    write_memory_file(project_path, new_content)</code></pre></div>
     <p>Once a session has been compacted, the harness switches to a terser compaction-specific system prompt that drops the memory block — trading a small amount of continuity for a leaner prompt.</p>
 
     <h2 id="routing">Request classification and routing</h2>
     <p>Before the agent loop starts, every question is classified:</p>
-    <pre><code>{
+    <div class="learn-code-wrap" data-lang="json"><pre><code>{
   "is_meta": False,
   "is_actionable": True,
   "needs_shell": True,
@@ -750,19 +751,19 @@ def append_project_memory(project_path, note):
   "expects_multi_step": True,
   "complexity": "medium",
   "is_follow_up": False
-}</code></pre>
+}</code></pre></div>
     <p>Heuristics first; cheap LLM call if confidence &lt; 0.7.</p>
-    <pre><code>def pick_tool_choice(classification, iteration):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def pick_tool_choice(classification, iteration):
     if classification["chat_only"] or classification["is_meta"]:
         return "auto"
     if iteration == 1 and classification["is_actionable"]:
         return "required"  # force a tool call on first iteration
-    return "auto"</code></pre>
+    return "auto"</code></pre></div>
     <p><code>needs_codebase_evidence()</code> regex-matches questions like "how does X work", "where is Y", "explain this code". If iteration 1 returns plain prose with no tools, a recovery nudge fires — preventing hallucinated answers about code the model never read.</p>
 
     <h2 id="permissions">Permission and safety system</h2>
     <p>Three tools require explicit user approval: <code>write_file</code>, <code>edit_file</code>, <code>run_command</code>.</p>
-    <pre><code>def request_permission(session_id, tool_name, arguments):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def request_permission(session_id, tool_name, arguments):
     event = threading.Event()
     _pending[session_id] = event
 
@@ -773,11 +774,11 @@ def append_project_memory(project_path, note):
 
 def resolve_permission(session_id, approved):
     _decisions[session_id] = approved
-    _pending[session_id].set()</code></pre>
+    _pending[session_id].set()</code></pre></div>
     <p>The harness worker thread blocks on a <code>threading.Event</code> until the browser calls <code>POST /livecode/permission</code>.</p>
 
     <h2 id="subagents">Sub-agent architecture</h2>
-    <pre><code>def spawn_subagent(instruction, parent_session_id, project_path):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def spawn_subagent(instruction, parent_session_id, project_path):
     child_session_id = f"{parent_session_id}_sub_{uuid4().hex[:8]}"
     result = run_subagent_turn(
         instruction=instruction,
@@ -785,18 +786,18 @@ def resolve_permission(session_id, approved):
         session_id=child_session_id,
         max_iterations=5,  # vs 20 for parent
     )
-    return {"result": result, "child_session_id": child_session_id}</code></pre>
+    return {"result": result, "child_session_id": child_session_id}</code></pre></div>
     <p>Child sessions are ephemeral — not shown in the session list. The parent only sees the final synthesized result; intermediate child tool calls never pollute parent context.</p>
 
     <h2 id="realtime">Real-time communication</h2>
     <h3>SSE stream — final answer text</h3>
-    <pre><code>data: {"type": "token", "content": "I'll"}\n\n
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code>data: {"type": "token", "content": "I'll"}\n\n
 data: {"type": "token", "content": " start"}\n\n
 data: {"type": "answer", "content": "I'll start by grepping..."}\n\n
-data: {"type": "done", "answer": "...", "turn_messages": [...]}\n\n</code></pre>
+data: {"type": "done", "answer": "...", "turn_messages": [...]}\n\n</code></pre></div>
 
     <h3>Frontend SSE consumer</h3>
-    <pre><code>const response = await fetch("/livecode-agent", {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>const response = await fetch("/livecode-agent", {
   method: "POST",
   body: JSON.stringify({ question, session_id, model }),
   headers: { "Content-Type": "application/json" },
@@ -817,10 +818,10 @@ while (true) {
       handleSSEEvent(JSON.parse(line.slice(6)));
     }
   }
-}</code></pre>
+}</code></pre></div>
 
     <h3>WebSocket progress events</h3>
-    <pre><code>socket.on("livecode_progress", (event) =&gt; {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>socket.on("livecode_progress", (event) =&gt; {
   switch (event.type) {
     case "agent_thinking": showThinkingIndicator(); break;
     case "tool_call": appendActivityChip(event.label, "running"); break;
@@ -830,7 +831,7 @@ while (true) {
     case "compaction": showCompactionNotice(); break;
     case "model_resolved": updateModelBadge(event.model); break;
   }
-});</code></pre>
+});</code></pre></div>
 
     <h3>Mid-turn interjection</h3>
     <p>While the agent loop runs, the user can POST a follow-up message to <code>/livecode/interject</code>. A thread-safe queue drains at the start of every iteration before the next LLM call — so you can redirect a long-running task without waiting for all 20 iterations to finish.</p>
@@ -851,7 +852,7 @@ while (true) {
     </ul>
 
     <h3>Monaco integration (pseudocode)</h3>
-    <pre><code>require.config({ paths: { vs: "/static/monaco/vs" } });
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>require.config({ paths: { vs: "/static/monaco/vs" } });
 require(["vs/editor/editor.main"], function() {
   window.ideEditor = monaco.editor.create(document.getElementById("ide-monaco"), {
     value: "",
@@ -867,10 +868,10 @@ function mapToMonacoLang(filename) {
   const MAP = { py: "python", js: "javascript", ts: "typescript",
                 jsx: "javascript", tsx: "typescript", md: "markdown" };
   return MAP[ext] || "plaintext";
-}</code></pre>
+}</code></pre></div>
 
     <h3>Terminal integration (pseudocode)</h3>
-    <pre><code>function createTerminalTab(name) {
+    <div class="learn-code-wrap" data-lang="javascript"><pre><code>function createTerminalTab(name) {
   const term = new Terminal({
     cursorBlink: true,
     fontFamily: "JetBrains Mono, monospace",
@@ -880,10 +881,10 @@ function mapToMonacoLang(filename) {
   socket.on("terminal_output", (data) =&gt; {
     if (data.tab_id === tabId) term.write(data.content);
   });
-}</code></pre>
+}</code></pre></div>
 
     <h2 id="diffs">Diff generation</h2>
-    <pre><code>def create_diff_html(original_content, new_content, context_lines=2):
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def create_diff_html(original_content, new_content, context_lines=2):
     original_lines = original_content.splitlines(keepends=True)
     new_lines = new_content.splitlines(keepends=True)
 
@@ -900,13 +901,13 @@ function mapToMonacoLang(filename) {
     additions = count_plus_lines(diff_text)
     deletions = count_minus_lines(diff_text)
 
-    return "".join(diff_html_parts), diff_text, additions, deletions</code></pre>
+    return "".join(diff_html_parts), diff_text, additions, deletions</code></pre></div>
     <p>Each line renders with gutter bar, line number, +/- sign, and content span. <code>data-start-line</code> and <code>data-end-line</code> on block wrappers power "jump to line" links in the diff header.</p>
     <p>Small diffs (≤ 8 changed lines) render expanded by default. Larger diffs collapse behind a chevron toggle bound via event delegation — not re-bound per diff block.</p>
 
     <h3>Frontend diff block builder (JavaScript)</h3>
     <p>The browser wraps server-generated diff HTML in a collapsible card with filename, +/- counts, and a copy button:</p>
-    <pre><code>const DIFF_SMALL_LINE_THRESHOLD = 8;
+    <div class="learn-code-wrap" data-lang="html"><pre><code>const DIFF_SMALL_LINE_THRESHOLD = 8;
 
 function buildDiffBlockHtml(diffEvent) {
   const { diff_html, diff_text, additions, deletions, file_path } = diffEvent;
@@ -933,10 +934,10 @@ document.addEventListener("click", (event) =&gt; {
   const content = event.target.closest(".livecode-diff-block").querySelector(".diff-content");
   content.classList.toggle("is-expanded");
   content.classList.toggle("is-collapsed");
-});</code></pre>
+});</code></pre></div>
 
     <h2 id="rules">Project rules discovery</h2>
-    <pre><code>RULES_FILES = ["AGENTS.md", "CLAUDE.md", ".cursor/rules", ".claude/rules"]
+    <div class="learn-code-wrap" data-lang="python"><pre><code>RULES_FILES = ["AGENTS.md", "CLAUDE.md", ".cursor/rules", ".claude/rules"]
 
 def discover_project_rules(project_path):
     git_root = find_git_root(project_path)
@@ -953,7 +954,7 @@ def discover_project_rules(project_path):
         return None
 
     combined = "\n\n".join(found_content)
-    return f"&lt;system-reminder&gt;\n{combined}\n&lt;/system-reminder&gt;"</code></pre>
+    return f"&lt;system-reminder&gt;\n{combined}\n&lt;/system-reminder&gt;"</code></pre></div>
     <p>Injected as a follow-up system message after the main system prompt — the same convention Claude Code uses for <code>CLAUDE.md</code>.</p>
 
     <h2 id="tradeoffs">Design decisions and tradeoffs</h2>
@@ -1041,6 +1042,7 @@ def discover_project_rules(project_path):
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";

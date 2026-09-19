@@ -109,6 +109,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -143,7 +144,7 @@
         <figcaption>Claude Code</figcaption>
       </figure>
       <figure>
-        <img src="../../images/prompt-engineering-vs-ai-agents/cursor.svg" alt="Cursor app icon" width="80" height="80">
+        <img src="../../images/prompt-engineering-vs-ai-agents/cursor.png" alt="Cursor app icon" width="80" height="80">
         <figcaption>Cursor Agent</figcaption>
       </figure>
       <figure>
@@ -229,7 +230,7 @@
       </tbody>
     </table>
     <p>A thin <code>CLAUDE.md</code> still beats a viral &ldquo;god prompt&rdquo;:</p>
-    <pre><code># Build
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># Build
 - `python3 -m pytest tests/ -q`
 
 # Do not
@@ -237,7 +238,7 @@
 - Do not invent metrics.
 
 # Verify
-- Re-run tests after every non-trivial edit.</code></pre>
+- Re-run tests after every non-trivial edit.</code></pre></div>
     <p>The quality of that file is prompt engineering. The quality of the <strong>loop</strong> (did tests actually run? did the agent stop?) is agent engineering.</p>
     <p>Magic templates fail here because the next step depends on <strong>tool output</strong>, not on a clever first sentence. If <code>pytest</code> failed on line 40, no &ldquo;think step by step&rdquo; preface saves you — you need the agent to read the failure and change the code. That is evals and tools, not incantations.</p>
     <p>For how skills, MCP, and subagents divide that work, see <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs subagents</a>.</p>
@@ -278,11 +279,11 @@
     </ul>
     <p>Cost and risk go up with the loop. An agent can delete the wrong file, push to the wrong branch, or &ldquo;fix&rdquo; tests by deleting them. That is why <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI agent testing and evaluation strategies</a> is the adult version of prompt engineering: golden tasks, tool unit tests, trace replay, and a gate that fails the build when the agent regresses.</p>
     <p>A tiny eval is more valuable than a prettier system prompt:</p>
-    <pre><code><span class="kw">def</span> <span class="fn">test_agent_does_not_delete_tests</span>(run_agent):
-    before = <span class="fn">set</span>(<span class="fn">Path</span>(<span class="str">"tests"</span>).rglob(<span class="str">"test_*.py"</span>))
-    <span class="fn">run_agent</span>(<span class="str">"make the suite faster"</span>)
-    after = <span class="fn">set</span>(<span class="fn">Path</span>(<span class="str">"tests"</span>).rglob(<span class="str">"test_*.py"</span>))
-    <span class="kw">assert</span> after &gt;= before</code></pre>
+    <div class="learn-code-wrap" data-lang="python"><pre><code>def test_agent_does_not_delete_tests(run_agent):
+    before = set(Path("tests").rglob("test_*.py"))
+    run_agent("make the suite faster")
+    after = set(Path("tests").rglob("test_*.py"))
+    assert after &gt;= before</code></pre></div>
     <p>You still <em>prompt</em> that agent (&ldquo;do not delete tests&rdquo;). You <strong>measure</strong> whether it obeyed. Measurement is the part template-collectors skip.</p>
     <p>Will this eat software jobs? Agents change what juniors are hired to do; they do not remove ownership. See <a href="/blog/posts/will-ai-replace-software-engineers/">Will AI replace software engineers?</a></p>
 
@@ -408,6 +409,7 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="../../../solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785" crossorigin="anonymous"></script>
 </body>

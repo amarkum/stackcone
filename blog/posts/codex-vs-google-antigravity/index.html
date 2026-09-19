@@ -86,6 +86,7 @@
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=16">
 </head>
 <body class="blog-page">
   <header class="header">
@@ -207,12 +208,12 @@
     <h2 id="agents-md">AGENTS.md and CLAUDE.md</h2>
     <p>Every one of these tools reads a project-instructions file, and almost every team leaves it empty. It is the single cheapest improvement you can make to agent output, and it takes ten minutes.</p>
     <p>An agent with no instructions guesses your test command, guesses your formatter, and runs the wrong thing. An agent with five accurate lines does not.</p>
-    <pre><code># AGENTS.md (Codex) — the same content goes in CLAUDE.md for Claude Code
+    <div class="learn-code-wrap" data-lang="plaintext"><pre><code># AGENTS.md (Codex) — the same content goes in CLAUDE.md for Claude Code
 
 ## Commands
 - Install: `uv sync`
 - Test: `pytest -q`
-- Lint: `ruff check . && ruff format --check .`
+- Lint: `ruff check . &amp;&amp; ruff format --check .`
 - Type check: `mypy src/`
 
 ## Conventions
@@ -222,7 +223,7 @@
 
 ## Do not touch
 - `migrations/` — generated, edit the model instead
-- `infra/prod/` — requires a separate approval</code></pre>
+- `infra/prod/` — requires a separate approval</code></pre></div>
     <p>Two rules make these files work. Keep them <strong>short</strong>, because every line competes for context with your actual code. And keep them <strong>true</strong> — a stale test command is worse than no file at all, because the agent will trust it and burn a run discovering it is wrong.</p>
     <p>If you maintain both files, make one the source of truth and symlink or generate the other. Two drifting copies of your build instructions is a bug waiting to happen.</p>
 
@@ -276,6 +277,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/monaco-code.js?v=20" defer></script>
   <script src="/script.js?v=2" defer></script>
   <script>
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
