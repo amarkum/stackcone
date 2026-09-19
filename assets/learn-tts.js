@@ -70,9 +70,22 @@
   // Novelty voices shipped with macOS make a poor reading voice; keep them out of the menu.
   var NOVELTY = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|fred|kathy|grandma|grandpa|rocko|eddy|reed)\b/i;
 
+  // Chrome's Google voices have no personal name ("UK English Female"), so give them one.
+  var GOOGLE_NAMES = [
+    [/^google us english$/i, "Ava (US English)"],
+    [/^google uk english female$/i, "Sophie (UK English)"],
+    [/^google uk english male$/i, "Oliver (UK English)"],
+    [/^google australian english female$/i, "Chloe (Australian English)"],
+    [/^google australian english male$/i, "Jack (Australian English)"],
+    [/^google indian english$/i, "Priya (Indian English)"]
+  ];
+
   // "Microsoft Aria Online (Natural) - English (United States)" -> "Aria (Natural)",
   // "Flo (English (United Kingdom))" -> "Flo".
   function voiceLabel(v) {
+    for (var i = 0; i < GOOGLE_NAMES.length; i++) {
+      if (GOOGLE_NAMES[i][0].test(v.name)) return GOOGLE_NAMES[i][1];
+    }
     var natural = /natural|neural/i.test(v.name);
     var name = v.name
       .replace(/^(Microsoft|Google|Apple)\s+/i, "")
