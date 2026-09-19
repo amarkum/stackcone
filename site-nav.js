@@ -288,5 +288,13 @@
     document.head.appendChild(search);
   }
 
+  // "Listen" (read aloud) control on lesson pages.
+  if (/^\/learn\//.test(location.pathname) && document.querySelector(".learn-lesson") && !document.querySelector('script[src*="learn-tts.js"]')) {
+    var tts = document.createElement("script");
+    tts.src = "/assets/learn-tts.js?v=2";
+    tts.defer = true;
+    document.head.appendChild(tts);
+  }
+
   document.dispatchEvent(new CustomEvent("site-nav-ready", { detail: { nav: nav } }));
 })();
