@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Embeddings, Vector Databases and Advanced RAG | AI Interview Questions | stackcone Learn</title>
+  <meta name="description" content="How embeddings are trained, similarity metrics, HNSW and IVF indexes, scaling to billions of vectors, multi-tenancy, drift, GraphRAG and agentic retrieval.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/interview-questions/embeddings-vector-databases/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=10">
+  <link rel="stylesheet" href="/learn/learn.css?v=35">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=17">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> / Embeddings, Vector Databases and Advanced RAG</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="ai-interview-questions">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a></p>
+              <p class="learn-sidebar-tagline">55 questions with model answers</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 5 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/ai-ml-fundamentals/" data-lesson="aiq-ai-ml-fundamentals" data-minutes="16"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">AI and Machine Learning Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/llm-transformers/" data-lesson="aiq-llm-transformers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">LLMs and Transformers: How They Actually Work</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/prompt-engineering/" data-lesson="aiq-prompt-engineering" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompt Engineering and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/rag-fundamentals/" data-lesson="aiq-rag-fundamentals" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">RAG: Retrieval-Augmented Generation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/interview-questions/embeddings-vector-databases/" aria-current="page" data-lesson="aiq-embeddings-vector-databases" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Embeddings, Vector Databases and Advanced RAG</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> · Lesson 5 of 5</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ai/interview-questions/rag-fundamentals/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              
+            </nav>
+          </div>
+          <h1>Embeddings, Vector Databases and Advanced RAG</h1>
+          <p class="learn-summary">How embeddings are trained, similarity metrics, HNSW and IVF indexes, scaling to billions of vectors, multi-tenancy, drift, GraphRAG and agentic retrieval.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>11 questions</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/interview-questions/rag-fundamentals/">Lesson 4: RAG: Retrieval-Augmented Generation</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain how embedding models are trained and how to choose and evaluate one</li><li>Compare ANN indexes and do memory and recall/latency trade-off maths</li><li>Handle scale, access control, freshness and multi-hop retrieval in production RAG</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 5 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 5</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 1 hour</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
+      <p>Once you can describe a basic RAG pipeline, senior interviews go one level down: <em>how</em> do vector databases find neighbours so fast, what happens when you switch embedding models, how do you keep one tenant from seeing another's documents, and what do you do when questions need several hops of reasoning?</p>
+      <p>These questions reward numbers and trade-offs. Practise the memory arithmetic in this lesson until you can do it aloud.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>How to use this lesson</p><p class="learn-callout-body">Cover the answer, say yours out loud for a minute, then compare. Each answer follows the shape interviewers reward: a one-line definition, a concrete example, then the trade-off or failure mode. The <em>Follow-up</em> line is what a good interviewer asks next.</p></aside>
+      <h2>The 11 questions in this lesson</h2>
+      <ol class="aiq-toc" start="45"><li><a href="#q45">What are embeddings, and how are embedding models trained?</a></li><li><a href="#q46">Compare cosine similarity, dot product and Euclidean distance. Which do you use and why?</a></li><li><a href="#q47">What is a vector database and how does it differ from a traditional database? Compare flat, IVF, HNSW and PQ indexes.</a></li><li><a href="#q48">How does HNSW work, and which parameters trade recall against latency?</a></li><li><a href="#q49">How do you choose an embedding model, and how do dimensionality and Matryoshka embeddings affect cost?</a></li><li><a href="#q50">You deployed a new embedding model and search quality crashed, or the new model has different dimensions from the existing vectors. What do you do?</a></li><li><a href="#q51">How do you scale vector search to hundreds of millions or billions of vectors?</a></li><li><a href="#q52">How do you handle multi-tenant data and per-user access control in a vector database?</a></li><li><a href="#q53">What are GraphRAG, agentic RAG and Self-RAG, and when do you use each over plain RAG?</a></li><li><a href="#q54">How do you keep a RAG system fresh and consistent: document updates, deletions, versioning and conflicting sources?</a></li><li><a href="#q55">How do you fine-tune an embedding model for your domain, and when is it worth it?</a></li></ol>
+      <h3 id="q45">45. What are embeddings, and how are embedding models trained?</h3>
+      <p class="aiq-level"><em>Warm-up</em></p>
+      <p>An embedding is a list of numbers (a vector, commonly 384 to 3,072 dimensions) that represents the <em>meaning</em> of a piece of text, an image or another object so that similar things sit close together in the vector space. That geometry lets a computer search by meaning: "how do I get my money back" lands near "refund policy" even with no shared words.</p>
+      <p>Modern text embedders are transformer encoders (or decoders with pooling) trained with <strong>contrastive learning</strong>: given a query and a passage that answers it (a positive pair), the model is rewarded for making their vectors close and for pushing them away from other passages in the same batch (<em>in-batch negatives</em>) and from deliberately tricky <em>hard negatives</em>. The loss most often used is InfoNCE. Training data comes from search logs, question-answer pairs, duplicated questions, titles-and-bodies, and synthetic pairs generated by LLMs.</p>
+      <p>Two practical details worth knowing: many models are <strong>asymmetric</strong> and expect different prefixes for queries and documents (such as "query:" and "passage:"), and getting that wrong quietly hurts quality; and embeddings from <em>different models are not comparable</em>, so a query and its index must always use the same model and version.</p>
+      <p><strong>Follow-up:</strong> Why can you not compare a vector from model A with a vector from model B, even if both have 768 dimensions?</p>
+      <h3 id="q46">46. Compare cosine similarity, dot product and Euclidean distance. Which do you use and why?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <ul><li><strong>Dot product:</strong> sum of element-wise products. Sensitive to both angle and vector length.</li><li><strong>Cosine similarity:</strong> the dot product of the vectors after scaling each to length 1, so it measures only the <em>angle</em> (direction). Range -1 to 1.</li><li><strong>Euclidean (L2) distance:</strong> straight-line distance between points. Sensitive to length as well as direction.</li></ul>
+      <p>The key fact: <strong>if all vectors are normalised to unit length, cosine similarity, dot product and Euclidean distance produce the same ranking</strong> (because for unit vectors, squared distance = 2 - 2 x cosine). Most embedding models output normalised vectors or are meant to be used with cosine, so the practical rule is: use whatever metric the model was trained with, normalise once at ingestion, and then use the dot product because it is the fastest to compute. Use raw dot product deliberately when magnitude carries meaning (for example some recommendation models).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import math
+
+def dot(a, b): return sum(x * y for x, y in zip(a, b))
+def norm(a): return math.sqrt(dot(a, a))
+def cosine(a, b): return dot(a, b) / (norm(a) * norm(b))
+def l2(a, b): return math.sqrt(sum((x - y) ** 2 for x, y in zip(a, b)))
+def unit(a): n = norm(a); return [x / n for x in a]
+
+q  = [1.0, 2.0, 3.0]
+d1 = [2.0, 4.0, 6.0]       # same direction as q, twice as long
+d2 = [3.0, 2.0, 1.0]       # different direction, similar length
+
+print("raw   dot   d1=%.1f d2=%.1f" % (dot(q, d1), dot(q, d2)))       # length inflates d1
+print("raw   L2    d1=%.2f d2=%.2f" % (l2(q, d1), l2(q, d2)))          # d1 looks farther away
+print("cosine      d1=%.2f d2=%.2f" % (cosine(q, d1), cosine(q, d2)))  # d1 is identical in meaning
+qu, u1, u2 = unit(q), unit(d1), unit(d2)
+print("unit  dot   d1=%.2f d2=%.2f" % (dot(qu, u1), dot(qu, u2)))      # equals cosine
+print("unit  L2^2  d1=%.2f d2=%.2f" % (l2(qu, u1) ** 2, l2(qu, u2) ** 2))   # = 2 - 2*cosine</code></pre></div>
+      <p><strong>Follow-up:</strong> Why does normalising vectors at ingestion time speed up search?</p>
+      <h3 id="q47">47. What is a vector database and how does it differ from a traditional database? Compare flat, IVF, HNSW and PQ indexes.</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>A vector database stores vectors plus metadata and answers <strong>nearest-neighbour</strong> queries. A relational database finds rows by exact matching and ranges on indexed columns; a vector database finds the <em>most similar</em> items by geometry. Exact nearest-neighbour search is a brute-force scan (cost proportional to the number of vectors), which is fine for thousands of vectors and hopeless for hundreds of millions, so vector databases use <strong>Approximate Nearest Neighbour (ANN)</strong> indexes that trade a little recall for orders of magnitude of speed.</p>
+      <table><thead><tr><th>Index</th><th>Idea</th><th>Strengths</th><th>Costs</th></tr></thead><tbody><tr><td>Flat (brute force)</td><td>Compare the query to every vector</td><td>Exact, no build step, simplest</td><td>Linear time; slow at scale</td></tr><tr><td>IVF (inverted file)</td><td>Cluster vectors (k-means); search only the nprobe closest clusters</td><td>Fast, low memory overhead, easy to update in batches</td><td>Recall depends on nprobe; needs training; boundary misses</td></tr><tr><td>HNSW (graph)</td><td>Layered small-world graph; greedy walk from coarse to fine layer</td><td>Best recall/latency for in-memory search; supports inserts</td><td>High RAM (graph plus vectors); slow build; deletes are awkward</td></tr><tr><td>PQ / scalar / binary quantisation</td><td>Compress vectors into short codes</td><td>4x to 32x less memory, faster distance maths</td><td>Recall loss; usually reranked with full vectors</td></tr><tr><td>DiskANN-style</td><td>Graph index designed for SSD</td><td>Billions of vectors with modest RAM</td><td>Higher latency; more engineering</td></tr></tbody></table>
+      <p>Beyond the index, real vector databases add <strong>metadata filtering</strong>, hybrid (keyword plus vector) search, replication and sharding, and durability. Common choices: pgvector inside Postgres (best when you already run Postgres and the scale is moderate), managed services such as Pinecone, and dedicated engines such as Qdrant, Weaviate, Milvus and OpenSearch/Elasticsearch. Pick by scale, filtering needs, ops burden and cost, not by benchmark headlines.</p>
+      <p><strong>Follow-up:</strong> When would you keep vectors in Postgres with pgvector rather than adopt a dedicated vector database?</p>
+      <h3 id="q48">48. How does HNSW work, and which parameters trade recall against latency?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>HNSW (Hierarchical Navigable Small World) builds a <strong>multi-layer proximity graph</strong>. Every vector is a node connected to some nearby nodes. The bottom layer contains all nodes; each higher layer contains a random, exponentially smaller subset, forming express lanes. Search starts at an entry point in the sparsest top layer, greedily hops to whichever neighbour is closer to the query until no neighbour improves, drops to the next layer from that position, and repeats. On the bottom layer it keeps a <em>candidate list</em> of size <code>efSearch</code> and returns the best k found.</p>
+      <div class="diagram-wrap" data-diagram-title="HNSW search descends through layers">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart TB
+  subgraph L2["Layer 2 - few nodes, long jumps"]
+    A2((entry)) --&gt; B2((n1))
+  end
+  subgraph L1["Layer 1 - more nodes"]
+    B1((n1)) --&gt; C1((n5)) --&gt; D1((n9))
+  end
+  subgraph L0["Layer 0 - every vector, short hops"]
+    D0((n9)) --&gt; E0((n11)) --&gt; F0((n14 nearest))
+  end
+  B2 -. descend .-&gt; B1
+  D1 -. descend .-&gt; D0</div>
+        </div>
+      </div>
+      <ul><li><strong>M</strong>: maximum neighbours per node. Higher gives better recall and connectivity but more memory and slower build.</li><li><strong>efConstruction</strong>: candidate list size while building. Higher gives a better graph and slower indexing.</li><li><strong>efSearch</strong>: candidate list size at query time. The main dial: raise it for higher recall, lower it for speed. Latency grows roughly with it.</li></ul>
+      <p>Operational caveats: the whole graph and usually the vectors live in RAM, so memory is the constraint; deleting and updating nodes leaves tombstones that degrade quality until the index is rebuilt or compacted; and filtered search can hurt recall if the filter removes most graph neighbours (good engines handle filtering inside the traversal).</p>
+      <p><strong>Follow-up:</strong> Recall@10 is 0.88 and product wants 0.97. Which knobs do you turn and what do you pay?</p>
+      <h3 id="q49">49. How do you choose an embedding model, and how do dimensionality and Matryoshka embeddings affect cost?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Choose on <strong>your data and task</strong>, not a leaderboard rank. Shortlist three to five candidates and evaluate them on a labelled sample of your own queries and documents, measuring recall@k and MRR. Criteria: retrieval quality on your domain (legal, code, medical text behave differently), language coverage (multilingual needs are a hard filter), maximum input length versus your chunk size, latency and throughput, cost (API price or GPU hosting), licence and data-privacy constraints (can text leave your network?), and vector dimension.</p>
+      <strong>Dimensionality is a cost multiplier:</strong> storage and search cost scale with the number of dimensions. 10 million vectors of 1,536 float32 dimensions need about 61 GB; at 384 dimensions about 15 GB. <strong>Matryoshka representation learning</strong> trains embeddings so that the first N dimensions form a valid, smaller embedding; you can truncate (for example 1,024 to 256 dimensions) and pay a small quality loss for a large saving. Combine with scalar (int8) or binary quantisation, then rerank the shortlist with full vectors.
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def index_gb(n_vectors, dims, bytes_per_value=4):
+    return n_vectors * dims * bytes_per_value / 1e9
+
+n = 10_000_000
+for dims, label, b in [(1536, "float32", 4), (768, "float32", 4), (384, "float32", 4), (1536, "int8", 1), (1536, "binary", 1 / 8)]:
+    print("%-8s %5d dims -&gt; %7.1f GB" % (label, dims, index_gb(n, dims, b)))
+print("1 billion x 768 float32: %.1f TB" % (index_gb(1_000_000_000, 768) / 1000))</code></pre></div>
+      <p><strong>Follow-up:</strong> A stakeholder wants the highest-ranked model on a public benchmark. What do you say?</p>
+      <h3 id="q50">50. You deployed a new embedding model and search quality crashed, or the new model has different dimensions from the existing vectors. What do you do?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Vectors from different models live in different spaces, so <strong>you cannot mix them in one index</strong>: a query embedded with the new model against old-model vectors is meaningless, and a dimension mismatch is simply rejected. There is no shortcut except a re-embed.</p>
+      <div class="diagram-wrap" data-diagram-title="Blue-green migration of an embedding model">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart LR
+  subgraph BLUE["Live: index v1 (old model)"]
+    Q1[Queries] --&gt; I1[(Index v1)]
+  end
+  subgraph GREEN["Build: index v2 (new model)"]
+    DOCS[Source documents] --&gt; RE[Re-embed in batches]
+    RE --&gt; I2[(Index v2)]
+  end
+  I2 --&gt; EV[Evaluate on golden set and shadow traffic]
+  EV --&gt; SW{Better and stable?}
+  SW -- yes --&gt; CUT[Cut over gradually, keep v1 for rollback]
+  SW -- no --&gt; FIX[Fix and rebuild]</div>
+        </div>
+      </div>
+      <p>Playbook: build a <strong>second index</strong> with the new model while the old one keeps serving; write new and updated documents to <em>both</em> during the transition; run your golden set and replay real queries (shadow traffic) against v2; cut over gradually with a feature flag; keep v1 until confident, then delete it. Store the <strong>model name and version as metadata</strong> on every vector so this never becomes a guessing game, and keep the original text so re-embedding never depends on the old vectors.</p>
+      <p>If it crashed overnight without a deliberate migration, suspect an unpinned embedding-model alias that the provider updated, a changed preprocessing step, or a missing query/document prefix. Pin model versions and add an embedding-similarity canary test (a fixed set of query-document pairs whose scores must stay in range) to your monitoring.</p>
+      <p><strong>Follow-up:</strong> Re-embedding 500 million chunks costs a lot. How do you reduce the cost and risk?</p>
+      <h3 id="q51">51. How do you scale vector search to hundreds of millions or billions of vectors?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Work down the levers in order:</p>
+      <ol><li><strong>Shrink each vector:</strong> lower dimensionality (Matryoshka truncation), scalar or product quantisation, binary codes for a first pass. Rerank a small shortlist with full-precision vectors.</li><li><strong>Partition the index:</strong> shard by a natural key (tenant, date, language, collection) so a query touches one shard; hash-shard for uniform load; replicate for throughput and availability.</li><li><strong>Choose the right index for the hardware:</strong> IVF-PQ for memory-tight, high-recall-tolerant workloads; HNSW when RAM is plentiful and latency matters; DiskANN-style indexes to keep the bulk on SSD.</li><li><strong>Use tiered storage:</strong> hot recent or popular data in memory, cold data on disk or object storage, with a query router.</li><li><strong>Filter early:</strong> metadata pre-filters cut candidates dramatically; design the partitioning around your most common filter.</li><li><strong>Cache</strong> frequent queries and their results, and cache embeddings of repeated query text.</li><li><strong>Batch and update smartly:</strong> ingest in batches, build indexes off the serving path, compact deletions on a schedule.</li></ol>
+      <p>Always confirm with measurements: recall@k against an exact baseline on a sample, p50/p99 latency and cost per million queries, because each memory-saving step costs recall you must be able to justify.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import random, math
+random.seed(5)
+
+def dist(a, b): return sum((x - y) ** 2 for x, y in zip(a, b))
+DIM, N = 8, 3000
+vecs = [[random.gauss(0, 1) for _ in range(DIM)] for _ in range(N)]
+
+# IVF-style index: pick centroids, put each vector in its nearest cell
+cents = random.sample(vecs, 40)
+cells = {i: [] for i in range(len(cents))}
+for idx, v in enumerate(vecs):
+    cells[min(range(len(cents)), key=lambda c: dist(v, cents[c]))].append(idx)
+
+def ann(q, nprobe, k=10):
+    order = sorted(range(len(cents)), key=lambda c: dist(q, cents[c]))[:nprobe]
+    cand = [i for c in order for i in cells[c]]
+    return sorted(cand, key=lambda i: dist(q, vecs[i]))[:k], len(cand)
+
+def exact(q, k=10):
+    return sorted(range(N), key=lambda i: dist(q, vecs[i]))[:k]
+
+queries = [[random.gauss(0, 1) for _ in range(DIM)] for _ in range(60)]
+for nprobe in (1, 3, 8, 20):
+    rec, scanned = 0.0, 0
+    for q in queries:
+        got, n = ann(q, nprobe)
+        rec += len(set(got) &amp; set(exact(q))) / 10
+        scanned += n
+    print("nprobe=%-2d recall@10=%.2f  scanned %.0f%% of vectors" % (nprobe, rec / len(queries), 100 * scanned / len(queries) / N))</code></pre></div>
+      <p><strong>Follow-up:</strong> Your p99 latency doubled after the index grew 3x, with the same hardware. What do you check?</p>
+      <h3 id="q52">52. How do you handle multi-tenant data and per-user access control in a vector database?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Security must be enforced <strong>in the retrieval layer, before any text reaches the model</strong>. If a forbidden chunk is in the prompt, no instruction can reliably stop the model from revealing it. Options, from strongest isolation to most efficient:</p>
+      <table><thead><tr><th>Approach</th><th>How</th><th>Pros</th><th>Cons</th></tr></thead><tbody><tr><td>Index or cluster per tenant</td><td>Separate physical index for each customer</td><td>Strongest isolation, easy deletion and compliance</td><td>Costly for many small tenants; operational sprawl</td></tr><tr><td>Namespace / partition per tenant</td><td>One index, hard partitions</td><td>Good isolation and cost balance; queries touch only that partition</td><td>Partition limits; cross-tenant analytics harder</td></tr><tr><td>Metadata filter</td><td>Store tenant id and ACL tags on each vector; apply as a filter on every query</td><td>Flexible, supports per-document ACLs and groups</td><td>Every query path <em>must</em> apply it; a missed filter is a data leak; filters can lower ANN recall</td></tr></tbody></table>
+      <p>For per-user document permissions in an enterprise: sync ACLs from the source systems (SharePoint, Drive, Confluence) into chunk metadata as <em>group and user ids</em>, resolve the caller's groups at query time, and pass them as a mandatory filter built server-side from the authenticated identity, <strong>never from anything the client or the model supplies</strong>. Re-check permissions at answer time for high-risk sources, because ACLs change. Add tests that try cross-tenant queries and log every retrieval with the identity and the returned document ids for audit.</p>
+      <p><strong>Follow-up:</strong> A document's permissions change from public to restricted. How fast must that propagate, and how do you make it so?</p>
+      <h3 id="q53">53. What are GraphRAG, agentic RAG and Self-RAG, and when do you use each over plain RAG?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Plain RAG retrieves a few similar chunks once and answers. It struggles when the answer needs <strong>relationships across many documents</strong> or <strong>several retrieval steps</strong>.</p>
+      <ul><li><strong>GraphRAG:</strong> an LLM extracts entities and relations from the corpus to build a knowledge graph (often with community detection and pre-written summaries of each community). Queries can traverse relationships ("which suppliers are connected to this incident?") and answer <em>global</em> questions such as "what are the main themes across these reports?" that no single chunk contains. Cost: expensive, slower indexing, and the graph must be maintained.</li><li><strong>Agentic RAG:</strong> an agent decides <em>whether</em>, <em>what</em> and <em>where</em> to retrieve, can rewrite queries, call several indexes and tools, inspect the results and retrieve again until it has enough evidence. Best for complex, multi-hop or ambiguous questions; costs more latency and tokens and needs step limits and evaluation of the whole trajectory.</li><li><strong>Self-RAG:</strong> the model is trained to emit special reflection tokens that decide when retrieval is needed and to critique whether retrieved passages are relevant and its own output is supported. It builds the retrieve-and-verify loop into the model instead of the orchestration code.</li></ul>
+      <p>My rule: start with well-tuned hybrid RAG plus reranking; add query decomposition for multi-hop questions; go agentic only for the query types that measurably fail; use GraphRAG when the domain is relationship-heavy or users ask corpus-level questions.</p>
+      <p><strong>Follow-up:</strong> Give an example question that plain RAG will fail on but GraphRAG or an agentic loop will answer.</p>
+      <h3 id="q54">54. How do you keep a RAG system fresh and consistent: document updates, deletions, versioning and conflicting sources?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Treat the index as a <strong>derived view of the source of truth</strong> that must be kept in sync, not a one-time import.</p>
+      <ul><li><strong>Change detection:</strong> use source webhooks or periodic crawls with content hashes. When a document changes, re-parse and re-embed only the changed chunks; assign deterministic chunk ids (document id plus position or content hash) so updates overwrite instead of duplicating.</li><li><strong>Deletes and permissions:</strong> propagate deletions and access changes promptly (tombstone, then compact). Stale, deleted or restricted content in the index is both a quality and a security bug.</li><li><strong>Versioning:</strong> store version, effective date and status (draft, current, superseded) as metadata; filter to current by default but allow point-in-time queries ("what was the policy in 2024?"). Blue-green re-indexing lets you validate a big change before switching.</li><li><strong>Conflicts:</strong> deduplicate near-identical chunks; prefer newer or higher-authority sources via ranking boosts; include dates in the prompt and instruct the model to flag disagreements instead of blending them; and fix contradictions at the source when you find them.</li><li><strong>Freshness monitoring:</strong> report index lag (source updated versus indexed), track answers citing superseded documents, and alert on ingestion failures.</li></ul>
+      <p><strong>Follow-up:</strong> Users report answers quoting last year's price list. Walk through how you would find the cause.</p>
+      <h3 id="q55">55. How do you fine-tune an embedding model for your domain, and when is it worth it?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Consider it when off-the-shelf models miss your jargon (legal citations, part numbers, medical abbreviations) and you have already fixed chunking, hybrid search and reranking. It is often a cheaper win than a bigger LLM.</p>
+      <ol><li><strong>Build training pairs:</strong> real (query, relevant passage) pairs from search logs and click data, expert-labelled examples, or <em>synthetic queries</em> generated by an LLM for each of your chunks (filtered to remove bad ones).</li><li><strong>Mine hard negatives:</strong> passages that look relevant but are not, taken from your current retriever's top results. They teach the model the distinctions that matter in your domain.</li><li><strong>Train contrastively</strong> (often a few epochs with a small learning rate, sometimes with LoRA) and keep a held-out set of queries and documents that never appears in training.</li><li><strong>Evaluate honestly</strong> against the base model on that held-out set (recall@k, MRR) and on general tasks to catch regressions.</li><li><strong>Deploy safely:</strong> a new embedding model means a full re-embed and index migration, so treat it as a release.</li></ol>
+      <p>Risks: overfitting to synthetic data, leakage between train and evaluation queries, and a model that is now excellent on your domain and worse on out-of-domain queries. Sometimes a <em>reranker</em> fine-tuned on the same data gives most of the gain without re-embedding the corpus.</p>
+      <p><strong>Follow-up:</strong> You have 200 labelled queries and 2 million chunks. How do you generate enough training data?</p>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Compute, out loud, the memory needed for 50 million chunks at 768 dimensions in float32, int8 and binary. Then pick an index for a 4 GB RAM box and a 64 GB RAM box and justify it. Finally write the query filter you would attach for a user in groups 'finance' and 'eu-staff' and say where in the code it must be built.</p></aside>
+      <h2>Sources and further reading</h2>
+      <ul><li><a href="https://arxiv.org/abs/1603.09320" rel="noopener noreferrer" target="_blank">Malkov and Yashunin, HNSW</a></li><li><a href="https://hal.inria.fr/inria-00514462v2/document" rel="noopener noreferrer" target="_blank">Jegou et al., Product Quantization for Nearest Neighbor Search</a></li><li><a href="https://arxiv.org/abs/2205.13147" rel="noopener noreferrer" target="_blank">Kusupati et al., Matryoshka Representation Learning</a></li><li><a href="https://arxiv.org/abs/2404.16130" rel="noopener noreferrer" target="_blank">Edge et al., From Local to Global: A Graph RAG Approach</a></li><li><a href="https://arxiv.org/abs/2310.11511" rel="noopener noreferrer" target="_blank">Asai et al., Self-RAG</a></li><li><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions" rel="noopener noreferrer" target="_blank">AI Engineering interview questions (Outcome School, Apache-2.0)</a></li></ul>
+          
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/interview-questions/rag-fundamentals/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <button type="button" class="learn-complete" data-mark-complete="aiq-embeddings-vector-databases" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=15"></script>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=21" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>
