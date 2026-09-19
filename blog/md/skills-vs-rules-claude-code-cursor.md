@@ -139,7 +139,6 @@ The `description` field is how Claude decides to auto-load a skill. Write it lik
 name: ship-blog-post
 description: >-
   Ship a stackcone blog post — write md source, publish HTML,
-  update posts.json and sitemap, run apply_highlights.py.
 ---
 ```
 
@@ -204,7 +203,6 @@ Follow `.cursor/rules/blog-posts.mdc` conventions.
 4. Add entry to `blog/posts.json` with author "Amar Kumar".
 5. Add URL to `sitemap.xml`.
 6. Update static listing in `blog/index.html`.
-7. Run `python3 _dev/apply_highlights.py blog/posts/{slug}/index.html`.
 8. Verify no links point to `.md` files.
 
 ## Do not

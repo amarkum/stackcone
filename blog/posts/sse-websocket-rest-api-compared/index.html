@@ -162,37 +162,37 @@
 
     <h3>REST for long tasks — polling anti-pattern</h3>
     <p>A background job runs for two minutes. The browser polls every second:</p>
-    <pre><code><span class="cm">// Client — polling (works, but wasteful)</span>
-<span class="kw">async</span> <span class="kw">function</span> waitForTask(taskId) {
-  <span class="kw">while</span> (true) {
-    <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">`/api/tasks/${taskId}`</span>);
-    <span class="kw">const</span> task = <span class="kw">await</span> res.json();
+    <pre><code>// Client — polling (works, but wasteful)
+async function waitForTask(taskId) {
+  while (true) {
+    const res = await fetch(`/api/tasks/${taskId}`);
+    const task = await res.json();
     renderStatus(task.status, task.progress);
-    <span class="kw">if</span> (task.status === <span class="str">"done"</span> || task.status === <span class="str">"failed"</span>) <span class="kw">return</span> task;
-    <span class="kw">await</span> <span class="kw">new</span> Promise((r) =&gt; setTimeout(r, <span class="num">1000</span>));
+    if (task.status === "done" || task.status === "failed") return task;
+    await new Promise((r) =&gt; setTimeout(r, 1000));
   }
 }</code></pre>
 
-    <pre><code><span class="cm"># Server — regular REST handler (FastAPI)</span>
-<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
-<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+    <pre><code># Server — regular REST handler (FastAPI)
+from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
-TASKS: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">dict</span>] = {}
+TASKS: dict[str, dict] = {}
 
-<span class="kw">class</span> CreateTask(BaseModel):
-    prompt: <span class="fn">str</span>
+class CreateTask(BaseModel):
+    prompt: str
 
-@app.post(<span class="str">"/api/tasks"</span>)
-<span class="kw">def</span> <span class="fn">create_task</span>(body: CreateTask):
-    task_id = <span class="str">"task-123"</span>
-    TASKS[task_id] = {<span class="str">"status"</span>: <span class="str">"queued"</span>, <span class="str">"progress"</span>: <span class="num">0</span>, <span class="str">"result"</span>: <span class="kw">None</span>}
-    <span class="cm"># ... enqueue background worker ...</span>
-    <span class="kw">return</span> {<span class="str">"task_id"</span>: task_id}
+@app.post("/api/tasks")
+def create_task(body: CreateTask):
+    task_id = "task-123"
+    TASKS[task_id] = {"status": "queued", "progress": 0, "result": None}
+    # ... enqueue background worker ...
+    return {"task_id": task_id}
 
-@app.get(<span class="str">"/api/tasks/{task_id}"</span>)
-<span class="kw">def</span> <span class="fn">get_task</span>(task_id: <span class="fn">str</span>):
-    <span class="kw">return</span> TASKS.get(task_id, {<span class="str">"error"</span>: <span class="str">"not found"</span>})</code></pre>
+@app.get("/api/tasks/{task_id}")
+def get_task(task_id: str):
+    return TASKS.get(task_id, {"error": "not found"})</code></pre>
 
     <p><strong>Problems:</strong> up to 1s latency on updates, N users × poll rate = needless load, no way for the server to push <code>need_input</code> without the client guessing to poll faster.</p>
 
@@ -209,21 +209,21 @@ TASKS: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn
     <h3>SSE API example (FastAPI)</h3>
     <pre><code>import asyncio
 import json
-<span class="kw">from</span> fastapi import FastAPI
-<span class="kw">from</span> fastapi.responses import StreamingResponse
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 
 app = FastAPI()
 
 async def task_event_stream(task_id: str):
-    """Yield SSE frames <span class="kw">as</span> the worker makes progress."""
-    yield f"event: status\ndata: {json.dumps({<span class="str">'task_id'</span>: task_id, <span class="str">'status'</span>: <span class="str">'running'</span>})}\n\n"
-    for step <span class="kw">in</span> range(<span class="num">1</span>, <span class="num">6</span>):
-        await asyncio.sleep(<span class="num">0.4</span>)
-        payload = {"task_id": task_id, "progress": step * <span class="num">20</span>, "message": f"Step {step}/<span class="num">5</span>"}
+    """Yield SSE frames as the worker makes progress."""
+    yield f"event: status\ndata: {json.dumps({'task_id': task_id, 'status': 'running'})}\n\n"
+    for step in range(1, 6):
+        await asyncio.sleep(0.4)
+        payload = {"task_id": task_id, "progress": step * 20, "message": f"Step {step}/5"}
         yield f"event: progress\ndata: {json.dumps(payload)}\n\n"
-    yield f"event: done\ndata: {json.dumps({<span class="str">'task_id'</span>: task_id, <span class="str">'result'</span>: <span class="str">'ok'</span>})}\n\n"
+    yield f"event: done\ndata: {json.dumps({'task_id': task_id, 'result': 'ok'})}\n\n"
 
-<span class="fn">@app</span>.get("/api/tasks/{task_id}/stream")
+@app.get("/api/tasks/{task_id}/stream")
 async def stream_task(task_id: str):
     return StreamingResponse(
         task_event_stream(task_id),
@@ -236,47 +236,47 @@ async def stream_task(task_id: str):
     )</code></pre>
 
     <h3>Browser client — EventSource (GET)</h3>
-    <pre><code><span class="kw">const</span> es = <span class="kw">new</span> EventSource(`/api/tasks/${taskId}/stream`);
+    <pre><code>const es = new EventSource(`/api/tasks/${taskId}/stream`);
 
-es.addEventListener(<span class="str">"progress"</span>, (e) =&gt; {
-  <span class="kw">const</span> data = JSON.parse(e.data);
-  document.getElementById(<span class="str">"bar"</span>).style.width = `${data.progress}%`;
+es.addEventListener("progress", (e) =&gt; {
+  const data = JSON.parse(e.data);
+  document.getElementById("bar").style.width = `${data.progress}%`;
   log(data.message);
 });
 
-es.addEventListener(<span class="str">"done"</span>, (e) =&gt; {
-  <span class="kw">const</span> data = JSON.parse(e.data);
-  log(<span class="str">"Finished:"</span>, data.result);
+es.addEventListener("done", (e) =&gt; {
+  const data = JSON.parse(e.data);
+  log("Finished:", data.result);
   es.close();
 });
 
 es.onerror = () =&gt; {
-  log(<span class="str">"Stream error — EventSource will retry"</span>);
+  log("Stream error — EventSource will retry");
 };</code></pre>
 
     <h3>Browser client — fetch + ReadableStream (POST + SSE)</h3>
     <p>Chat APIs usually POST the user message, then read an SSE body from the response — <code>EventSource</code> only supports GET, so use <code>fetch</code>:</p>
-    <pre><code><span class="kw">async</span> <span class="kw">function</span> streamChat(message) {
-  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"/api/chat/stream"</span>, {
-    method: <span class="str">"POST"</span>,
-    headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    <pre><code>async function streamChat(message) {
+  const res = await fetch("/api/chat/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message }),
   });
-  <span class="kw">const</span> reader = res.body.getReader();
-  <span class="kw">const</span> decoder = <span class="kw">new</span> TextDecoder();
-  <span class="kw">let</span> buffer = <span class="str">""</span>;
-  <span class="kw">while</span> (true) {
-    <span class="kw">const</span> { value, done } = <span class="kw">await</span> reader.read();
-    <span class="kw">if</span> (done) break;
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
     buffer += decoder.decode(value, { stream: true });
-    <span class="kw">const</span> parts = buffer.split(<span class="str">"\n\n"</span>);
-    buffer = parts.pop() || <span class="str">""</span>;
-    <span class="kw">for</span> (<span class="kw">const</span> block <span class="kw">of</span> parts) {
-      <span class="kw">const</span> line = block.split(<span class="str">"\n"</span>).find((l) =&gt; l.startsWith(<span class="str">"data:"</span>));
-      <span class="kw">if</span> (!line) continue;
-      <span class="kw">const</span> data = JSON.parse(line.slice(<span class="num">5</span>).trim());
-      <span class="kw">if</span> (data.type === <span class="str">"token"</span>) appendToken(data.content);
-      <span class="kw">if</span> (data.type === <span class="str">"done"</span>) <span class="kw">return</span>;
+    const parts = buffer.split("\n\n");
+    buffer = parts.pop() || "";
+    for (const block of parts) {
+      const line = block.split("\n").find((l) =&gt; l.startsWith("data:"));
+      if (!line) continue;
+      const data = JSON.parse(line.slice(5).trim());
+      if (data.type === "token") appendToken(data.content);
+      if (data.type === "done") return;
     }
   }
 }</code></pre>
@@ -295,66 +295,66 @@ es.onerror = () =&gt; {
 
     <h3>WebSocket server (FastAPI)</h3>
     <pre><code>import json
-<span class="kw">from</span> fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
 app = FastAPI()
 
-<span class="fn">@app</span>.websocket("/ws/agent/{run_id}")
+@app.websocket("/ws/agent/{run_id}")
 async def agent_socket(ws: WebSocket, run_id: str):
     await ws.accept()
     await ws.send_json({"type": "status", "run_id": run_id, "state": "connected"})
     try:
         await ws.send_json({"type": "tool_call", "name": "search_docs", "args": {"q": "pricing"}})
-        await ws.send_json({"type": "progress", "pct": <span class="num">40</span>, "message": "Searching..."})
+        await ws.send_json({"type": "progress", "pct": 40, "message": "Searching..."})
         # Agent needs human approval
         await ws.send_json({
             "type": "need_input",
             "prompt": "Deploy to production? (yes/no)",
-            "resume_token": "step-<span class="num">7</span>",
+            "resume_token": "step-7",
         })
         while True:
             msg = await ws.receive_json()
             if msg.get("type") == "user_reply":
                 answer = msg.get("text", "").strip().lower()
                 if answer == "yes":
-                    await ws.send_json({"type": "progress", "pct": <span class="num">90</span>, "message": "Deploying..."})
+                    await ws.send_json({"type": "progress", "pct": 90, "message": "Deploying..."})
                     await ws.send_json({"type": "done", "result": "deployed"})
-                <span class="kw">else</span>:
+                else:
                     await ws.send_json({"type": "done", "result": "cancelled"})
                 break
     except WebSocketDisconnect:
         pass</code></pre>
 
     <h3>WebSocket client (browser)</h3>
-    <pre><code><span class="kw">const</span> ws = <span class="kw">new</span> WebSocket(`wss:<span class="cm">//api.example.com/ws/agent/${runId}`);</span>
-<span class="kw">const</span> inputBox = document.getElementById(<span class="str">"agent-input"</span>);
-<span class="kw">const</span> logEl = document.getElementById(<span class="str">"log"</span>);
+    <pre><code>const ws = new WebSocket(`wss://api.example.com/ws/agent/${runId}`);
+const inputBox = document.getElementById("agent-input");
+const logEl = document.getElementById("log");
 
 ws.onmessage = (event) =&gt; {
-  <span class="kw">const</span> msg = JSON.parse(event.data);
-  <span class="kw">if</span> (msg.type === <span class="str">"progress"</span>) {
+  const msg = JSON.parse(event.data);
+  if (msg.type === "progress") {
     logEl.textContent += `\n[${msg.pct}%] ${msg.message}`;
   }
-  <span class="kw">if</span> (msg.type === <span class="str">"need_input"</span>) {
-    inputBox.disabled = <span class="kw">false</span>;
+  if (msg.type === "need_input") {
+    inputBox.disabled = false;
     inputBox.placeholder = msg.prompt;
     inputBox.dataset.resumeToken = msg.resume_token;
   }
-  <span class="kw">if</span> (msg.type === <span class="str">"done"</span>) {
+  if (msg.type === "done") {
     logEl.textContent += `\nDone: ${msg.result}`;
-    inputBox.disabled = <span class="kw">true</span>;
+    inputBox.disabled = true;
   }
 };
 
-inputBox.addEventListener(<span class="str">"keydown"</span>, (e) =&gt; {
-  <span class="kw">if</span> (e.key !== <span class="str">"Enter"</span> || inputBox.disabled) <span class="kw">return</span>;
+inputBox.addEventListener("keydown", (e) =&gt; {
+  if (e.key !== "Enter" || inputBox.disabled) return;
   ws.send(JSON.stringify({
-    type: <span class="str">"user_reply"</span>,
+    type: "user_reply",
     text: inputBox.value,
     resume_token: inputBox.dataset.resumeToken,
   }));
-  inputBox.value = <span class="str">""</span>;
-  inputBox.disabled = <span class="kw">true</span>;
+  inputBox.value = "";
+  inputBox.disabled = true;
 });</code></pre>
 
     <h2 id="comparison">Side-by-side comparison</h2>
@@ -398,13 +398,13 @@ inputBox.addEventListener(<span class="str">"keydown"</span>, (e) =&gt; {
       <li><code>WebSocket /ws/runs/{id}</code> — control plane: <code>tool_call</code>, <code>need_input</code>, <code>error</code></li>
       <li><code>GET /api/runs/{id}/tokens</code> (SSE) — data plane: LLM token stream</li>
     </ol>
-    <pre><code><span class="cm">// After POST /api/runs returns { run_id }</span>
-<span class="kw">const</span> { run_id } = <span class="kw">await</span> (<span class="kw">await</span> fetch(<span class="str">"/api/runs"</span>, { method: <span class="str">"POST"</span>, body })).json();
+    <pre><code>// After POST /api/runs returns { run_id }
+const { run_id } = await (await fetch("/api/runs", { method: "POST", body })).json();
 
-<span class="kw">const</span> ws = <span class="kw">new</span> WebSocket(<span class="str">`/ws/runs/${run_id}`</span>);
+const ws = new WebSocket(`/ws/runs/${run_id}`);
 ws.onmessage = (e) =&gt; handleControl(JSON.parse(e.data));
 
-<span class="kw">const</span> es = <span class="kw">new</span> EventSource(<span class="str">`/api/runs/${run_id}/tokens`</span>);
+const es = new EventSource(`/api/runs/${run_id}/tokens`);
 es.onmessage = (e) =&gt; appendToken(JSON.parse(e.data).content);</code></pre>
     <p>Separating <strong>control</strong> (WebSocket) from <strong>content</strong> (SSE) keeps token parsers simple and avoids multiplexing text chunks with binary-ish frame ordering bugs.</p>
 
@@ -441,11 +441,11 @@ event: done
 data: {"finish_reason": "stop"}</code></pre>
 
     <h3>WebSocket JSON message</h3>
-    <pre><code>{<span class="str">"type"</span>: <span class="str">"need_input"</span>, <span class="str">"prompt"</span>: <span class="str">"Confirm delete?"</span>, <span class="str">"resume_token"</span>: <span class="str">"abc"</span>}
-{<span class="str">"type"</span>: <span class="str">"user_reply"</span>, <span class="str">"text"</span>: <span class="str">"yes"</span>, <span class="str">"resume_token"</span>: <span class="str">"abc"</span>}</code></pre>
+    <pre><code>{"type": "need_input", "prompt": "Confirm delete?", "resume_token": "abc"}
+{"type": "user_reply", "text": "yes", "resume_token": "abc"}</code></pre>
 
     <h3>REST JSON (single shot)</h3>
-    <pre><code>{<span class="str">"task_id"</span>: <span class="str">"t-1"</span>, <span class="str">"status"</span>: <span class="str">"done"</span>, <span class="str">"progress"</span>: <span class="num">100</span>, <span class="str">"result"</span>: {<span class="str">"files"</span>: <span class="num">42</span>}}</code></pre>
+    <pre><code>{"task_id": "t-1", "status": "done", "progress": 100, "result": {"files": 42}}</code></pre>
 
     <h2 id="production">Production checklist</h2>
     <ul>
@@ -489,7 +489,7 @@ data: {"finish_reason": "stop"}</code></pre>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

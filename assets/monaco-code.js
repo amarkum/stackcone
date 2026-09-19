@@ -107,13 +107,18 @@
     editor.layout();
   }
 
-  function isRunnablePython(block, lang) {
-    return (
-      block.wrap &&
-      document.body.classList.contains('learn-page') &&
-      block.hint !== 'pyfile' &&
-      lang === 'python'
-    );
+  // Languages we can actually execute in the browser. 'pyfile' and 'jsfile'
+  // mark snippets that describe a file on disk, so they get no Run button.
+  var RUNNERS = {
+    python: { hint: 'pyfile', run: function () { return window.stackconeRunPython; } },
+    javascript: { hint: 'jsfile', run: function () { return window.stackconeRunJs; } }
+  };
+
+  function runnerFor(block, lang) {
+    if (!block.wrap || !document.body.classList.contains('learn-page')) return null;
+    var r = RUNNERS[lang];
+    if (!r || block.hint === r.hint) return null;
+    return r;
   }
 
   var LANG_LABELS = {
@@ -133,7 +138,8 @@
 
     var lang = detectLang(block.code, block.hint);
     var title = resolveBlockTitle(block) || LANG_LABELS[lang] || '';
-    var runnable = !!(editor && isRunnablePython(block, lang));
+    var runner = editor ? runnerFor(block, lang) : null;
+    var runnable = !!runner;
     var practice = !!(editor && block.solution !== null);
     if (!title && !runnable && !practice) return;
 
@@ -193,13 +199,14 @@
       host.insertAdjacentElement('afterend', output);
 
       runBtn.addEventListener('click', function () {
-        if (typeof window.stackconeRunPython !== 'function') {
+        var fn = runner.run();
+        if (typeof fn !== 'function') {
           output.hidden = false;
-          output.textContent = 'Python runner not loaded. Refresh the page.';
+          output.textContent = 'Runner not loaded. Refresh the page.';
           output.classList.add('is-error');
           return;
         }
-        window.stackconeRunPython(editor.getValue(), output, runBtn);
+        fn(editor.getValue(), output, runBtn);
       });
       return;
     }
@@ -286,7 +293,7 @@
   function createEditor(monaco, host, block) {
     var mount = host.querySelector('.monaco-code-mount') || host;
     var lang = detectLang(block.code, block.hint);
-    var runnable = isRunnablePython(block, lang);
+    var runnable = !!runnerFor(block, lang);
     var practice = block.solution !== null;
     var editable = runnable || practice;
     var editor = monaco.editor.create(mount, {

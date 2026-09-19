@@ -318,15 +318,15 @@
     </ul>
 
     <p>Example Mastra tool registration for catalog search — typed schema keeps the design agent grounded to real SKUs:</p>
-    <pre><code>import { createTool } <span class="kw">from</span> "<span class="fn">@mastra</span>/core";
-import { z } <span class="kw">from</span> "zod";
+    <pre><code>import { createTool } from "@mastra/core";
+import { z } from "zod";
 
 export const searchCatalogTool = createTool({
   id: "search_catalog",
-  description: "Query published SKUs <span class="kw">by</span> room, style, <span class="kw">and</span> budget ceiling",
+  description: "Query published SKUs by room, style, and budget ceiling",
   inputSchema: z.object({
     roomType: z.enum(["living", "bedroom", "kitchen", "bath"]),
-    styleTags: z.array(z.string()).<span class="fn">max</span>(<span class="num">5</span>),
+    styleTags: z.array(z.string()).max(5),
     maxBudgetCents: z.number().int().positive(),
     minWidthCm: z.number().optional(),
     maxWidthCm: z.number().optional(),
@@ -336,7 +336,7 @@ export const searchCatalogTool = createTool({
       ...input,
       status: "published",
     });
-    return { candidates: rows.slice(<span class="num">0</span>, <span class="num">12</span>), total: rows.length };
+    return { candidates: rows.slice(0, 12), total: rows.length };
   },
 });</code></pre>
 

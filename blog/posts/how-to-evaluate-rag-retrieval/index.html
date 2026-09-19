@@ -77,7 +77,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -172,12 +172,12 @@
     </ol>
 
     <pre><code>{
-  <span class="str">"id"</span>: <span class="str">"eval-014"</span>,
-  <span class="str">"question"</span>: <span class="str">"How do I reset my password?"</span>,
-  <span class="str">"expected_doc_id"</span>: <span class="str">"account-settings"</span>,
-  <span class="str">"expected_section"</span>: <span class="str">"Password reset"</span>,
-  <span class="str">"tags"</span>: [<span class="str">"account"</span>, <span class="str">"password"</span>],
-  <span class="str">"notes"</span>: <span class="str">"Users often say 'forgot login'"</span>
+  "id": "eval-014",
+  "question": "How do I reset my password?",
+  "expected_doc_id": "account-settings",
+  "expected_section": "Password reset",
+  "tags": ["account", "password"],
+  "notes": "Users often say 'forgot login'"
 }</code></pre>
 
     <div class="chart-wrap">
@@ -188,12 +188,12 @@
     <h2 id="hit-at-k">Run hit@k eval</h2>
     <p><strong>hit@k</strong> = fraction of questions where the expected doc appears in the top-k retrieved results.</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">hit_at_k</span>(results: <span class="fn">list</span>[<span class="fn">list</span>[<span class="fn">str</span>]], expected: <span class="fn">list</span>[<span class="fn">str</span>], k: <span class="fn">int</span> = <span class="num">10</span>) -&gt; <span class="fn">float</span>:
-    hits = <span class="num">0</span>
-    <span class="kw">for</span> retrieved, gold <span class="kw">in</span> <span class="fn">zip</span>(results, expected):
-        <span class="kw">if</span> gold <span class="kw">in</span> retrieved[:k]:
-            hits += <span class="num">1</span>
-    <span class="kw">return</span> hits / <span class="fn">len</span>(expected) <span class="kw">if</span> expected <span class="kw">else</span> <span class="num">0.0</span></code></pre>
+    <pre><code>def hit_at_k(results: list[list[str]], expected: list[str], k: int = 10) -&gt; float:
+    hits = 0
+    for retrieved, gold in zip(results, expected):
+        if gold in retrieved[:k]:
+            hits += 1
+    return hits / len(expected) if expected else 0.0</code></pre>
 
     <p>Run eval after every KB sync, after chunk/embedding changes, and before vs after adding a reranker.</p>
 
@@ -265,24 +265,24 @@
     </div>
 
     <h2 id="eval-script">Sample eval script</h2>
-    <pre><code><span class="kw">import</span> <span class="fn">json</span>
-<span class="kw">from</span> your_app.retrieve <span class="kw">import</span> retrieve
+    <pre><code>import json
+from your_app.retrieve import retrieve
 
-<span class="kw">def</span> <span class="fn">eval_retrieval</span>(cases: <span class="fn">list</span>[<span class="fn">dict</span>], k: <span class="fn">int</span> = <span class="num">10</span>) -&gt; <span class="fn">dict</span>:
-    hits, mrr_sum = <span class="num">0</span>, <span class="num">0.0</span>
-    <span class="kw">for</span> case <span class="kw">in</span> cases:
-        docs = retrieve(case[<span class="str">"question"</span>], top_k=k)
-        doc_ids = [d[<span class="str">"metadata"</span>][<span class="str">"doc_id"</span>] <span class="kw">for</span> d <span class="kw">in</span> docs]
-        gold = case[<span class="str">"expected_doc_id"</span>]
-        <span class="kw">if</span> gold <span class="kw">in</span> doc_ids:
-            hits += <span class="num">1</span>
-            mrr_sum += <span class="num">1.0</span> / (doc_ids.index(gold) + <span class="num">1</span>)
-    n = <span class="fn">len</span>(cases)
-    <span class="kw">return</span> {<span class="str">"hit@k"</span>: hits / n, <span class="str">"mrr"</span>: mrr_sum / n, <span class="str">"n"</span>: n}
+def eval_retrieval(cases: list[dict], k: int = 10) -&gt; dict:
+    hits, mrr_sum = 0, 0.0
+    for case in cases:
+        docs = retrieve(case["question"], top_k=k)
+        doc_ids = [d["metadata"]["doc_id"] for d in docs]
+        gold = case["expected_doc_id"]
+        if gold in doc_ids:
+            hits += 1
+            mrr_sum += 1.0 / (doc_ids.index(gold) + 1)
+    n = len(cases)
+    return {"hit@k": hits / n, "mrr": mrr_sum / n, "n": n}
 
-<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
-    cases = <span class="fn">json</span>.load(<span class="fn">open</span>(<span class="str">"eval/golden.json"</span>))
-    <span class="fn">print</span>(eval_retrieval(cases, k=<span class="num">10</span>))</code></pre>
+if __name__ == "__main__":
+    cases = json.load(open("eval/golden.json"))
+    print(eval_retrieval(cases, k=10))</code></pre>
     <p>Wire into CI: fail the build if hit@k drops more than 2 points vs baseline.</p>
 
     <h2 id="checklist">Checklist</h2>
@@ -348,6 +348,7 @@
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

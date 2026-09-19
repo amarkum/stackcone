@@ -201,7 +201,6 @@ Also updates static blog listing (`blog/index.html` post card) if the site uses 
 
 ```bash
 # After HTML written
-python3 _dev/apply_highlights.py blog/posts/multi-agent-pipeline-seo-content-automation/index.html
 
 # Fail if any public HTML links to markdown source
 grep -r 'blog/md/' blog/posts/ blog/index.html && echo "FAIL: .md links in HTML" && exit 1
@@ -246,7 +245,6 @@ TITLE=$(grep -o '<title>[^<]*</title>' "$BASE" | sed 's/<[^>]*>//g')
 grep -q '"@type": "Article"' "$BASE"
 
 # 6. Syntax spans applied (sample)
-grep -q 'class="kw"' "$BASE" || echo "WARN: run apply_highlights.py"
 
 echo "QA PASS: ${SLUG}"
 ```
@@ -454,7 +452,6 @@ Copy into `.claude/rules/seo-publish.md` or the publisher skill:
 - [ ] blog/index.html static card updated (href, title, description, tags)
 - [ ] No hotlinked images — all assets in blog/images/{slug}/
 - [ ] No links to /blog/md/ from HTML
-- [ ] python3 _dev/apply_highlights.py run on index.html
 - [ ] QA script passes: _pipeline/scripts/qa-blog-post.sh {slug}
 ```
 
@@ -601,8 +598,6 @@ _pipeline/                          ← optional orchestration (not deployed)
 sitemap.xml                         ← root sitemap
 robots.txt                          ← Disallow: /blog/md/
 _dev/
-├── apply_highlights.py
-└── highlight_code.py
 ```
 
 Deploy script (`.github/scripts/prepare-pages.sh`) removes `blog/md/`, `_dev/`, `_pipeline/`, and legacy redirect stubs before GitHub Pages upload. Only HTML is public.
@@ -616,7 +611,6 @@ Deploy script (`.github/scripts/prepare-pages.sh`) removes `blog/md/`, `_dev/`, 
 1. Write `blog/md/{slug}.md`
 2. Write `blog/posts/{slug}/index.html` with full SEO head
 3. Update `blog/posts.json`, `sitemap.xml`, `blog/index.html`
-4. Run `python3 _dev/apply_highlights.py`
 5. QA: `_pipeline/scripts/qa-blog-post.sh {slug}`
 
 ## Complete ship-blog-post SKILL.md
@@ -628,7 +622,6 @@ Place at `.claude/skills/ship-blog-post/SKILL.md` (Claude Code) or `.cursor/skil
 name: ship-blog-post
 description: >-
   Publish a stackcone blog post — convert md to HTML, update posts.json,
-  sitemap.xml, blog/index.html, run apply_highlights.py, run QA script.
   Use when user asks to ship, publish, or deploy a blog post.
 disable-model-invocation: true
 ---
@@ -661,7 +654,6 @@ You are the SEO metadata + QA agent. Markdown draft already exists at
 
 ## Phase 3 — Highlight and verify
 
-9. Run: `python3 _dev/apply_highlights.py blog/posts/{slug}/index.html`
 10. Run: `bash _pipeline/scripts/qa-blog-post.sh {slug}`
 11. If QA fails, fix and re-run from step 9. Do not commit on failure.
 
@@ -887,7 +879,6 @@ Agents should return **structured errors**, not prose apologies. The orchestrato
 | `DUPLICATE_TITLE` | metadata | Check posts.json; unique title |
 | `CANONICAL_SITEMAP_MISMATCH` | metadata | Align sitemap `<loc>` and canonical |
 | `MISSING_FAQ_SCHEMA` | metadata | Add FAQPage JSON-LD |
-| `HIGHLIGHTS_NOT_APPLIED` | metadata | Run `apply_highlights.py` |
 | `INTERNAL_LINK_404` | writer | Fix href or remove link |
 
 ### Retry policy
@@ -1097,7 +1088,6 @@ Intent agent must `jq` existing `posts.json` ids before proposing a slug. If col
 
 ### Should the QA agent fix issues automatically?
 
-No for content; yes for deterministic tooling. QA should run `apply_highlights.py` only when the failure is `HIGHLIGHTS_NOT_APPLIED`. Canonical/sitemap mismatches get one metadata retry, then human review.
 
 ### How long until GSC shows results for a new post?
 

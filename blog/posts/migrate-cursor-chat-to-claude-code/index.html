@@ -231,27 +231,27 @@
 
     <h2 id="format">Format differences</h2>
     <p><strong>Cursor agent transcript (per line)</strong></p>
-    <pre><code>{<span class="str">"role"</span>: <span class="str">"user"</span>,
-  <span class="str">"message"</span>: { <span class="str">"content"</span>: <span class="str">"..."</span> }
+    <pre><code>{"role": "user",
+  "message": { "content": "..." }
 }</code></pre>
 
     <p><strong>Claude Code session (per line)</strong></p>
-    <pre><code>{<span class="str">"type"</span>: <span class="str">"user"</span>,
-  <span class="str">"message"</span>: { <span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"..."</span> },
-  <span class="str">"uuid"</span>: <span class="str">"..."</span>,
-  <span class="str">"timestamp"</span>: <span class="str">"2026-06-17T12:00:00Z"</span>,
-  <span class="str">"sessionId"</span>: <span class="str">"..."</span>,
-  <span class="str">"entrypoint"</span>: <span class="str">"cursor-migrated"</span>,
-  <span class="str">"cwd"</span>: <span class="str">"/Users/you/dev/my-app"</span>,
-  <span class="str">"version"</span>: <span class="str">"migrated-from-cursor"</span>
+    <pre><code>{"type": "user",
+  "message": { "role": "user", "content": "..." },
+  "uuid": "...",
+  "timestamp": "2026-06-17T12:00:00Z",
+  "sessionId": "...",
+  "entrypoint": "cursor-migrated",
+  "cwd": "/Users/you/dev/my-app",
+  "version": "migrated-from-cursor"
 }</code></pre>
 
     <p>Each session file starts and ends with <code>queue-operation</code> lines (<code>enqueue</code> / <code>dequeue</code>).</p>
 
     <h2 id="script">Migration script</h2>
     <p>Save as <code>migrate_cursor_to_claude.py</code>. Python 3.10+, stdlib only.</p>
-    <pre><code><span class="cm">#!/usr/bin/env python3</span>
-<span class="str">"""Migrate Cursor agent transcripts and plans into Claude Code storage.
+    <pre><code>#!/usr/bin/env python3
+"""Migrate Cursor agent transcripts and plans into Claude Code storage.
 
 Scans ~/.cursor/projects/*/agent-transcripts/, converts JSONL to Claude Code
 session format, and optionally copies ~/.cursor/plans/ to ~/.claude/plans/.
@@ -259,390 +259,390 @@ session format, and optionally copies ~/.cursor/plans/ to ~/.claude/plans/.
   python3 migrate_cursor_to_claude.py --dry-run
   python3 migrate_cursor_to_claude.py --yes
   python3 migrate_cursor_to_claude.py --project ~/dev/my-app --yes
-"""</span>
-<span class="kw">from</span> __future__ <span class="kw">import</span> annotations
+"""
+from __future__ import annotations
 
-<span class="kw">import</span> argparse
-<span class="kw">import</span> hashlib
-<span class="kw">import</span> <span class="fn">json</span>
-<span class="kw">import</span> os
-<span class="kw">import</span> re
-<span class="kw">import</span> sqlite3
-<span class="kw">import</span> sys
-<span class="kw">import</span> uuid
-<span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager
-<span class="kw">from</span> datetime <span class="kw">import</span> datetime, timezone
-<span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
-<span class="kw">from</span> typing <span class="kw">import</span> <span class="fn">Any</span>, Iterator, <span class="fn">Optional</span>
-<span class="kw">from</span> urllib.parse <span class="kw">import</span> unquote, urlparse
+import argparse
+import hashlib
+import json
+import os
+import re
+import sqlite3
+import sys
+import uuid
+from contextlib import contextmanager
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Iterator, Optional
+from urllib.parse import unquote, urlparse
 
-HOME = <span class="fn">Path</span>.home()
+HOME = Path.home()
 CURSOR_APP_SUPPORT = (
-    HOME / <span class="str">"Library/Application Support/Cursor"</span>
-    <span class="kw">if</span> sys.platform == <span class="str">"darwin"</span>
-    <span class="kw">else</span> HOME / <span class="str">"AppData/Roaming/Cursor"</span>
-    <span class="kw">if</span> sys.platform == <span class="str">"win32"</span>
-    <span class="kw">else</span> HOME / <span class="str">".config/Cursor"</span>
+    HOME / "Library/Application Support/Cursor"
+    if sys.platform == "darwin"
+    else HOME / "AppData/Roaming/Cursor"
+    if sys.platform == "win32"
+    else HOME / ".config/Cursor"
 )
-WORKSPACE_ROOT = CURSOR_APP_SUPPORT / <span class="str">"User/workspaceStorage"</span>
-PROJECTS_ROOT = HOME / <span class="str">".cursor/projects"</span>
-PLANS_ROOT = HOME / <span class="str">".cursor/plans"</span>
-CLAUDE_PROJECTS = HOME / <span class="str">".claude/projects"</span>
-CLAUDE_PLANS = HOME / <span class="str">".claude/plans"</span>
-MANIFEST = HOME / <span class="str">".claude/.cursor-migration-manifest.json"</span>
+WORKSPACE_ROOT = CURSOR_APP_SUPPORT / "User/workspaceStorage"
+PROJECTS_ROOT = HOME / ".cursor/projects"
+PLANS_ROOT = HOME / ".cursor/plans"
+CLAUDE_PROJECTS = HOME / ".claude/projects"
+CLAUDE_PLANS = HOME / ".claude/plans"
+MANIFEST = HOME / ".claude/.cursor-migration-manifest.json"
 
 
 @contextmanager
-<span class="kw">def</span> <span class="fn">ro_sqlite</span>(path: <span class="fn">Path</span>) -&gt; Iterator[sqlite3.Connection]:
-    <span class="kw">if</span> <span class="kw">not</span> path.exists():
-        <span class="kw">raise</span> FileNotFoundError(path)
-    con = sqlite3.connect(f<span class="str">"file:{path}?mode=ro"</span>, uri=<span class="kw">True</span>, timeout=<span class="num">5.0</span>)
-    <span class="kw">try</span>:
-        <span class="kw">yield</span> con
-    <span class="kw">finally</span>:
+def ro_sqlite(path: Path) -&gt; Iterator[sqlite3.Connection]:
+    if not path.exists():
+        raise FileNotFoundError(path)
+    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=5.0)
+    try:
+        yield con
+    finally:
         con.close()
 
 
-<span class="kw">def</span> <span class="fn">workspace_folders</span>() -&gt; <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Optional</span>[<span class="fn">str</span>]]:
-    <span class="str">"""Map workspaceStorage hash -&gt; folder URI from workspace.json."""</span>
-    out: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Optional</span>[<span class="fn">str</span>]] = {}
-    <span class="kw">if</span> <span class="kw">not</span> WORKSPACE_ROOT.exists():
-        <span class="kw">return</span> out
-    <span class="kw">for</span> ws <span class="kw">in</span> WORKSPACE_ROOT.iterdir():
-        <span class="kw">if</span> <span class="kw">not</span> ws.is_dir():
-            <span class="kw">continue</span>
-        wj = ws / <span class="str">"workspace.json"</span>
-        <span class="kw">if</span> wj.exists():
-            <span class="kw">try</span>:
-                out[ws.name] = <span class="fn">json</span>.loads(wj.read_text()).get(<span class="str">"folder"</span>)
-            <span class="kw">except</span> <span class="fn">Exception</span>:
-                <span class="kw">pass</span>
-    <span class="kw">return</span> out
+def workspace_folders() -&gt; dict[str, Optional[str]]:
+    """Map workspaceStorage hash -&gt; folder URI from workspace.json."""
+    out: dict[str, Optional[str]] = {}
+    if not WORKSPACE_ROOT.exists():
+        return out
+    for ws in WORKSPACE_ROOT.iterdir():
+        if not ws.is_dir():
+            continue
+        wj = ws / "workspace.json"
+        if wj.exists():
+            try:
+                out[ws.name] = json.loads(wj.read_text()).get("folder")
+            except Exception:
+                pass
+    return out
 
 
-<span class="kw">def</span> <span class="fn">uri_to_path</span>(folder_uri: <span class="fn">Optional</span>[<span class="fn">str</span>]) -&gt; <span class="fn">Optional</span>[<span class="fn">str</span>]:
-    <span class="kw">if</span> <span class="kw">not</span> folder_uri:
-        <span class="kw">return</span> <span class="kw">None</span>
-    <span class="kw">if</span> folder_uri.startswith(<span class="str">"file://"</span>):
-        <span class="kw">return</span> unquote(urlparse(folder_uri).path)
-    <span class="kw">return</span> folder_uri
+def uri_to_path(folder_uri: Optional[str]) -&gt; Optional[str]:
+    if not folder_uri:
+        return None
+    if folder_uri.startswith("file://"):
+        return unquote(urlparse(folder_uri).path)
+    return folder_uri
 
 
-<span class="kw">def</span> <span class="fn">path_to_cursor_slug</span>(abs_path: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
+def path_to_cursor_slug(abs_path: str) -&gt; str:
     encoded = abs_path
-    <span class="kw">for</span> ch <span class="kw">in</span> (<span class="str">"/"</span>, <span class="str">"\\"</span>, <span class="str">":"</span>, <span class="str">"."</span>, <span class="str">"_"</span>, <span class="str">" "</span>):
-        encoded = encoded.replace(ch, <span class="str">"-"</span>)
-    <span class="kw">return</span> encoded.lstrip(<span class="str">"-"</span>)
+    for ch in ("/", "\\", ":", ".", "_", " "):
+        encoded = encoded.replace(ch, "-")
+    return encoded.lstrip("-")
 
 
-<span class="kw">def</span> <span class="fn">build_slug_cwd_map</span>() -&gt; <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">str</span>]:
-    <span class="str">"""Cursor project slug -&gt; real repo path (from workspaceStorage index)."""</span>
-    mapping: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">str</span>] = {path_to_cursor_slug(<span class="fn">str</span>(HOME)): <span class="fn">str</span>(HOME)}
-    <span class="kw">for</span> ws_hash, folder_uri <span class="kw">in</span> workspace_folders().items():
+def build_slug_cwd_map() -&gt; dict[str, str]:
+    """Cursor project slug -&gt; real repo path (from workspaceStorage index)."""
+    mapping: dict[str, str] = {path_to_cursor_slug(str(HOME)): str(HOME)}
+    for ws_hash, folder_uri in workspace_folders().items():
         path = uri_to_path(folder_uri)
-        <span class="kw">if</span> path <span class="kw">and</span> os.path.isdir(path):
+        if path and os.path.isdir(path):
             mapping[path_to_cursor_slug(path)] = path
-    <span class="kw">return</span> mapping
+    return mapping
 
 
-<span class="kw">def</span> <span class="fn">cursor_slug_to_claude_slug</span>(cursor_slug: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
-    <span class="kw">return</span> cursor_slug <span class="kw">if</span> cursor_slug.startswith(<span class="str">"-"</span>) <span class="kw">else</span> f<span class="str">"-{cursor_slug}"</span>
+def cursor_slug_to_claude_slug(cursor_slug: str) -&gt; str:
+    return cursor_slug if cursor_slug.startswith("-") else f"-{cursor_slug}"
 
 
-<span class="kw">def</span> <span class="fn">stable_session_id</span>(source_path: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
-    <span class="str">"""Same Cursor chat always maps to the same Claude session file."""</span>
+def stable_session_id(source_path: str) -&gt; str:
+    """Same Cursor chat always maps to the same Claude session file."""
     digest = hashlib.sha256(source_path.encode()).hexdigest()
-    <span class="kw">return</span> f<span class="str">"{digest[:8]}-{digest[8:12]}-{digest[12:16]}-{digest[16:20]}-{digest[20:32]}"</span>
+    return f"{digest[:8]}-{digest[8:12]}-{digest[12:16]}-{digest[16:20]}-{digest[20:32]}"
 
 
-<span class="kw">def</span> <span class="fn">load_manifest</span>() -&gt; <span class="fn">dict</span>:
-    default = {<span class="str">"chats"</span>: {}, <span class="str">"plans"</span>: {}}
-    <span class="kw">if</span> <span class="kw">not</span> MANIFEST.exists():
-        <span class="kw">return</span> default
-    <span class="kw">try</span>:
-        data = <span class="fn">json</span>.loads(MANIFEST.read_text(encoding=<span class="str">"utf-8"</span>))
-        <span class="kw">return</span> {<span class="str">"chats"</span>: data.get(<span class="str">"chats"</span>) <span class="kw">or</span> {}, <span class="str">"plans"</span>: data.get(<span class="str">"plans"</span>) <span class="kw">or</span> {}}
-    <span class="kw">except</span> <span class="fn">Exception</span>:
-        <span class="kw">return</span> default
+def load_manifest() -&gt; dict:
+    default = {"chats": {}, "plans": {}}
+    if not MANIFEST.exists():
+        return default
+    try:
+        data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        return {"chats": data.get("chats") or {}, "plans": data.get("plans") or {}}
+    except Exception:
+        return default
 
 
-<span class="kw">def</span> <span class="fn">save_manifest</span>(manifest: <span class="fn">dict</span>) -&gt; <span class="kw">None</span>:
-    MANIFEST.parent.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
-    MANIFEST.write_text(<span class="fn">json</span>.dumps(manifest, indent=<span class="num">2</span>), encoding=<span class="str">"utf-8"</span>)
+def save_manifest(manifest: dict) -&gt; None:
+    MANIFEST.parent.mkdir(parents=True, exist_ok=True)
+    MANIFEST.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
-<span class="kw">def</span> <span class="fn">list_agent_chats</span>(project_filter: <span class="fn">Optional</span>[<span class="fn">str</span>] = <span class="kw">None</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    out: <span class="fn">list</span>[<span class="fn">dict</span>] = []
-    <span class="kw">if</span> <span class="kw">not</span> PROJECTS_ROOT.exists():
-        <span class="kw">return</span> out
+def list_agent_chats(project_filter: Optional[str] = None) -&gt; list[dict]:
+    out: list[dict] = []
+    if not PROJECTS_ROOT.exists():
+        return out
     slug_map = build_slug_cwd_map()
-    <span class="kw">for</span> proj_dir <span class="kw">in</span> sorted(PROJECTS_ROOT.iterdir()):
-        <span class="kw">if</span> <span class="kw">not</span> proj_dir.is_dir():
-            <span class="kw">continue</span>
-        transcripts = proj_dir / <span class="str">"agent-transcripts"</span>
-        <span class="kw">if</span> <span class="kw">not</span> transcripts.exists():
-            <span class="kw">continue</span>
-        <span class="kw">if</span> project_filter:
-            cwd = slug_map.get(proj_dir.name, <span class="str">""</span>)
-            <span class="kw">if</span> cwd <span class="kw">and</span> <span class="fn">Path</span>(cwd).resolve() != <span class="fn">Path</span>(project_filter).expanduser().resolve():
-                <span class="kw">continue</span>
-        <span class="kw">for</span> run_dir <span class="kw">in</span> transcripts.iterdir():
-            <span class="kw">if</span> <span class="kw">not</span> run_dir.is_dir():
-                <span class="kw">continue</span>
-            chat_file = run_dir / f<span class="str">"{run_dir.name}.jsonl"</span>
-            <span class="kw">if</span> chat_file.is_file():
+    for proj_dir in sorted(PROJECTS_ROOT.iterdir()):
+        if not proj_dir.is_dir():
+            continue
+        transcripts = proj_dir / "agent-transcripts"
+        if not transcripts.exists():
+            continue
+        if project_filter:
+            cwd = slug_map.get(proj_dir.name, "")
+            if cwd and Path(cwd).resolve() != Path(project_filter).expanduser().resolve():
+                continue
+        for run_dir in transcripts.iterdir():
+            if not run_dir.is_dir():
+                continue
+            chat_file = run_dir / f"{run_dir.name}.jsonl"
+            if chat_file.is_file():
                 out.append({
-                    <span class="str">"project_slug"</span>: proj_dir.name,
-                    <span class="str">"run_id"</span>: run_dir.name,
-                    <span class="str">"path"</span>: <span class="fn">str</span>(chat_file),
-                    <span class="str">"mtime"</span>: chat_file.stat().st_mtime,
-                    <span class="str">"size"</span>: chat_file.stat().st_size,
+                    "project_slug": proj_dir.name,
+                    "run_id": run_dir.name,
+                    "path": str(chat_file),
+                    "mtime": chat_file.stat().st_mtime,
+                    "size": chat_file.stat().st_size,
                 })
-    out.sort(key=<span class="kw">lambda</span> x: x[<span class="str">"mtime"</span>], reverse=<span class="kw">True</span>)
-    <span class="kw">return</span> out
+    out.sort(key=lambda x: x["mtime"], reverse=True)
+    return out
 
 
-<span class="kw">def</span> <span class="fn">list_cursor_plans</span>() -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    <span class="kw">if</span> <span class="kw">not</span> PLANS_ROOT.exists():
-        <span class="kw">return</span> []
-    <span class="kw">return</span> [
+def list_cursor_plans() -&gt; list[dict]:
+    if not PLANS_ROOT.exists():
+        return []
+    return [
         {
-            <span class="str">"file"</span>: p.name,
-            <span class="str">"path"</span>: <span class="fn">str</span>(p),
-            <span class="str">"mtime"</span>: p.stat().st_mtime,
-            <span class="str">"size"</span>: p.stat().st_size,
+            "file": p.name,
+            "path": str(p),
+            "mtime": p.stat().st_mtime,
+            "size": p.stat().st_size,
         }
-        <span class="kw">for</span> p <span class="kw">in</span> sorted(PLANS_ROOT.glob(<span class="str">"*.plan.md"</span>), key=<span class="kw">lambda</span> x: x.stat().st_mtime, reverse=<span class="kw">True</span>)
+        for p in sorted(PLANS_ROOT.glob("*.plan.md"), key=lambda x: x.stat().st_mtime, reverse=True)
     ]
 
 
-<span class="kw">def</span> <span class="fn">project_slug_to_cwd</span>(slug: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
-    <span class="kw">return</span> build_slug_cwd_map().get(slug, <span class="fn">str</span>(HOME))
+def project_slug_to_cwd(slug: str) -&gt; str:
+    return build_slug_cwd_map().get(slug, str(HOME))
 
 
-<span class="kw">def</span> <span class="fn">chat_dest</span>(chat: <span class="fn">dict</span>) -&gt; <span class="fn">Path</span>:
-    claude_slug = cursor_slug_to_claude_slug(chat[<span class="str">"project_slug"</span>])
-    session_id = stable_session_id(chat[<span class="str">"path"</span>])
-    <span class="kw">return</span> CLAUDE_PROJECTS / claude_slug / f<span class="str">"{session_id}.jsonl"</span>
+def chat_dest(chat: dict) -&gt; Path:
+    claude_slug = cursor_slug_to_claude_slug(chat["project_slug"])
+    session_id = stable_session_id(chat["path"])
+    return CLAUDE_PROJECTS / claude_slug / f"{session_id}.jsonl"
 
 
-<span class="kw">def</span> <span class="fn">plan_dest_name</span>(cursor_plan: <span class="fn">Path</span>) -&gt; <span class="fn">str</span>:
+def plan_dest_name(cursor_plan: Path) -&gt; str:
     stem = cursor_plan.stem
-    <span class="kw">if</span> stem.endswith(<span class="str">".plan"</span>):
-        stem = stem[:-<span class="num">5</span>]
-    stem = re.sub(r<span class="str">"_[0-9a-f]{8}$"</span>, <span class="str">""</span>, stem)
-    <span class="kw">return</span> f<span class="str">"{stem}.md"</span>
+    if stem.endswith(".plan"):
+        stem = stem[:-5]
+    stem = re.sub(r"_[0-9a-f]{8}$", "", stem)
+    return f"{stem}.md"
 
 
-<span class="kw">def</span> <span class="fn">plan_dest</span>(plan: <span class="fn">dict</span>) -&gt; <span class="fn">Path</span>:
-    <span class="kw">return</span> CLAUDE_PLANS / plan_dest_name(<span class="fn">Path</span>(plan[<span class="str">"path"</span>]))
+def plan_dest(plan: dict) -&gt; Path:
+    return CLAUDE_PLANS / plan_dest_name(Path(plan["path"]))
 
 
-<span class="kw">def</span> <span class="fn">should_migrate_chat</span>(chat: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>) -&gt; <span class="fn">bool</span>:
+def should_migrate_chat(chat: dict, manifest: dict) -&gt; bool:
     dest = chat_dest(chat)
-    entry = manifest.get(<span class="str">"chats"</span>, {}).get(chat[<span class="str">"path"</span>])
-    <span class="kw">if</span> dest.exists() <span class="kw">and</span> entry <span class="kw">and</span> chat[<span class="str">"mtime"</span>] &lt;= <span class="fn">float</span>(entry.get(<span class="str">"mtime"</span>) <span class="kw">or</span> <span class="num">0</span>):
-        <span class="kw">return</span> <span class="kw">False</span>
-    <span class="kw">return</span> <span class="kw">True</span>
+    entry = manifest.get("chats", {}).get(chat["path"])
+    if dest.exists() and entry and chat["mtime"] &lt;= float(entry.get("mtime") or 0):
+        return False
+    return True
 
 
-<span class="kw">def</span> <span class="fn">should_migrate_plan</span>(plan: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>) -&gt; <span class="fn">bool</span>:
+def should_migrate_plan(plan: dict, manifest: dict) -&gt; bool:
     dest = plan_dest(plan)
-    entry = manifest.get(<span class="str">"plans"</span>, {}).get(plan[<span class="str">"path"</span>])
-    <span class="kw">if</span> dest.exists() <span class="kw">and</span> entry <span class="kw">and</span> plan[<span class="str">"mtime"</span>] &lt;= <span class="fn">float</span>(entry.get(<span class="str">"mtime"</span>) <span class="kw">or</span> <span class="num">0</span>):
-        <span class="kw">return</span> <span class="kw">False</span>
-    <span class="kw">return</span> <span class="kw">True</span>
+    entry = manifest.get("plans", {}).get(plan["path"])
+    if dest.exists() and entry and plan["mtime"] &lt;= float(entry.get("mtime") or 0):
+        return False
+    return True
 
 
-<span class="kw">def</span> <span class="fn">cursor_to_claude_message</span>(
-    cursor_msg: <span class="fn">dict</span>, session_id: <span class="fn">str</span>, idx: <span class="fn">int</span>, cwd: <span class="fn">str</span>
-) -&gt; <span class="fn">dict</span>:
-    role = cursor_msg.get(<span class="str">"role"</span>, <span class="str">"user"</span>)
-    content = cursor_msg.get(<span class="str">"message"</span>, {}).get(<span class="str">"content"</span>, <span class="str">""</span>)
-    msg: <span class="fn">dict</span>[<span class="fn">str</span>, <span class="fn">Any</span>] = {
-        <span class="str">"parentUuid"</span>: <span class="kw">None</span>,
-        <span class="str">"isSidechain"</span>: <span class="kw">False</span>,
-        <span class="str">"promptId"</span>: <span class="fn">str</span>(uuid.uuid4()),
-        <span class="str">"type"</span>: role,
-        <span class="str">"message"</span>: {<span class="str">"role"</span>: role, <span class="str">"content"</span>: content},
-        <span class="str">"uuid"</span>: <span class="fn">str</span>(uuid.uuid4()),
-        <span class="str">"timestamp"</span>: datetime.now(timezone.utc).isoformat().replace(<span class="str">"+00:00"</span>, <span class="str">"Z"</span>),
-        <span class="str">"userType"</span>: <span class="str">"external"</span>,
-        <span class="str">"entrypoint"</span>: <span class="str">"cursor-migrated"</span>,
-        <span class="str">"cwd"</span>: cwd,
-        <span class="str">"sessionId"</span>: session_id,
-        <span class="str">"version"</span>: <span class="str">"migrated-from-cursor"</span>,
-        <span class="str">"gitBranch"</span>: <span class="str">"unknown"</span>,
-        <span class="str">"slug"</span>: f<span class="str">"migrated-chat-{idx}"</span>,
+def cursor_to_claude_message(
+    cursor_msg: dict, session_id: str, idx: int, cwd: str
+) -&gt; dict:
+    role = cursor_msg.get("role", "user")
+    content = cursor_msg.get("message", {}).get("content", "")
+    msg: dict[str, Any] = {
+        "parentUuid": None,
+        "isSidechain": False,
+        "promptId": str(uuid.uuid4()),
+        "type": role,
+        "message": {"role": role, "content": content},
+        "uuid": str(uuid.uuid4()),
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "userType": "external",
+        "entrypoint": "cursor-migrated",
+        "cwd": cwd,
+        "sessionId": session_id,
+        "version": "migrated-from-cursor",
+        "gitBranch": "unknown",
+        "slug": f"migrated-chat-{idx}",
     }
-    <span class="kw">if</span> role == <span class="str">"user"</span>:
-        msg[<span class="str">"isMeta"</span>] = <span class="kw">False</span>
-    <span class="kw">return</span> msg
+    if role == "user":
+        msg["isMeta"] = False
+    return msg
 
 
-<span class="kw">def</span> <span class="fn">queue_operation</span>(session_id: <span class="fn">str</span>, operation: <span class="fn">str</span> = <span class="str">"enqueue"</span>) -&gt; <span class="fn">dict</span>:
-    <span class="kw">return</span> {
-        <span class="str">"type"</span>: <span class="str">"queue-operation"</span>,
-        <span class="str">"operation"</span>: operation,
-        <span class="str">"timestamp"</span>: datetime.now(timezone.utc).isoformat().replace(<span class="str">"+00:00"</span>, <span class="str">"Z"</span>),
-        <span class="str">"sessionId"</span>: session_id,
+def queue_operation(session_id: str, operation: str = "enqueue") -&gt; dict:
+    return {
+        "type": "queue-operation",
+        "operation": operation,
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "sessionId": session_id,
     }
 
 
-<span class="kw">def</span> <span class="fn">migrate_chat</span>(chat: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>, *, dry_run: <span class="fn">bool</span>) -&gt; <span class="fn">str</span>:
-    <span class="kw">if</span> <span class="kw">not</span> should_migrate_chat(chat, manifest):
-        <span class="kw">return</span> <span class="str">"skipped"</span>
-    chat_path = <span class="fn">Path</span>(chat[<span class="str">"path"</span>])
-    <span class="kw">try</span>:
-        lines = [<span class="fn">json</span>.loads(ln) <span class="kw">for</span> ln <span class="kw">in</span> chat_path.read_text().splitlines() <span class="kw">if</span> ln.strip()]
-    <span class="kw">except</span> <span class="fn">Exception</span>:
-        <span class="kw">return</span> <span class="str">"failed"</span>
-    <span class="kw">if</span> <span class="kw">not</span> lines:
-        <span class="kw">return</span> <span class="str">"failed"</span>
+def migrate_chat(chat: dict, manifest: dict, *, dry_run: bool) -&gt; str:
+    if not should_migrate_chat(chat, manifest):
+        return "skipped"
+    chat_path = Path(chat["path"])
+    try:
+        lines = [json.loads(ln) for ln in chat_path.read_text().splitlines() if ln.strip()]
+    except Exception:
+        return "failed"
+    if not lines:
+        return "failed"
 
-    session_id = stable_session_id(chat[<span class="str">"path"</span>])
-    cwd = project_slug_to_cwd(chat[<span class="str">"project_slug"</span>])
+    session_id = stable_session_id(chat["path"])
+    cwd = project_slug_to_cwd(chat["project_slug"])
     dest = chat_dest(chat)
-    messages = [queue_operation(session_id, <span class="str">"enqueue"</span>)]
-    <span class="kw">for</span> idx, row <span class="kw">in</span> <span class="fn">enumerate</span>(lines):
-        <span class="kw">try</span>:
+    messages = [queue_operation(session_id, "enqueue")]
+    for idx, row in enumerate(lines):
+        try:
             messages.append(cursor_to_claude_message(row, session_id, idx, cwd))
-        <span class="kw">except</span> <span class="fn">Exception</span>:
-            <span class="kw">continue</span>
-    messages.append(queue_operation(session_id, <span class="str">"dequeue"</span>))
+        except Exception:
+            continue
+    messages.append(queue_operation(session_id, "dequeue"))
 
-    <span class="kw">if</span> <span class="kw">not</span> dry_run:
-        dest.parent.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
-        <span class="kw">with</span> dest.<span class="fn">open</span>(<span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> fh:
-            <span class="kw">for</span> m <span class="kw">in</span> messages:
-                fh.write(<span class="fn">json</span>.dumps(m) + <span class="str">"\n"</span>)
-        manifest.setdefault(<span class="str">"chats"</span>, {})[chat[<span class="str">"path"</span>]] = {
-            <span class="str">"dest"</span>: <span class="fn">str</span>(dest),
-            <span class="str">"mtime"</span>: chat[<span class="str">"mtime"</span>],
-            <span class="str">"session_id"</span>: session_id,
-            <span class="str">"cwd"</span>: cwd,
+    if not dry_run:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        with dest.open("w", encoding="utf-8") as fh:
+            for m in messages:
+                fh.write(json.dumps(m) + "\n")
+        manifest.setdefault("chats", {})[chat["path"]] = {
+            "dest": str(dest),
+            "mtime": chat["mtime"],
+            "session_id": session_id,
+            "cwd": cwd,
         }
-    <span class="kw">return</span> <span class="str">"migrated"</span>
+    return "migrated"
 
 
-<span class="kw">def</span> <span class="fn">strip_yaml_front_matter</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">str</span>:
-    <span class="kw">if</span> <span class="kw">not</span> text.startswith(<span class="str">"---"</span>):
-        <span class="kw">return</span> text
-    end = text.find(<span class="str">"\n---"</span>, <span class="num">3</span>)
-    <span class="kw">if</span> end == -<span class="num">1</span>:
-        <span class="kw">return</span> text
-    <span class="kw">return</span> text[end + <span class="num">4</span> :].lstrip(<span class="str">"\n"</span>)
+def strip_yaml_front_matter(text: str) -&gt; str:
+    if not text.startswith("---"):
+        return text
+    end = text.find("\n---", 3)
+    if end == -1:
+        return text
+    return text[end + 4 :].lstrip("\n")
 
 
-<span class="kw">def</span> <span class="fn">migrate_plan</span>(plan: <span class="fn">dict</span>, manifest: <span class="fn">dict</span>, *, dry_run: <span class="fn">bool</span>) -&gt; <span class="fn">str</span>:
-    <span class="kw">if</span> <span class="kw">not</span> should_migrate_plan(plan, manifest):
-        <span class="kw">return</span> <span class="str">"skipped"</span>
-    src = <span class="fn">Path</span>(plan[<span class="str">"path"</span>])
+def migrate_plan(plan: dict, manifest: dict, *, dry_run: bool) -&gt; str:
+    if not should_migrate_plan(plan, manifest):
+        return "skipped"
+    src = Path(plan["path"])
     dest = plan_dest(plan)
-    <span class="kw">try</span>:
-        content = strip_yaml_front_matter(src.read_text(encoding=<span class="str">"utf-8"</span>))
-        <span class="kw">if</span> <span class="kw">not</span> dry_run:
-            CLAUDE_PLANS.mkdir(parents=<span class="kw">True</span>, exist_ok=<span class="kw">True</span>)
-            dest.write_text(content, encoding=<span class="str">"utf-8"</span>)
-            manifest.setdefault(<span class="str">"plans"</span>, {})[plan[<span class="str">"path"</span>]] = {
-                <span class="str">"dest"</span>: <span class="fn">str</span>(dest),
-                <span class="str">"mtime"</span>: plan[<span class="str">"mtime"</span>],
+    try:
+        content = strip_yaml_front_matter(src.read_text(encoding="utf-8"))
+        if not dry_run:
+            CLAUDE_PLANS.mkdir(parents=True, exist_ok=True)
+            dest.write_text(content, encoding="utf-8")
+            manifest.setdefault("plans", {})[plan["path"]] = {
+                "dest": str(dest),
+                "mtime": plan["mtime"],
             }
-        <span class="kw">return</span> <span class="str">"migrated"</span>
-    <span class="kw">except</span> <span class="fn">Exception</span>:
-        <span class="kw">return</span> <span class="str">"failed"</span>
+        return "migrated"
+    except Exception:
+        return "failed"
 
 
-<span class="kw">def</span> <span class="fn">main</span>() -&gt; <span class="kw">None</span>:
-    ap = argparse.ArgumentParser(description=<span class="str">"Migrate Cursor chats and plans to Claude Code"</span>)
-    ap.add_argument(<span class="str">"--project"</span>, <span class="fn">type</span>=<span class="fn">Path</span>, help=<span class="str">"Only migrate chats for this repo path"</span>)
-    ap.add_argument(<span class="str">"--dry-run"</span>, action=<span class="str">"store_true"</span>, help=<span class="str">"Preview without writing"</span>)
-    ap.add_argument(<span class="str">"--yes"</span>, action=<span class="str">"store_true"</span>, help=<span class="str">"Skip confirmation"</span>)
-    ap.add_argument(<span class="str">"--chats-only"</span>, action=<span class="str">"store_true"</span>)
-    ap.add_argument(<span class="str">"--plans-only"</span>, action=<span class="str">"store_true"</span>)
+def main() -&gt; None:
+    ap = argparse.ArgumentParser(description="Migrate Cursor chats and plans to Claude Code")
+    ap.add_argument("--project", type=Path, help="Only migrate chats for this repo path")
+    ap.add_argument("--dry-run", action="store_true", help="Preview without writing")
+    ap.add_argument("--yes", action="store_true", help="Skip confirmation")
+    ap.add_argument("--chats-only", action="store_true")
+    ap.add_argument("--plans-only", action="store_true")
     args = ap.parse_args()
 
-    project = <span class="fn">str</span>(args.project.expanduser().resolve()) <span class="kw">if</span> args.project <span class="kw">else</span> <span class="kw">None</span>
+    project = str(args.project.expanduser().resolve()) if args.project else None
     chats = list_agent_chats(project)
-    plans = [] <span class="kw">if</span> args.chats_only <span class="kw">else</span> list_cursor_plans()
-    <span class="kw">if</span> args.plans_only:
+    plans = [] if args.chats_only else list_cursor_plans()
+    if args.plans_only:
         chats = []
 
-    <span class="fn">print</span>(f<span class="str">"Found {len(chats)} agent chat(s), {len(plans)} plan(s)"</span>)
-    <span class="kw">if</span> <span class="kw">not</span> chats <span class="kw">and</span> <span class="kw">not</span> plans:
-        sys.exit(<span class="str">"Nothing to migrate."</span>)
+    print(f"Found {len(chats)} agent chat(s), {len(plans)} plan(s)")
+    if not chats and not plans:
+        sys.exit("Nothing to migrate.")
 
     manifest = load_manifest()
-    pending_chats = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> c <span class="kw">in</span> chats <span class="kw">if</span> should_migrate_chat(c, manifest))
-    pending_plans = <span class="fn">sum</span>(<span class="num">1</span> <span class="kw">for</span> p <span class="kw">in</span> plans <span class="kw">if</span> should_migrate_plan(p, manifest))
-    <span class="fn">print</span>(f<span class="str">"Pending: {pending_chats} chat(s), {pending_plans} plan(s)"</span>)
+    pending_chats = sum(1 for c in chats if should_migrate_chat(c, manifest))
+    pending_plans = sum(1 for p in plans if should_migrate_plan(p, manifest))
+    print(f"Pending: {pending_chats} chat(s), {pending_plans} plan(s)")
 
-    <span class="kw">if</span> args.dry_run:
-        <span class="kw">for</span> c <span class="kw">in</span> chats:
-            <span class="kw">if</span> should_migrate_chat(c, manifest):
-                kb = c[<span class="str">"size"</span>] / <span class="num">1024</span>
-                <span class="fn">print</span>(f<span class="str">"  chat  {c['run_id'][:12]}  {kb:.1f} KB  -&gt; {chat_dest(c).parent.name}/"</span>)
-        <span class="kw">for</span> p <span class="kw">in</span> plans:
-            <span class="kw">if</span> should_migrate_plan(p, manifest):
-                <span class="fn">print</span>(f<span class="str">"  plan  {p['file']}  -&gt; {plan_dest(p).name}"</span>)
-        <span class="fn">print</span>(<span class="str">"DRY RUN — no files written"</span>)
-        <span class="kw">return</span>
+    if args.dry_run:
+        for c in chats:
+            if should_migrate_chat(c, manifest):
+                kb = c["size"] / 1024
+                print(f"  chat  {c['run_id'][:12]}  {kb:.1f} KB  -&gt; {chat_dest(c).parent.name}/")
+        for p in plans:
+            if should_migrate_plan(p, manifest):
+                print(f"  plan  {p['file']}  -&gt; {plan_dest(p).name}")
+        print("DRY RUN — no files written")
+        return
 
-    <span class="kw">if</span> <span class="kw">not</span> args.yes:
-        ans = input(<span class="str">"Continue? (yes/no): "</span>).strip().lower()
-        <span class="kw">if</span> ans <span class="kw">not</span> <span class="kw">in</span> (<span class="str">"yes"</span>, <span class="str">"y"</span>):
-            <span class="fn">print</span>(<span class="str">"Cancelled."</span>)
-            <span class="kw">return</span>
+    if not args.yes:
+        ans = input("Continue? (yes/no): ").strip().lower()
+        if ans not in ("yes", "y"):
+            print("Cancelled.")
+            return
 
-    stats = {<span class="str">"migrated"</span>: <span class="num">0</span>, <span class="str">"skipped"</span>: <span class="num">0</span>, <span class="str">"failed"</span>: <span class="num">0</span>}
-    <span class="kw">for</span> chat <span class="kw">in</span> chats:
-        result = migrate_chat(chat, manifest, dry_run=<span class="kw">False</span>)
-        stats[result <span class="kw">if</span> result <span class="kw">in</span> stats <span class="kw">else</span> <span class="str">"failed"</span>] += <span class="num">1</span>
-        sym = {<span class="str">"migrated"</span>: <span class="str">"ok"</span>, <span class="str">"skipped"</span>: <span class="str">"skip"</span>, <span class="str">"failed"</span>: <span class="str">"fail"</span>}.get(result, <span class="str">"fail"</span>)
-        <span class="fn">print</span>(f<span class="str">"  {sym} chat {chat['run_id'][:12]}"</span>)
+    stats = {"migrated": 0, "skipped": 0, "failed": 0}
+    for chat in chats:
+        result = migrate_chat(chat, manifest, dry_run=False)
+        stats[result if result in stats else "failed"] += 1
+        sym = {"migrated": "ok", "skipped": "skip", "failed": "fail"}.get(result, "fail")
+        print(f"  {sym} chat {chat['run_id'][:12]}")
 
-    <span class="kw">for</span> plan <span class="kw">in</span> plans:
-        result = migrate_plan(plan, manifest, dry_run=<span class="kw">False</span>)
-        stats[result <span class="kw">if</span> result <span class="kw">in</span> stats <span class="kw">else</span> <span class="str">"failed"</span>] += <span class="num">1</span>
-        sym = {<span class="str">"migrated"</span>: <span class="str">"ok"</span>, <span class="str">"skipped"</span>: <span class="str">"skip"</span>, <span class="str">"failed"</span>: <span class="str">"fail"</span>}.get(result, <span class="str">"fail"</span>)
-        <span class="fn">print</span>(f<span class="str">"  {sym} plan {plan['file']}"</span>)
+    for plan in plans:
+        result = migrate_plan(plan, manifest, dry_run=False)
+        stats[result if result in stats else "failed"] += 1
+        sym = {"migrated": "ok", "skipped": "skip", "failed": "fail"}.get(result, "fail")
+        print(f"  {sym} plan {plan['file']}")
 
-    <span class="kw">if</span> <span class="kw">not</span> args.dry_run:
+    if not args.dry_run:
         save_manifest(manifest)
 
-    <span class="fn">print</span>(
-        f<span class="str">"Done: {stats['migrated']} migrated, {stats['skipped']} skipped, "</span>
-        f<span class="str">"{stats['failed']} failed"</span>
+    print(
+        f"Done: {stats['migrated']} migrated, {stats['skipped']} skipped, "
+        f"{stats['failed']} failed"
     )
-    <span class="fn">print</span>(<span class="str">"Open Claude Code and check session history (entrypoint=cursor-migrated)."</span>)
+    print("Open Claude Code and check session history (entrypoint=cursor-migrated).")
 
 
-<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+if __name__ == "__main__":
     main()
 </code></pre>
 
     <h2 id="run">How to run</h2>
 
     <h3>1. Dry run (recommended)</h3>
-    <pre><code><span class="fn">python3</span> migrate_cursor_to_claude.py --dry-run
+    <pre><code>python3 migrate_cursor_to_claude.py --dry-run
 
-<span class="cm"># Only one repo</span>
-<span class="fn">python3</span> migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre>
+# Only one repo
+python3 migrate_cursor_to_claude.py --project ~/dev/my-app --dry-run</code></pre>
     <p>Lists pending chats with sizes and target Claude project folders. Skips already-migrated files unless the source <code>mtime</code> changed.</p>
 
     <h3>2. Migrate everything</h3>
-    <pre><code><span class="fn">python3</span> migrate_cursor_to_claude.py --yes</code></pre>
+    <pre><code>python3 migrate_cursor_to_claude.py --yes</code></pre>
     <p>Migrates <strong>chats first</strong>, then <strong>plans</strong>. Per-item status: <code>ok</code>, <code>skip</code>, or <code>fail</code>.</p>
 
     <h3>3. Chats or plans only</h3>
-    <pre><code><span class="fn">python3</span> migrate_cursor_to_claude.py --chats-only --yes
-<span class="fn">python3</span> migrate_cursor_to_claude.py --plans-only --yes</code></pre>
+    <pre><code>python3 migrate_cursor_to_claude.py --chats-only --yes
+python3 migrate_cursor_to_claude.py --plans-only --yes</code></pre>
 
     <h3>Before / after</h3>
-    <pre><code><span class="kw">#</span> Cursor agent runs (unchanged)
+    <pre><code># Cursor agent runs (unchanged)
 find ~/.cursor/projects -path '*/agent-transcripts/*/*.jsonl' | wc -l
 
-<span class="kw">#</span> Claude sessions for one repo
+# Claude sessions for one repo
 ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
 
     <h2 id="verify">Verify in Claude Code</h2>
@@ -669,7 +669,7 @@ ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
     </ul>
 
     <h2 id="rollback">Rollback</h2>
-    <pre><code><span class="fn">grep</span> -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre>
+    <pre><code>grep -l '"entrypoint": "cursor-migrated"' ~/.claude/projects/-Users-you-dev-my-app/*.jsonl</code></pre>
     <p>Delete those JSONL files to remove migrated sessions. Deleting the entire project folder also removes native Claude sessions for that repo. Remove <code>~/.claude/.cursor-migration-manifest.json</code> to force a full re-migration.</p>
 
     <h2 id="troubleshooting">Troubleshooting</h2>
@@ -718,7 +718,7 @@ ls ~/.claude/projects/-Users-you-dev-my-app/*.jsonl | wc -l</code></pre>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

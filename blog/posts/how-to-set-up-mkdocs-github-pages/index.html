@@ -77,7 +77,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -142,14 +142,14 @@
     <h2 id="prerequisites">Prerequisites and installation</h2>
     <p>You need <strong>Python 3.9+</strong> and <code>pip</code>. Use a virtual environment so MkDocs does not pollute system Python.</p>
 
-    <pre><code><span class="fn">python3</span> -m venv .venv
-<span class="fn">source</span> .venv/bin/activate          <span class="cm"># Windows: .venv\Scripts\activate</span>
-<span class="fn">pip</span> install --upgrade pip
-<span class="fn">pip</span> install mkdocs mkdocs-material</code></pre>
+    <pre><code>python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install --upgrade pip
+pip install mkdocs mkdocs-material</code></pre>
 
     <p>Verify with <code>mkdocs --version</code>. Pin versions in production:</p>
 
-    <pre><code><span class="kw">#</span> requirements-docs.txt
+    <pre><code># requirements-docs.txt
 mkdocs&gt;=1.6,&lt;2
 mkdocs-material&gt;=9.5,&lt;10
 mkdocs-minify-plugin&gt;=0.8,&lt;1
@@ -176,12 +176,12 @@ mkdocs-redirects&gt;=1.2,&lt;2</code></pre>
     <p><strong>Rules:</strong> one <code>.md</code> file = one page; keep images under <code>docs/assets/</code>; never commit <code>site/</code> unless you deploy by pushing build output to <code>gh-pages</code>.</p>
 
     <h2 id="first-site">Create your first site</h2>
-    <pre><code><span class="fn">mkdocs</span> new my-docs
-<span class="fn">cd</span> my-docs
-<span class="fn">mkdocs</span> serve</code></pre>
+    <pre><code>mkdocs new my-docs
+cd my-docs
+mkdocs serve</code></pre>
     <p>Open <code>http://127.0.0.1:8000</code>. Edit <code>docs/index.md</code> — the browser auto-reloads.</p>
 
-    <pre><code><span class="kw">#</span> mkdocs.yml — minimal starting config
+    <pre><code># mkdocs.yml — minimal starting config
 site_name: My Product Docs
 site_url: https://yourorg.github.io/my-docs/
 repo_url: https://github.com/yourorg/my-docs
@@ -201,10 +201,10 @@ nav:
 
     <h3>Site metadata</h3>
     <pre><code>site_name: My Product Docs
-site_url: https://docs.example.com/       <span class="cm"># trailing slash matters</span>
+site_url: https://docs.example.com/       # trailing slash matters
 site_description: Official documentation for My Product API and SDK.
 copyright: Copyright &amp;copy; 2026 Example Inc.
-repo_url: https:<span class="cm">//github.com/yourorg/my-docs</span>
+repo_url: https://github.com/yourorg/my-docs
 edit_uri: edit/main/docs/</code></pre>
     <p><code>site_url</code> drives sitemap generation, Open Graph tags, and absolute links. Set it to your <strong>final public URL</strong>, not localhost.</p>
 
@@ -271,7 +271,7 @@ plugins:
       redirect_maps:
         old-page.md: new-page.md
 
-strict: true    <span class="cm"># fail build on warnings — use in CI</span></code></pre>
+strict: true    # fail build on warnings — use in CI</code></pre>
 
     <div class="chart-wrap">
       <canvas id="buildTimeChart" aria-label="MkDocs build time by page count"></canvas>
@@ -291,7 +291,7 @@ strict: true    <span class="cm"># fail build on warnings — use in CI</span></
   - stylesheets/extra.css</code></pre>
     <pre><code>/* docs/stylesheets/extra.css */
 :root {
-  --md-primary-fg-color: <span class="cm">#2563eb;</span>
+  --md-primary-fg-color: #2563eb;
 }</code></pre>
 
     <h2 id="navigation">Navigation patterns</h2>
@@ -308,13 +308,13 @@ strict: true    <span class="cm"># fail build on warnings — use in CI</span></
 === "Python"
     ```python
     import requests
-    r = requests.get("https:<span class="cm">//api.example.com/v1/users")</span>
+    r = requests.get("https://api.example.com/v1/users")
     ```
 
 === "curl"
     ```bash
     curl -H "Authorization: Bearer $TOKEN" \
-      https:<span class="cm">//api.example.com/v1/users</span>
+      https://api.example.com/v1/users
     ```</code></pre>
     <p>Mermaid diagrams: enable a custom fence in <code>pymdownx.superfences</code>, then write fenced <code>mermaid</code> blocks in Markdown.</p>
 
@@ -322,7 +322,7 @@ strict: true    <span class="cm"># fail build on warnings — use in CI</span></
     <p>Place files under <code>docs/</code>. Reference with relative paths from the current page:</p>
     <pre><code>![Dashboard overview](assets/screenshots/dashboard.png)
 
-&lt;!<span class="cm">-- from docs/guides/api-authentication.md --&gt;</span>
+&lt;!-- from docs/guides/api-authentication.md --&gt;
 ![Auth flow](../assets/diagrams/oauth-flow.png)</code></pre>
     <p>Do not use absolute <code>/assets/...</code> paths unless you understand MkDocs URL rewriting with <code>use_directory_urls</code>.</p>
 
@@ -338,8 +338,8 @@ strict: true    <span class="cm"># fail build on warnings — use in CI</span></
     <p>Add <code>site/</code> and <code>.venv/</code> to <code>.gitignore</code>.</p>
 
     <h2 id="build">Build and inspect output</h2>
-    <pre><code><span class="fn">mkdocs</span> build --strict
-<span class="cm"># site/ now contains static HTML + search/search_index.json</span></code></pre>
+    <pre><code>mkdocs build --strict
+# site/ now contains static HTML + search/search_index.json</code></pre>
     <p>Inspect <code>site/sitemap.xml</code> (requires <code>site_url</code>). Broken internal links surface as warnings — errors with <code>--strict</code>.</p>
 
     <h2 id="github-pages">Deploy to GitHub Pages</h2>
@@ -353,43 +353,43 @@ strict: true    <span class="cm"># fail build on warnings — use in CI</span></
     <h3>Method A — GitHub Actions (recommended)</h3>
     <p>Build in CI; deploy the <code>site/</code> artifact. Reproducible, reviewable, no force-push to <code>gh-pages</code>.</p>
 
-    <pre><code><span class="cm"># .github/workflows/docs.yml</span>
-<span class="fn">name</span>: Deploy docs
-<span class="fn">on</span>:
-  <span class="fn">push</span>:
-    <span class="fn">branches</span>: [main]
-    <span class="fn">paths</span>: [<span class="str">"docs/**"</span>, <span class="str">"mkdocs.yml"</span>, <span class="str">"requirements-docs.txt"</span>]
+    <pre><code># .github/workflows/docs.yml
+name: Deploy docs
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", "mkdocs.yml", "requirements-docs.txt"]
 
-<span class="fn">permissions</span>:
-  <span class="fn">contents</span>: read
-  <span class="fn">pages</span>: write
-  <span class="fn">id-token</span>: write
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-<span class="fn">jobs</span>:
-  <span class="fn">build</span>:
-    <span class="fn">runs-on</span>: ubuntu-latest
-    <span class="fn">steps</span>:
-      - <span class="fn">uses</span>: actions/checkout@v4
-      - <span class="fn">uses</span>: actions/setup-python@v5
-        <span class="fn">with</span>:
-          <span class="fn">python-version</span>: <span class="str">"3.12"</span>
-          <span class="fn">cache</span>: pip
-      - <span class="fn">run</span>: pip install -r requirements-docs.txt
-      - <span class="fn">run</span>: mkdocs build --strict
-      - <span class="fn">uses</span>: actions/upload-pages-artifact@v3
-        <span class="fn">with</span>:
-          <span class="fn">path</span>: site
-  <span class="fn">deploy</span>:
-    <span class="fn">needs</span>: build
-    <span class="fn">runs-on</span>: ubuntu-latest
-    <span class="fn">environment</span>:
-      <span class="fn">name</span>: github-pages
-    <span class="fn">steps</span>:
-      - <span class="fn">uses</span>: actions/deploy-pages@v4</code></pre>
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-docs.txt
+      - run: mkdocs build --strict
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4</code></pre>
     <p>Repo <strong>Settings → Pages → Build and deployment → GitHub Actions</strong>.</p>
 
     <h3>Method B — mkdocs gh-deploy</h3>
-    <pre><code><span class="fn">mkdocs</span> gh-deploy --force</code></pre>
+    <pre><code>mkdocs gh-deploy --force</code></pre>
     <p>One command pushes <code>site/</code> to the <code>gh-pages</code> branch. Simple for solo devs; harder to review diffs.</p>
 
     <h3>Method C — Manual site/ commit</h3>
@@ -501,6 +501,7 @@ strict: true    <span class="cm"># fail build on warnings — use in CI</span></
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

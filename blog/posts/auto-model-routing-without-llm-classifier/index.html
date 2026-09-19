@@ -109,7 +109,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -216,15 +216,15 @@
     </table>
 
     <pre><code>_TIER_LADDER = (
-    <span class="str">"gemini-2.5-flash-lite"</span>,   <span class="cm"># 0 economy</span>
-    <span class="str">"deepseek-chat-v3.1"</span>,      <span class="cm"># 1 standard</span>
-    <span class="str">"gemini-2.5-flash"</span>,        <span class="cm"># 2 capable</span>
-    <span class="str">"gemini-3-flash-preview"</span>,  <span class="cm"># 3 premium</span>
+    "gemini-2.5-flash-lite",   # 0 economy
+    "deepseek-chat-v3.1",      # 1 standard
+    "gemini-2.5-flash",        # 2 capable
+    "gemini-3-flash-preview",  # 3 premium
 )
 
-<span class="kw">def</span> <span class="fn">_bump_model_tier</span>(model: <span class="fn">str</span>, steps: <span class="fn">int</span> = <span class="num">1</span>) -&gt; <span class="fn">str</span>:
-    new_idx = <span class="fn">min</span>(_ladder_index(model) + steps, <span class="fn">len</span>(_TIER_LADDER) - <span class="num">1</span>)
-    <span class="kw">return</span> _TIER_LADDER[new_idx]</code></pre>
+def _bump_model_tier(model: str, steps: int = 1) -&gt; str:
+    new_idx = min(_ladder_index(model) + steps, len(_TIER_LADDER) - 1)
+    return _TIER_LADDER[new_idx]</code></pre>
 
     <div class="chart-wrap">
       <canvas id="tierDistChart" aria-label="Typical Auto routing distribution by tier"></canvas>
@@ -283,20 +283,20 @@ _DEEP_RE = re.compile(
     <h2 id="complexity-score">Complexity scoring</h2>
     <p>A numeric score aggregates structural features before rule matching:</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">_complexity_score</span>(lower, words, chars, prior_assistant, conversation_summary=<span class="kw">None</span>):
-    score = <span class="num">0</span>
-    <span class="kw">if</span> words &gt; <span class="num">12</span>:  score += <span class="num">1</span>
-    <span class="kw">if</span> words &gt; <span class="num">28</span>:  score += <span class="num">1</span>
-    <span class="kw">if</span> words &gt; <span class="num">45</span>:  score += <span class="num">2</span>
-    <span class="kw">if</span> chars &gt; <span class="num">1200</span>: score += <span class="num">1</span>
-    <span class="kw">if</span> chars &gt; <span class="num">2500</span>: score += <span class="num">2</span>
-    <span class="kw">if</span> lower.count(<span class="str">"?"</span>) &gt; <span class="num">1</span>: score += <span class="num">2</span>
-    <span class="kw">if</span> prior_assistant &gt; <span class="num">0</span>: score += <span class="num">1</span>
-    <span class="kw">if</span> _DEEP_RE.search(lower) <span class="kw">or</span> _GUIDE_RE.search(lower): score += <span class="num">2</span>
-    <span class="kw">if</span> _HARD_RE.search(lower): score += <span class="num">2</span>
-    <span class="kw">if</span> conversation_summary <span class="kw">and</span> <span class="fn">len</span>(conversation_summary.strip()) &gt; <span class="num">800</span>:
-        score += <span class="num">1</span>
-    <span class="kw">return</span> score</code></pre>
+    <pre><code>def _complexity_score(lower, words, chars, prior_assistant, conversation_summary=None):
+    score = 0
+    if words &gt; 12:  score += 1
+    if words &gt; 28:  score += 1
+    if words &gt; 45:  score += 2
+    if chars &gt; 1200: score += 1
+    if chars &gt; 2500: score += 2
+    if lower.count("?") &gt; 1: score += 2
+    if prior_assistant &gt; 0: score += 1
+    if _DEEP_RE.search(lower) or _GUIDE_RE.search(lower): score += 2
+    if _HARD_RE.search(lower): score += 2
+    if conversation_summary and len(conversation_summary.strip()) &gt; 800:
+        score += 1
+    return score</code></pre>
 
     <p>Score ≥ 6 routes to Capable tier regardless of other rules.</p>
 
@@ -354,26 +354,26 @@ _DEEP_RE = re.compile(
       </tbody>
     </table>
 
-    <pre><code>RERANK_UPGRADE_THRESHOLD = <span class="num">0.15</span>
-RERANK_STRONG_UPGRADE_THRESHOLD = <span class="num">0.08</span>
-COSINE_UPGRADE_THRESHOLD = <span class="num">0.72</span>
+    <pre><code>RERANK_UPGRADE_THRESHOLD = 0.15
+RERANK_STRONG_UPGRADE_THRESHOLD = 0.08
+COSINE_UPGRADE_THRESHOLD = 0.72
 
-<span class="kw">def</span> <span class="fn">adjust_auto_model_for_retrieval</span>(
-    model: <span class="fn">str</span>,
+def adjust_auto_model_for_retrieval(
+    model: str,
     *,
-    top_rerank_score: <span class="fn">float</span> = <span class="num">0.0</span>,
-    rerank_ran: <span class="fn">bool</span> = <span class="kw">False</span>,
-    top_cosine: <span class="fn">float</span> = <span class="num">0.0</span>,
-) -&gt; <span class="fn">str</span>:
-    bumps = <span class="num">0</span>
-    <span class="kw">if</span> rerank_ran:
-        <span class="kw">if</span> top_rerank_score &lt; RERANK_STRONG_UPGRADE_THRESHOLD:
-            bumps = <span class="num">2</span>
-        <span class="kw">elif</span> top_rerank_score &lt; RERANK_UPGRADE_THRESHOLD:
-            bumps = <span class="num">1</span>
-    <span class="kw">elif</span> top_cosine &gt; <span class="num">0</span> <span class="kw">and</span> top_cosine &lt; COSINE_UPGRADE_THRESHOLD:
-        bumps = <span class="num">1</span>
-    <span class="kw">return</span> _bump_model_tier(model, bumps) <span class="kw">if</span> bumps &gt; <span class="num">0</span> <span class="kw">else</span> model</code></pre>
+    top_rerank_score: float = 0.0,
+    rerank_ran: bool = False,
+    top_cosine: float = 0.0,
+) -&gt; str:
+    bumps = 0
+    if rerank_ran:
+        if top_rerank_score &lt; RERANK_STRONG_UPGRADE_THRESHOLD:
+            bumps = 2
+        elif top_rerank_score &lt; RERANK_UPGRADE_THRESHOLD:
+            bumps = 1
+    elif top_cosine &gt; 0 and top_cosine &lt; COSINE_UPGRADE_THRESHOLD:
+        bumps = 1
+    return _bump_model_tier(model, bumps) if bumps &gt; 0 else model</code></pre>
 
     <p>Example: economy model selected for a short question, but rerank top score is 0.04 → bump +2 from tier 0 to tier 2. This catches the gray zone between the soft no-results gate (score &lt; 0.05) and confident retrieval — where a stronger model can synthesize weak context.</p>
 
@@ -406,28 +406,28 @@ COSINE_UPGRADE_THRESHOLD = <span class="num">0.72</span>
     "qwen3-235b-a22b",
     "gemini-3-flash-preview",
 })
-<span class="kw">#</span> Claude models: manual picker only, never Auto</code></pre>
+# Claude models: manual picker only, never Auto</code></pre>
 
     <h2 id="pipeline">Wiring into the chat pipeline</h2>
     <p>In the FastAPI chat handler, routing fits between request parsing and retrieval:</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">_resolve_chat_model</span>(request):
-    requested = request.model <span class="kw">or</span> default_chat_model()
-    <span class="kw">if</span> requested == <span class="str">"auto"</span>:
+    <pre><code>def _resolve_chat_model(request):
+    requested = request.model or default_chat_model()
+    if requested == "auto":
         resolved = resolve_auto_model(
             request.message,
             request.conversation_history,
             conversation_summary=request.conversation_summary,
         )
-        <span class="kw">return</span> resolved, <span class="str">"auto"</span>
-    <span class="kw">return</span> requested, <span class="kw">None</span>
+        return resolved, "auto"
+    return requested, None
 
-<span class="cm"># ... after retrieval + rerank ...</span>
-<span class="kw">if</span> auto_requested == <span class="str">"auto"</span>:
+# ... after retrieval + rerank ...
+if auto_requested == "auto":
     model_name = adjust_auto_model_for_retrieval(
         model_name,
         top_rerank_score=top_rerank_score,
-        rerank_ran=rerank_scores <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>,
+        rerank_ran=rerank_scores is not None,
         top_cosine=top_cosine,
     )</code></pre>
 
@@ -450,35 +450,35 @@ COSINE_UPGRADE_THRESHOLD = <span class="num">0.72</span>
     <h2 id="testing">Testing with pytest</h2>
     <p>Heuristic routers are fully deterministic — write table-driven tests and run them on every PR:</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">test_heuristic_short_faq</span>():
-    <span class="kw">assert</span> resolve_auto_model(<span class="str">"how do I zoom in?"</span>) <span class="kw">in</span> (
-        <span class="str">"deepseek-v4-flash"</span>,
-        <span class="str">"gemini-2.5-flash-lite"</span>,
-        <span class="str">"gemini-3.1-flash-lite"</span>,
+    <pre><code>def test_heuristic_short_faq():
+    assert resolve_auto_model("how do I zoom in?") in (
+        "deepseek-v4-flash",
+        "gemini-2.5-flash-lite",
+        "gemini-3.1-flash-lite",
     )
 
-<span class="kw">def</span> <span class="fn">test_heuristic_compare_routes_to_mistral</span>():
-    <span class="kw">assert</span> resolve_auto_model(<span class="str">"Compare option A vs option B"</span>) == <span class="str">"mistral-small-2603"</span>
+def test_heuristic_compare_routes_to_mistral():
+    assert resolve_auto_model("Compare option A vs option B") == "mistral-small-2603"
 
-<span class="kw">def</span> <span class="fn">test_heuristic_hard_troubleshoot_premium_on_follow_up</span>():
-    history = [{<span class="str">"role"</span>: <span class="str">"assistant"</span>, <span class="str">"content"</span>: <span class="str">"Try restarting."</span>}]
-    <span class="kw">assert</span> resolve_auto_model(
-        <span class="str">"export keeps crashing when I click export"</span>, history
-    ) == <span class="str">"gemini-3-flash-preview"</span>
+def test_heuristic_hard_troubleshoot_premium_on_follow_up():
+    history = [{"role": "assistant", "content": "Try restarting."}]
+    assert resolve_auto_model(
+        "export keeps crashing when I click export", history
+    ) == "gemini-3-flash-preview"
 
-<span class="kw">def</span> <span class="fn">test_retrieval_upgrade_bumps_on_low_rerank</span>():
-    <span class="kw">assert</span> adjust_auto_model_for_retrieval(
-        <span class="str">"gemini-2.5-flash-lite"</span>,
-        top_rerank_score=<span class="num">0.10</span>,
-        rerank_ran=<span class="kw">True</span>,
-    ) == <span class="str">"deepseek-chat-v3.1"</span>
+def test_retrieval_upgrade_bumps_on_low_rerank():
+    assert adjust_auto_model_for_retrieval(
+        "gemini-2.5-flash-lite",
+        top_rerank_score=0.10,
+        rerank_ran=True,
+    ) == "deepseek-chat-v3.1"
 
-<span class="kw">def</span> <span class="fn">test_retrieval_upgrade_skips_when_confident</span>():
-    <span class="kw">assert</span> adjust_auto_model_for_retrieval(
-        <span class="str">"gemini-2.5-flash-lite"</span>,
-        top_rerank_score=<span class="num">0.42</span>,
-        rerank_ran=<span class="kw">True</span>,
-    ) == <span class="str">"gemini-2.5-flash-lite"</span></code></pre>
+def test_retrieval_upgrade_skips_when_confident():
+    assert adjust_auto_model_for_retrieval(
+        "gemini-2.5-flash-lite",
+        top_rerank_score=0.42,
+        rerank_ran=True,
+    ) == "gemini-2.5-flash-lite"</code></pre>
 
     <p>When you tune a regex or threshold, update the test — the test suite <em>is</em> your routing spec.</p>
 
@@ -546,6 +546,7 @@ COSINE_UPGRADE_THRESHOLD = <span class="num">0.72</span>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

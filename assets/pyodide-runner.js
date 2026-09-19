@@ -55,6 +55,13 @@
 
     return getPyodide()
       .then(function (pyodide) {
+        outputEl.textContent = 'Loading packages\u2026';
+        // Pulls in pandas, numpy, matplotlib and friends when the code imports them.
+        return pyodide.loadPackagesFromImports(code)
+          .catch(function () { /* unknown import: let Python report it */ })
+          .then(function () { return pyodide; });
+      })
+      .then(function (pyodide) {
         var stdout = '';
         var stderr = '';
         pyodide.setStdout({

@@ -281,39 +281,39 @@ index cache"]:::disk
     <h2 id="phase-1">Phase 1 — HTTP endpoint and SSE streaming</h2>
     <p>The turn endpoint accepts a POST with the user message, project path, session ID, and mode. It returns <code>text/event-stream</code> — a single long-lived HTTP connection that multiplexes progress events, command output, and the final <code>done</code> payload.</p>
 
-    <pre><code>@app.post(<span class="str">"/livecode-agent"</span>)
-<span class="kw">def</span> <span class="fn">agent_turn</span>():
+    <pre><code>@app.post("/livecode-agent")
+def agent_turn():
     body = request.get_json()
-    question = body[<span class="str">"question"</span>]
-    project_path = body[<span class="str">"project_path"</span>]
-    session_id = body.get(<span class="str">"session_id"</span>) <span class="kw">or</span> uuid.uuid4().hex
-    mode = body.get(<span class="str">"mode"</span>, <span class="str">"agent"</span>)
+    question = body["question"]
+    project_path = body["project_path"]
+    session_id = body.get("session_id") or uuid.uuid4().hex
+    mode = body.get("mode", "agent")
 
-    <span class="kw">def</span> <span class="fn">generate</span>():
+    def generate():
         bridge = SSEProgressBridge(socketio=socketio, room=socket_id)
         chunk_queue = queue.Queue()
         turn_thread = threading.Thread(
-            target=<span class="kw">lambda</span>: run_turn_in_queue(run_livecode_turn(...), chunk_queue),
-            daemon=<span class="kw">True</span>,
+            target=lambda: run_turn_in_queue(run_livecode_turn(...), chunk_queue),
+            daemon=True,
         )
         turn_thread.start()
 
-        <span class="kw">while</span> <span class="kw">not</span> turn_finished:
-            <span class="kw">yield</span> <span class="kw">from</span> bridge.drain_as_sse()
-            <span class="kw">try</span>:
-                kind, payload = chunk_queue.get(timeout=<span class="num">0.05</span>)
-            <span class="kw">except</span> queue.Empty:
-                <span class="kw">continue</span>
-            <span class="kw">if</span> payload.get(<span class="str">"done"</span>):
-                append_turn_messages(project_path, session_id, payload[<span class="str">"turn_messages"</span>])
-                <span class="kw">yield</span> f<span class="str">"data: {json.dumps(payload)}\n\n"</span>
-                <span class="kw">break</span>
-            <span class="kw">yield</span> payload
+        while not turn_finished:
+            yield from bridge.drain_as_sse()
+            try:
+                kind, payload = chunk_queue.get(timeout=0.05)
+            except queue.Empty:
+                continue
+            if payload.get("done"):
+                append_turn_messages(project_path, session_id, payload["turn_messages"])
+                yield f"data: {json.dumps(payload)}\n\n"
+                break
+            yield payload
 
-    <span class="kw">return</span> Response(
+    return Response(
         stream_with_context(generate()),
-        mimetype=<span class="str">"text/event-stream"</span>,
-        headers={<span class="str">"Cache-Control"</span>: <span class="str">"no-cache"</span>, <span class="str">"X-Accel-Buffering"</span>: <span class="str">"no"</span>},
+        mimetype="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )</code></pre>
 
     <p><strong>Why not EventSource?</strong> The browser's built-in <code>EventSource</code> only supports GET. The frontend uses <code>fetch()</code> + <code>ReadableStream</code>, decodes SSE <code>data:</code> lines manually, and handles progress, command output, and the final <code>done</code> payload in one loop.</p>
@@ -332,51 +332,51 @@ index cache"]:::disk
     <h2 id="phase-2">Phase 2 — The agent harness loop</h2>
     <p>The harness is a <strong>Python generator</strong> — <code>run_livecode_turn()</code> in <code>harness/turn.py</code> (~2,400 lines) — that yields SSE chunks and emits Socket.IO events. Up to <strong>100 iterations</strong> per user message.</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">run_livecode_turn</span>(project_path, question, *, mode=<span class="str">"agent"</span>, session_id, ...):
+    <pre><code>def run_livecode_turn(project_path, question, *, mode="agent", session_id, ...):
     classification = classify_turn(question)
     messages = build_base_messages(project_path, question, session_id)
     tools = filter_tools_for_mode(get_livecode_tools(), mode)
 
-    <span class="kw">for</span> iteration <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, LIVECODE_MAX_ITERATIONS + <span class="num">1</span>):
-        <span class="kw">if</span> stationarity_detected(tool_history):
-            messages.append(nudge(<span class="str">"same tool+args repeated — try a different approach"</span>))
-        <span class="kw">if</span> search_scatter_detected(tool_history):
-            messages.append(nudge(<span class="str">"broaden grep — use glob or alternation"</span>))
-        <span class="kw">if</span> exploration_streak_without_edit(tool_history):
-            messages.append(nudge(<span class="str">"you have enough context — edit or finish"</span>))
+    for iteration in range(1, LIVECODE_MAX_ITERATIONS + 1):
+        if stationarity_detected(tool_history):
+            messages.append(nudge("same tool+args repeated — try a different approach"))
+        if search_scatter_detected(tool_history):
+            messages.append(nudge("broaden grep — use glob or alternation"))
+        if exploration_streak_without_edit(tool_history):
+            messages.append(nudge("you have enough context — edit or finish"))
 
-        messages = compact_stale_tool_messages(messages, keep_last=<span class="num">6</span>)
+        messages = compact_stale_tool_messages(messages, keep_last=6)
 
-        <span class="kw">if</span> interjection := drain_interjection(session_id):
+        if interjection := drain_interjection(session_id):
             messages.append(format_interjection(interjection))
 
         iter_tools = tools
-        <span class="kw">if</span> iteration &gt; LIVECODE_MAX_ITERATIONS - CLOSURE_ITERATIONS:
+        if iteration &gt; LIVECODE_MAX_ITERATIONS - CLOSURE_ITERATIONS:
             iter_tools = attempt_completion_only_tools(tools)
 
         response = call_with_tools(
             model=pick_auto_model(classification),
             messages=messages,
             tools=iter_tools,
-            on_thought_delta=<span class="kw">lambda</span> d: emit(<span class="str">"agent_thinking_delta"</span>, d),
+            on_thought_delta=lambda d: emit("agent_thinking_delta", d),
         )
 
-        <span class="kw">if</span> <span class="kw">not</span> response.tool_calls:
-            <span class="kw">yield</span> sse_done(answer=response.content)
-            <span class="kw">return</span>
+        if not response.tool_calls:
+            yield sse_done(answer=response.content)
+            return
 
-        <span class="kw">for</span> result <span class="kw">in</span> execute_tool_calls_batch(response.tool_calls):
+        for result in execute_tool_calls_batch(response.tool_calls):
             messages.append(assistant_tool_message(response))
             messages.append(tool_result_message(result))
             emit_progress(result)
 
-            <span class="kw">if</span> result.tool == <span class="str">"attempt_completion"</span>:
-                <span class="kw">if</span> goal_verifier_passed(question, tool_history):
-                    <span class="kw">yield</span> sse_done(answer=result.summary)
-                    <span class="kw">return</span>
-                messages.append(nudge(<span class="str">"user asked for code change but no edit succeeded"</span>))
+            if result.tool == "attempt_completion":
+                if goal_verifier_passed(question, tool_history):
+                    yield sse_done(answer=result.summary)
+                    return
+                messages.append(nudge("user asked for code change but no edit succeeded"))
 
-    <span class="kw">yield</span> sse_done(answer=summarize_exhaustion(messages))</code></pre>
+    yield sse_done(answer=summarize_exhaustion(messages))</code></pre>
 
     <h3>Anti-loop guardrails</h3>
     <p>These are the difference between a demo and something you can leave running on a real repo:</p>
@@ -449,23 +449,23 @@ CLOSURE_ITERATIONS = 2</code></pre>
       </tbody>
     </table>
 
-    <pre><code><span class="kw">def</span> <span class="fn">dispatch_tool</span>(project_path, name, args, *, mode, session_id, ...):
-    <span class="kw">if</span> mode_blocks_tool(mode, name):
-        <span class="kw">return</span> {<span class="str">"error"</span>: mode_rejection_message(mode, name)}
+    <pre><code>def dispatch_tool(project_path, name, args, *, mode, session_id, ...):
+    if mode_blocks_tool(mode, name):
+        return {"error": mode_rejection_message(mode, name)}
 
-    <span class="kw">if</span> name == <span class="str">"run_command"</span> <span class="kw">and</span> requires_permission(args[<span class="str">"command"</span>]):
+    if name == "run_command" and requires_permission(args["command"]):
         request_id = create_permission_request(session_id, name, args)
         emit_permission_prompt(request_id, args)
         approved = wait_for_permission(request_id)
-        <span class="kw">if</span> <span class="kw">not</span> approved:
-            <span class="kw">return</span> {<span class="str">"error"</span>: <span class="str">"User denied command"</span>}
+        if not approved:
+            return {"error": "User denied command"}
 
-    <span class="kw">if</span> name == <span class="str">"grep_repo"</span>:
-        <span class="kw">return</span> repo_grep_fn(project_path, pattern=args[<span class="str">"pattern"</span>], ...)
-    <span class="kw">if</span> name == <span class="str">"edit_file"</span>:
-        <span class="kw">return</span> apply_search_replace(
-            project_path, args[<span class="str">"file_path"</span>],
-            old=args[<span class="str">"old_string"</span>], new=args[<span class="str">"new_string"</span>],
+    if name == "grep_repo":
+        return repo_grep_fn(project_path, pattern=args["pattern"], ...)
+    if name == "edit_file":
+        return apply_search_replace(
+            project_path, args["file_path"],
+            old=args["old_string"], new=args["new_string"],
         )</code></pre>
 
     <h3>Batch execution rules</h3>
@@ -505,64 +505,64 @@ LIVECODE_KEEP_RECENT_TOOL_MSGS = 6</code></pre>
       </tbody>
     </table>
 
-    <pre><code><span class="kw">const</span> resp = <span class="kw">await</span> fetch(<span class="str">"/livecode-agent"</span>, {
-  method: <span class="str">"POST"</span>,
-  headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>, Accept: <span class="str">"text/event-stream"</span> },
+    <pre><code>const resp = await fetch("/livecode-agent", {
+  method: "POST",
+  headers: { "Content-Type": "application/json", Accept: "text/event-stream" },
   body: JSON.stringify({ project_path, question, session_id, mode }),
 });
 
-<span class="kw">const</span> reader = resp.body.getReader();
-<span class="kw">const</span> decoder = <span class="kw">new</span> TextDecoder();
-let buffer = <span class="str">""</span>;
+const reader = resp.body.getReader();
+const decoder = new TextDecoder();
+let buffer = "";
 
-<span class="kw">while</span> (<span class="kw">true</span>) {
-  <span class="kw">const</span> { done, value } = <span class="kw">await</span> reader.read();
-  <span class="kw">if</span> (done) <span class="kw">break</span>;
-  buffer += decoder.decode(value, { stream: <span class="kw">true</span> });
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  buffer += decoder.decode(value, { stream: true });
 
-  <span class="kw">for</span> (<span class="kw">const</span> line of buffer.split(<span class="str">"\n"</span>)) {
-    <span class="kw">if</span> (!line.startsWith(<span class="str">"data: "</span>)) <span class="kw">continue</span>;
-    <span class="kw">const</span> payload = JSON.parse(line.slice(<span class="num">6</span>));
-    <span class="kw">if</span> (payload.progress) handleProgress(payload.progress);
-    <span class="kw">if</span> (payload.command_stream) appendTerminalOutput(payload.command_stream);
-    <span class="kw">if</span> (payload.done) finalizeTurn(payload);
+  for (const line of buffer.split("\n")) {
+    if (!line.startsWith("data: ")) continue;
+    const payload = JSON.parse(line.slice(6));
+    if (payload.progress) handleProgress(payload.progress);
+    if (payload.command_stream) appendTerminalOutput(payload.command_stream);
+    if (payload.done) finalizeTurn(payload);
   }
 }</code></pre>
 
     <h2 id="phase-6">Phase 6 — Permissions and safety</h2>
     <p>Destructive shell patterns (<code>git reset --hard</code>, <code>rm -rf</code>, force push) trigger a <strong>blocking permission gate</strong>:</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">create_permission_request</span>(session_id, tool_name, tool_args, timeout_s=<span class="num">120</span>):
-    request_id = f<span class="str">"perm_{uuid.uuid4().hex[:16]}"</span>
+    <pre><code>def create_permission_request(session_id, tool_name, tool_args, timeout_s=120):
+    request_id = f"perm_{uuid.uuid4().hex[:16]}"
     event = threading.Event()
     _PERMISSIONS[request_id] = {
-        <span class="str">"session_id"</span>: session_id,
-        <span class="str">"tool_name"</span>: tool_name,
-        <span class="str">"tool_args"</span>: tool_args,
-        <span class="str">"event"</span>: event,
-        <span class="str">"approved"</span>: <span class="kw">None</span>,
+        "session_id": session_id,
+        "tool_name": tool_name,
+        "tool_args": tool_args,
+        "event": event,
+        "approved": None,
     }
-    <span class="kw">return</span> request_id
+    return request_id
 
-<span class="kw">def</span> <span class="fn">wait_for_permission</span>(request_id) -&gt; <span class="fn">bool</span> | <span class="kw">None</span>:
+def wait_for_permission(request_id) -&gt; bool | None:
     entry = _PERMISSIONS[request_id]
-    <span class="kw">if</span> <span class="kw">not</span> entry[<span class="str">"event"</span>].wait(timeout=entry[<span class="str">"timeout_s"</span>]):
-        <span class="kw">return</span> <span class="kw">None</span>
-    <span class="kw">return</span> <span class="fn">bool</span>(entry[<span class="str">"approved"</span>])</code></pre>
+    if not entry["event"].wait(timeout=entry["timeout_s"]):
+        return None
+    return bool(entry["approved"])</code></pre>
 
     <p>The frontend shows a modal; the user POSTs to <code>/livecode/permission</code> with <code>{request_id, approved}</code>; <code>resolve_permission()</code> calls <code>event.set()</code> and unblocks the harness thread. All file operations go through <code>resolve_safe_path()</code> — no traversal outside the project root.</p>
 
     <h2 id="phase-7">Phase 7 — Agent, Plan, and Ask modes</h2>
-    <pre><code>LIVECODE_MODES = (<span class="str">"agent"</span>, <span class="str">"plan"</span>, <span class="str">"ask"</span>)
+    <pre><code>LIVECODE_MODES = ("agent", "plan", "ask")
 
-<span class="kw">def</span> <span class="fn">filter_tools_for_mode</span>(tools, mode):
-    <span class="kw">if</span> mode == <span class="str">"agent"</span>:
-        <span class="kw">return</span> tools
-    allowed = READ_ONLY_TOOLS | {<span class="str">"attempt_completion"</span>}
-    filtered = [t <span class="kw">for</span> t <span class="kw">in</span> tools <span class="kw">if</span> t[<span class="str">"function"</span>][<span class="str">"name"</span>] <span class="kw">in</span> allowed]
-    <span class="kw">if</span> mode == <span class="str">"plan"</span>:
+def filter_tools_for_mode(tools, mode):
+    if mode == "agent":
+        return tools
+    allowed = READ_ONLY_TOOLS | {"attempt_completion"}
+    filtered = [t for t in tools if t["function"]["name"] in allowed]
+    if mode == "plan":
         filtered.append(CREATE_PLAN_TOOL)
-    <span class="kw">return</span> filtered</code></pre>
+    return filtered</code></pre>
 
     <table>
       <thead><tr><th>Mode</th><th>Can edit files</th><th>Can run shell</th><th>Special tool</th></tr></thead>
@@ -576,48 +576,48 @@ let buffer = <span class="str">""</span>;
     <h2 id="phase-8">Phase 8 — Subagents and delegation</h2>
     <p><code>spawn_subagent</code> launches a nested mini-loop with its own ephemeral session — useful for "explore the codebase and report back" without polluting the main context.</p>
 
-    <pre><code><span class="kw">def</span> <span class="fn">run_subagent_turn</span>(project_path, goal, parent_session_id, read_only=<span class="kw">True</span>, max_iterations=<span class="num">5</span>):
-    child_session = f<span class="str">"{parent_session_id}_sub_{uuid.uuid4().hex[:8]}"</span>
+    <pre><code>def run_subagent_turn(project_path, goal, parent_session_id, read_only=True, max_iterations=5):
+    child_session = f"{parent_session_id}_sub_{uuid.uuid4().hex[:8]}"
     question = (
-        f<span class="str">"[Subagent — read_only={read_only}]\n{goal}\n"</span>
-        <span class="str">"Call attempt_completion when done."</span>
+        f"[Subagent — read_only={read_only}]\n{goal}\n"
+        "Call attempt_completion when done."
     )
 
-    <span class="kw">for</span> chunk <span class="kw">in</span> run_livecode_turn(
+    for chunk in run_livecode_turn(
         project_path, question,
         session_id=child_session,
         max_iterations=max_iterations,
-        mode=<span class="str">"ask"</span> <span class="kw">if</span> read_only <span class="kw">else</span> <span class="str">"agent"</span>,
+        mode="ask" if read_only else "agent",
     ):
         collect_answer_from_sse_chunk(chunk)
 
-    <span class="kw">return</span> {<span class="str">"success"</span>: <span class="kw">True</span>, <span class="str">"result"</span>: answer, <span class="str">"child_session_id"</span>: child_session}</code></pre>
+    return {"success": True, "result": answer, "child_session_id": child_session}</code></pre>
 
     <h2 id="phase-9">Phase 9 — Sessions, memory, and rules</h2>
     <h3>JSONL session persistence</h3>
     <p>Each turn appends to <code>chat_history.jsonl</code> under <code>~/livecode/projects/{slug}/sessions/{id}/</code>:</p>
-    <pre><code>{<span class="str">"role"</span>:<span class="str">"user"</span>,<span class="str">"content"</span>:<span class="str">"Add health check endpoint"</span>,<span class="str">"ts"</span>:<span class="num">1725000000</span>}
-{<span class="str">"role"</span>:<span class="str">"assistant"</span>,<span class="str">"content"</span>:<span class="kw">null</span>,<span class="str">"tool_calls"</span>:[{<span class="str">"id"</span>:<span class="str">"call_1"</span>,<span class="str">"function"</span>:{<span class="str">"name"</span>:<span class="str">"grep_repo"</span>,<span class="str">"arguments"</span>:<span class="str">"{\"pattern\":\"router\"}"</span>}}]}
-{<span class="str">"role"</span>:<span class="str">"tool"</span>,<span class="str">"tool_call_id"</span>:<span class="str">"call_1"</span>,<span class="str">"content"</span>:<span class="str">"{\"matches\":[{\"file\":\"app.py\",\"line\":12}]}"</span>}</code></pre>
+    <pre><code>{"role":"user","content":"Add health check endpoint","ts":1725000000}
+{"role":"assistant","content":null,"tool_calls":[{"id":"call_1","function":{"name":"grep_repo","arguments":"{\"pattern\":\"router\"}"}}]}
+{"role":"tool","tool_call_id":"call_1","content":"{\"matches\":[{\"file\":\"app.py\",\"line\":12}]}"}</code></pre>
 
     <h3>Intelligent classifier</h3>
     <p>Before the loop, a fast model classifies the turn to drive model routing:</p>
-    <pre><code><span class="kw">class</span> IntelligentClassification(TypedDict):
+    <pre><code>class IntelligentClassification(TypedDict):
     goal_kind: str          # code_change, analysis, research, meta
     edit_scope: str         # none, single_line, single_file, multi_file, bulk
-    needs_flagship_model: <span class="fn">bool</span>
+    needs_flagship_model: bool
     complexity: str         # simple, medium, complex
-    expects_multi_step: <span class="fn">bool</span></code></pre>
+    expects_multi_step: bool</code></pre>
 
     <h3>Project rules discovery</h3>
-    <pre><code>RULES_FILES = [<span class="str">"AGENTS.md"</span>, <span class="str">"CLAUDE.md"</span>, <span class="str">".cursor/rules"</span>, <span class="str">".livecode/rules"</span>]
+    <pre><code>RULES_FILES = ["AGENTS.md", "CLAUDE.md", ".cursor/rules", ".livecode/rules"]
 
-<span class="kw">def</span> <span class="fn">discover_project_rules</span>(project_path):
-    <span class="kw">for</span> directory <span class="kw">in</span> path_chain(git_root, project_path):
-        <span class="kw">for</span> rules_file <span class="kw">in</span> RULES_FILES:
-            <span class="kw">if</span> exists(join(directory, rules_file)):
+def discover_project_rules(project_path):
+    for directory in path_chain(git_root, project_path):
+        for rules_file in RULES_FILES:
+            if exists(join(directory, rules_file)):
                 found.append(read(candidate))
-    <span class="kw">return</span> wrap_in_system_reminder(found)</code></pre>
+    return wrap_in_system_reminder(found)</code></pre>
     <p>Injected as a follow-up system message — same convention Cursor and Claude Code use for <code>AGENTS.md</code> and <code>.cursor/rules</code>.</p>
 
     <h2 id="phase-10">Phase 10 — Frontend IDE shell</h2>
@@ -728,7 +728,7 @@ let buffer = <span class="str">""</span>;
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

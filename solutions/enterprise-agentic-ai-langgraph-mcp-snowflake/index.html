@@ -336,15 +336,15 @@
     </ul>
 
     <h3>5 — MCP server: snowflake-governed (illustrative)</h3>
-    <pre><code><span class="kw">from</span> mcp.server import Server
-<span class="kw">from</span> mcp.types import Tool, TextContent
+    <pre><code>from mcp.server import Server
+from mcp.types import Tool, TextContent
 
 server = Server("snowflake-governed")
 
-<span class="fn">@server</span>.tool()
+@server.tool()
 async def cortex_analyst(query: str, session_token: str) -&gt; list[TextContent]:
     claims = access_layer.validate(session_token)
-    if "analyst" <span class="kw">not</span> <span class="kw">in</span> claims.allowed_tools:
+    if "analyst" not in claims.allowed_tools:
         raise PermissionError("entitlement_denied")
     result = await cortex_client.analyst(
         query=query,
@@ -516,7 +516,7 @@ async def test_research_agent(case, agent_runner):
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

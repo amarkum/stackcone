@@ -79,7 +79,6 @@ description: Ship a stackcone blog post — md source, HTML publish, posts.json,
 1. Write `blog/md/{slug}.md` and `blog/posts/{slug}.html`.
 2. Download any hero images to `blog/images/{slug}/` (no hotlinks).
 3. Update `blog/posts.json` and `sitemap.xml`.
-4. Run `python3 _dev/apply_highlights.py blog/posts/{slug}.html`.
 ```
 
 ### Subagents

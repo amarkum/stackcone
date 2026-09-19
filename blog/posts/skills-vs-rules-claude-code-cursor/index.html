@@ -223,51 +223,50 @@
     <p><strong>File:</strong> <code>.claude/rules/testing.md</code></p>
     <pre><code>---
 paths:
-  - <span class="str">"**/*.test.ts"</span>
-  - <span class="str">"**/*.spec.ts"</span>
-  - <span class="str">"tests/**/*"</span>
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - "tests/**/*"
 ---
 
 # Testing conventions
 
 - Use Vitest, not Jest
-- One <span class="str">`describe`</span> block per exported <span class="kw">function</span>
+- One `describe` block per exported function
 - Mock external HTTP at the boundary, not internal helpers
-- Run <span class="str">`pnpm test path/to/file.test.ts`</span> after editing a test file
+- Run `pnpm test path/to/file.test.ts` after editing a test file
 - Never skip tests without a comment explaining why</code></pre>
     <p><strong>Why this is a rule:</strong> Constraints that apply whenever Claude edits test files — no multi-step workflow.</p>
 
     <h3>Cursor equivalent</h3>
-    <pre><code><span class="kw">---</span>
-<span class="fn">globs</span>: <span class="str">"**/*.{test,spec}.ts,tests/**"</span>
-<span class="kw">---</span>
+    <pre><code>---
+globs: "**/*.{test,spec}.ts,tests/**"
+---
 
-<span class="kw">#</span> Testing conventions
+# Testing conventions
 (same bullets)</code></pre>
 
     <h2 id="example-skill">Example: a skill file</h2>
     <p><strong>File:</strong> <code>.claude/skills/ship-blog-post/SKILL.md</code></p>
-    <pre><code><span class="kw">---</span>
-<span class="fn">name</span>: ship-blog-post
-<span class="fn">description</span>: &gt;-
+    <pre><code>---
+name: ship-blog-post
+description: &gt;-
   Publish a stackcone blog post — md source, HTML page, posts.json,
   sitemap.xml, syntax highlighting. Use when user asks to ship or
   publish a blog post.
-<span class="kw">---</span>
+---
 
-<span class="kw">#</span> Ship a blog post
+# Ship a blog post
 
-<span class="kw">##</span> Steps
+## Steps
 
-1. Write <span class="str">`blog/md/{slug}.md`</span> (markdown source, not public URL).
-2. Write <span class="str">`blog/posts/{slug}/index.html`</span> (canonical published page).
-3. Download hero images to <span class="str">`blog/images/{slug}/`</span> — no hotlinks.
-4. Add entry to <span class="str">`blog/posts.json`</span> with author "Amar Kumar".
-5. Add URL to <span class="str">`sitemap.xml`</span>.
-6. Update static listing in <span class="str">`blog/index.html`</span>.
-7. Run <span class="str">`python3 _dev/apply_highlights.py blog/posts/{slug}/index.html`</span>.
+1. Write `blog/md/{slug}.md` (markdown source, not public URL).
+2. Write `blog/posts/{slug}/index.html` (canonical published page).
+3. Download hero images to `blog/images/{slug}/` — no hotlinks.
+4. Add entry to `blog/posts.json` with author "Amar Kumar".
+5. Add URL to `sitemap.xml`.
+6. Update static listing in `blog/index.html`.
 
-<span class="kw">##</span> Do not
+## Do not
 
 - Create redirect stub files
 - Generate AI hero images when real logos exist</code></pre>
@@ -294,11 +293,11 @@ paths:
 .claude/rules/     → conventions scoped by topic or file path
 .claude/skills/    → procedures you run on demand</code></pre>
     <p><strong>Example stack:</strong></p>
-    <pre><code>CLAUDE.md                    <span class="cm"># pnpm test, never push main, project map</span>
+    <pre><code>CLAUDE.md                    # pnpm test, never push main, project map
 .claude/rules/
-  ├── python-style.md        <span class="cm"># no paths → loads every session</span>
-  ├── api-design.md          <span class="cm"># paths: src/api/**</span>
-  └── database.md            <span class="cm"># paths: src/db/**</span>
+  ├── python-style.md        # no paths → loads every session
+  ├── api-design.md          # paths: src/api/**
+  └── database.md            # paths: src/db/**
 .claude/skills/
   ├── add-endpoint/SKILL.md
   ├── run-migration/SKILL.md
@@ -367,7 +366,7 @@ paths:
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

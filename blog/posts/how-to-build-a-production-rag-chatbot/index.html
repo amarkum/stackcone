@@ -93,7 +93,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -358,134 +358,134 @@ tiktoken</code></pre>
 
     <h3>Step 2 — Chunk documents</h3>
     <p><strong>ingest/chunk.py</strong></p>
-    <pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> <span class="fn">Path</span>
+    <pre><code>from pathlib import Path
 
-CHUNK_SIZE = <span class="num">1000</span>
-OVERLAP = <span class="num">200</span>
+CHUNK_SIZE = 1000
+OVERLAP = 200
 
-<span class="kw">def</span> <span class="fn">chunk_text</span>(text: <span class="fn">str</span>, doc_id: <span class="fn">str</span>, title: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    chunks, start, idx = [], <span class="num">0</span>, <span class="num">0</span>
-    <span class="kw">while</span> start &lt; <span class="fn">len</span>(text):
+def chunk_text(text: str, doc_id: str, title: str) -&gt; list[dict]:
+    chunks, start, idx = [], 0, 0
+    while start &lt; len(text):
         piece = text[start : start + CHUNK_SIZE].strip()
-        <span class="kw">if</span> piece:
+        if piece:
             chunks.append({
-                <span class="str">"id"</span>: f<span class="str">"{doc_id}_{idx}"</span>,
-                <span class="str">"text"</span>: piece,
-                <span class="str">"metadata"</span>: {<span class="str">"doc_id"</span>: doc_id, <span class="str">"title"</span>: title, <span class="str">"chunk_index"</span>: idx},
+                "id": f"{doc_id}_{idx}",
+                "text": piece,
+                "metadata": {"doc_id": doc_id, "title": title, "chunk_index": idx},
             })
-            idx += <span class="num">1</span>
+            idx += 1
         start += CHUNK_SIZE - OVERLAP
-    <span class="kw">return</span> chunks
+    return chunks
 
-<span class="kw">def</span> <span class="fn">load_docs</span>(folder: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
+def load_docs(folder: str) -&gt; list[dict]:
     out = []
-    <span class="kw">for</span> path <span class="kw">in</span> <span class="fn">Path</span>(folder).glob(<span class="str">"**/*.md"</span>):
-        out.extend(chunk_text(path.read_text(encoding=<span class="str">"utf-8"</span>), path.stem, path.stem))
-    <span class="kw">return</span> out</code></pre>
+    for path in Path(folder).glob("**/*.md"):
+        out.extend(chunk_text(path.read_text(encoding="utf-8"), path.stem, path.stem))
+    return out</code></pre>
 
     <h3>Step 3 — Embed and index</h3>
     <p><strong>ingest/index.py</strong></p>
-    <pre><code><span class="kw">import</span> os
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
-<span class="kw">from</span> pinecone <span class="kw">import</span> Pinecone
-<span class="kw">from</span> chunk <span class="kw">import</span> load_docs
+    <pre><code>import os
+from openai import OpenAI
+from pinecone import Pinecone
+from chunk import load_docs
 
 client = OpenAI()
-pc = Pinecone(api_key=os.environ[<span class="str">"PINECONE_API_KEY"</span>])
-index = pc.Index(os.environ[<span class="str">"PINECONE_INDEX"</span>])
+pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+index = pc.Index(os.environ["PINECONE_INDEX"])
 
-<span class="kw">def</span> <span class="fn">embed</span>(texts: <span class="fn">list</span>[<span class="fn">str</span>]) -&gt; <span class="fn">list</span>[<span class="fn">list</span>[<span class="fn">float</span>]]:
-    r = client.embeddings.create(model=os.environ[<span class="str">"EMBEDDING_MODEL"</span>], input=texts)
-    <span class="kw">return</span> [d.embedding <span class="kw">for</span> d <span class="kw">in</span> r.data]
+def embed(texts: list[str]) -&gt; list[list[float]]:
+    r = client.embeddings.create(model=os.environ["EMBEDDING_MODEL"], input=texts)
+    return [d.embedding for d in r.data]
 
-<span class="kw">def</span> <span class="fn">upsert_chunks</span>(chunks: <span class="fn">list</span>[<span class="fn">dict</span>], batch_size=<span class="num">50</span>):
-    ns = os.environ.get(<span class="str">"PINECONE_NAMESPACE"</span>, <span class="str">"default"</span>)
-    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, <span class="fn">len</span>(chunks), batch_size):
+def upsert_chunks(chunks: list[dict], batch_size=50):
+    ns = os.environ.get("PINECONE_NAMESPACE", "default")
+    for i in range(0, len(chunks), batch_size):
         batch = chunks[i : i + batch_size]
-        vecs = embed([c[<span class="str">"text"</span>] <span class="kw">for</span> c <span class="kw">in</span> batch])
+        vecs = embed([c["text"] for c in batch])
         index.upsert(
             vectors=[
-                {<span class="str">"id"</span>: c[<span class="str">"id"</span>], <span class="str">"values"</span>: v, <span class="str">"metadata"</span>: {**c[<span class="str">"metadata"</span>], <span class="str">"text"</span>: c[<span class="str">"text"</span>]}}
-                <span class="kw">for</span> c, v <span class="kw">in</span> <span class="fn">zip</span>(batch, vecs)
+                {"id": c["id"], "values": v, "metadata": {**c["metadata"], "text": c["text"]}}
+                for c, v in zip(batch, vecs)
             ],
             namespace=ns,
         )
 
-<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
-    upsert_chunks(load_docs(<span class="str">"docs"</span>))
-    <span class="fn">print</span>(<span class="str">"Indexed."</span>)</code></pre>
+if __name__ == "__main__":
+    upsert_chunks(load_docs("docs"))
+    print("Indexed.")</code></pre>
     <p>Run after docs change: <code>python ingest/index.py</code></p>
 
     <h3>Step 4 — Retrieve relevant chunks</h3>
     <p><strong>app/retrieve.py</strong></p>
-    <pre><code><span class="kw">import</span> os
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+    <pre><code>import os
+from openai import OpenAI
 
 client = OpenAI()
 
-<span class="kw">def</span> <span class="fn">embed_query</span>(text: <span class="fn">str</span>) -&gt; <span class="fn">list</span>[<span class="fn">float</span>]:
-    r = client.embeddings.create(model=os.environ[<span class="str">"EMBEDDING_MODEL"</span>], input=text)
-    <span class="kw">return</span> r.data[<span class="num">0</span>].embedding
+def embed_query(text: str) -&gt; list[float]:
+    r = client.embeddings.create(model=os.environ["EMBEDDING_MODEL"], input=text)
+    return r.data[0].embedding
 
-<span class="kw">def</span> <span class="fn">retrieve</span>(query: <span class="fn">str</span>, index, top_k: <span class="fn">int</span> | <span class="kw">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    k = top_k <span class="kw">or</span> <span class="fn">int</span>(os.environ.get(<span class="str">"RETRIEVAL_TOP_K"</span>, <span class="str">"30"</span>))
-    hits = index.query(vector=embed_query(query), top_k=k, include_metadata=<span class="kw">True</span>)
-    <span class="kw">return</span> [{<span class="str">"text"</span>: m.metadata[<span class="str">"text"</span>], **m.metadata} <span class="kw">for</span> m <span class="kw">in</span> hits.matches]</code></pre>
+def retrieve(query: str, index, top_k: int | None = None) -&gt; list[dict]:
+    k = top_k or int(os.environ.get("RETRIEVAL_TOP_K", "30"))
+    hits = index.query(vector=embed_query(query), top_k=k, include_metadata=True)
+    return [{"text": m.metadata["text"], **m.metadata} for m in hits.matches]</code></pre>
     <p><strong>Optional rerank</strong> (Cohere) — call after vector search, keep top 8. Big quality win for little code.</p>
 
     <h3>Step 5 — Chat API</h3>
     <p><strong>app/main.py</strong></p>
-    <pre><code><span class="kw">import</span> os
-<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
-<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
-<span class="kw">from</span> openai <span class="kw">import</span> OpenAI
-<span class="kw">from</span> retrieve <span class="kw">import</span> retrieve
+    <pre><code>import os
+from fastapi import FastAPI
+from pydantic import BaseModel
+from openai import OpenAI
+from retrieve import retrieve
 
 app = FastAPI()
 client = OpenAI()
-<span class="cm"># index = init pinecone on startup</span>
+# index = init pinecone on startup
 
-SYSTEM = <span class="str">"""You are a helpful assistant. Answer using only the context below.
-If the context does not contain the answer, say so clearly."""</span>
+SYSTEM = """You are a helpful assistant. Answer using only the context below.
+If the context does not contain the answer, say so clearly."""
 
-<span class="kw">class</span> ChatRequest(BaseModel):
-    message: <span class="fn">str</span>
-    conversation_history: <span class="fn">list</span>[<span class="fn">dict</span>] = []
+class ChatRequest(BaseModel):
+    message: str
+    conversation_history: list[dict] = []
 
-<span class="kw">def</span> <span class="fn">format_context</span>(docs: <span class="fn">list</span>[<span class="fn">dict</span>]) -&gt; <span class="fn">str</span>:
-    max_chunks = <span class="fn">int</span>(os.environ.get(<span class="str">"MAX_CONTEXT_CHUNKS"</span>, <span class="str">"8"</span>))
-    parts = [f<span class="str">"Source: {d.get('title', 'doc')}\n{d['text']}"</span> <span class="kw">for</span> d <span class="kw">in</span> docs[:max_chunks]]
-    <span class="kw">return</span> <span class="str">"\n---\n"</span>.join(parts)
+def format_context(docs: list[dict]) -&gt; str:
+    max_chunks = int(os.environ.get("MAX_CONTEXT_CHUNKS", "8"))
+    parts = [f"Source: {d.get('title', 'doc')}\n{d['text']}" for d in docs[:max_chunks]]
+    return "\n---\n".join(parts)
 
-@app.post(<span class="str">"/chat"</span>)
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">chat</span>(req: ChatRequest):
+@app.post("/chat")
+async def chat(req: ChatRequest):
     docs = retrieve(req.message, index)
 
-    <span class="kw">if</span> <span class="kw">not</span> docs:
-        <span class="kw">return</span> {<span class="str">"response"</span>: <span class="str">"I couldn't find anything relevant in the knowledge base."</span>, <span class="str">"sources"</span>: []}
+    if not docs:
+        return {"response": "I couldn't find anything relevant in the knowledge base.", "sources": []}
 
     ctx = format_context(docs)
     messages = [
-        {<span class="str">"role"</span>: <span class="str">"system"</span>, <span class="str">"content"</span>: SYSTEM},
+        {"role": "system", "content": SYSTEM},
         *req.conversation_history,
-        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: f<span class="str">"Context:\n{ctx}\n\nQuestion: {req.message}"</span>},
+        {"role": "user", "content": f"Context:\n{ctx}\n\nQuestion: {req.message}"},
     ]
-    out = client.chat.completions.create(model=os.environ[<span class="str">"DEFAULT_MODEL"</span>], messages=messages)
-    <span class="kw">return</span> {
-        <span class="str">"response"</span>: out.choices[<span class="num">0</span>].message.content,
-        <span class="str">"sources"</span>: [{<span class="str">"title"</span>: d.get(<span class="str">"title"</span>)} <span class="kw">for</span> d <span class="kw">in</span> docs[:<span class="num">5</span>]],
+    out = client.chat.completions.create(model=os.environ["DEFAULT_MODEL"], messages=messages)
+    return {
+        "response": out.choices[0].message.content,
+        "sources": [{"title": d.get("title")} for d in docs[:5]],
     }</code></pre>
     <p>Run: <code>uvicorn app.main:app --reload --port 8000</code></p>
 
     <h3>Step 6 — Chat UI</h3>
     <p><strong>frontend/chat.js</strong></p>
-    <pre><code><span class="kw">async</span> <span class="kw">function</span> sendMessage(message, history = []) {
-  <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"/chat"</span>, {
-    method: <span class="str">"POST"</span>,
-    headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+    <pre><code>async function sendMessage(message, history = []) {
+  const res = await fetch("/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, conversation_history: history }),
   });
-  <span class="kw">return</span> res.json();
+  return res.json();
 }</code></pre>
     <p>Render <code>response</code> as markdown. Show <code>sources</code> as links below the answer.</p>
 
@@ -580,20 +580,20 @@ If the context does not contain the answer, say so clearly."""</span>
     </div>
 
     <h2 id="api-reference">API reference</h2>
-    <pre><code><span class="fn">curl</span> -X POST http://localhost:8000/chat \
+    <pre><code>curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
   -d '{"message": "How do I reset my password?"}'</code></pre>
 
     <p><strong>Request</strong></p>
     <pre><code>{
-  <span class="str">"message"</span>: <span class="str">"How do I reset my password?"</span>,
-  <span class="str">"conversation_history"</span>: []
+  "message": "How do I reset my password?",
+  "conversation_history": []
 }</code></pre>
 
     <p><strong>Response</strong></p>
     <pre><code>{
-  <span class="str">"response"</span>: <span class="str">"To reset your password, go to Settings → Account..."</span>,
-  <span class="str">"sources"</span>: [{ <span class="str">"title"</span>: <span class="str">"account-settings"</span> }]
+  "response": "To reset your password, go to Settings → Account...",
+  "sources": [{ "title": "account-settings" }]
 }</code></pre>
 
     <h2 id="glossary">Glossary</h2>
@@ -634,6 +634,7 @@ If the context does not contain the answer, say so clearly."""</span>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

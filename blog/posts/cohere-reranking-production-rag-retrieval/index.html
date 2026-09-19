@@ -77,7 +77,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -302,121 +302,121 @@
 
     <h2 id="production-code">Production code</h2>
     <p><strong>app/rerank.py</strong> — Cohere v2 rerank API with conditional skip logic:</p>
-    <pre><code><span class="kw">import</span> os
-<span class="kw">import</span> aiohttp
+    <pre><code>import os
+import aiohttp
 
-COHERE_RERANK_URL = <span class="str">"https://api.cohere.com/v2/rerank"</span>
-RERANK_MODEL = <span class="str">"rerank-v3.5"</span>
-VECTOR_TOP_K = <span class="num">40</span>
-RERANK_TOP_N = <span class="num">10</span>
-FINAL_TOP_K = <span class="num">8</span>
-COSINE_SKIP_THRESHOLD = <span class="num">0.85</span>
-RERANK_MIN_SCORE = <span class="num">0.05</span>
-MMR_LAMBDA = <span class="num">0.85</span>
+COHERE_RERANK_URL = "https://api.cohere.com/v2/rerank"
+RERANK_MODEL = "rerank-v3.5"
+VECTOR_TOP_K = 40
+RERANK_TOP_N = 10
+FINAL_TOP_K = 8
+COSINE_SKIP_THRESHOLD = 0.85
+RERANK_MIN_SCORE = 0.05
+MMR_LAMBDA = 0.85
 
-<span class="kw">def</span> <span class="fn">should_run_cohere_rerank</span>(
-    top_cosine: <span class="fn">float</span>,
-    is_follow_up: <span class="fn">bool</span>,
-    is_multi_query: <span class="fn">bool</span>,
-) -&gt; <span class="fn">bool</span>:
-    <span class="str">"""Skip Cohere when vector confidence is high on a first-turn query."""</span>
-    <span class="kw">if</span> is_follow_up <span class="kw">or</span> is_multi_query:
-        <span class="kw">return</span> <span class="kw">True</span>
-    <span class="kw">return</span> top_cosine &lt; COSINE_SKIP_THRESHOLD
+def should_run_cohere_rerank(
+    top_cosine: float,
+    is_follow_up: bool,
+    is_multi_query: bool,
+) -&gt; bool:
+    """Skip Cohere when vector confidence is high on a first-turn query."""
+    if is_follow_up or is_multi_query:
+        return True
+    return top_cosine &lt; COSINE_SKIP_THRESHOLD
 
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">cohere_rerank</span>(
-    query: <span class="fn">str</span>,
-    documents: <span class="fn">list</span>[<span class="fn">dict</span>],
-    top_n: <span class="fn">int</span> = RERANK_TOP_N,
-) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    <span class="str">"""Call Cohere v2 rerank API; return docs sorted by relevance score."""</span>
+async def cohere_rerank(
+    query: str,
+    documents: list[dict],
+    top_n: int = RERANK_TOP_N,
+) -&gt; list[dict]:
+    """Call Cohere v2 rerank API; return docs sorted by relevance score."""
     payload = {
-        <span class="str">"model"</span>: RERANK_MODEL,
-        <span class="str">"query"</span>: query,
-        <span class="str">"documents"</span>: [d[<span class="str">"text"</span>] <span class="kw">for</span> d <span class="kw">in</span> documents],
-        <span class="str">"top_n"</span>: top_n,
+        "model": RERANK_MODEL,
+        "query": query,
+        "documents": [d["text"] for d in documents],
+        "top_n": top_n,
     }
     headers = {
-        <span class="str">"Authorization"</span>: f<span class="str">"Bearer {os.environ['COHERE_API_KEY']}"</span>,
-        <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+        "Authorization": f"Bearer {os.environ['COHERE_API_KEY']}",
+        "Content-Type": "application/json",
     }
-    <span class="kw">async</span> <span class="kw">with</span> aiohttp.ClientSession() <span class="kw">as</span> session:
-        <span class="kw">async</span> <span class="kw">with</span> session.post(COHERE_RERANK_URL, <span class="fn">json</span>=payload, headers=headers) <span class="kw">as</span> resp:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(COHERE_RERANK_URL, json=payload, headers=headers) as resp:
             resp.raise_for_status()
-            data = <span class="kw">await</span> resp.<span class="fn">json</span>()
+            data = await resp.json()
 
     ranked = []
-    <span class="kw">for</span> result <span class="kw">in</span> data[<span class="str">"results"</span>]:
-        doc = documents[result[<span class="str">"index"</span>]].copy()
-        doc[<span class="str">"rerank_score"</span>] = result[<span class="str">"relevance_score"</span>]
+    for result in data["results"]:
+        doc = documents[result["index"]].copy()
+        doc["rerank_score"] = result["relevance_score"]
         ranked.append(doc)
-    <span class="kw">return</span> ranked
+    return ranked
 
-<span class="kw">def</span> <span class="fn">mmr_select</span>(
-    docs: <span class="fn">list</span>[<span class="fn">dict</span>],
-    k: <span class="fn">int</span> = FINAL_TOP_K,
-    lambda_: <span class="fn">float</span> = MMR_LAMBDA,
-) -&gt; <span class="fn">list</span>[<span class="fn">dict</span>]:
-    <span class="str">"""Maximal Marginal Relevance — diversity without dropping related rules."""</span>
-    <span class="kw">if</span> <span class="fn">len</span>(docs) &lt;= k:
-        <span class="kw">return</span> docs
-    selected, remaining = [docs[<span class="num">0</span>]], docs[<span class="num">1</span>:]
-    <span class="kw">while</span> <span class="fn">len</span>(selected) &lt; k <span class="kw">and</span> remaining:
-        best_idx, best_score = <span class="num">0</span>, -<span class="num">1</span>
-        <span class="kw">for</span> i, candidate <span class="kw">in</span> <span class="fn">enumerate</span>(remaining):
-            relevance = candidate[<span class="str">"rerank_score"</span>]
-            max_sim = <span class="fn">max</span>(
-                _text_overlap(candidate[<span class="str">"text"</span>], s[<span class="str">"text"</span>]) <span class="kw">for</span> s <span class="kw">in</span> selected
+def mmr_select(
+    docs: list[dict],
+    k: int = FINAL_TOP_K,
+    lambda_: float = MMR_LAMBDA,
+) -&gt; list[dict]:
+    """Maximal Marginal Relevance — diversity without dropping related rules."""
+    if len(docs) &lt;= k:
+        return docs
+    selected, remaining = [docs[0]], docs[1:]
+    while len(selected) &lt; k and remaining:
+        best_idx, best_score = 0, -1
+        for i, candidate in enumerate(remaining):
+            relevance = candidate["rerank_score"]
+            max_sim = max(
+                _text_overlap(candidate["text"], s["text"]) for s in selected
             )
-            score = lambda_ * relevance - (<span class="num">1</span> - lambda_) * max_sim
-            <span class="kw">if</span> score &gt; best_score:
+            score = lambda_ * relevance - (1 - lambda_) * max_sim
+            if score &gt; best_score:
                 best_score, best_idx = score, i
         selected.append(remaining.pop(best_idx))
-    <span class="kw">return</span> selected
+    return selected
 
-<span class="kw">def</span> <span class="fn">_text_overlap</span>(a: <span class="fn">str</span>, b: <span class="fn">str</span>) -&gt; <span class="fn">float</span>:
-    <span class="str">"""Jaccard similarity on word sets — fast proxy for chunk redundancy."""</span>
-    sa, sb = <span class="fn">set</span>(a.lower().split()), <span class="fn">set</span>(b.lower().split())
-    <span class="kw">if</span> <span class="kw">not</span> sa <span class="kw">or</span> <span class="kw">not</span> sb:
-        <span class="kw">return</span> <span class="num">0.0</span>
-    <span class="kw">return</span> <span class="fn">len</span>(sa &amp; sb) / <span class="fn">len</span>(sa | sb)
+def _text_overlap(a: str, b: str) -&gt; float:
+    """Jaccard similarity on word sets — fast proxy for chunk redundancy."""
+    sa, sb = set(a.lower().split()), set(b.lower().split())
+    if not sa or not sb:
+        return 0.0
+    return len(sa &amp; sb) / len(sa | sb)
 
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">retrieve_and_rank</span>(
-    query: <span class="fn">str</span>,
-    vector_hits: <span class="fn">list</span>[<span class="fn">dict</span>],
-    is_follow_up: <span class="fn">bool</span> = <span class="kw">False</span>,
-    is_multi_query: <span class="fn">bool</span> = <span class="kw">False</span>,
-) -&gt; <span class="fn">dict</span>:
-    top_cosine = vector_hits[<span class="num">0</span>][<span class="str">"score"</span>] <span class="kw">if</span> vector_hits <span class="kw">else</span> <span class="num">0.0</span>
-    cost = {<span class="str">"cohere_rerank"</span>: <span class="num">0.0</span>}
+async def retrieve_and_rank(
+    query: str,
+    vector_hits: list[dict],
+    is_follow_up: bool = False,
+    is_multi_query: bool = False,
+) -&gt; dict:
+    top_cosine = vector_hits[0]["score"] if vector_hits else 0.0
+    cost = {"cohere_rerank": 0.0}
 
-    <span class="kw">if</span> should_run_cohere_rerank(top_cosine, is_follow_up, is_multi_query):
-        ranked = <span class="kw">await</span> cohere_rerank(query, vector_hits)
-        cost[<span class="str">"cohere_rerank"</span>] = <span class="num">0.002</span>
-    <span class="kw">else</span>:
+    if should_run_cohere_rerank(top_cosine, is_follow_up, is_multi_query):
+        ranked = await cohere_rerank(query, vector_hits)
+        cost["cohere_rerank"] = 0.002
+    else:
         ranked = vector_hits[:RERANK_TOP_N]
-        <span class="kw">for</span> d <span class="kw">in</span> ranked:
-            d[<span class="str">"rerank_score"</span>] = d[<span class="str">"score"</span>]  <span class="cm"># passthrough cosine as proxy</span>
+        for d in ranked:
+            d["rerank_score"] = d["score"]  # passthrough cosine as proxy
 
-    top_score = ranked[<span class="num">0</span>][<span class="str">"rerank_score"</span>] <span class="kw">if</span> ranked <span class="kw">else</span> <span class="num">0.0</span>
-    <span class="kw">if</span> top_score &lt; RERANK_MIN_SCORE:
-        <span class="kw">return</span> {<span class="str">"chunks"</span>: [], <span class="str">"skip_llm"</span>: <span class="kw">True</span>, <span class="str">"cost"</span>: cost}
+    top_score = ranked[0]["rerank_score"] if ranked else 0.0
+    if top_score &lt; RERANK_MIN_SCORE:
+        return {"chunks": [], "skip_llm": True, "cost": cost}
 
-    final = mmr_select(ranked) <span class="kw">if</span> cost[<span class="str">"cohere_rerank"</span>] &gt; <span class="num">0</span> <span class="kw">else</span> ranked[:FINAL_TOP_K]
-    <span class="kw">return</span> {<span class="str">"chunks"</span>: final, <span class="str">"skip_llm"</span>: <span class="kw">False</span>, <span class="str">"top_rerank_score"</span>: top_score, <span class="str">"cost"</span>: cost}</code></pre>
+    final = mmr_select(ranked) if cost["cohere_rerank"] &gt; 0 else ranked[:FINAL_TOP_K]
+    return {"chunks": final, "skip_llm": False, "top_rerank_score": top_score, "cost": cost}</code></pre>
 
     <p><strong>Query rewrite heuristics</strong> — skip Flash Lite on clear first turns:</p>
-    <pre><code><span class="kw">import</span> re
+    <pre><code>import re
 
-PRONOUNS = re.compile(r<span class="str">"\b(it|that|this|they|them|those|these|he|she)\b"</span>, re.I)
-ORDINALS = re.compile(r<span class="str">"\b(step\s+\d|option\s+[a-z]|first|second|third|the\s+other)\b"</span>, re.I)
+PRONOUNS = re.compile(r"\b(it|that|this|they|them|those|these|he|she)\b", re.I)
+ORDINALS = re.compile(r"\b(step\s+\d|option\s+[a-z]|first|second|third|the\s+other)\b", re.I)
 
-<span class="kw">def</span> <span class="fn">needs_query_rewrite</span>(message: <span class="fn">str</span>, history: <span class="fn">list</span>) -&gt; <span class="fn">bool</span>:
-    <span class="kw">if</span> <span class="kw">not</span> history:
-        <span class="kw">return</span> <span class="kw">False</span>  <span class="cm"># first turn — never rewrite</span>
-    <span class="kw">if</span> <span class="fn">len</span>(message.split()) &gt;= <span class="num">8</span> <span class="kw">and</span> <span class="kw">not</span> PRONOUNS.search(message) <span class="kw">and</span> <span class="kw">not</span> ORDINALS.search(message):
-        <span class="kw">return</span> <span class="kw">False</span>  <span class="cm"># self-contained despite history</span>
-    <span class="kw">return</span> <span class="kw">True</span></code></pre>
+def needs_query_rewrite(message: str, history: list) -&gt; bool:
+    if not history:
+        return False  # first turn — never rewrite
+    if len(message.split()) &gt;= 8 and not PRONOUNS.search(message) and not ORDINALS.search(message):
+        return False  # self-contained despite history
+    return True</code></pre>
 
     <h2 id="tuning-checklist">Tuning checklist</h2>
     <div class="checklist-grid">
@@ -485,6 +485,7 @@ ORDINALS = re.compile(r<span class="str">"\b(step\s+\d|option\s+[a-z]|first|seco
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

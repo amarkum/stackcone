@@ -303,26 +303,26 @@
     <p><strong>Why Compose on-prem instead of a separate Kubernetes fork?</strong> A documented Compose profile matches air-gapped / single-VM buyer reality and reuses the same images the team already runs.</p>
 
     <p>Illustrative tenant-scoped vendor query pattern (pagination + index-friendly filters):</p>
-    <pre><code># Pseudocode — extend existing repository; never <span class="kw">cross</span> tenant_id
+    <pre><code># Pseudocode — extend existing repository; never cross tenant_id
 async def list_vendors(
     session: AsyncSession,
     tenant_id: UUID,
     *,
     tier: str | None,
     cursor: UUID | None,
-    <span class="kw">limit</span>: int = <span class="num">50</span>,
+    limit: int = 50,
 ) -&gt; list[Vendor]:
     stmt = (
-        <span class="kw">select</span>(Vendor)
-        .<span class="kw">where</span>(Vendor.tenant_id == tenant_id)
+        select(Vendor)
+        .where(Vendor.tenant_id == tenant_id)
         .order_by(Vendor.created_at.desc(), Vendor.id.desc())
-        .<span class="kw">limit</span>(<span class="kw">limit</span>)
+        .limit(limit)
     )
     if tier:
-        stmt = stmt.<span class="kw">where</span>(Vendor.risk_tier == tier)
+        stmt = stmt.where(Vendor.risk_tier == tier)
     if cursor:
-        stmt = stmt.<span class="kw">where</span>(Vendor.id &lt; cursor)
-    return (await session.execute(stmt)).scalars().<span class="kw">all</span>()</code></pre>
+        stmt = stmt.where(Vendor.id &lt; cursor)
+    return (await session.execute(stmt)).scalars().all()</code></pre>
 
     <h2 id="agent-design">Component design</h2>
 
@@ -523,7 +523,7 @@ async def list_vendors(
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

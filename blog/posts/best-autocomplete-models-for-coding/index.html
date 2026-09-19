@@ -189,14 +189,14 @@ CURSOR:  ↑ (model fills in the loop body)</code></pre>
     <h3 id="cursor-tab-settings-json">Cursor Tab settings JSON</h3>
     <p>You can also tune Tab via <code>settings.json</code> in Cursor (same format as VS Code):</p>
     <pre><code>{
-  <span class="str">"cursor.cpp.enablePartialAccepts"</span>: <span class="kw">true</span>,
-  <span class="str">"cursor.chat.showSuggestedFiles"</span>: <span class="kw">true</span>,
-  <span class="str">"editor.inlineSuggest.enabled"</span>: <span class="kw">true</span>,
-  <span class="str">"editor.suggest.preview"</span>: <span class="kw">true</span>,
-  <span class="str">"editor.quickSuggestions"</span>: {
-    <span class="str">"other"</span>: <span class="kw">true</span>,
-    <span class="str">"comments"</span>: <span class="kw">false</span>,
-    <span class="str">"strings"</span>: <span class="kw">false</span>
+  "cursor.cpp.enablePartialAccepts": true,
+  "cursor.chat.showSuggestedFiles": true,
+  "editor.inlineSuggest.enabled": true,
+  "editor.suggest.preview": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": false
   }
 }</code></pre>
     <p><code>editor.inlineSuggest.enabled</code> must stay <code>true</code> — disabling it kills ghost text for all inline providers, not just Cursor.</p>
@@ -232,14 +232,14 @@ __pycache__/</code></pre>
     <p><strong>Weaknesses:</strong> Weaker whole-repo context than Cursor/Windsurf; agent mode newer and less integrated than Cursor Agent</p>
     <h3 id="copilot-inline-settings-vs-code">Copilot Inline settings (VS Code)</h3>
     <pre><code>{
-  <span class="str">"github.copilot.enable"</span>: {
-    <span class="str">"*"</span>: <span class="kw">true</span>,
-    <span class="str">"yaml"</span>: <span class="kw">false</span>,
-    <span class="str">"plaintext"</span>: <span class="kw">false</span>
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": false
   },
-  <span class="str">"editor.inlineSuggest.enabled"</span>: <span class="kw">true</span>,
-  <span class="str">"github.copilot.editor.enableAutoCompletions"</span>: <span class="kw">true</span>,
-  <span class="str">"github.copilot.editor.enableCodeActions"</span>: <span class="kw">true</span>
+  "editor.inlineSuggest.enabled": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.editor.enableCodeActions": true
 }</code></pre>
     <p>Disable Copilot on file types where suggestions are noise (<code>yaml</code>, <code>json</code> config, markdown) via the <code>enable</code> map.</p>
     <h3 id="copilot-next-edit-suggestions-nes">Copilot Next Edit Suggestions (NES)</h3>
@@ -251,7 +251,7 @@ __pycache__/</code></pre>
     </ol>
     <p>Enable NES in VS Code:</p>
     <pre><code>{
-  <span class="str">"github.copilot.nextEditSuggestions.enabled"</span>: <span class="kw">true</span>
+  "github.copilot.nextEditSuggestions.enabled": true
 }</code></pre>
     <p>NES shines when you rename a variable and Copilot suggests updating all references, or when you add a field and it jumps to the constructor, serializer, and tests. It is less magical on greenfield files with no edit pattern yet.</p>
     <h3 id="jetbrains-copilot-setup">JetBrains Copilot setup</h3>
@@ -289,14 +289,14 @@ __pycache__/</code></pre>
 </tbody></table>
     <p>Good for JVM/Android teams on IntelliJ who still want AI Tab without switching editors.</p>
     <h3 id="windsurf-plugin-install-vs-code">Windsurf plugin install (VS Code)</h3>
-    <pre><code># Install <span class="kw">from</span> VS Code Marketplace: "Windsurf" (publisher: Codeium)
-# <span class="kw">Or</span> via CLI:
-code <span class="cm">--install-extension Codeium.codeium</span></code></pre>
+    <pre><code># Install from VS Code Marketplace: "Windsurf" (publisher: Codeium)
+# Or via CLI:
+code --install-extension Codeium.codeium</code></pre>
     <p>Sign in, then configure:</p>
     <pre><code>{
-  <span class="str">"codeium.enableCodeium"</span>: <span class="kw">true</span>,
-  <span class="str">"codeium.enableConfig"</span>: {
-    <span class="str">"*"</span>: <span class="kw">true</span>
+  "codeium.enableCodeium": true,
+  "codeium.enableConfig": {
+    "*": true
   }
 }</code></pre>
     <h3 id="windsurf-plugin-install-jetbrains">Windsurf plugin install (JetBrains)</h3>
@@ -307,14 +307,14 @@ code <span class="cm">--install-extension Codeium.codeium</span></code></pre>
     </ol>
     <h3 id="windsurf-plugin-install-neovim">Windsurf plugin install (Neovim)</h3>
     <p>Using <code>lazy.nvim</code>:</p>
-    <pre><code><span class="kw">return</span> {
-  <span class="str">"Exafunction/codeium.nvim"</span>,
+    <pre><code>return {
+  "Exafunction/codeium.nvim",
   dependencies = {
-    <span class="str">"nvim-lua/plenary.nvim"</span>,
-    <span class="str">"hrsh7th/nvim-cmp"</span>,
+    "nvim-lua/plenary.nvim",
+    "hrsh7th/nvim-cmp",
   },
-  config = <span class="kw">function</span>()
-    require(<span class="str">"codeium"</span>).setup({})
+  config = function()
+    require("codeium").setup({})
   end,
 }</code></pre>
     <p>Bind accept to your preferred keymap (often Tab, but conflict with snippet expansion — many users use <code>Ctrl+]</code> or <code>&lt;C-y&gt;</code>).</p>
@@ -351,46 +351,46 @@ code <span class="cm">--install-extension Codeium.codeium</span></code></pre>
     <p><strong>Strengths:</strong> Full control; air-gapped/local models; no vendor lock-in</p>
     <p><strong>Weaknesses:</strong> You tune context and prompts yourself; latency depends on your model/hardware</p>
     <h3 id="continue-config-example-continueconfigyaml">Continue config example (<code>~/.continue/config.yaml</code>)</h3>
-    <pre><code><span class="fn">name</span>: Local Tab Setup
-<span class="fn">version</span>: <span class="num">1.0</span>.0
-<span class="fn">schema</span>: v1
+    <pre><code>name: Local Tab Setup
+version: 1.0.0
+schema: v1
 
-<span class="fn">models</span>:
-  - <span class="fn">name</span>: Qwen2.5 Coder 7B
-    <span class="fn">provider</span>: ollama
-    <span class="fn">model</span>: qwen2.5-coder:7b
-    <span class="fn">roles</span>:
+models:
+  - name: Qwen2.5 Coder 7B
+    provider: ollama
+    model: qwen2.5-coder:7b
+    roles:
       - autocomplete
-    <span class="fn">autocompleteOptions</span>:
-      <span class="fn">disable</span>: <span class="kw">false</span>
-      <span class="fn">maxPromptTokens</span>: <span class="num">1024</span>
-      <span class="fn">debounceDelay</span>: <span class="num">150</span>
-      <span class="fn">modelTimeout</span>: <span class="num">500</span>
-      <span class="fn">onlyMyCode</span>: <span class="kw">true</span>
+    autocompleteOptions:
+      disable: false
+      maxPromptTokens: 1024
+      debounceDelay: 150
+      modelTimeout: 500
+      onlyMyCode: true
 
-  - <span class="fn">name</span>: GPT-4o (chat)
-    <span class="fn">provider</span>: openai
-    <span class="fn">model</span>: gpt-4o
-    <span class="fn">apiKey</span>: ${{ secrets.OPENAI_API_KEY }}
-    <span class="fn">roles</span>:
+  - name: GPT-4o (chat)
+    provider: openai
+    model: gpt-4o
+    apiKey: ${{ secrets.OPENAI_API_KEY }}
+    roles:
       - chat
       - edit
 
-<span class="fn">tabAutocompleteModel</span>:
-  <span class="fn">title</span>: Qwen2.5 Coder 7B
-  <span class="fn">provider</span>: ollama
-  <span class="fn">model</span>: qwen2.5-coder:7b
+tabAutocompleteModel:
+  title: Qwen2.5 Coder 7B
+  provider: ollama
+  model: qwen2.5-coder:7b
 
-<span class="fn">context</span>:
-  - <span class="fn">provider</span>: code
-  - <span class="fn">provider</span>: diff
-  - <span class="fn">provider</span>: folder
-  - <span class="fn">provider</span>: codebase</code></pre>
+context:
+  - provider: code
+  - provider: diff
+  - provider: folder
+  - provider: codebase</code></pre>
     <h3 id="local-model-setup-ollama">Local model setup (Ollama)</h3>
-    <pre><code><span class="kw">#</span> Install Ollama, pull a code model
+    <pre><code># Install Ollama, pull a code model
 ollama pull qwen2.5-coder:7b
 
-<span class="kw">#</span> Verify inference works
+# Verify inference works
 ollama run qwen2.5-coder:7b "def hello():"</code></pre>
     <p>For acceptable Tab latency locally you generally need:</p>
     <ul>
@@ -482,12 +482,12 @@ tabAutocompleteModel:
 </tbody></table>
     <h3 id="per-language-disable-copilot-example">Per-language disable (Copilot example)</h3>
     <pre><code>{
-  <span class="str">"github.copilot.enable"</span>: {
-    <span class="str">"*"</span>: <span class="kw">true</span>,
-    <span class="str">"latex"</span>: <span class="kw">false</span>,
-    <span class="str">"markdown"</span>: <span class="kw">false</span>,
-    <span class="str">"scminput"</span>: <span class="kw">false</span>,
-    <span class="str">"plaintext"</span>: <span class="kw">false</span>
+  "github.copilot.enable": {
+    "*": true,
+    "latex": false,
+    "markdown": false,
+    "scminput": false,
+    "plaintext": false
   }
 }</code></pre>
     <h2 id="privacy-and-enterprise-comparison">Privacy and enterprise comparison</h2>
@@ -528,7 +528,7 @@ tabAutocompleteModel:
     <li>Verify you did not open the monorepo root vs subpackage (re-index)</li>
     </ol>
     <h3 id="symptom-suggestions-freeze-entirely">Symptom: suggestions freeze entirely</h3>
-    <pre><code><span class="cm">// Ensure inline suggest is not disabled globally</span>
+    <pre><code>// Ensure inline suggest is not disabled globally
 {
   "editor.inlineSuggest.enabled": true
 }</code></pre>
@@ -601,10 +601,10 @@ tabAutocompleteModel:
     <h2 id="team-setup-recommendations">Team setup recommendations</h2>
     <h3 id="startup-520-devs-vs-code">Startup (5–20 devs, VS Code)</h3>
     <p>Cursor Pro for Tab + Agent. One <code>AGENTS.md</code> for shared rules. Claude Code optional for CI (<code>claude -p</code>).</p>
-    <pre><code><span class="kw">#</span> AGENTS.md (excerpt)
+    <pre><code># AGENTS.md (excerpt)
 - Use TypeScript strict mode
 - Prefer functional React components
-- Test files colocated as <span class="str">`*.test.ts`</span></code></pre>
+- Test files colocated as `*.test.ts`</code></pre>
     <h3 id="enterprise-mixed-ides-compliance">Enterprise (mixed IDEs, compliance)</h3>
     <p>GitHub Copilot Business — broad IDE support, policy controls, no-training options. Claude Code or Cursor Agent for teams that want terminal agents separately.</p>
     <h3 id="jetbrains-heavy-javakotlinandroid">JetBrains-heavy (Java/Kotlin/Android)</h3>
@@ -676,7 +676,7 @@ tabAutocompleteModel:
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

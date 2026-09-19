@@ -494,7 +494,7 @@ def lesson_html(les: dict) -> str:
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
   <link rel="stylesheet" href="/learn/learn.css?v=18">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=12">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -567,7 +567,8 @@ def lesson_html(les: dict) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=12" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=15" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>
@@ -589,7 +590,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/learn/learn.css?v=18">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=12">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -616,7 +617,8 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=12" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=15" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

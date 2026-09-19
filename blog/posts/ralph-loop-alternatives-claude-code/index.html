@@ -168,22 +168,22 @@ Show me the final test output.</code></pre>
     <p><strong>Soft limit:</strong> Claude can still skip the test or misread output. For hard enforcement, add a Stop hook (Alternative 3).</p>
     <h3 id="worked-example-claudemd-verification-block">Worked example: <code>CLAUDE.md</code> verification block</h3>
     <p>Add a standing verification instruction so every session inherits it:</p>
-    <pre><code><span class="kw">#</span> acme-api
+    <pre><code># acme-api
 
-<span class="kw">##</span> Commands
-- Test: <span class="str">`pnpm test`</span>
-- Lint: <span class="str">`pnpm lint`</span>
-- Typecheck: <span class="str">`pnpm typecheck`</span>
+## Commands
+- Test: `pnpm test`
+- Lint: `pnpm lint`
+- Typecheck: `pnpm typecheck`
 
-<span class="kw">##</span> Verification (required before stopping)
+## Verification (required before stopping)
 After any code change:
-1. Run <span class="str">`pnpm typecheck`</span>
-2. Run <span class="str">`pnpm test`</span> for the touched package
+1. Run `pnpm typecheck`
+2. Run `pnpm test` for the touched package
 3. If either fails, fix and re-run until green
 
 Do not declare the task complete until both commands exit 0.</code></pre>
     <p>Pair with prompts that reference the verification block:</p>
-    <pre><code>@CLAUDE.md Add OAuth callback handler per issue <span class="cm">#412.</span>
+    <pre><code>@CLAUDE.md Add OAuth callback handler per issue #412.
 Follow the Verification section before stopping.</code></pre>
     <h2 id="alternative-2-goal-condition">Alternative 2: <code>/goal</code> condition</h2>
     <p>Claude Code <code>/goal</code> sets a <strong>completion condition</strong> evaluated after every turn. A separate evaluator checks whether the goal is met; Claude keeps working until it resolves or hits a stall limit.</p>
@@ -191,7 +191,7 @@ Follow the Verification section before stopping.</code></pre>
     <p><strong>Scenario:</strong> Fix login bug but only touch files under <code>src/api/login/</code>.</p>
     <pre><code>/goal All tests in `pnpm test` pass AND `git diff --name-only` only lists paths under src/api/login/</code></pre>
     <p>Then your implementation prompt:</p>
-    <pre><code>Fix the session expiry bug in src/api/login/session.ts (issue <span class="cm">#842).</span>
+    <pre><code>Fix the session expiry bug in src/api/login/session.ts (issue #842).
 The refresh token should rotate on use. Match error handling in session.test.ts.</code></pre>
     <p><strong>What happens:</strong></p>
     <ol>
@@ -226,47 +226,47 @@ Include a curl example that shows a 429 response.</code></pre>
     <p>Hooks live in <code>.claude/settings.json</code> (team) or <code>.claude/settings.local.json</code> (personal, gitignored).</p>
     <h3 id="complete-settingsjson-all-three-hook-types">Complete <code>settings.json</code> — all three hook types</h3>
     <pre><code>{
-  <span class="str">"permissions"</span>: {
-    <span class="str">"allow"</span>: [
-      <span class="str">"Bash(pnpm test *)"</span>,
-      <span class="str">"Bash(pnpm lint *)"</span>,
-      <span class="str">"Bash(pnpm typecheck)"</span>
+  "permissions": {
+    "allow": [
+      "Bash(pnpm test *)",
+      "Bash(pnpm lint *)",
+      "Bash(pnpm typecheck)"
     ],
-    <span class="str">"deny"</span>: [
-      <span class="str">"Read(.env)"</span>,
-      <span class="str">"Read(.env.*)"</span>
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)"
     ]
   },
-  <span class="str">"hooks"</span>: {
-    <span class="str">"PreToolUse"</span>: [
+  "hooks": {
+    "PreToolUse": [
       {
-        <span class="str">"matcher"</span>: <span class="str">"Bash"</span>,
-        <span class="str">"hooks"</span>: [
+        "matcher": "Bash",
+        "hooks": [
           {
-            <span class="str">"type"</span>: <span class="str">"command"</span>,
-            <span class="str">"command"</span>: <span class="str">".claude/hooks/prevent-dangerous-git.sh"</span>
+            "type": "command",
+            "command": ".claude/hooks/prevent-dangerous-git.sh"
           }
         ]
       }
     ],
-    <span class="str">"PostToolUse"</span>: [
+    "PostToolUse": [
       {
-        <span class="str">"matcher"</span>: <span class="str">"Edit|Write"</span>,
-        <span class="str">"hooks"</span>: [
+        "matcher": "Edit|Write",
+        "hooks": [
           {
-            <span class="str">"type"</span>: <span class="str">"command"</span>,
-            <span class="str">"command"</span>: <span class="str">".claude/hooks/lint-touched-files.sh"</span>
+            "type": "command",
+            "command": ".claude/hooks/lint-touched-files.sh"
           }
         ]
       }
     ],
-    <span class="str">"Stop"</span>: [
+    "Stop": [
       {
-        <span class="str">"matcher"</span>: <span class="str">""</span>,
-        <span class="str">"hooks"</span>: [
+        "matcher": "",
+        "hooks": [
           {
-            <span class="str">"type"</span>: <span class="str">"command"</span>,
-            <span class="str">"command"</span>: <span class="str">".claude/hooks/verify-before-stop.sh"</span>
+            "type": "command",
+            "command": ".claude/hooks/verify-before-stop.sh"
           }
         ]
       }
@@ -275,42 +275,42 @@ Include a curl example that shows a 429 response.</code></pre>
 }</code></pre>
     <h3 id="hook-script-prevent-dangerous-gitsh-pretooluse">Hook script: <code>prevent-dangerous-git.sh</code> (PreToolUse)</h3>
     <p>Blocks destructive git commands before they run:</p>
-    <pre><code><span class="cm">#!/usr/bin/env bash</span>
-<span class="cm"># .claude/hooks/prevent-dangerous-git.sh</span>
-<span class="cm"># PreToolUse — reads tool input from stdin (JSON)</span>
+    <pre><code>#!/usr/bin/env bash
+# .claude/hooks/prevent-dangerous-git.sh
+# PreToolUse — reads tool input from stdin (JSON)
 
-<span class="fn">set</span> -euo pipefail
+set -euo pipefail
 
 INPUT=$(cat)
-COMMAND=$(echo <span class="str">"$INPUT"</span> | jq -r <span class="str">'.tool_input.command // empty'</span>)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 
-<span class="kw">if</span> [[ -z <span class="str">"$COMMAND"</span> ]]; then
-  exit <span class="num">0</span>
+if [[ -z "$COMMAND" ]]; then
+  exit 0
 fi
 
 BLOCKED_PATTERNS=(
-  <span class="str">'git push --force'</span>
-  <span class="str">'git push -f'</span>
-  <span class="str">'git reset --hard'</span>
-  <span class="str">'git clean -fd'</span>
-  <span class="str">'rm -rf /'</span>
-  <span class="str">'rm -rf /*'</span>
+  'git push --force'
+  'git push -f'
+  'git reset --hard'
+  'git clean -fd'
+  'rm -rf /'
+  'rm -rf /*'
 )
 
-<span class="kw">for</span> pattern <span class="kw">in</span> <span class="str">"${BLOCKED_PATTERNS[@]}"</span>; do
-  <span class="kw">if</span> [[ <span class="str">"$COMMAND"</span> == *<span class="str">"$pattern"</span>* ]]; then
-    echo <span class="str">"Blocked by PreToolUse hook: command matches '$pattern'"</span> &gt;&amp;<span class="num">2</span>
-    exit <span class="num">2</span>
+for pattern in "${BLOCKED_PATTERNS[@]}"; do
+  if [[ "$COMMAND" == *"$pattern"* ]]; then
+    echo "Blocked by PreToolUse hook: command matches '$pattern'" &gt;&amp;2
+    exit 2
   fi
 done
 
-exit <span class="num">0</span></code></pre>
+exit 0</code></pre>
     <p>Make executable: <code>chmod +x .claude/hooks/prevent-dangerous-git.sh</code></p>
     <h3 id="hook-script-lint-touched-filessh-posttooluse">Hook script: <code>lint-touched-files.sh</code> (PostToolUse)</h3>
     <p>Runs ESLint on edited TypeScript files immediately after each edit:</p>
     <pre><code>#!/usr/bin/env bash
-<span class="kw">#</span> .claude/hooks/lint-touched-files.sh
-<span class="kw">#</span> PostToolUse — lint files Claude just edited
+# .claude/hooks/lint-touched-files.sh
+# PostToolUse — lint files Claude just edited
 
 set -euo pipefail
 
@@ -321,7 +321,7 @@ if [[ -z "$FILE_PATH" ]]; then
   exit 0
 fi
 
-<span class="kw">#</span> Only lint TypeScript under src/
+# Only lint TypeScript under src/
 if [[ "$FILE_PATH" == src/*.ts ]] || [[ "$FILE_PATH" == src/*.tsx ]]; then
   echo "PostToolUse: linting $FILE_PATH" &gt;&amp;2
   pnpm exec eslint "$FILE_PATH" --max-warnings 0
@@ -331,8 +331,8 @@ exit 0</code></pre>
     <h3 id="hook-script-verify-before-stopsh-stop">Hook script: <code>verify-before-stop.sh</code> (Stop)</h3>
     <p>Full verification gate — tests, lint, typecheck — before any turn ends:</p>
     <pre><code>#!/usr/bin/env bash
-<span class="kw">#</span> .claude/hooks/verify-before-stop.sh
-<span class="kw">#</span> Stop hook — must pass before Claude ends a turn
+# .claude/hooks/verify-before-stop.sh
+# Stop hook — must pass before Claude ends a turn
 
 set -euo pipefail
 
@@ -358,14 +358,14 @@ exit 0</code></pre>
     <h3 id="stop-hook-minimal-test-only-variant">Stop hook — minimal test-only variant</h3>
     <p>For repos where full lint on every stop is too slow:</p>
     <pre><code>{
-  <span class="str">"hooks"</span>: {
-    <span class="str">"Stop"</span>: [
+  "hooks": {
+    "Stop": [
       {
-        <span class="str">"matcher"</span>: <span class="str">""</span>,
-        <span class="str">"hooks"</span>: [
+        "matcher": "",
+        "hooks": [
           {
-            <span class="str">"type"</span>: <span class="str">"command"</span>,
-            <span class="str">"command"</span>: <span class="str">"pnpm test --passWithNoTests"</span>
+            "type": "command",
+            "command": "pnpm test --passWithNoTests"
           }
         ]
       }
@@ -375,7 +375,7 @@ exit 0</code></pre>
     <h3 id="stop-hook-scoped-to-api-changes">Stop hook — scoped to API changes</h3>
     <p>Run heavier checks only when API files changed:</p>
     <pre><code>#!/usr/bin/env bash
-<span class="kw">#</span> .claude/hooks/verify-api-stop.sh
+# .claude/hooks/verify-api-stop.sh
 
 set -euo pipefail
 
@@ -387,12 +387,12 @@ else
   pnpm test --passWithNoTests --testPathIgnorePatterns=integration
 fi</code></pre>
     <pre><code>{
-  <span class="str">"hooks"</span>: {
-    <span class="str">"Stop"</span>: [{
-      <span class="str">"matcher"</span>: <span class="str">""</span>,
-      <span class="str">"hooks"</span>: [{
-        <span class="str">"type"</span>: <span class="str">"command"</span>,
-        <span class="str">"command"</span>: <span class="str">".claude/hooks/verify-api-stop.sh"</span>
+  "hooks": {
+    "Stop": [{
+      "matcher": "",
+      "hooks": [{
+        "type": "command",
+        "command": ".claude/hooks/verify-api-stop.sh"
       }]
     }]
   }
@@ -400,14 +400,14 @@ fi</code></pre>
     <h3 id="posttooluse-format-on-save">PostToolUse — format on save</h3>
     <p>Auto-format after every write:</p>
     <pre><code>{
-  <span class="str">"hooks"</span>: {
-    <span class="str">"PostToolUse"</span>: [
+  "hooks": {
+    "PostToolUse": [
       {
-        <span class="str">"matcher"</span>: <span class="str">"Edit|Write"</span>,
-        <span class="str">"hooks"</span>: [
+        "matcher": "Edit|Write",
+        "hooks": [
           {
-            <span class="str">"type"</span>: <span class="str">"command"</span>,
-            <span class="str">"command"</span>: <span class="str">"pnpm exec prettier --write $(jq -r '.tool_input.file_path')"</span>
+            "type": "command",
+            "command": "pnpm exec prettier --write $(jq -r '.tool_input.file_path')"
           }
         ]
       }
@@ -505,138 +505,138 @@ Do not run migrations or edit files.</code></pre>
     <p><code>claude -p</code> runs a single prompt non-interactively and exits. Pair with <code>CLAUDE.md</code> for project context. Wrap in a shell script for <strong>bounded retries</strong> — the CI-native alternative to infinite Ralph loops.</p>
     <h3 id="complete-ci-script-with-bounded-retries">Complete CI script with bounded retries</h3>
     <p>Save as <code>scripts/claude-fix-loop.sh</code>:</p>
-    <pre><code><span class="cm">#!/usr/bin/env bash</span>
-<span class="cm"># scripts/claude-fix-loop.sh</span>
-<span class="cm"># Bounded agent retry loop for CI — NOT an unbounded Ralph loop.</span>
-<span class="cm">#</span>
-<span class="cm"># Usage:</span>
-<span class="cm">#   ./scripts/claude-fix-loop.sh "Fix failing test in src/api/health.test.ts"</span>
-<span class="cm">#   MAX_ATTEMPTS=5 ./scripts/claude-fix-loop.sh "$PROMPT"</span>
-<span class="cm">#</span>
-<span class="cm"># Exit codes:</span>
-<span class="cm">#   0 — verification passed</span>
-<span class="cm">#   1 — exhausted retries or verification failed</span>
-<span class="cm">#   2 — missing dependencies</span>
+    <pre><code>#!/usr/bin/env bash
+# scripts/claude-fix-loop.sh
+# Bounded agent retry loop for CI — NOT an unbounded Ralph loop.
+#
+# Usage:
+#   ./scripts/claude-fix-loop.sh "Fix failing test in src/api/health.test.ts"
+#   MAX_ATTEMPTS=5 ./scripts/claude-fix-loop.sh "$PROMPT"
+#
+# Exit codes:
+#   0 — verification passed
+#   1 — exhausted retries or verification failed
+#   2 — missing dependencies
 
-<span class="fn">set</span> -euo pipefail
+set -euo pipefail
 
-PROMPT=<span class="str">"${1:-}"</span>
-MAX_ATTEMPTS=<span class="str">"${MAX_ATTEMPTS:-3}"</span>
-VERIFY_CMD=<span class="str">"${VERIFY_CMD:-pnpm test --passWithNoTests}"</span>
-CLAUDE_TIMEOUT=<span class="str">"${CLAUDE_TIMEOUT:-1800}"</span>
-LOG_DIR=<span class="str">"${LOG_DIR:-./.claude-ci-logs}"</span>
+PROMPT="${1:-}"
+MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"
+VERIFY_CMD="${VERIFY_CMD:-pnpm test --passWithNoTests}"
+CLAUDE_TIMEOUT="${CLAUDE_TIMEOUT:-1800}"
+LOG_DIR="${LOG_DIR:-./.claude-ci-logs}"
 
-<span class="kw">if</span> [[ -z <span class="str">"$PROMPT"</span> ]]; then
-  echo <span class="str">"Usage: $0 \"&lt;prompt&gt;\""</span> &gt;&amp;<span class="num">2</span>
-  exit <span class="num">2</span>
+if [[ -z "$PROMPT" ]]; then
+  echo "Usage: $0 \"&lt;prompt&gt;\"" &gt;&amp;2
+  exit 2
 fi
 
-<span class="kw">if</span> ! command -v claude &amp;&gt;/dev/null; then
-  echo <span class="str">"claude CLI not found"</span> &gt;&amp;<span class="num">2</span>
-  exit <span class="num">2</span>
+if ! command -v claude &amp;&gt;/dev/null; then
+  echo "claude CLI not found" &gt;&amp;2
+  exit 2
 fi
 
-mkdir -p <span class="str">"$LOG_DIR"</span>
+mkdir -p "$LOG_DIR"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
-echo <span class="str">"=== Claude CI fix loop ==="</span>
-echo <span class="str">"Max attempts: $MAX_ATTEMPTS"</span>
-echo <span class="str">"Verify cmd:   $VERIFY_CMD"</span>
-echo <span class="str">"Prompt:       $PROMPT"</span>
-echo <span class="str">""</span>
+echo "=== Claude CI fix loop ==="
+echo "Max attempts: $MAX_ATTEMPTS"
+echo "Verify cmd:   $VERIFY_CMD"
+echo "Prompt:       $PROMPT"
+echo ""
 
-<span class="kw">for</span> attempt <span class="kw">in</span> $(seq <span class="num">1</span> <span class="str">"$MAX_ATTEMPTS"</span>); do
-  LOG_FILE=<span class="str">"$LOG_DIR/run-${TIMESTAMP}-attempt-${attempt}.log"</span>
-  echo <span class="str">"--- Attempt $attempt / $MAX_ATTEMPTS ---"</span>
+for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
+  LOG_FILE="$LOG_DIR/run-${TIMESTAMP}-attempt-${attempt}.log"
+  echo "--- Attempt $attempt / $MAX_ATTEMPTS ---"
 
-  <span class="cm"># Run agent with timeout</span>
-  <span class="kw">if</span> timeout <span class="str">"$CLAUDE_TIMEOUT"</span> claude -p <span class="str">"$PROMPT"</span> <span class="num">2</span>&gt;&amp;<span class="num">1</span> | tee <span class="str">"$LOG_FILE"</span>; then
-    AGENT_EXIT=<span class="num">0</span>
-  <span class="kw">else</span>
+  # Run agent with timeout
+  if timeout "$CLAUDE_TIMEOUT" claude -p "$PROMPT" 2&gt;&amp;1 | tee "$LOG_FILE"; then
+    AGENT_EXIT=0
+  else
     AGENT_EXIT=$?
-    echo <span class="str">"Agent exited with code $AGENT_EXIT (log: $LOG_FILE)"</span> &gt;&amp;<span class="num">2</span>
+    echo "Agent exited with code $AGENT_EXIT (log: $LOG_FILE)" &gt;&amp;2
   fi
 
-  <span class="cm"># Always verify — agent may exit 0 without fixing</span>
-  echo <span class="str">"Running verification: $VERIFY_CMD"</span>
-  <span class="kw">if</span> eval <span class="str">"$VERIFY_CMD"</span>; then
-    echo <span class="str">"Verification passed on attempt $attempt"</span>
-    exit <span class="num">0</span>
+  # Always verify — agent may exit 0 without fixing
+  echo "Running verification: $VERIFY_CMD"
+  if eval "$VERIFY_CMD"; then
+    echo "Verification passed on attempt $attempt"
+    exit 0
   fi
 
-  echo <span class="str">"Verification failed on attempt $attempt"</span> &gt;&amp;<span class="num">2</span>
+  echo "Verification failed on attempt $attempt" &gt;&amp;2
 
-  <span class="kw">if</span> [[ <span class="str">"$attempt"</span> -lt <span class="str">"$MAX_ATTEMPTS"</span> ]]; then
-    <span class="cm"># Enrich prompt for next attempt with signal, not blind "continue"</span>
-    PROMPT=<span class="str">"Previous attempt failed verification ($VERIFY_CMD).
+  if [[ "$attempt" -lt "$MAX_ATTEMPTS" ]]; then
+    # Enrich prompt for next attempt with signal, not blind "continue"
+    PROMPT="Previous attempt failed verification ($VERIFY_CMD).
 
 Read the test/lint output in the repo state. Diagnose root cause.
 Do not repeat the same fix if it already failed.
 
-Original task: ${1}"</span>
+Original task: ${1}"
   fi
 done
 
-echo <span class="str">"FAILED: exhausted $MAX_ATTEMPTS attempts"</span> &gt;&amp;<span class="num">2</span>
-echo <span class="str">"Logs in $LOG_DIR"</span> &gt;&amp;<span class="num">2</span>
-exit <span class="num">1</span></code></pre>
+echo "FAILED: exhausted $MAX_ATTEMPTS attempts" &gt;&amp;2
+echo "Logs in $LOG_DIR" &gt;&amp;2
+exit 1</code></pre>
     <p>Make executable: <code>chmod +x scripts/claude-fix-loop.sh</code></p>
     <h3 id="github-actions-workflow">GitHub Actions workflow</h3>
-    <pre><code><span class="cm"># .github/workflows/claude-fix.yml</span>
-<span class="fn">name</span>: Claude fix loop
+    <pre><code># .github/workflows/claude-fix.yml
+name: Claude fix loop
 
-<span class="fn">on</span>:
-  <span class="fn">workflow_dispatch</span>:
-    <span class="fn">inputs</span>:
-      <span class="fn">prompt</span>:
-        <span class="fn">description</span>: <span class="str">"Agent prompt"</span>
-        <span class="fn">required</span>: <span class="kw">true</span>
-        <span class="fn">default</span>: <span class="str">"Fix failing CI tests. Run pnpm test after."</span>
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Agent prompt"
+        required: true
+        default: "Fix failing CI tests. Run pnpm test after."
 
-<span class="fn">jobs</span>:
-  <span class="fn">claude-fix</span>:
-    <span class="fn">runs-on</span>: ubuntu-latest
-    <span class="fn">timeout-minutes</span>: <span class="num">45</span>
-    <span class="fn">steps</span>:
-      - <span class="fn">uses</span>: actions/checkout@v4
+jobs:
+  claude-fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
 
-      - <span class="fn">uses</span>: pnpm/action-setup@v4
-        <span class="fn">with</span>:
-          <span class="fn">version</span>: <span class="num">9</span>
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
-      - <span class="fn">uses</span>: actions/setup-node@v4
-        <span class="fn">with</span>:
-          <span class="fn">node-version</span>: <span class="num">22</span>
-          <span class="fn">cache</span>: pnpm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
 
-      - <span class="fn">run</span>: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
 
-      - <span class="fn">name</span>: Run bounded Claude fix loop
-        <span class="fn">env</span>:
-          <span class="fn">ANTHROPIC_API_KEY</span>: ${{ secrets.ANTHROPIC_API_KEY }}
-          <span class="fn">MAX_ATTEMPTS</span>: <span class="num">3</span>
-          <span class="fn">VERIFY_CMD</span>: pnpm test --passWithNoTests
-        <span class="fn">run</span>: ./scripts/claude-fix-loop.sh <span class="str">"${{ github.event.inputs.prompt }}"</span>
+      - name: Run bounded Claude fix loop
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MAX_ATTEMPTS: 3
+          VERIFY_CMD: pnpm test --passWithNoTests
+        run: ./scripts/claude-fix-loop.sh "${{ github.event.inputs.prompt }}"
 
-      - <span class="fn">name</span>: Upload agent logs on failure
-        <span class="fn">if</span>: failure()
-        <span class="fn">uses</span>: actions/upload-artifact@v4
-        <span class="fn">with</span>:
-          <span class="fn">name</span>: claude-ci-logs
-          <span class="fn">path</span>: .claude-ci-logs/</code></pre>
+      - name: Upload agent logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-ci-logs
+          path: .claude-ci-logs/</code></pre>
     <h3 id="claudemd-for-ci-context"><code>CLAUDE.md</code> for CI context</h3>
     <p>CI sessions do not have your chat history. Put standing instructions in the repo:</p>
-    <pre><code><span class="kw">#</span> acme-api
+    <pre><code># acme-api
 
-<span class="kw">##</span> CI agent instructions
-- Run <span class="str">`pnpm test`</span> after every fix attempt
+## CI agent instructions
+- Run `pnpm test` after every fix attempt
 - Do not modify .github/workflows/ without explicit instruction
-- Create a branch <span class="str">`claude/ci-fix-*`</span> — never commit directly to main
+- Create a branch `claude/ci-fix-*` — never commit directly to main
 - Max scope: fix the failing test, do not refactor unrelated code
 
-<span class="kw">##</span> Commands
-- Test: <span class="str">`pnpm test`</span>
-- Lint: <span class="str">`pnpm lint`</span></code></pre>
+## Commands
+- Test: `pnpm test`
+- Lint: `pnpm lint`</code></pre>
     <h3 id="single-shot-claude--p-no-retry-wrapper">Single-shot <code>claude -p</code> (no retry wrapper)</h3>
     <p>For simple, bounded tasks:</p>
     <pre><code>claude -p "Fix failing test in src/api/health.test.ts. Run pnpm test after. Stop when green."</code></pre>
@@ -646,16 +646,16 @@ exit <span class="num">1</span></code></pre>
     <p>Cursor Agent does not have Claude Code&#x27;s Stop hooks yet. You replicate &quot;keep working until done&quot; with <strong>rules</strong>, <strong>explicit prompts</strong>, <strong>@ file context</strong>, and <strong>CI re-runs</strong>.</p>
     <h3 id="project-rule-verification-before-finish">Project rule: verification before finish</h3>
     <p><code>.cursor/rules/verify-before-done.mdc</code>:</p>
-    <pre><code><span class="kw">---</span>
-<span class="fn">description</span>: Require test verification before completing agent tasks
-<span class="fn">alwaysApply</span>: <span class="kw">true</span>
-<span class="kw">---</span>
+    <pre><code>---
+description: Require test verification before completing agent tasks
+alwaysApply: true
+---
 
-<span class="kw">#</span> Verification before done
+# Verification before done
 
 When implementing code changes:
 
-1. Run the project's test command (<span class="str">`pnpm test`</span> or equivalent) before declaring completion
+1. Run the project's test command (`pnpm test` or equivalent) before declaring completion
 2. If tests fail, fix and re-run until green — do not stop with failing tests
 3. Run lint on touched files if the project has a linter
 4. Summarize what you ran and paste the final passing output
@@ -663,17 +663,17 @@ When implementing code changes:
 Never say "done" or "complete" without evidence of passing verification.</code></pre>
     <h3 id="path-scoped-rule-for-api-work">Path-scoped rule for API work</h3>
     <p><code>.cursor/rules/api-changes.mdc</code>:</p>
-    <pre><code><span class="kw">---</span>
-<span class="fn">description</span>: API handler conventions and verification
-<span class="fn">globs</span>: src/api/**/*
-<span class="kw">---</span>
+    <pre><code>---
+description: API handler conventions and verification
+globs: src/api/**/*
+---
 
-<span class="kw">#</span> API rules
+# API rules
 
-- Handlers return <span class="str">`{ data, error }`</span> envelope
-- Add or update tests in <span class="str">`src/api/**/*.test.ts`</span> for every behavior change
-- After edits, run: <span class="str">`pnpm test src/api/`</span>
-- Do not modify files outside <span class="str">`src/api/`</span> unless the user explicitly asks</code></pre>
+- Handlers return `{ data, error }` envelope
+- Add or update tests in `src/api/**/*.test.ts` for every behavior change
+- After edits, run: `pnpm test src/api/`
+- Do not modify files outside `src/api/` unless the user explicitly asks</code></pre>
     <h3 id="user-rule-global">User rule (global)</h3>
     <p>Cursor Settings → Rules → User Rules:</p>
     <pre><code>For multi-file tasks: outline a short plan before editing.
@@ -692,7 +692,7 @@ If tests fail, fix without asking permission unless blocked.</code></pre>
     <h3 id="cursor-prompt-pattern-verification-loop">Cursor prompt pattern (verification loop)</h3>
     <pre><code>@src/api/login.ts @src/api/login.test.ts
 
-Fix the 401 on valid refresh tokens (issue <span class="cm">#842).</span>
+Fix the 401 on valid refresh tokens (issue #842).
 
 Done when:
 - pnpm test src/api/login.test.ts exits 0
@@ -707,14 +707,14 @@ Keep fixing until done. Do not ask me to run tests.</code></pre>
     <li><strong>GitHub Action</strong> that comments &quot;tests failed&quot; and triggers a manual agent session</li>
     </ol>
     <p>Bridge shared instructions:</p>
-    <pre><code><span class="kw">#</span> CLAUDE.md
+    <pre><code># CLAUDE.md
 @AGENTS.md
 
-<span class="kw">##</span> Verification
-Run <span class="str">`pnpm test`</span> before stopping.</code></pre>
-    <pre><code><span class="kw">#</span> AGENTS.md (read by Cursor via rules import or manual copy)
-<span class="kw">##</span> Verification
-Run <span class="str">`pnpm test`</span> before stopping.</code></pre>
+## Verification
+Run `pnpm test` before stopping.</code></pre>
+    <pre><code># AGENTS.md (read by Cursor via rules import or manual copy)
+## Verification
+Run `pnpm test` before stopping.</code></pre>
     <h3 id="cursor-vs-claude-code-feature-matrix">Cursor vs Claude Code feature matrix</h3>
     <table>
 <thead><tr><th>Capability</th><th>Claude Code</th><th>Cursor</th></tr></thead>
@@ -732,11 +732,11 @@ Run <span class="str">`pnpm test`</span> before stopping.</code></pre>
     <h3 id="symptom-stop-hook-blocks-8-times-then-gives-up">Symptom: Stop hook blocks 8 times then gives up</h3>
     <p><strong>Cause:</strong> Verification fails every time; Claude cannot fix the underlying issue (flaky test, missing dependency, wrong architecture).</p>
     <p><strong>Debug:</strong></p>
-    <pre><code><span class="kw">#</span> Run the hook script manually
+    <pre><code># Run the hook script manually
 .claude/hooks/verify-before-stop.sh
 echo "exit code: $?"
 
-<span class="kw">#</span> Check what Claude last changed
+# Check what Claude last changed
 git diff --stat
 git diff</code></pre>
     <p><strong>Fix:</strong></p>
@@ -919,7 +919,7 @@ git diff</code></pre>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

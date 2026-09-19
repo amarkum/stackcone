@@ -81,7 +81,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -185,36 +185,36 @@ flowchart TD
 
         <h3>Example golden dataset entry</h3>
 <pre><code>{
-  <span class="str">"id"</span>: <span class="str">"create-api-endpoint"</span>,
-  <span class="str">"input"</span>: <span class="str">"Add a POST /users endpoint that accepts email and name"</span>,
-  <span class="str">"context"</span>: {
-    <span class="str">"files"</span>: [<span class="str">"app/main.py"</span>, <span class="str">"app/models.py"</span>]
+  "id": "create-api-endpoint",
+  "input": "Add a POST /users endpoint that accepts email and name",
+  "context": {
+    "files": ["app/main.py", "app/models.py"]
   },
-  <span class="str">"expected"</span>: {
-    <span class="str">"tool_calls"</span>: [<span class="str">"edit_file"</span>, <span class="str">"run_tests"</span>],
-    <span class="str">"files_modified"</span>: [<span class="str">"app/main.py"</span>],
-    <span class="str">"test_pass"</span>: <span class="kw">true</span>
+  "expected": {
+    "tool_calls": ["edit_file", "run_tests"],
+    "files_modified": ["app/main.py"],
+    "test_pass": true
   }
 }</code></pre>
 
         <h3>Evaluation harness</h3>
         <p>Run the agent on each example, capture traces, and score results:</p>
-<pre><code><span class="kw">def</span> <span class="fn">evaluate_agent</span>(dataset, agent):
+<pre><code>def evaluate_agent(dataset, agent):
     results = []
-    <span class="kw">for</span> example <span class="kw">in</span> dataset:
-        <span class="cm"># Set up context</span>
-        reset_workspace(example[<span class="str">"context"</span>])
+    for example in dataset:
+        # Set up context
+        reset_workspace(example["context"])
         
-        <span class="cm"># Run agent</span>
-        trace = agent.run(example[<span class="str">"input"</span>])
+        # Run agent
+        trace = agent.run(example["input"])
         
-        <span class="cm"># Score outcome</span>
-        score = score_trace(trace, example[<span class="str">"expected"</span>])
+        # Score outcome
+        score = score_trace(trace, example["expected"])
         results.append(score)
     
-    <span class="kw">return</span> {
-        <span class="str">"pass_rate"</span>: <span class="fn">sum</span>(results) / <span class="fn">len</span>(results),
-        <span class="str">"details"</span>: results
+    return {
+        "pass_rate": sum(results) / len(results),
+        "details": results
     }</code></pre>
 
         <h3>When to run</h3>
@@ -230,21 +230,21 @@ flowchart TD
         <p>Agent tools are functions the agent calls. Test them like any API — inputs, outputs, error handling, and permission boundaries.</p>
 
         <h3>Tool test example</h3>
-<pre><code><span class="kw">def</span> <span class="fn">test_search_codebase</span>():
-    <span class="cm"># Setup</span>
+<pre><code>def test_search_codebase():
+    # Setup
     workspace = create_test_workspace({
-        <span class="str">"main.py"</span>: <span class="str">"def hello(): pass"</span>
+        "main.py": "def hello(): pass"
     })
     
-    <span class="cm"># Call tool</span>
+    # Call tool
     result = search_codebase(
-        query=<span class="str">"def hello"</span>,
+        query="def hello",
         workspace=workspace
     )
     
-    <span class="cm"># Assert</span>
-    <span class="kw">assert</span> <span class="fn">len</span>(result[<span class="str">"matches"</span>]) == <span class="num">1</span>
-    <span class="kw">assert</span> result[<span class="str">"matches"</span>][<span class="num">0</span>][<span class="str">"file"</span>] == <span class="str">"main.py"</span></code></pre>
+    # Assert
+    assert len(result["matches"]) == 1
+    assert result["matches"][0]["file"] == "main.py"</code></pre>
 
         <h3>What to test</h3>
         <ul>
@@ -281,16 +281,16 @@ flowchart TD
         </ol>
 
         <h3>Replay assertion example</h3>
-<pre><code><span class="kw">def</span> <span class="fn">test_trace_replay</span>():
-    <span class="cm"># Load golden trace</span>
-    trace = load_trace(<span class="str">"golden/add-endpoint-001.json"</span>)
+<pre><code>def test_trace_replay():
+    # Load golden trace
+    trace = load_trace("golden/add-endpoint-001.json")
     
-    <span class="cm"># Replay with current agent</span>
-    new_trace = agent.replay(trace[<span class="str">"input"</span>])
+    # Replay with current agent
+    new_trace = agent.replay(trace["input"])
     
-    <span class="cm"># Assert key outcomes match</span>
-    <span class="kw">assert</span> new_trace[<span class="str">"tool_calls"</span>] == trace[<span class="str">"tool_calls"</span>]
-    <span class="kw">assert</span> new_trace[<span class="str">"files_modified"</span>] == trace[<span class="str">"files_modified"</span>]</code></pre>
+    # Assert key outcomes match
+    assert new_trace["tool_calls"] == trace["tool_calls"]
+    assert new_trace["files_modified"] == trace["files_modified"]</code></pre>
 
         <p>Trace replay catches regressions fast. If a prompt tweak breaks a working flow, the test fails.</p>
       </section>
@@ -300,19 +300,19 @@ flowchart TD
         <p>Regression gates block deploys when agent quality drops below a threshold. Run golden dataset eval + trace replay in CI, and fail the build if pass rate falls.</p>
 
         <h3>CI pipeline example</h3>
-<pre><code><span class="cm"># .github/workflows/agent-eval.yml</span>
-<span class="fn">name</span>: Agent Evaluation
-<span class="fn">on</span>: [pull_request]
+<pre><code># .github/workflows/agent-eval.yml
+name: Agent Evaluation
+on: [pull_request]
 
-<span class="fn">jobs</span>:
-  <span class="fn">eval</span>:
-    <span class="fn">runs-on</span>: ubuntu-latest
-    <span class="fn">steps</span>:
-      - <span class="fn">uses</span>: actions/checkout@v4
-      - <span class="fn">name</span>: Run golden dataset eval
-        <span class="fn">run</span>: python eval/run_golden_dataset.py
-      - <span class="fn">name</span>: Check pass rate
-        <span class="fn">run</span>: |
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run golden dataset eval
+        run: python eval/run_golden_dataset.py
+      - name: Check pass rate
+        run: |
           PASS_RATE=$(cat eval/results.json | jq '.pass_rate')
           if (( $(echo "$PASS_RATE &lt; 0.85" | bc -l) )); then
             echo "Pass rate $PASS_RATE below threshold"
@@ -393,14 +393,14 @@ flowchart TD
         <h3>Logging setup</h3>
         <p>Log every agent run with structured fields:</p>
 <pre><code>{
-  <span class="str">"run_id"</span>: <span class="str">"run_abc123"</span>,
-  <span class="str">"timestamp"</span>: <span class="str">"2026-09-14T10:30:00Z"</span>,
-  <span class="str">"input"</span>: <span class="str">"Add user endpoint"</span>,
-  <span class="str">"tool_calls"</span>: [<span class="str">"edit_file"</span>, <span class="str">"run_tests"</span>],
-  <span class="str">"success"</span>: <span class="kw">true</span>,
-  <span class="str">"turns"</span>: <span class="num">3</span>,
-  <span class="str">"cost_usd"</span>: <span class="num">0.12</span>,
-  <span class="str">"latency_ms"</span>: <span class="num">4500</span>
+  "run_id": "run_abc123",
+  "timestamp": "2026-09-14T10:30:00Z",
+  "input": "Add user endpoint",
+  "tool_calls": ["edit_file", "run_tests"],
+  "success": true,
+  "turns": 3,
+  "cost_usd": 0.12,
+  "latency_ms": 4500
 }</code></pre>
 
         <p>Push logs to Datadog, Grafana, or CloudWatch. Set up alerts when metrics cross thresholds.</p>
@@ -503,6 +503,7 @@ flowchart TD
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

@@ -195,15 +195,15 @@
     </ul>
 
     <h2 id="create-project">Create the Flutter project</h2>
-    <pre><code><span class="fn">flutter</span> create my_app
-<span class="fn">cd</span> my_app
-<span class="fn">flutter</span> pub get</code></pre>
+    <pre><code>flutter create my_app
+cd my_app
+flutter pub get</code></pre>
     <p>Use a reverse-DNS bundle ID from day one — you will register the same ID in Firebase, Apple Developer, and Google Cloud (e.g. <code>com.example.myapp</code>).</p>
     <p>Organize <code>lib/</code> by feature early:</p>
     <pre><code>lib/
 ├── main.dart
 ├── app.dart
-├── firebase_options.dart      <span class="cm"># generated; gitignore in prod</span>
+├── firebase_options.dart      # generated; gitignore in prod
 ├── core/
 │   ├── router/app_router.dart
 │   └── constants/google_auth_config.dart
@@ -226,7 +226,7 @@
     </ol>
 
     <h2 id="flutterfire">Wire Firebase with FlutterFire CLI</h2>
-    <pre><code><span class="fn">dart</span> pub global activate flutterfire_cli
+    <pre><code>dart pub global activate flutterfire_cli
 flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     <p>Select the platforms you target. The CLI generates:</p>
     <table>
@@ -241,19 +241,19 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     <p>Gitignore generated secrets in team repos. Commit a <code>firebase_options.dart.example</code> with placeholder keys. New clones run <code>flutterfire configure</code> locally.</p>
 
     <h2 id="dependencies">Dependencies</h2>
-    <pre><code><span class="fn">dependencies</span>:
-  <span class="fn">flutter</span>:
-    <span class="fn">sdk</span>: flutter
-  <span class="fn">firebase_core</span>: ^<span class="num">3.13</span>.0
-  <span class="fn">firebase_auth</span>: ^<span class="num">5.5</span>.3
-  <span class="fn">cloud_firestore</span>: ^<span class="num">5.6</span>.7
-  <span class="fn">firebase_storage</span>: ^<span class="num">12.4</span>.4
-  <span class="fn">google_sign_in</span>: ^<span class="num">6.3</span>.0
-  <span class="fn">sign_in_with_apple</span>: ^<span class="num">8.0</span>.0
-  <span class="fn">crypto</span>: ^<span class="num">3.0</span>.7
-  <span class="fn">flutter_riverpod</span>: ^<span class="num">2.6</span>.1
-  <span class="fn">go_router</span>: ^<span class="num">15.1</span>.2
-  <span class="fn">shared_preferences</span>: ^<span class="num">2.5</span>.3</code></pre>
+    <pre><code>dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.3
+  cloud_firestore: ^5.6.7
+  firebase_storage: ^12.4.4
+  google_sign_in: ^6.3.0
+  sign_in_with_apple: ^8.0.0
+  crypto: ^3.0.7
+  flutter_riverpod: ^2.6.1
+  go_router: ^15.1.2
+  shared_preferences: ^2.5.3</code></pre>
     <table>
       <thead><tr><th>Package</th><th>Role</th></tr></thead>
       <tbody>
@@ -270,19 +270,19 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
 
     <h2 id="main-dart">Initialize Firebase in main.dart</h2>
     <p>Firebase must initialize <strong>before</strong> <code>runApp</code>. Wrap the app in <code>ProviderScope</code> for Riverpod:</p>
-    <pre><code><span class="kw">import</span> <span class="str">'package:firebase_core/firebase_core.dart'</span>;
-<span class="kw">import</span> <span class="str">'package:flutter/material.dart'</span>;
-<span class="kw">import</span> <span class="str">'package:flutter_riverpod/flutter_riverpod.dart'</span>;
-<span class="kw">import</span> <span class="str">'package:my_app/app.dart'</span>;
-<span class="kw">import</span> <span class="str">'package:my_app/firebase_options.dart'</span>;
+    <pre><code>import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_app/app.dart';
+import 'package:my_app/firebase_options.dart';
 
-<span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; main() <span class="kw">async</span> {
+Future&lt;void&gt; main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  <span class="kw">await</span> Firebase.initializeApp(
+  await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    <span class="kw">const</span> ProviderScope(
+    const ProviderScope(
       child: MyApp(),
     ),
   );
@@ -292,92 +292,92 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     <h2 id="android-config">Android platform config</h2>
     <h3>google-services plugin</h3>
     <p>In <code>android/settings.gradle.kts</code>:</p>
-    <pre><code><span class="kw">plugins</span> {
-    <span class="kw">id</span>(<span class="str">"com.google.gms.google-services"</span>) <span class="kw">version</span> <span class="str">"4.3.15"</span> <span class="kw">apply</span> <span class="kw">false</span>
+    <pre><code>plugins {
+    id("com.google.gms.google-services") version "4.3.15" apply false
 }</code></pre>
     <p>In <code>android/app/build.gradle.kts</code>:</p>
-    <pre><code><span class="kw">plugins</span> {
-    <span class="kw">id</span>(<span class="str">"com.android.application"</span>)
-    <span class="kw">id</span>(<span class="str">"com.google.gms.google-services"</span>)
+    <pre><code>plugins {
+    id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
-<span class="kw">android</span> {
-    <span class="kw">namespace</span> = <span class="str">"com.example.myapp"</span>
-    <span class="kw">defaultConfig</span> {
-        <span class="kw">applicationId</span> = <span class="str">"com.example.myapp"</span>
+android {
+    namespace = "com.example.myapp"
+    defaultConfig {
+        applicationId = "com.example.myapp"
     }
 }</code></pre>
     <h3>SHA-1 fingerprint (critical for Google Sign-In)</h3>
     <p>Google Sign-In on Android fails with <code>ApiException: 10</code> / <code>DEVELOPER_ERROR</code> if Firebase does not know your signing certificate.</p>
-    <pre><code><span class="fn">keytool</span> -list -v -keystore ~/.android/debug.keystore \
+    <pre><code>keytool -list -v -keystore ~/.android/debug.keystore \
   -alias androiddebugkey -storepass android -keypass android</code></pre>
     <p>Copy the <strong>SHA-1</strong> into Firebase Console → Project settings → Your Android app → <strong>Add fingerprint</strong>. Add release keystore SHA-1 before shipping. Re-download <code>google-services.json</code> after adding fingerprints.</p>
 
     <h2 id="ios-config">iOS platform config</h2>
     <h3>Google Sign-In URL scheme</h3>
     <p>Add the <strong>reversed client ID</strong> from <code>GoogleService-Info.plist</code> to <code>ios/Runner/Info.plist</code>:</p>
-    <pre><code><span class="kw">&lt;key&gt;</span>CFBundleURLTypes<span class="kw">&lt;/key&gt;</span>
-<span class="kw">&lt;array&gt;</span>
-  <span class="kw">&lt;dict&gt;</span>
-    <span class="kw">&lt;key&gt;</span>CFBundleURLSchemes<span class="kw">&lt;/key&gt;</span>
-    <span class="kw">&lt;array&gt;</span>
-      <span class="kw">&lt;string&gt;</span>com.googleusercontent.apps.YOUR_IOS_CLIENT_NUM<span class="kw">&lt;/string&gt;</span>
-    <span class="kw">&lt;/array&gt;</span>
-  <span class="kw">&lt;/dict&gt;</span>
-<span class="kw">&lt;/array&gt;</span>
-<span class="kw">&lt;key&gt;</span>GIDClientID<span class="kw">&lt;/key&gt;</span>
-<span class="kw">&lt;string&gt;</span>YOUR_IOS_CLIENT_ID.apps.googleusercontent.com<span class="kw">&lt;/string&gt;</span></code></pre>
+    <pre><code>&lt;key&gt;CFBundleURLTypes&lt;/key&gt;
+&lt;array&gt;
+  &lt;dict&gt;
+    &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;
+    &lt;array&gt;
+      &lt;string&gt;com.googleusercontent.apps.YOUR_IOS_CLIENT_NUM&lt;/string&gt;
+    &lt;/array&gt;
+  &lt;/dict&gt;
+&lt;/array&gt;
+&lt;key&gt;GIDClientID&lt;/key&gt;
+&lt;string&gt;YOUR_IOS_CLIENT_ID.apps.googleusercontent.com&lt;/string&gt;</code></pre>
     <h3>Sign in with Apple entitlement</h3>
     <p>In Xcode: <strong>Runner target → Signing &amp; Capabilities → + Capability → Sign in with Apple</strong>. This updates <code>ios/Runner/Runner.entitlements</code>:</p>
-    <pre><code><span class="kw">&lt;key&gt;</span>com.apple.developer.applesignin<span class="kw">&lt;/key&gt;</span>
-<span class="kw">&lt;array&gt;</span>
-  <span class="kw">&lt;string&gt;</span>Default<span class="kw">&lt;/string&gt;</span>
-<span class="kw">&lt;/array&gt;</span></code></pre>
+    <pre><code>&lt;key&gt;com.apple.developer.applesignin&lt;/key&gt;
+&lt;array&gt;
+  &lt;string&gt;Default&lt;/string&gt;
+&lt;/array&gt;</code></pre>
     <p>Configure the Apple provider in Firebase Console with your Apple Services ID, team ID, and key.</p>
     <h3>Podfile</h3>
-    <pre><code><span class="kw">target</span> <span class="str">'Runner'</span> <span class="kw">do</span>
-  <span class="kw">use_frameworks</span>! :<span class="kw">linkage</span> =&gt; :<span class="kw">static</span>
-  flutter_install_all_ios_pods <span class="fn">File</span>.dirname(<span class="fn">File</span>.realpath(__FILE__))
-<span class="kw">end</span></code></pre>
+    <pre><code>target 'Runner' do
+  use_frameworks! :linkage =&gt; :static
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+end</code></pre>
 
     <h2 id="google-sign-in">Google Sign-In implementation</h2>
     <p>Centralize OAuth client IDs (extract from plist and json):</p>
-    <pre><code><span class="kw">class</span> GoogleAuthConfig {
-  <span class="kw">static</span> <span class="kw">const</span> iosClientId =
-      <span class="str">'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com'</span>;
-  <span class="kw">static</span> <span class="kw">const</span> webClientId =
-      <span class="str">'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com'</span>;
+    <pre><code>class GoogleAuthConfig {
+  static const iosClientId =
+      'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
+  static const webClientId =
+      'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
 }</code></pre>
     <p>The <strong>web client ID</strong> is <code>serverClientId</code> on mobile — Firebase verifies the ID token server-side. Find it as <code>client_type: 3</code> in <code>google-services.json</code>.</p>
-    <pre><code><span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; signInWithGoogle() <span class="kw">async</span> {
-  <span class="kw">if</span> (kIsWeb) {
-    <span class="kw">await</span> _auth.signInWithPopup(GoogleAuthProvider());
-    <span class="kw">return</span>;
+    <pre><code>Future&lt;void&gt; signInWithGoogle() async {
+  if (kIsWeb) {
+    await _auth.signInWithPopup(GoogleAuthProvider());
+    return;
   }
 
-  <span class="kw">final</span> googleSignIn = <span class="fn">GoogleSignIn</span>(
-    scopes: <span class="kw">const</span> [<span class="str">'email'</span>, <span class="str">'profile'</span>],
+  final googleSignIn = GoogleSignIn(
+    scopes: const ['email', 'profile'],
     clientId: defaultTargetPlatform == TargetPlatform.iOS
         ? GoogleAuthConfig.iosClientId
-        : <span class="kw">null</span>,
+        : null,
     serverClientId: GoogleAuthConfig.webClientId,
   );
 
-  <span class="kw">try</span> {
-    <span class="kw">await</span> googleSignIn.signOut();
-  } <span class="kw">catch</span> (_) {}
+  try {
+    await googleSignIn.signOut();
+  } catch (_) {}
 
-  <span class="kw">final</span> account = <span class="kw">await</span> googleSignIn.signIn();
-  <span class="kw">if</span> (account == <span class="kw">null</span>) {
-    <span class="kw">throw</span> <span class="fn">FirebaseAuthException</span>(code: <span class="str">'popup-closed-by-user'</span>);
+  final account = await googleSignIn.signIn();
+  if (account == null) {
+    throw FirebaseAuthException(code: 'popup-closed-by-user');
   }
 
-  <span class="kw">final</span> auth = <span class="kw">await</span> account.authentication;
-  <span class="kw">final</span> credential = GoogleAuthProvider.credential(
+  final auth = await account.authentication;
+  final credential = GoogleAuthProvider.credential(
     accessToken: auth.accessToken,
     idToken: auth.idToken,
   );
-  <span class="kw">await</span> _auth.signInWithCredential(credential);
+  await _auth.signInWithCredential(credential);
 }</code></pre>
     <ul>
       <li><strong>iOS</strong> needs explicit <code>clientId</code>.</li>
@@ -388,23 +388,23 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
 
     <h2 id="apple-sign-in">Apple Sign-In implementation</h2>
     <p>Apple Sign-In is <strong>iOS/macOS only</strong>. Firebase requires a <strong>nonce</strong>: SHA-256 goes to Apple, raw nonce goes to Firebase.</p>
-    <pre><code><span class="kw">import</span> <span class="str">'dart:convert'</span>;
-<span class="kw">import</span> <span class="str">'dart:math'</span>;
-<span class="kw">import</span> <span class="str">'package:crypto/crypto.dart'</span>;
-<span class="kw">import</span> <span class="str">'package:sign_in_with_apple/sign_in_with_apple.dart'</span>;
+    <pre><code>import 'dart:convert';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-<span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; signInWithApple() <span class="kw">async</span> {
-  <span class="kw">if</span> (kIsWeb || defaultTargetPlatform == TargetPlatform.android) {
-    <span class="kw">throw</span> <span class="fn">FirebaseAuthException</span>(
-      code: <span class="str">'operation-not-allowed'</span>,
-      message: <span class="str">'Apple sign-in is only supported on iOS and macOS.'</span>,
+Future&lt;void&gt; signInWithApple() async {
+  if (kIsWeb || defaultTargetPlatform == TargetPlatform.android) {
+    throw FirebaseAuthException(
+      code: 'operation-not-allowed',
+      message: 'Apple sign-in is only supported on iOS and macOS.',
     );
   }
 
-  <span class="kw">final</span> rawNonce = _generateNonce();
-  <span class="kw">final</span> nonce = sha256.convert(utf8.encode(rawNonce)).toString();
+  final rawNonce = _generateNonce();
+  final nonce = sha256.convert(utf8.encode(rawNonce)).toString();
 
-  <span class="kw">final</span> appleCredential = <span class="kw">await</span> SignInWithApple.getAppleIDCredential(
+  final appleCredential = await SignInWithApple.getAppleIDCredential(
     scopes: [
       AppleIDAuthorizationScopes.email,
       AppleIDAuthorizationScopes.fullName,
@@ -412,33 +412,33 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     nonce: nonce,
   );
 
-  <span class="kw">final</span> idToken = appleCredential.identityToken;
-  <span class="kw">if</span> (idToken == <span class="kw">null</span>) {
-    <span class="kw">throw</span> <span class="fn">FirebaseAuthException</span>(code: <span class="str">'invalid-credential'</span>);
+  final idToken = appleCredential.identityToken;
+  if (idToken == null) {
+    throw FirebaseAuthException(code: 'invalid-credential');
   }
 
-  <span class="kw">final</span> oauthCredential = <span class="fn">OAuthProvider</span>(<span class="str">'apple.com'</span>).credential(
+  final oauthCredential = OAuthProvider('apple.com').credential(
     idToken: idToken,
     rawNonce: rawNonce,
   );
-  <span class="kw">await</span> _auth.signInWithCredential(oauthCredential);
+  await _auth.signInWithCredential(oauthCredential);
 }</code></pre>
     <p>Show the Apple button only where supported:</p>
-    <pre><code><span class="fn">bool</span> get showAppleSignIn =&gt;
+    <pre><code>bool get showAppleSignIn =&gt;
     !kIsWeb &amp;&amp; (Platform.isIOS || Platform.isMacOS);</code></pre>
     <p>Apple sends the user's name <strong>once</strong> — capture it on first sign-in and write to Firestore immediately if you need display names.</p>
 
     <h2 id="email-auth">Email/password auth</h2>
-    <pre><code><span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; signInWithEmail(<span class="fn">String</span> email, <span class="fn">String</span> password) <span class="kw">async</span> {
-  <span class="kw">await</span> _auth.signInWithEmailAndPassword(email: email, password: password);
+    <pre><code>Future&lt;void&gt; signInWithEmail(String email, String password) async {
+  await _auth.signInWithEmailAndPassword(email: email, password: password);
 }
 
-<span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; signUpWithEmail(<span class="fn">String</span> email, <span class="fn">String</span> password) <span class="kw">async</span> {
-  <span class="kw">await</span> _auth.createUserWithEmailAndPassword(email: email, password: password);
+Future&lt;void&gt; signUpWithEmail(String email, String password) async {
+  await _auth.createUserWithEmailAndPassword(email: email, password: password);
 }
 
-<span class="cm">// Password reset</span>
-<span class="kw">await</span> <span class="fn">FirebaseAuth</span>.instance.sendPasswordResetEmail(email: email);</code></pre>
+// Password reset
+await FirebaseAuth.instance.sendPasswordResetEmail(email: email);</code></pre>
 
     <h2 id="auth-errors">Auth repository and error handling</h2>
     <table>
@@ -455,69 +455,69 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     <p>A dedicated <code>authErrorMessage(Object error)</code> function keeps UI widgets thin — buttons catch errors and show SnackBars.</p>
 
     <h2 id="riverpod">Riverpod providers for Firebase</h2>
-    <pre><code><span class="kw">final</span> firebaseAuthProvider = <span class="fn">Provider</span>&lt;<span class="fn">FirebaseAuth</span>&gt;(
-  (ref) =&gt; <span class="fn">FirebaseAuth</span>.instance,
+    <pre><code>final firebaseAuthProvider = Provider&lt;FirebaseAuth&gt;(
+  (ref) =&gt; FirebaseAuth.instance,
 );
 
-<span class="kw">final</span> firestoreProvider = <span class="fn">Provider</span>&lt;<span class="fn">FirebaseFirestore</span>&gt;(
-  (ref) =&gt; <span class="fn">FirebaseFirestore</span>.instance,
+final firestoreProvider = Provider&lt;FirebaseFirestore&gt;(
+  (ref) =&gt; FirebaseFirestore.instance,
 );
 
-<span class="kw">final</span> authRepositoryProvider = <span class="fn">Provider</span>&lt;AuthRepository&gt;((ref) {
-  <span class="kw">return</span> AuthRepository(ref.watch(firebaseAuthProvider));
+final authRepositoryProvider = Provider&lt;AuthRepository&gt;((ref) {
+  return AuthRepository(ref.watch(firebaseAuthProvider));
 });
 
-<span class="kw">final</span> authUidProvider = <span class="fn">StreamProvider</span>&lt;<span class="fn">String</span>?&gt;((ref) {
-  <span class="kw">return</span> ref
+final authUidProvider = StreamProvider&lt;String?&gt;((ref) {
+  return ref
       .watch(firebaseAuthProvider)
       .authStateChanges()
       .map((user) =&gt; user?.uid);
 });
 
-<span class="kw">final</span> currentUserIdProvider = <span class="fn">Provider</span>&lt;<span class="fn">String</span>?&gt;((ref) {
-  <span class="kw">return</span> ref.watch(authUidProvider).valueOrNull;
+final currentUserIdProvider = Provider&lt;String?&gt;((ref) {
+  return ref.watch(authUidProvider).valueOrNull;
 });</code></pre>
     <p><code>authStateChanges()</code> is the single source of truth. Every Firestore provider gates on <code>currentUserIdProvider</code> — if UID is null, return <code>Stream.empty()</code>.</p>
 
     <h2 id="gorouter">GoRouter auth-gated routing</h2>
     <p>Do not call <code>context.go('/')</code> manually after sign-in. Let <strong>GoRouter redirect</strong> react to auth stream changes.</p>
-    <pre><code><span class="kw">const</span> _publicAuthPaths = [<span class="str">'/welcome'</span>, <span class="str">'/sign-in'</span>, <span class="str">'/sign-up'</span>];
+    <pre><code>const _publicAuthPaths = ['/welcome', '/sign-in', '/sign-up'];
 
-<span class="kw">final</span> routerProvider = <span class="fn">Provider</span>&lt;<span class="fn">GoRouter</span>&gt;((ref) {
-  <span class="kw">final</span> authState = ref.watch(authUidProvider);
-  <span class="kw">final</span> profileState = ref.watch(userProfileProvider);
+final routerProvider = Provider&lt;GoRouter&gt;((ref) {
+  final authState = ref.watch(authUidProvider);
+  final profileState = ref.watch(userProfileProvider);
 
-  <span class="kw">return</span> <span class="fn">GoRouter</span>(
-    initialLocation: <span class="str">'/welcome'</span>,
+  return GoRouter(
+    initialLocation: '/welcome',
     redirect: (context, state) {
-      <span class="kw">final</span> uid = authState.valueOrNull;
-      <span class="kw">final</span> path = state.matchedLocation;
+      final uid = authState.valueOrNull;
+      final path = state.matchedLocation;
 
-      <span class="kw">if</span> (authState.isLoading) <span class="kw">return</span> <span class="kw">null</span>;
+      if (authState.isLoading) return null;
 
-      <span class="kw">if</span> (uid == <span class="kw">null</span>) {
-        <span class="kw">return</span> _isPublicAuthPath(path) ? <span class="kw">null</span> : <span class="str">'/welcome'</span>;
+      if (uid == null) {
+        return _isPublicAuthPath(path) ? null : '/welcome';
       }
 
-      <span class="kw">final</span> profile = profileState.valueOrNull;
-      <span class="kw">if</span> (profileState.isLoading) <span class="kw">return</span> <span class="kw">null</span>;
+      final profile = profileState.valueOrNull;
+      if (profileState.isLoading) return null;
 
-      <span class="kw">final</span> target = routeAfterAuth(profile);
+      final target = routeAfterAuth(profile);
 
-      <span class="kw">if</span> (_isPublicAuthPath(path)) {
-        <span class="kw">return</span> path == target ? <span class="kw">null</span> : target;
+      if (_isPublicAuthPath(path)) {
+        return path == target ? null : target;
       }
 
-      <span class="kw">if</span> (target != <span class="str">'/'</span>) {
-        <span class="kw">final</span> onSetup = path == target || path.startsWith(<span class="str">'$target/'</span>);
-        <span class="kw">if</span> (!onSetup) <span class="kw">return</span> target;
+      if (target != '/') {
+        final onSetup = path == target || path.startsWith('$target/');
+        if (!onSetup) return target;
       }
 
-      <span class="kw">return</span> <span class="kw">null</span>;
+      return null;
     },
     routes: [
-      <span class="fn">GoRoute</span>(path: <span class="str">'/welcome'</span>, builder: (_, __) =&gt; <span class="kw">const</span> WelcomeScreen()),
-      <span class="fn">GoRoute</span>(path: <span class="str">'/sign-in'</span>, builder: (_, __) =&gt; <span class="kw">const</span> SignInScreen()),
+      GoRoute(path: '/welcome', builder: (_, __) =&gt; const WelcomeScreen()),
+      GoRoute(path: '/sign-in', builder: (_, __) =&gt; const SignInScreen()),
     ],
   );
 });</code></pre>
@@ -527,107 +527,107 @@ flutterfire configure --project=YOUR_PROJECT_ID</code></pre>
     <p>Use a <strong>user-scoped hierarchy</strong> — every document lives under the authenticated UID:</p>
     <pre><code>users/{uid}/profile/settings     ← single profile doc
 users/{uid}/items/{itemId}       ← user-owned collection</code></pre>
-    <pre><code><span class="kw">class</span> FirestorePaths {
-  <span class="kw">static</span> <span class="fn">String</span> userRoot(<span class="fn">String</span> uid) =&gt; <span class="str">'users/$uid'</span>;
-  <span class="kw">static</span> <span class="fn">String</span> profile(<span class="fn">String</span> uid) =&gt; <span class="str">'${userRoot(uid)}/profile/settings'</span>;
-  <span class="kw">static</span> <span class="fn">String</span> items(<span class="fn">String</span> uid) =&gt; <span class="str">'${userRoot(uid)}/items'</span>;
+    <pre><code>class FirestorePaths {
+  static String userRoot(String uid) =&gt; 'users/$uid';
+  static String profile(String uid) =&gt; '${userRoot(uid)}/profile/settings';
+  static String items(String uid) =&gt; '${userRoot(uid)}/items';
 }</code></pre>
     <p>Subcollections under <code>users/{uid}</code> give one-line security rules, scoped deletes, and no accidental cross-user queries.</p>
 
     <h2 id="security-rules">Security rules</h2>
-    <pre><code><span class="kw">rules_version</span> = '<span class="num">2</span>';
-<span class="kw">service</span> <span class="kw">cloud</span>.<span class="kw">firestore</span> {
-  <span class="kw">match</span> /databases/{database}/documents {
-    <span class="kw">match</span> /users/{userId}/{document=**} {
-      <span class="kw">allow</span> <span class="kw">read</span>, <span class="kw">write</span>: <span class="kw">if</span> <span class="kw">request</span>.<span class="kw">auth</span> != <span class="kw">null</span> &amp;&amp; <span class="kw">request</span>.<span class="kw">auth</span>.uid == userId;
+    <pre><code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId;
     }
   }
 }</code></pre>
     <p>Test in Firebase Console <strong>Rules playground</strong>. Never ship with <code>allow read, write: if true</code> except local emulators.</p>
 
     <h2 id="models">Models: fromFirestore and toFirestore</h2>
-    <pre><code><span class="kw">class</span> <span class="fn">UserProfile</span> {
-  <span class="kw">const</span> <span class="fn">UserProfile</span>({
-    required <span class="kw">this</span>.displayName,
-    <span class="kw">this</span>.createdAt,
-    <span class="kw">this</span>.onboardingComplete = <span class="kw">false</span>,
+    <pre><code>class UserProfile {
+  const UserProfile({
+    required this.displayName,
+    this.createdAt,
+    this.onboardingComplete = false,
   });
 
-  <span class="kw">final</span> <span class="fn">String</span> displayName;
-  <span class="kw">final</span> <span class="fn">DateTime</span>? createdAt;
-  <span class="kw">final</span> <span class="fn">bool</span> onboardingComplete;
+  final String displayName;
+  final DateTime? createdAt;
+  final bool onboardingComplete;
 
-  <span class="kw">factory</span> <span class="fn">UserProfile</span>.fromFirestore(
-    <span class="fn">DocumentSnapshot</span>&lt;<span class="fn">Map</span>&lt;<span class="fn">String</span>, <span class="fn">dynamic</span>&gt;&gt; doc,
+  factory UserProfile.fromFirestore(
+    DocumentSnapshot&lt;Map&lt;String, dynamic&gt;&gt; doc,
   ) {
-    <span class="kw">final</span> data = doc.data() ?? {};
-    <span class="kw">return</span> <span class="fn">UserProfile</span>(
-      displayName: data[<span class="str">'displayName'</span>] <span class="kw">as</span> <span class="fn">String</span>? ?? <span class="str">''</span>,
-      createdAt: (data[<span class="str">'createdAt'</span>] <span class="kw">as</span> <span class="fn">Timestamp</span>?)?.toDate(),
-      onboardingComplete: data[<span class="str">'onboardingComplete'</span>] <span class="kw">as</span> <span class="fn">bool</span>? ?? <span class="kw">false</span>,
+    final data = doc.data() ?? {};
+    return UserProfile(
+      displayName: data['displayName'] as String? ?? '',
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      onboardingComplete: data['onboardingComplete'] as bool? ?? false,
     );
   }
 
-  <span class="fn">Map</span>&lt;<span class="fn">String</span>, <span class="fn">dynamic</span>&gt; toFirestore() {
-    <span class="kw">return</span> {
-      <span class="str">'displayName'</span>: displayName,
-      <span class="str">'onboardingComplete'</span>: onboardingComplete,
-      <span class="kw">if</span> (createdAt != <span class="kw">null</span>)
-        <span class="str">'createdAt'</span>: <span class="fn">Timestamp</span>.fromDate(createdAt!),
+  Map&lt;String, dynamic&gt; toFirestore() {
+    return {
+      'displayName': displayName,
+      'onboardingComplete': onboardingComplete,
+      if (createdAt != null)
+        'createdAt': Timestamp.fromDate(createdAt!),
     };
   }
 }</code></pre>
     <p>Use <code>Timestamp</code> for dates — not ISO strings — so queries and indexes work natively.</p>
 
     <h2 id="repositories">Repository pattern with real-time streams</h2>
-    <pre><code><span class="kw">class</span> ProfileRepository {
-  ProfileRepository(<span class="kw">this</span>._firestore);
-  <span class="kw">final</span> <span class="fn">FirebaseFirestore</span> _firestore;
+    <pre><code>class ProfileRepository {
+  ProfileRepository(this._firestore);
+  final FirebaseFirestore _firestore;
 
-  DocumentReference&lt;<span class="fn">Map</span>&lt;<span class="fn">String</span>, <span class="fn">dynamic</span>&gt;&gt; _ref(<span class="fn">String</span> uid) =&gt;
+  DocumentReference&lt;Map&lt;String, dynamic&gt;&gt; _ref(String uid) =&gt;
       _firestore.doc(FirestorePaths.profile(uid));
 
-  <span class="fn">Stream</span>&lt;<span class="fn">UserProfile</span>?&gt; watch(<span class="fn">String</span> uid) {
-    <span class="kw">return</span> _ref(uid).snapshots().map((snap) {
-      <span class="kw">if</span> (!snap.exists) <span class="kw">return</span> <span class="kw">null</span>;
-      <span class="kw">return</span> <span class="fn">UserProfile</span>.fromFirestore(snap);
+  Stream&lt;UserProfile?&gt; watch(String uid) {
+    return _ref(uid).snapshots().map((snap) {
+      if (!snap.exists) return null;
+      return UserProfile.fromFirestore(snap);
     });
   }
 
-  <span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; save(<span class="fn">String</span> uid, <span class="fn">UserProfile</span> profile) <span class="kw">async</span> {
-    <span class="kw">await</span> _ref(uid).set(profile.toFirestore(), <span class="fn">SetOptions</span>(merge: <span class="kw">true</span>));
+  Future&lt;void&gt; save(String uid, UserProfile profile) async {
+    await _ref(uid).set(profile.toFirestore(), SetOptions(merge: true));
   }
 }</code></pre>
-    <pre><code><span class="kw">final</span> userProfileProvider = <span class="fn">StreamProvider</span>&lt;<span class="fn">UserProfile</span>?&gt;((ref) {
-  <span class="kw">final</span> uid = ref.watch(currentUserIdProvider);
-  <span class="kw">if</span> (uid == <span class="kw">null</span>) <span class="kw">return</span> <span class="kw">const</span> <span class="fn">Stream</span>.empty();
-  <span class="kw">return</span> ref.watch(profileRepositoryProvider).watch(uid);
+    <pre><code>final userProfileProvider = StreamProvider&lt;UserProfile?&gt;((ref) {
+  final uid = ref.watch(currentUserIdProvider);
+  if (uid == null) return const Stream.empty();
+  return ref.watch(profileRepositoryProvider).watch(uid);
 });</code></pre>
     <p>Widgets use <code>ref.watch(userProfileProvider)</code> — they rebuild when Firestore pushes changes. No manual refresh for sync.</p>
 
     <h2 id="batch-writes">Batch writes and atomic updates</h2>
-    <pre><code><span class="kw">final</span> batch = _firestore.batch();
+    <pre><code>final batch = _firestore.batch();
 batch.set(itemRef, item.toFirestore());
-batch.update(summaryRef, {<span class="str">'count'</span>: FieldValue.increment(<span class="num">1</span>)});
-<span class="kw">await</span> batch.commit();</code></pre>
+batch.update(summaryRef, {'count': FieldValue.increment(1)});
+await batch.commit();</code></pre>
     <p><code>FieldValue.increment</code> is atomic — safe under concurrent writes. Firestore batches cap at <strong>500 operations</strong>; paginate bulk deletes at ~400 per batch.</p>
 
     <h2 id="profile-stub">Post-auth profile stub</h2>
     <p>After any sign-in, ensure a Firestore profile document exists before routing home:</p>
-    <pre><code><span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; ensureAuthProfileStub(<span class="fn">WidgetRef</span> ref) <span class="kw">async</span> {
-  <span class="kw">final</span> uid = ref.read(firebaseAuthProvider).currentUser?.uid;
-  <span class="kw">if</span> (uid == <span class="kw">null</span>) <span class="kw">return</span>;
+    <pre><code>Future&lt;void&gt; ensureAuthProfileStub(WidgetRef ref) async {
+  final uid = ref.read(firebaseAuthProvider).currentUser?.uid;
+  if (uid == null) return;
 
-  <span class="kw">final</span> repo = ref.read(profileRepositoryProvider);
-  <span class="kw">final</span> existing = <span class="kw">await</span> repo.get(uid);
-  <span class="kw">if</span> (existing != <span class="kw">null</span>) <span class="kw">return</span>;
+  final repo = ref.read(profileRepositoryProvider);
+  final existing = await repo.get(uid);
+  if (existing != null) return;
 
-  <span class="kw">final</span> user = ref.read(firebaseAuthProvider).currentUser;
-  <span class="kw">await</span> repo.save(
+  final user = ref.read(firebaseAuthProvider).currentUser;
+  await repo.save(
     uid,
-    <span class="fn">UserProfile</span>(
-      displayName: user?.displayName ?? <span class="str">''</span>,
-      createdAt: <span class="fn">DateTime</span>.now(),
+    UserProfile(
+      displayName: user?.displayName ?? '',
+      createdAt: DateTime.now(),
     ),
   );
   ref.invalidate(userProfileProvider);
@@ -635,11 +635,11 @@ batch.update(summaryRef, {<span class="str">'count'</span>: FieldValue.increment
     <p>Call after <code>signInWithGoogle()</code> succeeds. Do not navigate manually — GoRouter redirect picks up the new profile stream.</p>
 
     <h2 id="sign-out">Sign out</h2>
-    <pre><code><span class="fn">Future</span>&lt;<span class="kw">void</span>&gt; signOut() <span class="kw">async</span> {
-  <span class="kw">if</span> (!kIsWeb) {
-    <span class="kw">await</span> <span class="fn">GoogleSignIn</span>().signOut();
+    <pre><code>Future&lt;void&gt; signOut() async {
+  if (!kIsWeb) {
+    await GoogleSignIn().signOut();
   }
-  <span class="kw">await</span> _auth.signOut();
+  await _auth.signOut();
 }</code></pre>
     <p>Missing Google sign-out causes the next sign-in to reuse the old Google account silently.</p>
 
@@ -716,7 +716,7 @@ batch.update(summaryRef, {<span class="str">'count'</span>: FieldValue.increment
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

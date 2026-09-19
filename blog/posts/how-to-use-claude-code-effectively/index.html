@@ -189,46 +189,46 @@
     </ul>
 
     <h3>Starter template</h3>
-    <pre><code><span class="kw">#</span> Project: acme-api
+    <pre><code># Project: acme-api
 
-<span class="kw">##</span> Commands
-- Install: <span class="str">`pnpm install`</span>
-- Dev server: <span class="str">`pnpm dev`</span> (port 3000)
-- Test: <span class="str">`pnpm test`</span>
-- Lint: <span class="str">`pnpm lint`</span>
-- Typecheck: <span class="str">`pnpm typecheck`</span>
+## Commands
+- Install: `pnpm install`
+- Dev server: `pnpm dev` (port 3000)
+- Test: `pnpm test`
+- Lint: `pnpm lint`
+- Typecheck: `pnpm typecheck`
 
-<span class="kw">##</span> Layout
-- <span class="str">`src/api/handlers/`</span> — HTTP route handlers
-- <span class="str">`src/db/`</span> — Drizzle schema and migrations
-- <span class="str">`src/lib/`</span> — shared utilities (no business logic)
+## Layout
+- `src/api/handlers/` — HTTP route handlers
+- `src/db/` — Drizzle schema and migrations
+- `src/lib/` — shared utilities (no business logic)
 
-<span class="kw">##</span> Code style
-- TypeScript strict mode; no <span class="str">`any`</span> without a comment
+## Code style
+- TypeScript strict mode; no `any` without a comment
 - 2-space indent
 
-<span class="kw">##</span> Workflow
+## Workflow
 - Create a feature branch before edits
-- Run <span class="str">`pnpm test &amp;&amp; pnpm lint`</span> before committing
-- IMPORTANT: never commit <span class="str">`.env`</span> or secrets
+- Run `pnpm test &amp;&amp; pnpm lint` before committing
+- IMPORTANT: never commit `.env` or secrets
 
-<span class="kw">##</span> Verification
-After any change under <span class="str">`src/api/`</span>, run:
-<span class="str">`pnpm test src/api/`</span></code></pre>
+## Verification
+After any change under `src/api/`, run:
+`pnpm test src/api/`</code></pre>
 
     <h3>Generate a first draft</h3>
-    <pre><code><span class="fn">cd</span> your-repo
+    <pre><code>cd your-repo
 claude
-<span class="cm"># then inside Claude Code:</span>
+# then inside Claude Code:
 /init</code></pre>
     <p><code>/init</code> scans your repo and proposes a starter <code>CLAUDE.md</code>. Refine from there — add only what Claude got wrong twice.</p>
 
     <p>Use <code>@path/to/file</code> imports to pull in shared docs without duplicating:</p>
     <pre><code>@AGENTS.md
 
-<span class="kw">##</span> Claude-specific
-- Use plan mode for changes under <span class="str">`src/billing/`</span>
-- Run <span class="str">`pnpm test src/billing/`</span> after billing edits</code></pre>
+## Claude-specific
+- Use plan mode for changes under `src/billing/`
+- Run `pnpm test src/billing/` after billing edits</code></pre>
 
     <h2 id="agents-md">What AGENTS.md should contain</h2>
     <p><code>AGENTS.md</code> is an <strong>open standard</strong> used by Cursor, Codex, Devin, and other agents. <strong>Claude Code does not read <code>AGENTS.md</code> automatically</strong> — it reads <code>CLAUDE.md</code>.</p>
@@ -237,9 +237,9 @@ claude
     <h3>Option A — import (recommended)</h3>
     <pre><code>@AGENTS.md
 
-<span class="kw">##</span> Claude Code
+## Claude Code
 - Prefer plan mode for database migrations
-- Use <span class="str">`claude -p`</span> in CI for automated fix loops</code></pre>
+- Use `claude -p` in CI for automated fix loops</code></pre>
 
     <h3>Option B — symlink (macOS/Linux)</h3>
     <pre><code>ln -s AGENTS.md CLAUDE.md</code></pre>
@@ -283,16 +283,16 @@ CLAUDE.md              ← @AGENTS.md + Claude-specific notes
     <p>Rules <strong>without</strong> frontmatter load every session. Rules <strong>with</strong> <code>paths</code> load only when Claude reads matching files — saving context.</p>
 
     <h3>Path-scoped example</h3>
-    <pre><code><span class="kw">---</span>
-<span class="fn">paths</span>:
+    <pre><code>---
+paths:
   - "src/api/**/*.ts"
   - "src/api/**/*.tsx"
-<span class="kw">---</span>
+---
 
-<span class="kw">#</span> API rules
+# API rules
 
-- All endpoints return <span class="str">`{ data, error }`</span> envelope
-- Validate input with Zod schemas in <span class="str">`src/api/schemas/`</span>
+- All endpoints return `{ data, error }` envelope
+- Validate input with Zod schemas in `src/api/schemas/`
 - Add OpenAPI comments on every exported handler</code></pre>
 
     <h3>When to use rules vs skills</h3>
@@ -311,7 +311,7 @@ CLAUDE.md              ← @AGENTS.md + Claude-specific notes
     <pre><code>CLAUDE.local.md</code></pre>
 
     <h3><code>~/.claude/CLAUDE.md</code> (user, all projects)</h3>
-    <pre><code><span class="kw">#</span> Personal preferences
+    <pre><code># Personal preferences
 - Prefer concise commit messages
 - Always show git diff summary before committing</code></pre>
 
@@ -321,18 +321,18 @@ CLAUDE.md              ← @AGENTS.md + Claude-specific notes
     <h2 id="settings">Essential <code>settings.json</code></h2>
     <p>Project settings live in <code>.claude/settings.json</code>. Local overrides in <code>.claude/settings.local.json</code> (usually gitignored).</p>
     <pre><code>{
-  <span class="str">"permissions"</span>: {
-    <span class="str">"allow"</span>: [
-      <span class="str">"Bash(pnpm test *)"</span>,
-      <span class="str">"Bash(pnpm lint)"</span>
+  "permissions": {
+    "allow": [
+      "Bash(pnpm test *)",
+      "Bash(pnpm lint)"
     ],
-    <span class="str">"deny"</span>: [
-      <span class="str">"Bash(git push --force *)"</span>,
-      <span class="str">"Read(.env)"</span>
+    "deny": [
+      "Bash(git push --force *)",
+      "Read(.env)"
     ]
   },
-  <span class="str">"env"</span>: {
-    <span class="str">"NODE_ENV"</span>: <span class="str">"development"</span>
+  "env": {
+    "NODE_ENV": "development"
   }
 }</code></pre>
     <table>
@@ -357,7 +357,7 @@ Run pnpm test src/api/login.test.ts and fix until green.</code></pre>
     <p>Without a check, you become the verification loop.</p>
 
     <h3>3. Scope prompts with <code>@</code> files</h3>
-    <pre><code>@src/auth/session.ts fix the token refresh bug described in <span class="cm">#842.</span>
+    <pre><code>@src/auth/session.ts fix the token refresh bug described in #842.
 Match error handling in @src/auth/login.ts.</code></pre>
 
     <h3>4. Use <code>/doctor</code> on bloated CLAUDE.md</h3>
@@ -368,9 +368,9 @@ Match error handling in @src/auth/login.ts.</code></pre>
 
     <h2 id="layout">Example repo layout</h2>
     <pre><code>my-app/
-├── AGENTS.md                 <span class="cm"># Shared agent instructions (team)</span>
-├── CLAUDE.md                 <span class="cm"># @AGENTS.md + Claude-specific</span>
-├── CLAUDE.local.md           <span class="cm"># Personal (gitignored)</span>
+├── AGENTS.md                 # Shared agent instructions (team)
+├── CLAUDE.md                 # @AGENTS.md + Claude-specific
+├── CLAUDE.local.md           # Personal (gitignored)
 ├── .gitignore
 ├── .claude/
 │   ├── settings.json
@@ -381,8 +381,8 @@ Match error handling in @src/auth/login.ts.</code></pre>
 │   ├── skills/
 │   │   └── release/SKILL.md
 │   └── commands/review.md
-├── src/billing/CLAUDE.md     <span class="cm"># Loads when editing billing/</span>
-└── .cursor/rules/            <span class="cm"># Cursor-only (optional)</span></code></pre>
+├── src/billing/CLAUDE.md     # Loads when editing billing/
+└── .cursor/rules/            # Cursor-only (optional)</code></pre>
 
     <h2 id="mistakes">Common mistakes</h2>
     <ol>
@@ -433,7 +433,7 @@ Match error handling in @src/auth/login.ts.</code></pre>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

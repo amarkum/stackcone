@@ -326,13 +326,13 @@
 
     <h3>3 — Hybrid retriever</h3>
     <p>FastAPI endpoint combining dense vector search, BM25 keyword, and metadata filters with reciprocal rank fusion:</p>
-    <pre><code><span class="kw">from</span> fastapi import Depends
-<span class="kw">from</span> pydantic import BaseModel
+    <pre><code>from fastapi import Depends
+from pydantic import BaseModel
 
 class RetrieveRequest(BaseModel):
     query: str
     mandate_id: str
-    top_k: int = <span class="num">12</span>
+    top_k: int = 12
     doc_types: list[str] | None = None
 
 class RetrievedChunk(BaseModel):
@@ -346,8 +346,8 @@ async def hybrid_retrieve(req: RetrieveRequest, user=Depends(get_current_user)) 
     scope = await mandate_scope(user.id, req.mandate_id)
     dense = await vector_search(req.query, scope, req.top_k)
     sparse = await bm25_search(req.query, scope, req.top_k)
-    fused = reciprocal_rank_fusion(dense, sparse, k=<span class="num">60</span>)
-    return [c for c <span class="kw">in</span> fused if passes_license_policy(c, user)]</code></pre>
+    fused = reciprocal_rank_fusion(dense, sparse, k=60)
+    return [c for c in fused if passes_license_policy(c, user)]</code></pre>
 
     <h3>4 — Q&amp;A RAG agent (wedge feature)</h3>
     <ul>
@@ -381,14 +381,14 @@ async def hybrid_retrieve(req: RetrieveRequest, user=Depends(get_current_user)) 
     </table>
 
     <h3>7 — Eval runner (CI gate)</h3>
-    <pre><code><span class="kw">def</span> <span class="fn">test_golden_qa_citation_recall</span>(eval_case, retriever, generator):
+    <pre><code>def test_golden_qa_citation_recall(eval_case, retriever, generator):
     chunks = retriever.search(eval_case.question, mandate_id=eval_case.mandate)
     answer = generator.answer(eval_case.question, chunks)
     cited_ids = extract_citation_ids(answer)
-    expected = <span class="fn">set</span>(eval_case.required_chunk_ids)
-    recall = <span class="fn">len</span>(cited_ids &amp; expected) / <span class="fn">len</span>(expected)
-    <span class="kw">assert</span> recall &gt;= <span class="num">0.85</span>, f<span class="str">"citation recall {recall:.2f} below threshold"</span>
-    <span class="kw">assert</span> <span class="kw">not</span> hallucinated_financials(answer, chunks)</code></pre>
+    expected = set(eval_case.required_chunk_ids)
+    recall = len(cited_ids &amp; expected) / len(expected)
+    assert recall &gt;= 0.85, f"citation recall {recall:.2f} below threshold"
+    assert not hallucinated_financials(answer, chunks)</code></pre>
 
     <div class="chart-wrap">
       <canvas id="evalMetricsChart" aria-label="Target evaluation metrics for RAG accuracy relevance and latency"></canvas>
@@ -526,7 +526,7 @@ async def hybrid_retrieve(req: RetrieveRequest, user=Depends(get_current_user)) 
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

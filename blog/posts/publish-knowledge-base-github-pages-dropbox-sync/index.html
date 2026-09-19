@@ -77,7 +77,7 @@
         <a href="/">Home</a>
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
       </nav>
@@ -222,32 +222,32 @@
     </div>
     <p>Each page should have a clear title, concise body, and optional front matter (status, topic). Editors fix tone and redact sensitive details before promotion. The next sync run picks up new published files automatically.</p>
 
-    <pre><code><span class="kw">#</span> drafts/new-page.md
-<span class="kw">---</span>
-<span class="fn">status</span>: draft
-<span class="kw">---</span>
+    <pre><code># drafts/new-page.md
+---
+status: draft
+---
 
-<span class="kw">#</span> Page title
+# Page title
 
 Body text goes here.
 
-<span class="kw">#</span> After review → published/new-page.md</code></pre>
+# After review → published/new-page.md</code></pre>
 
     <h2 id="incremental-sync">Incremental sync</h2>
     <p>Full re-index on every run does not scale. <code>sync-state.json</code> stores a content hash per published file. Only files whose hash changed (or are new) go through embed + upsert.</p>
 
     <pre><code>{
-  <span class="str">"last_sync"</span>: <span class="str">"2026-06-12T14:30:00Z"</span>,
-  <span class="str">"files"</span>: {
-    <span class="str">"/published/page-a.md"</span>: {
-      <span class="str">"hash"</span>: <span class="str">"sha256:a3f9..."</span>,
-      <span class="str">"chunk_ids"</span>: [<span class="str">"page-a_0"</span>, <span class="str">"page-a_1"</span>],
-      <span class="str">"indexed_at"</span>: <span class="str">"2026-06-10T09:00:00Z"</span>
+  "last_sync": "2026-06-12T14:30:00Z",
+  "files": {
+    "/published/page-a.md": {
+      "hash": "sha256:a3f9...",
+      "chunk_ids": ["page-a_0", "page-a_1"],
+      "indexed_at": "2026-06-10T09:00:00Z"
     },
-    <span class="str">"/published/page-b.md"</span>: {
-      <span class="str">"hash"</span>: <span class="str">"sha256:b71c..."</span>,
-      <span class="str">"chunk_ids"</span>: [<span class="str">"page-b_0"</span>],
-      <span class="str">"indexed_at"</span>: <span class="str">"2026-06-12T14:30:00Z"</span>
+    "/published/page-b.md": {
+      "hash": "sha256:b71c...",
+      "chunk_ids": ["page-b_0"],
+      "indexed_at": "2026-06-12T14:30:00Z"
     }
   }
 }</code></pre>
@@ -268,23 +268,23 @@ Body text goes here.
       <p class="chart-caption">Average storage API call latency: new connection vs pooled session (ms)</p>
     </div>
 
-    <pre><code><span class="kw">import</span> requests
+    <pre><code>import requests
 
-<span class="cm"># One session per sync run — reuse across all storage API calls</span>
+# One session per sync run — reuse across all storage API calls
 session = requests.Session()
 session.headers.update({
-    <span class="str">"Authorization"</span>: f<span class="str">"Bearer {STORAGE_TOKEN}"</span>,
-    <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+    "Authorization": f"Bearer {STORAGE_TOKEN}",
+    "Content-Type": "application/json",
 })
 
-<span class="kw">def</span> <span class="fn">download_file</span>(path: <span class="fn">str</span>) -&gt; bytes:
-    <span class="kw">return</span> session.get(f<span class="str">"{STORAGE_API_BASE}/files/download"</span>, params={<span class="str">"path"</span>: path}).content</code></pre>
+def download_file(path: str) -&gt; bytes:
+    return session.get(f"{STORAGE_API_BASE}/files/download", params={"path": path}).content</code></pre>
 
     <h2 id="sse-progress">SSE progress streaming</h2>
     <p>Sync jobs can run several minutes. Expose progress via <strong>Server-Sent Events (SSE)</strong> so the admin UI shows live status without polling.</p>
     <p>Each stage emits a JSON event: stage name, percent complete, files processed, and optional error detail. The client opens <code>EventSource('/sync/stream')</code> and updates a progress bar.</p>
 
-    <pre><code><span class="cm">// SSE events during sync</span>
+    <pre><code>// SSE events during sync
 event: progress
 data: {"stage":"embed","file":"page-b.md","done":3,"total":5,"pct":60}
 
@@ -317,44 +317,44 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
 
     <h2 id="code-snippets">Code snippets</h2>
     <h3>Sync job pseudocode</h3>
-    <pre><code><span class="kw">def</span> <span class="fn">run_sync</span>(emit):
-    tracker = load_tracker()                    <span class="cm"># download sync-state.json</span>
-    session = create_storage_session()          <span class="cm"># pooled HTTP</span>
+    <pre><code>def run_sync(emit):
+    tracker = load_tracker()                    # download sync-state.json
+    session = create_storage_session()          # pooled HTTP
 
     published_files = list_published_md(session)
-    diff = compute_diff(published_files, tracker)  <span class="cm"># new | changed | deleted</span>
+    diff = compute_diff(published_files, tracker)  # new | changed | deleted
 
-    emit(<span class="str">"list"</span>, total=<span class="fn">len</span>(diff.changed) + <span class="fn">len</span>(diff.new))
+    emit("list", total=len(diff.changed) + len(diff.new))
 
-    <span class="kw">for</span> path <span class="kw">in</span> diff.deleted:
+    for path in diff.deleted:
         delete_vector_chunks(tracker.files[path].chunk_ids)
         remove_site_page(path)
-        <span class="kw">del</span> tracker.files[path]
+        del tracker.files[path]
 
-    <span class="kw">for</span> path <span class="kw">in</span> diff.new + diff.changed:
+    for path in diff.new + diff.changed:
         text = download_md(session, path)
         chunks = chunk_and_embed(text)
         upsert_vectors(path, chunks)
         mirror_to_site(path, text)
-        tracker.files[path] = {<span class="str">"hash"</span>: hash(text), <span class="str">"chunk_ids"</span>: [c.id <span class="kw">for</span> c <span class="kw">in</span> chunks]}
+        tracker.files[path] = {"hash": hash(text), "chunk_ids": [c.id for c in chunks]}
 
     build_and_push_github_pages()
     save_tracker(tracker)
-    emit(<span class="str">"complete"</span>, indexed=<span class="fn">len</span>(diff.new) + <span class="fn">len</span>(diff.changed))</code></pre>
+    emit("complete", indexed=len(diff.new) + len(diff.changed))</code></pre>
 
     <h3>Incremental diff logic</h3>
-    <pre><code><span class="kw">def</span> <span class="fn">compute_diff</span>(remote_files, tracker):
-    remote_paths = {f.path <span class="kw">for</span> f <span class="kw">in</span> remote_files}
-    tracked_paths = <span class="fn">set</span>(tracker.files.keys())
+    <pre><code>def compute_diff(remote_files, tracker):
+    remote_paths = {f.path for f in remote_files}
+    tracked_paths = set(tracker.files.keys())
 
     deleted = tracked_paths - remote_paths
-    new = [f <span class="kw">for</span> f <span class="kw">in</span> remote_files <span class="kw">if</span> f.path <span class="kw">not</span> <span class="kw">in</span> tracked_paths]
+    new = [f for f in remote_files if f.path not in tracked_paths]
     changed = [
-        f <span class="kw">for</span> f <span class="kw">in</span> remote_files
-        <span class="kw">if</span> f.path <span class="kw">in</span> tracked_paths
-        <span class="kw">and</span> f.hash != tracker.files[f.path].hash
+        f for f in remote_files
+        if f.path in tracked_paths
+        and f.hash != tracker.files[f.path].hash
     ]
-    <span class="kw">return</span> Diff(new=new, changed=changed, deleted=deleted)</code></pre>
+    return Diff(new=new, changed=changed, deleted=deleted)</code></pre>
 
     <h2 id="glossary">Glossary</h2>
     <table>
@@ -392,6 +392,7 @@ data: {"files_indexed":2,"files_skipped":38,"duration_s":94}</code></pre>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a>
         <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>

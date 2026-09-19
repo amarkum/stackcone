@@ -312,20 +312,20 @@
     <p><strong>Why Postgres over Redis-only?</strong> Order state needs durable ACID writes and queryable audit history. Redis can cache quotes; it should not be the sole source of truth for submitted orders.</p>
 
     <p>Example CLI surface (proposed <code>invctl</code> command tree):</p>
-    <pre><code>invctl sync positions <span class="cm">--account default --json</span>
-invctl sync quotes <span class="cm">--symbols AAPL,MSFT,VTI</span>
-invctl <span class="kw">order</span> submit <span class="cm">--client-id rebalance-20260706-001 \</span>
-  <span class="cm">--symbol VTI --qty 10 --side buy --type limit --limit-price 245.50</span>
-invctl strategy run <span class="cm">--name drift-rebalance --dry-run</span>
-invctl strategy run <span class="cm">--name drift-rebalance --live</span>
-invctl backtest run <span class="cm">--strategy drift-rebalance --from 2024-01-01 --to 2025-12-31</span>
-invctl status orders <span class="cm">--since 24h --json</span></code></pre>
+    <pre><code>invctl sync positions --account default --json
+invctl sync quotes --symbols AAPL,MSFT,VTI
+invctl order submit --client-id rebalance-20260706-001 \
+  --symbol VTI --qty 10 --side buy --type limit --limit-price 245.50
+invctl strategy run --name drift-rebalance --dry-run
+invctl strategy run --name drift-rebalance --live
+invctl backtest run --strategy drift-rebalance --from 2024-01-01 --to 2025-12-31
+invctl status orders --since 24h --json</code></pre>
 
     <p>Idempotency guard in the order manager (simplified Go pattern):</p>
     <pre><code>func (o *OrderManager) Submit(ctx context.Context, intent OrderIntent) (*Order, error) {
     existing, err := o.store.GetByClientOrderID(ctx, intent.ClientOrderID)
     if err == nil &amp;&amp; existing != nil {
-        return existing, nil <span class="cm">// safe retry — do not re-hit broker</span>
+        return existing, nil // safe retry — do not re-hit broker
     }
     if err := o.risk.Check(ctx, intent); err != nil {
         return nil, fmt.Errorf("risk rejected: %w", err)
@@ -530,7 +530,7 @@ invctl status orders <span class="cm">--since 24h --json</span></code></pre>
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

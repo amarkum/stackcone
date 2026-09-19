@@ -216,104 +216,104 @@
     <p>Each tool returns <strong>structured JSON</strong> (status, error message, log excerpt) so the model can branch without parsing HTML consoles.</p>
     <p>Minimal MCP tool registration pattern (Python):</p>
     <pre><code>@mcp.tool()
-<span class="kw">def</span> <span class="fn">airflow_trigger_dag</span>(dag_id: <span class="fn">str</span>, conf: <span class="fn">dict</span> | <span class="kw">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">dict</span>:
-    <span class="str">"""Trigger an Airflow DAG run and return run_id."""</span>
-    run_id = mwaa_client.trigger(dag_id, conf=conf <span class="kw">or</span> {})
-    <span class="kw">return</span> {<span class="str">"dag_id"</span>: dag_id, <span class="str">"run_id"</span>: run_id, <span class="str">"state"</span>: <span class="str">"queued"</span>}
+def airflow_trigger_dag(dag_id: str, conf: dict | None = None) -&gt; dict:
+    """Trigger an Airflow DAG run and return run_id."""
+    run_id = mwaa_client.trigger(dag_id, conf=conf or {})
+    return {"dag_id": dag_id, "run_id": run_id, "state": "queued"}
 
 @mcp.tool()
-<span class="kw">def</span> <span class="fn">sonar_list_issues</span>(project_key: <span class="fn">str</span>, severities: <span class="fn">list</span>[<span class="fn">str</span>] | <span class="kw">None</span> = <span class="kw">None</span>) -&gt; <span class="fn">dict</span>:
-    <span class="str">"""List open SonarQube issues for a project."""</span>
-    issues = sonar_client.issues_search(project_key, severities=severities <span class="kw">or</span> [<span class="str">"BLOCKER"</span>, <span class="str">"CRITICAL"</span>])
-    <span class="kw">return</span> {<span class="str">"count"</span>: <span class="fn">len</span>(issues), <span class="str">"issues"</span>: issues[:<span class="num">50</span>]}</code></pre>
+def sonar_list_issues(project_key: str, severities: list[str] | None = None) -&gt; dict:
+    """List open SonarQube issues for a project."""
+    issues = sonar_client.issues_search(project_key, severities=severities or ["BLOCKER", "CRITICAL"])
+    return {"count": len(issues), "issues": issues[:50]}</code></pre>
 
     <h2 id="github-ci">GitHub CI gates</h2>
     <p>CI is the objective signal for “code is acceptable.” My pipeline runs on every push and PR:</p>
-    <pre><code><span class="fn">name</span>: data-pipeline-ci
-<span class="fn">on</span>: [push, pull_request]
+    <pre><code>name: data-pipeline-ci
+on: [push, pull_request]
 
-<span class="fn">jobs</span>:
-  <span class="fn">lint</span>:
-    <span class="fn">runs-on</span>: ubuntu-latest
-    <span class="fn">steps</span>:
-      - <span class="fn">uses</span>: actions/checkout@v4
-      - <span class="fn">uses</span>: actions/setup-python@v5
-        <span class="fn">with</span>:
-          <span class="fn">python-version</span>: <span class="str">"3.11"</span>
-      - <span class="fn">run</span>: pip install flake8 pylint
-      - <span class="fn">run</span>: flake8 cdm_dags/ ads_dags/ --max-line-length=<span class="num">120</span>
-      - <span class="fn">run</span>: pylint cdm_dags/ ads_dags/ --fail-under=<span class="num">8.0</span>
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install flake8 pylint
+      - run: flake8 cdm_dags/ ads_dags/ --max-line-length=120
+      - run: pylint cdm_dags/ ads_dags/ --fail-under=8.0
 
-  <span class="fn">sonar</span>:
-    <span class="fn">runs-on</span>: ubuntu-latest
-    <span class="fn">steps</span>:
-      - <span class="fn">uses</span>: actions/checkout@v4
-        <span class="fn">with</span>:
-          <span class="fn">fetch-depth</span>: <span class="num">0</span>
-      - <span class="fn">uses</span>: SonarSource/sonarqube-scan-action@v4
-        <span class="fn">env</span>:
-          <span class="fn">SONAR_TOKEN</span>: ${{ secrets.SONAR_TOKEN }}
-          <span class="fn">SONAR_HOST_URL</span>: ${{ secrets.SONAR_HOST_URL }}</code></pre>
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}</code></pre>
     <p>The agent calls <code>github_get_check_runs</code> (or polls the Checks API via MCP) after push. <strong>Do not mark the task done</strong> until <code>conclusion == "success"</code> for lint and Sonar jobs.</p>
 
     <h2 id="agent-rules">Agent rules for Jira and Confluence</h2>
     <p>Project rules tell the agent to load ticket context before coding. In Cursor that is a <code>.mdc</code> file under <code>.cursor/rules/</code>; in Claude Code or other agents, use <code>AGENTS.md</code> or equivalent instructions — the pattern is the same:</p>
-    <pre><code><span class="kw">---</span>
-<span class="fn">description</span>: Load Jira and Confluence context for data engineering tasks
-<span class="fn">globs</span>: cdm_dags/**,ads_dags/**,**/*.py
-<span class="fn">alwaysApply</span>: <span class="kw">false</span>
-<span class="kw">---</span>
+    <pre><code>---
+description: Load Jira and Confluence context for data engineering tasks
+globs: cdm_dags/**,ads_dags/**,**/*.py
+alwaysApply: false
+---
 
-<span class="kw">#</span> Jira + Confluence context
+# Jira + Confluence context
 
 When the user gives a Jira key (e.g. DATA-1234):
 
-1. Call MCP <span class="str">`jira_get_issue`</span> with the key.
-2. If the description links a Confluence page, call <span class="str">`confluence_get_page`</span>.
+1. Call MCP `jira_get_issue` with the key.
+2. If the description links a Confluence page, call `confluence_get_page`.
 3. Summarize: acceptance criteria, affected DAGs, tables, and validation steps.
 4. Do not start edits until context is loaded.
 
-Follow <span class="str">`ai-engineer.md`</span> for the full fix-and-verify loop.</code></pre>
+Follow `ai-engineer.md` for the full fix-and-verify loop.</code></pre>
     <p>Trigger with: <em>“Implement DATA-1234”</em> — the agent fetches spec first instead of guessing from filenames.</p>
 
     <h2 id="ai-engineer">The ai-engineer.md playbook</h2>
     <p><code>ai-engineer.md</code> lives at the repo root (or alongside your agent rules). It is the <strong>retry contract</strong> — what “done” means and which MCP tools to use in order.</p>
     <pre><code># AI Engineer — data pipeline fix loop
 
-## Done criteria (<span class="kw">ALL</span> required)
+## Done criteria (ALL required)
 
-<span class="num">1.</span> GitHub CI: flake8, pylint, <span class="kw">and</span> SonarQube checks green <span class="kw">on</span> the PR branch.
-<span class="num">2.</span> Airflow: target DAG run `success` for the environment under test.
-<span class="num">3.</span> Data: validation query returns expected row counts <span class="kw">or</span> schema per Jira/Confluence.
-<span class="num">4.</span> No new Sonar BLOCKER/CRITICAL issues <span class="kw">on</span> touched files.
+1. GitHub CI: flake8, pylint, and SonarQube checks green on the PR branch.
+2. Airflow: target DAG run `success` for the environment under test.
+3. Data: validation query returns expected row counts or schema per Jira/Confluence.
+4. No new Sonar BLOCKER/CRITICAL issues on touched files.
 
-## Tool <span class="kw">order</span>
+## Tool order
 
-<span class="num">1.</span> `jira_get_issue` + `confluence_get_page` — requirements
-<span class="num">2.</span> Edit code locally
-<span class="num">3.</span> `github_get_check_runs` after push — if failed, read logs, fix, recommit
-<span class="num">4.</span> `sonar_list_issues` — fix <span class="kw">or</span> justify each BLOCKER/CRITICAL
-<span class="num">5.</span> `airflow_trigger_dag` — note `run_id`
-<span class="num">6.</span> Poll `airflow_get_run_status` until `success` <span class="kw">or</span> `failed`
-<span class="num">7.</span> <span class="kw">On</span> failure: `airflow_get_task_logs` → locate file/line → fix → back to step <span class="num">3</span>
-<span class="num">8.</span> `mongodb_find` <span class="kw">or</span> warehouse query tool — run validation <span class="kw">from</span> ticket
-<span class="num">9.</span> `jira_add_comment` <span class="kw">with</span> run_id, PR link, validation summary
+1. `jira_get_issue` + `confluence_get_page` — requirements
+2. Edit code locally
+3. `github_get_check_runs` after push — if failed, read logs, fix, recommit
+4. `sonar_list_issues` — fix or justify each BLOCKER/CRITICAL
+5. `airflow_trigger_dag` — note `run_id`
+6. Poll `airflow_get_run_status` until `success` or `failed`
+7. On failure: `airflow_get_task_logs` → locate file/line → fix → back to step 3
+8. `mongodb_find` or warehouse query tool — run validation from ticket
+9. `jira_add_comment` with run_id, PR link, validation summary
 
 ## Retry policy
 
-- NEVER stop after a single failed DAG run — read logs <span class="kw">and</span> fix root cause.
-- NEVER stop while CI <span class="kw">is</span> red — iterate until green unless blocked <span class="kw">on</span> secrets/access.
-- <span class="fn">Max</span> <span class="num">5</span> <span class="kw">full</span> loops per session; <span class="kw">then</span> summarize blockers for the human.
-- Prefer small commits per fix attempt so CI history <span class="kw">is</span> readable.</code></pre>
+- NEVER stop after a single failed DAG run — read logs and fix root cause.
+- NEVER stop while CI is red — iterate until green unless blocked on secrets/access.
+- Max 5 full loops per session; then summarize blockers for the human.
+- Prefer small commits per fix attempt so CI history is readable.</code></pre>
     <p>Reference this file from your agent rules so every session shares the same definition of finished.</p>
 
     <h2 id="connect-mcp">Connect your agent via MCP</h2>
     <p>MCP is client-agnostic — the same CodeBench server works with Cursor, Claude Desktop, Claude Code, and other MCP-capable agents. Point your client at the server:</p>
     <pre><code>{
-  <span class="str">"mcpServers"</span>: {
-    <span class="str">"codebench"</span>: {
-      <span class="str">"url"</span>: <span class="str">"http://127.0.0.1:9193/mcp"</span>,
-      <span class="str">"transport"</span>: <span class="str">"streamable-http"</span>
+  "mcpServers": {
+    "codebench": {
+      "url": "http://127.0.0.1:9193/mcp",
+      "transport": "streamable-http"
     }
   }
 }</code></pre>
@@ -397,7 +397,7 @@ Follow <span class="str">`ai-engineer.md`</span> for the full fix-and-verify loo
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

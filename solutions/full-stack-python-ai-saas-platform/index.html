@@ -300,9 +300,9 @@
     </ul>
 
     <h3>2 — FastAPI AI gateway</h3>
-    <pre><code><span class="kw">from</span> fastapi import FastAPI, Depends
-<span class="kw">from</span> fastapi.responses import StreamingResponse
-<span class="kw">from</span> pydantic import BaseModel
+    <pre><code>from fastapi import FastAPI, Depends
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -310,11 +310,11 @@ class ChatRequest(BaseModel):
     message: str
     conversation_id: str | None = None
 
-<span class="fn">@app</span>.post("/chat/stream")
+@app.post("/chat/stream")
 async def chat_stream(req: ChatRequest, tenant=Depends(verify_jwt)):
-    chunks = await retriever.search(req.message, tenant_id=tenant.id, top_k=<span class="num">8</span>)
+    chunks = await retriever.search(req.message, tenant_id=tenant.id, top_k=8)
     async def event_gen():
-        async for token <span class="kw">in</span> llm_router.stream(req.message, chunks):
+        async for token in llm_router.stream(req.message, chunks):
             yield f"data: {token}\n\n"
     return StreamingResponse(event_gen(), media_type="text/event-stream")</code></pre>
 
@@ -503,7 +503,7 @@ async def complete(task: str, messages: list, tenant_id: str):
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

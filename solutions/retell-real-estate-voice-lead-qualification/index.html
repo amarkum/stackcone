@@ -305,38 +305,38 @@
 
     <h3>3 — Orchestrator webhook service</h3>
     <p>Retell posts signed webhooks to the orchestrator. Example handler pattern for post-call CRM sync:</p>
-    <pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Request, HTTPException
-<span class="kw">import</span> hmac, hashlib, os
+    <pre><code>from fastapi import FastAPI, Request, HTTPException
+import hmac, hashlib, os
 
 app = FastAPI()
 
 REQUIRED_FIELDS = [
-    <span class="str">"property_address"</span>, <span class="str">"motivation"</span>, <span class="str">"timeline_days"</span>,
-    <span class="str">"condition"</span>, <span class="str">"price_expectation"</span>, <span class="str">"occupancy"</span>
+    "property_address", "motivation", "timeline_days",
+    "condition", "price_expectation", "occupancy"
 ]
 
-<span class="kw">def</span> <span class="fn">verify_retell_signature</span>(body: bytes, signature: <span class="fn">str</span>) -&gt; <span class="fn">bool</span>:
+def verify_retell_signature(body: bytes, signature: str) -&gt; bool:
     expected = hmac.new(
-        os.environ[<span class="str">"RETELL_WEBHOOK_SECRET"</span>].encode(),
+        os.environ["RETELL_WEBHOOK_SECRET"].encode(),
         body,
         hashlib.sha256,
     ).hexdigest()
-    <span class="kw">return</span> hmac.compare_digest(expected, signature)
+    return hmac.compare_digest(expected, signature)
 
-@app.post(<span class="str">"/webhooks/retell/call-analyzed"</span>)
-<span class="kw">async</span> <span class="kw">def</span> <span class="fn">call_analyzed</span>(request: Request):
-    body = <span class="kw">await</span> request.body()
-    <span class="kw">if</span> <span class="kw">not</span> verify_retell_signature(body, request.headers.get(<span class="str">"x-retell-signature"</span>, <span class="str">""</span>)):
-        <span class="kw">raise</span> HTTPException(status_code=<span class="num">401</span>)
-    payload = <span class="kw">await</span> request.<span class="fn">json</span>()
-    analysis = payload.get(<span class="str">"call_analysis"</span>, {})
-    lead = {k: analysis.get(k) <span class="kw">for</span> k <span class="kw">in</span> REQUIRED_FIELDS}
-    lead[<span class="str">"disposition"</span>] = analysis.get(<span class="str">"disposition"</span>, <span class="str">"nurture"</span>)
-    lead[<span class="str">"recording_url"</span>] = payload.get(<span class="str">"recording_url"</span>)
-    <span class="kw">await</span> crm_upsert(payload[<span class="str">"metadata"</span>][<span class="str">"lead_id"</span>], lead)
-    <span class="kw">if</span> lead[<span class="str">"disposition"</span>] == <span class="str">"hot"</span>:
-        <span class="kw">await</span> notify_agent_pool(lead)
-    <span class="kw">return</span> {<span class="str">"ok"</span>: <span class="kw">True</span>}</code></pre>
+@app.post("/webhooks/retell/call-analyzed")
+async def call_analyzed(request: Request):
+    body = await request.body()
+    if not verify_retell_signature(body, request.headers.get("x-retell-signature", "")):
+        raise HTTPException(status_code=401)
+    payload = await request.json()
+    analysis = payload.get("call_analysis", {})
+    lead = {k: analysis.get(k) for k in REQUIRED_FIELDS}
+    lead["disposition"] = analysis.get("disposition", "nurture")
+    lead["recording_url"] = payload.get("recording_url")
+    await crm_upsert(payload["metadata"]["lead_id"], lead)
+    if lead["disposition"] == "hot":
+        await notify_agent_pool(lead)
+    return {"ok": True}</code></pre>
 
     <h3>4 — Transfer router</h3>
     <table>
@@ -355,27 +355,27 @@ REQUIRED_FIELDS = [
 
     <h3>5 — Retell agent configuration (illustrative)</h3>
     <pre><code>{
-  <span class="str">"agent_name"</span>: <span class="str">"seller-qualification-inbound"</span>,
-  <span class="str">"voice_id"</span>: <span class="str">"11labs-Adrian"</span>,
-  <span class="str">"language"</span>: <span class="str">"en-US"</span>,
-  <span class="str">"response_engine"</span>: {
-    <span class="str">"type"</span>: <span class="str">"retell-llm"</span>,
-    <span class="str">"llm_id"</span>: <span class="str">"gpt-4o-mini-seller-qual"</span>,
-    <span class="str">"begin_message"</span>: <span class="str">"Hi, this is Alex with {{company_name}} — this call may be recorded. How can I help with your property today?"</span>
+  "agent_name": "seller-qualification-inbound",
+  "voice_id": "11labs-Adrian",
+  "language": "en-US",
+  "response_engine": {
+    "type": "retell-llm",
+    "llm_id": "gpt-4o-mini-seller-qual",
+    "begin_message": "Hi, this is Alex with {{company_name}} — this call may be recorded. How can I help with your property today?"
   },
-  <span class="str">"enable_backchannel"</span>: <span class="kw">true</span>,
-  <span class="str">"interruption_sensitivity"</span>: <span class="num">0.8</span>,
-  <span class="str">"ambient_sound"</span>: <span class="str">"call-center"</span>,
-  <span class="str">"post_call_analysis_data"</span>: [
-    { <span class="str">"name"</span>: <span class="str">"property_address"</span>, <span class="str">"type"</span>: <span class="str">"string"</span> },
-    { <span class="str">"name"</span>: <span class="str">"motivation"</span>, <span class="str">"type"</span>: <span class="str">"enum"</span>, <span class="str">"choices"</span>: [<span class="str">"relocating"</span>, <span class="str">"inheritance"</span>, <span class="str">"financial"</span>, <span class="str">"distress"</span>, <span class="str">"curious"</span>] },
-    { <span class="str">"name"</span>: <span class="str">"timeline_days"</span>, <span class="str">"type"</span>: <span class="str">"number"</span> },
-    { <span class="str">"name"</span>: <span class="str">"disposition"</span>, <span class="str">"type"</span>: <span class="str">"enum"</span>, <span class="str">"choices"</span>: [<span class="str">"hot"</span>, <span class="str">"warm"</span>, <span class="str">"nurture"</span>, <span class="str">"not_interested"</span>] }
+  "enable_backchannel": true,
+  "interruption_sensitivity": 0.8,
+  "ambient_sound": "call-center",
+  "post_call_analysis_data": [
+    { "name": "property_address", "type": "string" },
+    { "name": "motivation", "type": "enum", "choices": ["relocating", "inheritance", "financial", "distress", "curious"] },
+    { "name": "timeline_days", "type": "number" },
+    { "name": "disposition", "type": "enum", "choices": ["hot", "warm", "nurture", "not_interested"] }
   ],
-  <span class="str">"general_tools"</span>: [
-    { <span class="str">"type"</span>: <span class="str">"transfer_call"</span>, <span class="str">"name"</span>: <span class="str">"transfer_to_agent"</span>, <span class="str">"transfer_destination"</span>: <span class="str">"{{agent_ring_group}}"</span> },
-    { <span class="str">"type"</span>: <span class="str">"custom"</span>, <span class="str">"name"</span>: <span class="str">"update_lead"</span>, <span class="str">"url"</span>: <span class="str">"https://api.example.com/tools/update-lead"</span> },
-    { <span class="str">"type"</span>: <span class="str">"custom"</span>, <span class="str">"name"</span>: <span class="str">"book_appointment"</span>, <span class="str">"url"</span>: <span class="str">"https://api.example.com/tools/book-appointment"</span> }
+  "general_tools": [
+    { "type": "transfer_call", "name": "transfer_to_agent", "transfer_destination": "{{agent_ring_group}}" },
+    { "type": "custom", "name": "update_lead", "url": "https://api.example.com/tools/update-lead" },
+    { "type": "custom", "name": "book_appointment", "url": "https://api.example.com/tools/book-appointment" }
   ]
 }</code></pre>
 
@@ -519,7 +519,7 @@ REQUIRED_FIELDS = [
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>

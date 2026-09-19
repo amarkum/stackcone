@@ -320,7 +320,7 @@ select
 from {{ ref('stg_events') }}
 {% if is_incremental() %}
 where event_ts &gt; (
-  select coalesce(max(event_ts), timestamp('<span class="num">1970</span><span class="num">-01</span><span class="num">-01</span>'))
+  select coalesce(max(event_ts), timestamp('1970-01-01'))
   from {{ this }}
 )
 {% endif %}</code></pre>
@@ -525,7 +525,7 @@ where event_ts &gt; (
       <nav class="footer-nav" aria-label="Site links">
         <a href="/work/">Portfolio</a>
         <a href="/solutions/">Solutions</a>
-        <a href="/blog/">Blog</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
         <a href="/about/">About</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>
