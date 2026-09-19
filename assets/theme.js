@@ -48,8 +48,9 @@
 
   function mount() {
     if (document.querySelector(".theme-toggle")) return;
-    // Site header on normal pages, the form pane on /login/ and /signup/.
-    var host = document.querySelector(".header-inner") || document.querySelector(".auth-pane");
+    // Site header on normal pages; full auth layout on /login/ and /signup/
+    // so the control can sit at the true right edge of the viewport.
+    var host = document.querySelector(".header-inner") || document.querySelector(".auth-split") || document.querySelector(".auth-pane");
     if (!host) return;
     var btn = document.createElement("button");
     btn.type = "button";

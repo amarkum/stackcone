@@ -72,7 +72,7 @@
 
 /* ---------- login / signup: focused split-screen, no site chrome ---------- */
 .auth-page { margin: 0; background: #fff; color: #0a0a0a; font-family: "DM Sans", system-ui, sans-serif; }
-.auth-split { display: grid; grid-template-columns: minmax(22rem, 5fr) minmax(0, 6.4fr); min-height: 100vh; min-height: 100dvh; }
+.auth-split { position: relative; display: grid; grid-template-columns: minmax(22rem, 5fr) minmax(0, 6.4fr); min-height: 100vh; min-height: 100dvh; }
 
 /* black side panel */
 .auth-side {
@@ -209,18 +209,27 @@
   [data-theme="dark"] .nav-account-btn--primary:hover { background: #d4d4d4; }
 }
 
-/* login / signup */
-.auth-pane { position: relative; }
-.auth-pane > .theme-toggle {
-  position: absolute; top: 1.25rem; right: 1.25rem; z-index: 2;
+/* login / signup — theme control at the far right of the page */
+.auth-split > .theme-toggle {
+  position: absolute; top: 1.25rem; right: 1.25rem; z-index: 5;
   display: grid; place-items: center; width: 36px; height: 36px; padding: 0;
-  border: 1px solid #e5e5e5; border-radius: 999px; background: #fff; color: #0a0a0a; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1); color: #f2f2f2; cursor: pointer;
 }
-.auth-pane > .theme-toggle:hover { border-color: #a3a3a3; }
-.auth-pane > .theme-toggle .theme-icon--sun { display: none; }
-[data-theme="dark"] .auth-pane > .theme-toggle { border-color: #2a2a2a; background: #141414; color: #f2f2f2; }
-[data-theme="dark"] .auth-pane > .theme-toggle .theme-icon--sun { display: block; }
-[data-theme="dark"] .auth-pane > .theme-toggle .theme-icon--moon { display: none; }
+.auth-split > .theme-toggle:hover { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.35); }
+.auth-split > .theme-toggle .theme-icon--sun { display: none; }
+[data-theme="dark"] .auth-split > .theme-toggle .theme-icon--sun { display: block; }
+[data-theme="dark"] .auth-split > .theme-toggle .theme-icon--moon { display: none; }
+@media (max-width: 900px) {
+  .auth-split > .theme-toggle {
+    border-color: #e5e5e5; background: #fff; color: #0a0a0a;
+  }
+  .auth-split > .theme-toggle:hover { border-color: #a3a3a3; background: #fafafa; }
+  [data-theme="dark"] .auth-split > .theme-toggle {
+    border-color: #2a2a2a; background: #141414; color: #f2f2f2;
+  }
+  [data-theme="dark"] .auth-split > .theme-toggle:hover { border-color: #404040; background: #1c1c1c; }
+}
 
 [data-theme="dark"] .auth-page,
 [data-theme="dark"] .auth-pane { background: #0a0a0a; color: #f2f2f2; }
