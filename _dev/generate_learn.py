@@ -394,6 +394,22 @@ def starter_for(lang: str) -> str:
     return "// Write your solution here\n"
 
 
+
+# Snippets recorded in static_blocks.json (by content hash) were tried in the
+# real Pyodide/JS runners and failed on their own: intentional errors, files on
+# disk, reference-only lines. They get lang "pyfile"/"jsfile", which Monaco
+# highlights without a Run button.
+import hashlib
+_STATIC_HASHES = set(json.loads((Path(__file__).resolve().parent / "static_blocks.json").read_text()))
+
+
+def code_lang(lang: str, code: str) -> str:
+    marks = {"python": "pyfile", "javascript": "jsfile"}
+    if lang in marks and hashlib.sha1(code.encode()).hexdigest() in _STATIC_HASHES:
+        return marks[lang]
+    return lang
+
+
 def render_section(item: tuple, title: str | None = None) -> str:
     kind, *rest = item
     if kind == "p":
@@ -402,6 +418,7 @@ def render_section(item: tuple, title: str | None = None) -> str:
         return f"      <h2>{esc(rest[0])}</h2>"
     if kind == "code":
         lang, code = rest
+        lang = code_lang(lang, code)
         return (
             f'      <div class="learn-code-wrap" data-lang="{esc(lang)}">'
             f"<pre><code>{esc(code)}</code></pre></div>"
@@ -418,6 +435,7 @@ def render_section(item: tuple, title: str | None = None) -> str:
                 f'<pre>{esc(rest[0])}</pre></div>')
     if kind == "solution":
         lang, code = rest
+        lang = code_lang(lang, code)
         return (f'      <div class="learn-code-wrap learn-practice" data-lang="{esc(lang)}" '
                 f'data-solution="{esc(code)}">'
                 f'<pre><code>{esc(starter_for(lang))}</code></pre></div>')
@@ -566,10 +584,10 @@ def lesson_html(les: dict) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js?v=2" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
-  <script src="/assets/monaco-code.js?v=18" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>
@@ -617,10 +635,10 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js?v=2" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
-  <script src="/assets/monaco-code.js?v=18" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

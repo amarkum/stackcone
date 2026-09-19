@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=18">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -78,7 +78,7 @@ df[&quot;salary&quot;].fillna(0)
 df.ffill()                             # carry the previous value forward</code></pre></div>
       <p>Decide what missing <em>means</em> before you fill. A blank salary is unknown; filling it with 0 would badly distort averages. Sometimes keeping NaN, and letting statistics skip it, is right.</p>
       <h2>Fixing types</h2>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>df[&quot;age&quot;] = pd.to_numeric(df[&quot;age&quot;], errors=&quot;coerce&quot;)   # bad values become NaN
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>df[&quot;age&quot;] = pd.to_numeric(df[&quot;age&quot;], errors=&quot;coerce&quot;)   # bad values become NaN
 df[&quot;joined&quot;] = pd.to_datetime(df[&quot;joined&quot;], errors=&quot;coerce&quot;)
 df[&quot;country&quot;] = df.get(&quot;country&quot;, &quot;UK&quot;).astype(&quot;category&quot;)   # saves memory
 df.dtypes</code></pre></div>
@@ -88,7 +88,7 @@ df.dtypes</code></pre></div>
 df.duplicated(subset=[&quot;name&quot;], keep=&quot;first&quot;)
 df = df.drop_duplicates(subset=[&quot;name&quot;], keep=&quot;first&quot;)</code></pre></div>
       <h2>Cleaning text</h2>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>df[&quot;name&quot;] = (
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>df[&quot;name&quot;] = (
     df[&quot;name&quot;]
     .str.strip()          # remove surrounding spaces
     .str.title()          # Consistent capitalization
@@ -96,7 +96,7 @@ df = df.drop_duplicates(subset=[&quot;name&quot;], keep=&quot;first&quot;)</code
 df[&quot;email&quot;] = df[&quot;email&quot;].str.lower().str.replace(r&quot;\s+&quot;, &quot;&quot;, regex=True)
 df[df[&quot;name&quot;].str.contains(&quot;ada&quot;, case=False, na=False)]</code></pre></div>
       <h2>Renaming, replacing, outliers</h2>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>df = df.rename(columns={&quot;joined&quot;: &quot;join_date&quot;})
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>df = df.rename(columns={&quot;joined&quot;: &quot;join_date&quot;})
 df[&quot;country&quot;] = df[&quot;country&quot;].replace({&quot;United Kingdom&quot;: &quot;UK&quot;, &quot;U.K.&quot;: &quot;UK&quot;})
 
 # flag outliers with the IQR rule
@@ -146,10 +146,10 @@ print(num.fillna(num.median()))"><pre><code># Write your solution here
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js?v=2" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
-  <script src="/assets/monaco-code.js?v=18" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

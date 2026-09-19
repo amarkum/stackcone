@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=18">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -83,14 +83,14 @@ sales[&quot;pct_change&quot;] = sales[&quot;revenue&quot;].pct_change()
 sales[&quot;cumulative&quot;] = sales[&quot;revenue&quot;].cumsum()
 sales[&quot;lag_1&quot;] = sales[&quot;revenue&quot;].shift(1)                # yesterday&#x27;s value</code></pre></div>
       <h2>Parsing dates from files</h2>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>df = pd.read_csv(&quot;orders.csv&quot;, parse_dates=[&quot;created&quot;])
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>df = pd.read_csv(&quot;orders.csv&quot;, parse_dates=[&quot;created&quot;])
 df[&quot;created&quot;] = pd.to_datetime(df[&quot;created&quot;], format=&quot;%d/%m/%Y&quot;)   # be explicit for ambiguous formats
 df[&quot;weekday&quot;] = df[&quot;created&quot;].dt.day_name()
 df[&quot;days_since&quot;] = (pd.Timestamp.today() - df[&quot;created&quot;]).dt.days</code></pre></div>
       <p>Store timestamps in UTC and convert for display with <code>tz_localize</code> and <code>tz_convert</code> when time zones matter.</p>
       <h2>Quick plots</h2>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>pip install matplotlib</code></pre></div>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>import matplotlib.pyplot as plt
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>import matplotlib.pyplot as plt
 
 ax = sales[[&quot;revenue&quot;, &quot;7d_avg&quot;]].plot(figsize=(9, 4), title=&quot;Daily revenue&quot;)
 ax.set_ylabel(&quot;USD&quot;)
@@ -101,7 +101,7 @@ sales[&quot;revenue&quot;].plot.hist(bins=15)                    # distribution
 employees.groupby(&quot;country&quot;)[&quot;salary&quot;].mean().plot.bar()   # category comparison</code></pre></div>
       <ul><li>Line charts for trends over time; bar charts for comparing categories; histograms for distributions; scatter plots for relationships.</li><li>Always label axes and add a title. Start bar charts at zero.</li></ul>
       <h2>Exporting</h2>
-      <div class="learn-code-wrap" data-lang="python"><pre><code>monthly.to_csv(&quot;monthly.csv&quot;)
+      <div class="learn-code-wrap" data-lang="pyfile"><pre><code>monthly.to_csv(&quot;monthly.csv&quot;)
 monthly.to_excel(&quot;monthly.xlsx&quot;)
 df.to_parquet(&quot;orders.parquet&quot;)     # compact and fast for big data
 df.to_sql(&quot;orders&quot;, engine, if_exists=&quot;replace&quot;, index=False)</code></pre></div>
@@ -141,10 +141,10 @@ ax.figure.savefig(&quot;demo.png&quot;)"><pre><code># Write your solution here
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js?v=2" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
-  <script src="/assets/monaco-code.js?v=18" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

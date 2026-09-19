@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=18">
+  <link rel="stylesheet" href="/learn/learn.css?v=19">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -73,12 +73,12 @@
   &lt;/ul&gt;
 &lt;/body&gt;</code></pre></div>
       <h2>Selecting elements</h2>
-      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const title = document.querySelector(&quot;h1&quot;);        // first match
+      <div class="learn-code-wrap" data-lang="jsfile"><pre><code>const title = document.querySelector(&quot;h1&quot;);        // first match
 const items = document.querySelectorAll(&quot;.item&quot;);  // all matches
 const byId  = document.getElementById(&quot;save&quot;);</code></pre></div>
       <p><code>querySelector</code> takes any CSS selector, so you already know the syntax. It returns <code>null</code> if nothing matches, so check before using the result.</p>
       <h2>Changing content and style</h2>
-      <div class="learn-code-wrap" data-lang="javascript"><pre><code>title.textContent = &quot;Welcome back&quot;;
+      <div class="learn-code-wrap" data-lang="jsfile"><pre><code>title.textContent = &quot;Welcome back&quot;;
 title.classList.add(&quot;highlight&quot;);
 title.classList.toggle(&quot;hidden&quot;);
 title.setAttribute(&quot;data-state&quot;, &quot;ready&quot;);
@@ -86,7 +86,7 @@ title.style.color = &quot;tomato&quot;;</code></pre></div>
       <p>Prefer <code>textContent</code> over <code>innerHTML</code> for plain text. Setting <code>innerHTML</code> with user-supplied text opens the door to cross-site scripting (XSS) attacks. Prefer toggling CSS classes over setting inline styles.</p>
       <h2>Events</h2>
       <p>An <strong>event listener</strong> runs a function when something happens: a click, a key press, a form submit. The function receives an <code>event</code> object describing what occurred.</p>
-      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const button = document.querySelector(&quot;#save&quot;);
+      <div class="learn-code-wrap" data-lang="jsfile"><pre><code>const button = document.querySelector(&quot;#save&quot;);
 let clicks = 0;
 button.addEventListener(&quot;click&quot;, (event) =&gt; {
   clicks += 1;
@@ -99,12 +99,12 @@ form.addEventListener(&quot;submit&quot;, (e) =&gt; {
   console.log(new FormData(form).get(&quot;email&quot;));
 });</code></pre></div>
       <h2>Creating elements</h2>
-      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const li = document.createElement(&quot;li&quot;);
+      <div class="learn-code-wrap" data-lang="jsfile"><pre><code>const li = document.createElement(&quot;li&quot;);
 li.textContent = &quot;New task&quot;;
 document.querySelector(&quot;ul&quot;).append(li);</code></pre></div>
       <h2>Event delegation</h2>
       <p>Instead of attaching a listener to every list item, attach one to the parent and inspect <code>event.target</code>. It works for items added later, and uses less memory.</p>
-      <div class="learn-code-wrap" data-lang="javascript"><pre><code>document.querySelector(&quot;ul&quot;).addEventListener(&quot;click&quot;, (e) =&gt; {
+      <div class="learn-code-wrap" data-lang="jsfile"><pre><code>document.querySelector(&quot;ul&quot;).addEventListener(&quot;click&quot;, (e) =&gt; {
   const li = e.target.closest(&quot;li&quot;);
   if (li) li.classList.toggle(&quot;done&quot;);
 });</code></pre></div>
@@ -197,10 +197,10 @@ document.querySelector(&quot;#reset&quot;).addEventListener(&quot;click&quot;, (
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js?v=2" defer></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
-  <script src="/assets/monaco-code.js?v=18" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

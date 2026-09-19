@@ -61,7 +61,11 @@
     });
   }
 
-  function runPython(code, outputEl, runBtn) {
+  // `prelude` is the earlier runnable snippets of the lesson. Lessons build on
+  // each other (a DataFrame defined in one block is used in the next), so each
+  // Run replays them silently in a fresh namespace first. Errors there are ignored.
+  function runPython(code, outputEl, runBtn, prelude) {
+    prelude = prelude || [];
     if (!code || !code.trim()) {
       outputEl.textContent = '(no code to run)';
       outputEl.hidden = false;
@@ -84,7 +88,7 @@
         return ready.then(function () {
           outputEl.textContent = 'Loading packages\u2026';
           // Native Pyodide loader for pandas, numpy, matplotlib, and other supported wheels.
-          return pyodide.loadPackagesFromImports(code)
+          return pyodide.loadPackagesFromImports(prelude.concat([code]).join('\n'))
             .catch(function () { /* unknown import: let Python report it */ })
             .then(function () { return ensurePagePrelude(pyodide); });
         });
@@ -92,28 +96,37 @@
       .then(function (pyodide) {
         var stdout = '';
         var stderr = '';
-        pyodide.setStdout({
-          batched: function (s) {
-            stdout += s + '\n';
-          }
+        var capture = false;
+        pyodide.setStdout({ batched: function (t) { if (capture) stdout += t + '\n'; } });
+        pyodide.setStderr({ batched: function (t) { if (capture) stderr += t + '\n'; } });
+
+        var ns = pyodide.globals.get('dict')();
+        var seed = isPandasPage() ? 'import pandas as pd\nimport numpy as np' : '';
+        var chain = Promise.resolve();
+        if (seed) chain = chain.then(function () { return pyodide.runPythonAsync(seed, { globals: ns }); });
+        prelude.forEach(function (snippet) {
+          chain = chain.then(function () {
+            return pyodide.runPythonAsync(snippet, { globals: ns }).catch(function () {});
+          });
         });
-        pyodide.setStderr({
-          batched: function (s) {
-            stderr += s + '\n';
-          }
-        });
-        return pyodide.runPythonAsync(code).then(
-          function () {
-            var out = stdout + (stderr ? (stdout ? '\n' : '') + stderr : '');
-            outputEl.textContent = out || '(no output)';
-            outputEl.classList.remove('is-error');
-          },
-          function (err) {
-            var msg = err && err.message ? err.message : String(err);
-            outputEl.textContent = msg;
-            outputEl.classList.add('is-error');
-          }
-        );
+        return chain
+          .then(function () {
+            capture = true;
+            return pyodide.runPythonAsync(code, { globals: ns });
+          })
+          .then(
+            function () {
+              var out = stdout + (stderr ? (stdout ? '\n' : '') + stderr : '');
+              outputEl.textContent = out || '(no output)';
+              outputEl.classList.remove('is-error');
+            },
+            function (err) {
+              var msg = err && err.message ? err.message : String(err);
+              outputEl.textContent = (stdout ? stdout + '\n' : '') + msg;
+              outputEl.classList.add('is-error');
+            }
+          )
+          .finally(function () { capture = false; ns.destroy(); });
       })
       .catch(function (err) {
         outputEl.textContent = 'Failed to load Python: ' + (err.message || err);

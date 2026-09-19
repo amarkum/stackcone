@@ -10,6 +10,7 @@
     python: 'python',
     py: 'python',
     pyfile: 'python',
+    jsfile: 'javascript',
     javascript: 'javascript',
     js: 'javascript',
     typescript: 'typescript',
@@ -195,6 +196,22 @@
     return true;
   }
 
+
+  // Earlier runnable Python snippets on the page, in order. Lessons build on
+  // each other, so the Python runner replays these before the snippet you run.
+  function preludeFor(block) {
+    var out = [];
+    var wraps = document.querySelectorAll('.learn-code-wrap[data-lang="python"]');
+    for (var i = 0; i < wraps.length; i++) {
+      var w = wraps[i];
+      if (w === block.wrap) break;
+      if (w.hasAttribute('data-solution')) continue;
+      var code = w.querySelector('pre code');
+      if (code) out.push(extractCode(code));
+    }
+    return out;
+  }
+
   function runnerFor(block, lang) {
     if (!block.wrap || !document.body.classList.contains('learn-page')) return null;
     var r = RUNNERS[lang];
@@ -290,7 +307,7 @@
           output.classList.add('is-error');
           return;
         }
-        fn(editor.getValue(), output, runBtn);
+        fn(editor.getValue(), output, runBtn, lang === 'python' ? preludeFor(block) : undefined);
       });
       return;
     }
