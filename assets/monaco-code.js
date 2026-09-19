@@ -15,6 +15,7 @@
     typescript: 'typescript',
     ts: 'typescript',
     java: 'java',
+    javafile: 'java',
     bash: 'shell',
     sh: 'shell',
     shell: 'shell',
@@ -111,11 +112,14 @@
   // mark snippets that describe a file on disk, so they get no Run button.
   var RUNNERS = {
     python: { hint: 'pyfile', run: function () { return window.stackconeRunPython; } },
-    javascript: { hint: 'jsfile', run: function () { return window.stackconeRunJs; } }
+    javascript: { hint: 'jsfile', run: function () { return window.stackconeRunJs; } },
+    java: { hint: 'javafile', run: function () { return window.stackconeRunJava; } }
   };
 
   // Web frameworks and LLM libraries cannot run in the in-browser runtime.
   var PYODIDE_PAGE_BLOCK = /\/(flask|django|fastapi|langchain)(\/|-)/;
+  var JS_PAGE_BLOCK = /\/(react|express|nextjs)(\/|-)/;
+  var JAVA_PAGE_BLOCK = /\/(spring)(\/|-)/;
 
   var PY_STDLIB = {
     __future__: 1, abc: 1, argparse: 1, array: 1, ast: 1, asyncio: 1, atexit: 1,
@@ -176,11 +180,28 @@
     return true;
   }
 
+  function javaCanRunInBrowser(code) {
+    if (JAVA_PAGE_BLOCK.test(location.pathname || '')) return false;
+    if (/\bimport\s+org\.springframework/.test(code)) return false;
+    if (/\bSpringApplication\b/.test(code)) return false;
+    return true;
+  }
+
+  function jsCanRunInBrowser(code) {
+    if (JS_PAGE_BLOCK.test(location.pathname || '')) return false;
+    if (/from\s+['"](?!\.|https?:)/.test(code)) return false;
+    if (/require\s*\(\s*['"](?!\.|https?:)/.test(code)) return false;
+    if (/<[A-Za-z][\w]*[\s/>]/.test(code) && /(?:return\s*\(|=>\s*\()/.test(code)) return false;
+    return true;
+  }
+
   function runnerFor(block, lang) {
     if (!block.wrap || !document.body.classList.contains('learn-page')) return null;
     var r = RUNNERS[lang];
     if (!r || block.hint === r.hint) return null;
     if (lang === 'python' && !pythonCanRunInPyodide(block.code)) return null;
+    if (lang === 'javascript' && !jsCanRunInBrowser(block.code)) return null;
+    if (lang === 'java' && !javaCanRunInBrowser(block.code)) return null;
     return r;
   }
 
@@ -356,8 +377,13 @@
   function createEditor(monaco, host, block) {
     var mount = host.querySelector('.monaco-code-mount') || host;
     var lang = detectLang(block.code, block.hint);
-    var runnable = !!runnerFor(block, lang);
-    var practice = block.solution !== null;
+    var runner = runnerFor(block, lang);
+    var runnable = !!runner;
+    if (block.solution !== null && !runnable) {
+      block.code = block.solution;
+      block.solution = null;
+    }
+    var practice = block.solution !== null && runnable;
     var editable = runnable || practice;
     var editor = monaco.editor.create(mount, {
       value: block.code,

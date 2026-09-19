@@ -255,7 +255,7 @@ if (document.readyState === 'loading') {
 // Monaco Editor for syntax-highlighted code blocks (blog, learn, solutions)
 (function loadMonacoCode() {
   // Keep in step with the ?v= the learn pages use (_dev/generate_learn.py).
-  var MONACO_ASSET_VERSION = '16';
+  var MONACO_ASSET_VERSION = '18';
 
   function boot() {
     if (window.__stackconeMonacoBooted || window.initMonacoCodeBlocks) {
