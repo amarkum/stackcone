@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>AI System Design, Multimodal and Interview Scenarios | AI Interview Questions | stackcone Learn</title>
+  <meta name="description" content="Whiteboard designs for RAG, voice agents and coding agents; CLIP and diffusion; API vs self-host; ROI, latency vs quality and how to talk about risk with non-technical stakeholders.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/interview-questions/system-design-multimodal/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=10">
+  <link rel="stylesheet" href="/learn/learn.css?v=35">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=17">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> / AI System Design, Multimodal and Interview Scenarios</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="ai-interview-questions">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a></p>
+              <p class="learn-sidebar-tagline">110 questions with model answers</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 10 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/ai-ml-fundamentals/" data-lesson="aiq-ai-ml-fundamentals" data-minutes="16"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">AI and Machine Learning Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/llm-transformers/" data-lesson="aiq-llm-transformers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">LLMs and Transformers: How They Actually Work</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/prompt-engineering/" data-lesson="aiq-prompt-engineering" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompt Engineering and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/rag-fundamentals/" data-lesson="aiq-rag-fundamentals" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">RAG: Retrieval-Augmented Generation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/embeddings-vector-databases/" data-lesson="aiq-embeddings-vector-databases" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Embeddings, Vector Databases and Advanced RAG</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/agents-tools-mcp/" data-lesson="aiq-agents-tools-mcp" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">AI Agents, Tool Use and MCP</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/fine-tuning-alignment/" data-lesson="aiq-fine-tuning-alignment" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Fine-Tuning, LoRA and Alignment (RLHF, DPO)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/inference-serving-llmops/" data-lesson="aiq-inference-serving-llmops" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Inference, Serving Performance and LLMOps</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/evaluation-safety/" data-lesson="aiq-evaluation-safety" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Evaluation, Safety, Bias and Responsible AI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/interview-questions/system-design-multimodal/" aria-current="page" data-lesson="aiq-system-design-multimodal" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">AI System Design, Multimodal and Interview Scenarios</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> · Lesson 10 of 10</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ai/interview-questions/evaluation-safety/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              
+            </nav>
+          </div>
+          <h1>AI System Design, Multimodal and Interview Scenarios</h1>
+          <p class="learn-summary">Whiteboard designs for RAG, voice agents and coding agents; CLIP and diffusion; API vs self-host; ROI, latency vs quality and how to talk about risk with non-technical stakeholders.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>11 questions</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/interview-questions/evaluation-safety/">Lesson 9: Evaluation, Safety, Bias and Responsible AI</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Whiteboard end-to-end AI products with clear components, SLAs and failure modes</li><li>Explain multimodal models (CLIP, VLMs, diffusion, voice stacks) with production trade-offs</li><li>Answer behavioural and scenario questions with numbers, risks and decision criteria</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 10 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 10</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
+      <p>Senior AI interviews almost always include a <em>system design</em> round: design ChatGPT-like chat, enterprise RAG, a voice agent, or a coding agent. Interviewers want components, data flow, latency and cost budgets, and what breaks first.</p>
+      <p>Multimodal and scenario questions test whether you can choose architecture under constraints and communicate risk. Draw the box diagram, state assumptions, and name one metric you would watch after launch.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>How to use this lesson</p><p class="learn-callout-body">Cover the answer, say yours out loud for a minute, then compare. Each answer follows the shape interviewers reward: a one-line definition, a concrete example, then the trade-off or failure mode. The <em>Follow-up</em> line is what a good interviewer asks next.</p></aside>
+      <h2>The 11 questions in this lesson</h2>
+      <ol class="aiq-toc" start="100"><li><a href="#q100">Design a production RAG assistant over millions of documents with per-user permissions. What are the main components and failure modes?</a></li><li><a href="#q101">Design a real-time voice AI agent (phone or app). Budget the latency and compare cascaded ASR+LLM+TTS with speech-to-speech models.</a></li><li><a href="#q102">Design an AI coding agent (IDE or CLI). What matters more: the model or the harness?</a></li><li><a href="#q103">What are multimodal AI models? How do vision-language models and CLIP-style embeddings work?</a></li><li><a href="#q104">Explain diffusion models for image generation at a high level. How do you speed them up and control them?</a></li><li><a href="#q105">What is FlashAttention, and why does it matter for long-context training and serving?</a></li><li><a href="#q106">API-hosted LLM versus self-hosting an open-source model: how do you decide?</a></li><li><a href="#q107">How do you measure ROI of an AI feature, and how do you choose between latency and quality?</a></li><li><a href="#q108">What is the Turing Test, and how is modern AI evaluation different from it?</a></li><li><a href="#q109">Explain a confusion matrix and when accuracy is the wrong headline metric.</a></li><li><a href="#q110">Your PM wants to ship an AI feature with a known 15% hallucination rate on edge cases. How do you respond?</a></li></ol>
+      <h3 id="q100">100. Design a production RAG assistant over millions of documents with per-user permissions. What are the main components and failure modes?</h3>
+      <p class="aiq-level"><em>System design</em></p>
+      <p>Start with requirements: query types, freshness, languages, citation needs, p95 latency, and who may see which documents. Then draw the pipeline and call out auth early — retrieval without ACLs is a security bug.</p>
+      <div class="diagram-wrap" data-diagram-title="Enterprise RAG with permissions">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart LR
+  U[User] --&gt; GW[API gateway - auth, rate limits]
+  GW --&gt; Q[Query rewrite and classify]
+  Q --&gt; R[Retriever - hybrid search + ACL filters]
+  R --&gt; V[(Vector + keyword indexes)]
+  R --&gt; RR[Reranker]
+  RR --&gt; P[Prompt builder with citations]
+  P --&gt; L[LLM]
+  L --&gt; G[Guardrails and PII filter]
+  G --&gt; U
+  IDX[Ingestion workers] --&gt; V
+  DOC[(Object store + metadata DB)] --&gt; IDX</div>
+        </div>
+      </div>
+      <ol><li><strong>Ingestion:</strong> parse PDFs and HTML, chunk with overlap, embed, write to a vector store plus a keyword index, keep document IDs and ACL tags in metadata.</li><li><strong>AuthZ:</strong> filter by user/group at retrieval time (preferred) or post-filter; never rely on the LLM to hide secrets.</li><li><strong>Retrieve → rerank → generate:</strong> hybrid search, top-k rerank, grounded prompt with "answer only from sources" and numbered citations.</li><li><strong>Eval and ops:</strong> golden set for faithfulness and recall@k, tracing, cost dashboards, kill switch.</li></ol>
+      <p>Failure modes interviewers expect: wrong chunking, stale indexes after deletes, ACL leaks, lost-in-the-middle, citation fabrication, and cost blow-ups from huge contexts. Mitigate with hybrid search, reranking, permission tests, freshness jobs, and context budgets.</p>
+      <p><strong>Follow-up:</strong> How would you prove a user cannot retrieve a document they are not allowed to see?</p>
+      <h3 id="q101">101. Design a real-time voice AI agent (phone or app). Budget the latency and compare cascaded ASR+LLM+TTS with speech-to-speech models.</h3>
+      <p class="aiq-level"><em>System design</em></p>
+      <p>A usable voice agent needs barge-in, low time-to-first-audio, and clear turn-taking. Cascaded stacks are still the common production path.</p>
+      <div class="diagram-wrap" data-diagram-title="Cascaded real-time voice agent">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">sequenceDiagram
+  participant U as User
+  participant V as VAD
+  participant A as ASR
+  participant L as LLM
+  participant T as TTS
+  U-&gt;&gt;V: Audio frames
+  V-&gt;&gt;A: Speech segment
+  A-&gt;&gt;L: Transcript (+ partials)
+  L--&gt;&gt;T: Streaming tokens
+  T--&gt;&gt;U: Audio out
+  Note over U,T: Barge-in: stop TTS when VAD sees new speech</div>
+        </div>
+      </div>
+      <table><thead><tr><th>Stage</th><th>Typical budget</th><th>Notes</th></tr></thead><tbody><tr><td>VAD / endpointing</td><td>50–150 ms</td><td>Too eager cuts users off; too slow feels laggy</td></tr><tr><td>ASR (streaming)</td><td>200–600 ms to usable text</td><td>Partials unlock earlier LLM starts</td></tr><tr><td>LLM TTFT</td><td>200–800 ms</td><td>Small/fast model or speculative decoding helps</td></tr><tr><td>TTS time-to-first-byte</td><td>100–400 ms</td><td>Stream audio; do not wait for full sentence</td></tr><tr><td>Network / jitter buffer</td><td>50–200 ms</td><td>WebRTC or telephony stack</td></tr></tbody></table>
+      <ul><li><strong>Cascaded ASR → LLM → TTS:</strong> modular, swappable vendors, easier tool use and logging; latency stacks and error compounds (ASR typo → wrong tool).</li><li><strong>Native speech-to-speech:</strong> lower theoretical latency and better prosody; harder to debug, fewer tool ecosystems, and still maturing for enterprise control.</li></ul>
+      <p>Always design for barge-in (cancel TTS on new speech), timeouts, and a fallback to hold music or a human queue when any stage fails.</p>
+      <p><strong>Follow-up:</strong> Where would you spend engineering time first if users complain the bot talks over them?</p>
+      <h3 id="q102">102. Design an AI coding agent (IDE or CLI). What matters more: the model or the harness?</h3>
+      <p class="aiq-level"><em>System design</em></p>
+      <p>A coding agent is a model plus a <strong>harness</strong>: tools (read/write files, shell, tests, search), a loop with budgets, context packing, and safety rails. In interviews, strong candidates argue that harness quality often dominates raw model IQ for shipping patches.</p>
+      <div class="diagram-wrap" data-diagram-title="Coding agent loop">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart TB
+  G[Goal / user task] --&gt; P[Planner or ReAct step]
+  P --&gt; T{Need a tool?}
+  T -- yes --&gt; Tool[Read, edit, shell, tests, search]
+  Tool --&gt; Obs[Observation truncated into context]
+  Obs --&gt; P
+  T -- no --&gt; Done[Commit summary or ask user]
+  P --&gt; Guard[Step budget, sandbox, path allow-list]</div>
+        </div>
+      </div>
+      <ul><li><strong>Context engineering:</strong> retrieve the right files, summarise long logs, keep a working set under the window.</li><li><strong>Verification:</strong> run tests/linters before declaring success; treat failing tests as observations, not as the end.</li><li><strong>Safety:</strong> sandbox shell, deny secrets paths, require approval for destructive git or production deploys.</li><li><strong>Eval:</strong> SWE-bench-style tasks plus your private repos; measure resolve rate, cost and human edits needed.</li></ul>
+      <p>Trade-off line to say aloud: a weaker model in a great harness (good retrieval, tight tools, strong tests) often beats a frontier model with a naive chat loop.</p>
+      <p><strong>Follow-up:</strong> How would you stop the agent from looping on the same failing edit?</p>
+      <h3 id="q103">103. What are multimodal AI models? How do vision-language models and CLIP-style embeddings work?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Multimodal models handle more than text: images, audio, video, documents. A <strong>vision-language model (VLM)</strong> typically encodes images into tokens or embeddings that live in the same space the language model can attend over.</p>
+      <div class="diagram-wrap" data-diagram-title="Typical VLM path">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart LR
+  I[Image] --&gt; VE[Vision encoder]
+  VE --&gt; Proj[Projection / adapter]
+  Proj --&gt; Fuse[Fuse with text tokens]
+  T[Text prompt] --&gt; Fuse
+  Fuse --&gt; LLM[Language model decoder]
+  LLM --&gt; O[Answer or caption]</div>
+        </div>
+      </div>
+      <ul><li><strong>CLIP-style contrastive training:</strong> pull matching image–text pairs together and push mismatches apart in a shared embedding space. That enables zero-shot classification and cross-modal search (text query → images).</li><li><strong>Image embeddings:</strong> vectors for photos or page screenshots; used for duplicate detection, visual search and multimodal RAG.</li><li><strong>Document VLMs:</strong> must handle layout, tables and multi-page inputs — often with OCR + layout features or native page encoders.</li></ul>
+      <p>Failure mode: the model ignores the image and answers from prior text bias. Fix with prompts that force visual grounding, better image resolution, and eval sets that change only the image.</p>
+      <p><strong>Follow-up:</strong> How would you build search that finds products by a photo and a text constraint together?</p>
+      <h3 id="q104">104. Explain diffusion models for image generation at a high level. How do you speed them up and control them?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Diffusion models learn to reverse a gradual noising process: start from noise, iteratively denoising toward an image that matches a text condition (and optional controls).</p>
+      <ul><li><strong>Sampling steps:</strong> more steps → usually better quality, higher latency/cost. Distilled or consistency-style samplers cut steps dramatically for production.</li><li><strong>Guidance:</strong> classifier-free guidance strength trades adherence to the prompt against diversity; too high looks oversaturated or brittle.</li><li><strong>Control:</strong> ControlNet, reference images, IP-adapters, inpainting masks and structured layouts improve precision when plain text is underspecified.</li><li><strong>Ops:</strong> batch on GPUs, cache text encoders, offer size presets, moderate inputs/outputs, and watermark or label synthetic media where required.</li></ul>
+      <p>Interview soundbite: diffusion is iterative denoising guided by text embeddings; production is mostly about step count, guidance, caching and safety filters.</p>
+      <p><strong>Follow-up:</strong> A user says the model ignores 'put the logo top-right'. What knobs do you change first?</p>
+      <h3 id="q105">105. What is FlashAttention, and why does it matter for long-context training and serving?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Standard attention materialises a full <em>N×N</em> score matrix, which is heavy on GPU memory bandwidth. <strong>FlashAttention</strong> computes attention in tiles that stay in fast on-chip memory, reducing HBM reads/writes without changing the math (exact attention, not an approximation).</p>
+      <ul><li><strong>Why it matters:</strong> longer sequences become feasible; training and prefills use less memory and often run faster.</li><li><strong>What it does not fix alone:</strong> decode is still dominated by reading weights and the KV cache; you still need GQA/MQA, PagedAttention, quantisation and batching for serving.</li><li><strong>Related ideas:</strong> FlashAttention-2/3 improve parallelism; other kernels fuse ops similarly across vendors.</li></ul>
+      <p>Say clearly: FlashAttention is an IO-aware implementation of attention, not a different model architecture.</p>
+      <p><strong>Follow-up:</strong> If decode is still slow after enabling FlashAttention, what do you profile next?</p>
+      <h3 id="q106">106. API-hosted LLM versus self-hosting an open-source model: how do you decide?</h3>
+      <p class="aiq-level"><em>Scenario</em></p>
+      <p>Frame it as a decision table, not a religion.</p>
+      <table><thead><tr><th>Factor</th><th>Prefer API</th><th>Prefer self-host</th></tr></thead><tbody><tr><td>Time to market</td><td>Days; no GPU ops</td><td>Weeks+ for serving, scaling, on-call</td></tr><tr><td>Data sensitivity</td><td>If vendor zero-retention and DPA fit</td><td>Strict residency, air-gapped, or regulated workloads</td></tr><tr><td>Traffic shape</td><td>Spiky or unknown demand</td><td>Steady high volume where GPUs amortise</td></tr><tr><td>Customisation</td><td>Prompting, light fine-tunes via vendor</td><td>Heavy LoRA/domain models, custom kernels</td></tr><tr><td>Latency control</td><td>Good enough regional endpoints</td><td>Need tight p95 on your VPC</td></tr><tr><td>Cost at scale</td><td>Pay per token; fine early</td><td>Often cheaper past a high, stable QPS</td></tr></tbody></table>
+      <p>Hybrid is common: API for peak and hard tasks, self-host a smaller model for easy classification or rewrite. Revisit the choice when volume, risk or latency SLOs change.</p>
+      <p><strong>Follow-up:</strong> What numbers would you collect in a two-week spike to decide?</p>
+      <h3 id="q107">107. How do you measure ROI of an AI feature, and how do you choose between latency and quality?</h3>
+      <p class="aiq-level"><em>Scenario</em></p>
+      <p>ROI needs a baseline and a decision metric tied to money or time: containment rate in support, minutes saved per ticket, conversion lift, engineer-hours automated, fraud dollars avoided. Subtract incremental model cost, review cost and incident risk.</p>
+      <ol><li><strong>Define the counterfactual:</strong> what happens without the feature (human-only, rules, previous model).</li><li><strong>Instrument:</strong> online metric + guardrails (safety rate, escalation rate, latency, cost per success).</li><li><strong>Run an A/B or phased rollout</strong> with a pre-registered success threshold.</li><li><strong>Include failure cost:</strong> one bad medical/legal answer can wipe months of savings.</li></ol>
+      <p>Latency vs quality: fix the user-visible SLA first (for example p95 TTFT &lt; 2 s for chat). Then use cascading: small/fast model or cache for easy cases, larger model for hard ones; stream tokens so perceived latency drops even if total time is similar.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def monthly_roi(successes, value_per_success, model_cost, review_hours, review_rate):
+    benefit = successes * value_per_success
+    cost = model_cost + review_hours * review_rate
+    return benefit - cost
+
+# Example: 8,000 auto-resolved tickets/month, $4 saved each, $1.2k model spend, 40h review at $50/h
+print(monthly_roi(8000, 4.0, 1200, 40, 50))</code></pre></div>
+      <p><strong>Follow-up:</strong> Your offline quality rose 4% but p95 latency doubled. Ship, cascade, or roll back?</p>
+      <h3 id="q108">108. What is the Turing Test, and how is modern AI evaluation different from it?</h3>
+      <p class="aiq-level"><em>Warm-up</em></p>
+      <p>The <strong>Turing Test</strong> (imitation game, 1950) asks whether a machine's text behaviour is indistinguishable from a human's in conversation. It is a historical landmark, not a production acceptance test.</p>
+      <p>Modern evaluation is task-centred and quantitative: exact-match and F1 for extraction, pass@k for code, faithfulness for RAG, human or LLM-as-judge rubrics for open-ended chat, plus online A/B metrics. Passing as "human-like" can even be undesirable when you need calibrated uncertainty, citations and refusals.</p>
+      <p>Bridge line for interviews: the Turing Test asked about indistinguishability; we ship systems measured on usefulness, safety and reliability under explicit SLOs.</p>
+      <p><strong>Follow-up:</strong> Why can a model that "sounds human" still fail a customer-support eval?</p>
+      <h3 id="q109">109. Explain a confusion matrix and when accuracy is the wrong headline metric.</h3>
+      <p class="aiq-level"><em>Warm-up</em></p>
+      <p>For binary classification, the confusion matrix counts true positives (TP), false positives (FP), true negatives (TN) and false negatives (FN).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># Fraud detection toy example: 980 legit, 20 fraud
+TP, FP, FN, TN = 16, 30, 4, 950
+accuracy = (TP + TN) / (TP + FP + FN + TN)
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+f1 = 2 * precision * recall / (precision + recall)
+print("accuracy %.3f  precision %.3f  recall %.3f  F1 %.3f" % (accuracy, precision, recall, f1))
+print("accuracy looks fine while missing 20% of fraud (FN=4)")</code></pre></div>
+      <ul><li><strong>Precision:</strong> of predicted positives, how many were right — costly FP world (spam quarantine, wrong arrests).</li><li><strong>Recall:</strong> of actual positives, how many you caught — costly FN world (cancer, fraud, safety).</li><li><strong>F1:</strong> harmonic mean when you need balance; for ranking use PR-AUC or ROC-AUC.</li></ul>
+      <p>Accuracy fails on imbalanced data because predicting the majority class scores high while missing the rare class that matters.</p>
+      <p><strong>Follow-up:</strong> In medical screening, would you rather raise precision or recall first, and why?</p>
+      <h3 id="q110">110. Your PM wants to ship an AI feature with a known 15% hallucination rate on edge cases. How do you respond?</h3>
+      <p class="aiq-level"><em>Behavioral</em></p>
+      <p>Do not block with vibes — reframe as risk, users and mitigations.</p>
+      <ol><li><strong>Clarify the edge cases:</strong> how often do they appear in production traffic? 15% of 0.5% traffic differs from 15% of all sessions.</li><li><strong>Map harm:</strong> wrong tone vs wrong medical/legal/financial advice. Severity drives whether you need a hard gate.</li><li><strong>Propose controls:</strong> refuse when retrieval is weak, show citations, human review for high-risk intents, feature flag, shadow mode, kill switch.</li><li><strong>Agree a metric and date:</strong> for example "ship behind a flag to 5% users if faithfulness ≥ 95% on the golden set and zero critical red-team findings".</li><li><strong>Write it down:</strong> short risk note for stakeholders so the trade-off is explicit.</li></ol>
+      <p>Tone: partner, not blocker. Offer a safer path that still learns from real traffic.</p>
+      <p><strong>Follow-up:</strong> What would make you insist on delaying launch despite PM pressure?</p>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Pick one design (enterprise RAG, voice agent, or coding agent). In 25 minutes, draw the diagram, list three SLIs, one ACL or safety control, and the first metric you would put on a dashboard. Then practise the PM hallucination scenario out loud in two minutes.</p></aside>
+      <h2>Sources and further reading</h2>
+      <ul><li><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions" rel="noopener noreferrer" target="_blank">AI Engineering Interview Questions (Outcome School, Apache-2.0)</a></li><li><a href="https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent" rel="noopener noreferrer" target="_blank">Design a Real-Time Voice AI Agent — Outcome School</a></li><li><a href="https://outcomeschool.com/blog/multimodal-ai" rel="noopener noreferrer" target="_blank">Multimodal AI — Outcome School</a></li><li><a href="https://arxiv.org/abs/2205.14135" rel="noopener noreferrer" target="_blank">FlashAttention (Dao et al.)</a></li><li><a href="https://arxiv.org/abs/2103.00020" rel="noopener noreferrer" target="_blank">CLIP (Radford et al.)</a></li><li><a href="https://www.geeksforgeeks.org/artificial-intelligence/artificial-intelligence-interview-questions/" rel="noopener noreferrer" target="_blank">GeeksforGeeks — Artificial Intelligence Interview Questions</a></li></ul>
+          
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/interview-questions/evaluation-safety/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <button type="button" class="learn-complete" data-mark-complete="aiq-system-design-multimodal" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=15"></script>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=21" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>
