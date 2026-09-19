@@ -43,7 +43,7 @@ CONTENT["html-introduction"] = [
     ("p", "Tables are for tabular data only, never for page layout."),
     ("note", "Validate", "Paste your page into validator.w3.org to catch unclosed tags and other mistakes. Browsers forgive errors silently, which hides bugs."),
     ("exercise", "Create a page about yourself with a title, a photo (with alt text), a list of three skills and a link to a site you like."),
-    ("solution", "html", '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>About Amar</title></head>\n<body>\n  <h1>About Amar</h1>\n  <img src="me.jpg" alt="Portrait of Amar" width="160">\n  <h2>Skills</h2>\n  <ul><li>Python</li><li>SQL</li><li>React</li></ul>\n  <p>Favorite site: <a href="https://developer.mozilla.org">MDN</a></p>\n</body>\n</html>'),
+    ("solution", "html", '<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>About stackcone</title></head>\n<body>\n  <h1>About stackcone</h1>\n  <img src="me.jpg" alt="Portrait of stackcone" width="160">\n  <h2>Skills</h2>\n  <ul><li>Python</li><li>SQL</li><li>React</li></ul>\n  <p>Favorite site: <a href="https://developer.mozilla.org">MDN</a></p>\n</body>\n</html>'),
 ]
 
 CONTENT["html-forms-semantics"] = [
@@ -254,7 +254,7 @@ CONTENT["git-command-line"] = [
     ("p", "The <strong>command line</strong> (terminal, shell) lets you control your computer by typing commands. Developers use it constantly because it is fast, scriptable and the same on servers as on laptops. Git, Docker, npm and most tools are driven from it. The examples use bash/zsh (macOS, Linux, WSL, Git Bash)."),
     ("h2", "Where am I? Moving around"),
     ("code", "bash", "pwd                 # print working directory\nls                  # list files\nls -la              # long format, including hidden files\ncd projects         # go into a folder\ncd ..               # go up one level\ncd ~                # go home\ncd -                # go back to the previous folder"),
-    ("p", "Paths can be <em>absolute</em> (start with <code>/</code>, like <code>/Users/amar/code</code>) or <em>relative</em> to where you are. Press <strong>Tab</strong> to autocomplete names and the <strong>up arrow</strong> to recall previous commands."),
+    ("p", "Paths can be <em>absolute</em> (start with <code>/</code>, like <code>/Users/stackcone/code</code>) or <em>relative</em> to where you are. Press <strong>Tab</strong> to autocomplete names and the <strong>up arrow</strong> to recall previous commands."),
     ("h2", "Creating, copying, moving, deleting"),
     ("code", "bash", "mkdir notes                 # new folder\nmkdir -p a/b/c              # nested folders\ntouch todo.txt              # empty file\ncp todo.txt backup.txt      # copy\nmv backup.txt notes/        # move (also renames)\nrm todo.txt                 # delete a file\nrm -r notes                 # delete a folder and contents"),
     ("note", "No trash can", "<code>rm</code> is permanent. Double-check paths, and never run <code>rm -rf</code> on something you have not looked at. Try <code>ls</code> with the same path first."),

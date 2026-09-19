@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=4">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=29">
+  <link rel="stylesheet" href="/learn/learn.css?v=30">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -107,8 +107,8 @@
       <div class="learn-code-wrap" data-lang="bash"><pre><code>java -version
 javac -version</code></pre></div>
       <h2>Your first class</h2>
-      <p>Every Java program lives inside a class. The program starts at the <code>main</code> method, which must have exactly this signature. The file name must match the public class name, so this class goes in <code>Hello.java</code>.</p>
-      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Hello {
+      <p>Every Java program lives inside a class. The program starts at the <code>main</code> method, which must have exactly this signature. The file name must match the public class name, so this class goes in <code>Main.java</code>.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
     public static void main(String[] args) {
         System.out.println(&quot;Hello, stackcone!&quot;);
     }
@@ -116,10 +116,10 @@ javac -version</code></pre></div>
       <p>Reading the signature word by word:</p>
       <ul><li><code>public</code>: callable from anywhere, so the JVM can start it.</li><li><code>static</code>: belongs to the class itself, so no object is needed to call it.</li><li><code>void</code>: returns nothing.</li><li><code>String[] args</code>: command-line arguments, as an array of strings.</li></ul>
       <h2>Compile and run</h2>
-      <div class="learn-code-wrap" data-lang="bash"><pre><code>javac Hello.java
-java Hello</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>javac Main.java
+java Main</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, stackcone!</pre></div>
-      <p><code>javac</code> produces <code>Hello.class</code>; <code>java Hello</code> runs it (note: no <code>.class</code> extension). Since Java 11 you can also run a single file directly with <code>java Hello.java</code>.</p>
+      <p><code>javac</code> produces <code>Main.class</code>; <code>java Main</code> runs it (note: no <code>.class</code> extension). Since Java 11 you can also run a single file directly with <code>java Main.java</code>.</p>
       <h2>What every word in Hello World means</h2>
       <p>Java programs look wordy at first. Here is the smallest program, with each piece explained so none of it stays a mystery:</p>
       <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
@@ -156,13 +156,13 @@ java Main.java      # or compile and run a single file in one step</code></pre><
 2 + 3 = 5
 Pi is about 3.14</pre></div>
       <h2>Common mistakes</h2>
-      <ul><li><strong>Missing semicolon</strong>: every statement ends with <code>;</code>.</li><li><strong>Class and file name mismatch</strong>: <code>class Hello</code> in <code>hello.java</code> fails to compile.</li><li><strong>Case sensitivity</strong>: <code>system.out.println</code> is an error; it is <code>System</code> with a capital S.</li><li><strong>Braces</strong>: every <code>{</code> needs a matching <code>}</code>.</li></ul>
+      <ul><li><strong>Missing semicolon</strong>: every statement ends with <code>;</code>.</li><li><strong>Class and file name mismatch</strong>: <code>class Main</code> in <code>main.java</code> fails to compile.</li><li><strong>Case sensitivity</strong>: <code>system.out.println</code> is an error; it is <code>System</code> with a capital S.</li><li><strong>Braces</strong>: every <code>{</code> needs a matching <code>}</code>.</li></ul>
       <h2>Key takeaways</h2>
       <ul><li>Java is compiled to bytecode and runs on the JVM, so the same program runs everywhere.</li><li>Code lives in classes; execution starts at <code>public static void main</code>.</li><li>Statements end with <code>;</code>, blocks use <code>{ }</code>, and the compiler checks types before running.</li><li><code>javac</code> compiles, <code>java</code> runs; read compiler errors from the file and line number.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Modify the program to print your name on one line and your favorite language on the next, using two <code>println</code> calls.</p></aside>
-      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="public class Hello {
+      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="public class Main {
     public static void main(String[] args) {
-        System.out.println(&quot;Amar&quot;);
+        System.out.println(&quot;stackcone&quot;);
         System.out.println(&quot;Java&quot;);
     }
 }"><pre><code>// Write your solution here
@@ -203,7 +203,7 @@ Pi is about 3.14</pre></div>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
-  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/java-runner.js?v=2" defer></script>
   <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>

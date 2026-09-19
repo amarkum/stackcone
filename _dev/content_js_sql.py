@@ -44,7 +44,7 @@ CONTENT["js-hello-world"] = [
         "Ignoring the console: red errors there almost always tell you the file, line and cause.",
     ]),
     ("exercise", "Print your name, then your favorite number multiplied by 3, on two separate lines."),
-    ("solution", "javascript", 'console.log("Amar");\nconsole.log(7 * 3);'),
+    ("solution", "javascript", 'console.log("stackcone");\nconsole.log(7 * 3);'),
 ]
 
 CONTENT["js-variables-types"] = [

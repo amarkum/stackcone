@@ -24,7 +24,7 @@ PYTHON_LESSONS = [
      "sections": [
          ("p", "A variable is a name bound to a value. Python figures out the type at runtime — you do not declare <code>int x</code> like in Java."),
          ("h2", "Core types"),
-         ("code", "python", 'age = 28\nprice = 19.99\nname = "Amar"\nactive = True\nmissing = None\n\nprint(type(age), type(price), type(name))\nprint(type(active), type(missing))\nprint(isinstance(age, int))'),
+         ("code", "python", 'age = 28\nprice = 19.99\nname = "stackcone"\nactive = True\nmissing = None\n\nprint(type(age), type(price), type(name))\nprint(type(active), type(missing))\nprint(isinstance(age, int))'),
          ("h2", "Reassignment and names"),
          ("code", "python", 'x = 10\nx = "now a string"  # legal — name points at a new object\nprint(x)'),
          ("h2", "Type conversion"),
@@ -42,7 +42,7 @@ PYTHON_LESSONS = [
          ("h2", "Useful methods"),
          ("code", "python", 'raw = "  Hello, World  "\nprint(raw.strip())\nprint(raw.lower())\nparts = "a,b,c".split(",")\nprint(parts)\nprint("-".join(parts))\nprint("hello".replace("l", "L"))'),
          ("h2", "f-strings"),
-         ("code", "python", 'user = "Amar"\nscore = 95\nprint(f"{user} scored {score}/100")\nprint(f"price={9.5:.2f}")'),
+         ("code", "python", 'user = "stackcone"\nscore = 95\nprint(f"{user} scored {score}/100")\nprint(f"price={9.5:.2f}")'),
          ("exercise", "Given <code>email = \"  Dev@Example.COM \"</code>, normalize it to lowercase with no leading/trailing spaces, then print the domain part after <code>@</code>."),
      ]},
     {"slug": "python-operators", "track": "python", "title": "Operators and Expressions", "minutes": 14, "level": "Beginner",
@@ -156,7 +156,7 @@ PYTHON_LESSONS = [
      "sections": [
          ("p", "Classes bundle state and behavior. An object is one concrete instance of a class."),
          ("h2", "A simple class"),
-         ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError("amount must be positive")\n        self.balance += amount\n\n    def __repr__(self):\n        return f"BankAccount({self.owner!r}, {self.balance})"\n\nacct = BankAccount("Amar", 100)\nacct.deposit(50)\nprint(acct)\nprint(acct.balance)'),
+         ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError("amount must be positive")\n        self.balance += amount\n\n    def __repr__(self):\n        return f"BankAccount({self.owner!r}, {self.balance})"\n\nacct = BankAccount("stackcone", 100)\nacct.deposit(50)\nprint(acct)\nprint(acct.balance)'),
          ("h2", "Instance vs class data"),
          ("code", "python", 'class Counter:\n    total = 0  # shared among instances\n\n    def __init__(self):\n        Counter.total += 1\n\nCounter()\nCounter()\nprint(Counter.total)'),
          ("exercise", "Add a <code>withdraw</code> method that refuses overdrafts. Add <code>transfer(other, amount)</code> that moves money to another account."),
@@ -202,7 +202,7 @@ PYTHON_LESSONS = [
      "sections": [
          ("p", "JSON is the lingua franca of APIs. Python’s <code>json</code> module maps dict/list/str/number/bool/None."),
          ("h2", "dumps and loads"),
-         ("code", "python", 'import json\n\npayload = {"user": "amar", "roles": ["admin", "editor"], "active": True}\ntext = json.dumps(payload, indent=2)\nprint(text)\nprint(json.loads(text)["roles"])'),
+         ("code", "python", 'import json\n\npayload = {"user": "stackcone", "roles": ["admin", "editor"], "active": True}\ntext = json.dumps(payload, indent=2)\nprint(text)\nprint(json.loads(text)["roles"])'),
          ("h2", "Files"),
          ("code", "python", 'import json\nfrom pathlib import Path\n\ndata = {"theme": "dark", "font": 14}\nPath("settings.json").write_text(json.dumps(data, indent=2), encoding="utf-8")\nloaded = json.loads(Path("settings.json").read_text(encoding="utf-8"))\nprint(loaded["theme"])'),
          ("exercise", "Save a list of three todo dicts (<code>title</code>, <code>done</code>) to <code>todos.json</code>, then load and print only incomplete titles."),

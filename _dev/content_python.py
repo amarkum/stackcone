@@ -26,7 +26,7 @@ CONTENT["python-hello-world"] = [
     ]),
     ("note", "Reading errors", "When Python fails it prints a <em>traceback</em>. Read it from the bottom: the last line names the error and the line above shows which line of your file caused it."),
     ("exercise", "Change the program to print your name and the current year on two separate lines, then add a comment above each line explaining it."),
-    ("solution", "python", '# Print my name\nprint("Amar")\n# Print the year\nprint(2026)'),
+    ("solution", "python", '# Print my name\nprint("stackcone")\n# Print the year\nprint(2026)'),
 ]
 
 CONTENT["python-variables-and-types"] = [
@@ -39,7 +39,7 @@ CONTENT["python-variables-and-types"] = [
         "<code>bool</code>: <code>True</code> or <code>False</code> (note the capital letters).",
         "<code>None</code>: a special value that means \"nothing here yet\".",
     ]),
-    ("code", "python", 'age = 28\nprice = 19.99\nname = "Amar"\nactive = True\nnickname = None\n\nprint(type(age), type(price), type(name), type(active))'),
+    ("code", "python", 'age = 28\nprice = 19.99\nname = "stackcone"\nactive = True\nnickname = None\n\nprint(type(age), type(price), type(name), type(active))'),
     ("output", "<class 'int'> <class 'float'> <class 'str'> <class 'bool'>"),
     ("h2", "Naming rules and style"),
     ("p", "Names can contain letters, digits and underscores but cannot start with a digit or be a reserved word like <code>class</code> or <code>if</code>. The community style is <code>snake_case</code> for variables: <code>total_price</code>, not <code>totalPrice</code>. Pick names that say what the value is."),
@@ -149,23 +149,23 @@ CONTENT["python-oop-classes"] = [
     ("p", "A <strong>class</strong> is a blueprint that bundles data (attributes) with the functions that work on it (methods). An <strong>object</strong>, or instance, is one thing built from that blueprint. Classes help when several related values travel together, such as a bank account with an owner and a balance, and when behavior belongs with that data."),
     ("h2", "Your first class"),
     ("p", "<code>__init__</code> runs automatically when you create an instance and sets up its starting state. The first parameter of every method is <code>self</code>, which refers to the specific object the method is being called on. You do not pass it yourself; Python does."),
-    ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\nacct = BankAccount("Amar", 100)\nacct.deposit(50)\nprint(acct.owner, acct.balance)'),
-    ("output", "Amar 150"),
+    ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\nacct = BankAccount("stackcone", 100)\nacct.deposit(50)\nprint(acct.owner, acct.balance)'),
+    ("output", "stackcone 150"),
     ("h2", "Each object has its own state"),
     ("p", "Two instances of the same class do not share attribute values. Changing one account leaves the other untouched."),
     ("code", "python", 'a = BankAccount("Ann", 10)\nb = BankAccount("Bob", 500)\na.deposit(5)\nprint(a.balance, b.balance)'),
     ("output", "15 500"),
     ("h2", "Making objects printable"),
     ("p", "Special methods with double underscores customize behavior. <code>__repr__</code> controls how an object is displayed, which makes debugging much easier than the default <code>&lt;BankAccount object at 0x...&gt;</code>."),
-    ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner, self.balance = owner, balance\n\n    def __repr__(self):\n        return f"BankAccount({self.owner!r}, {self.balance})"\n\nprint(BankAccount("Amar", 100))'),
-    ("output", "BankAccount('Amar', 100)"),
+    ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner, self.balance = owner, balance\n\n    def __repr__(self):\n        return f"BankAccount({self.owner!r}, {self.balance})"\n\nprint(BankAccount("stackcone", 100))'),
+    ("output", "BankAccount('stackcone', 100)"),
     ("h2", "Inheritance in one minute"),
     ("p", "A subclass reuses and extends another class. Put the parent in parentheses and call <code>super()</code> to run its logic."),
-    ("code", "python", 'class SavingsAccount(BankAccount):\n    def add_interest(self, rate):\n        self.deposit(self.balance * rate)\n\ns = SavingsAccount("Amar", 1000)\ns.add_interest(0.05)\nprint(s.balance)'),
+    ("code", "python", 'class SavingsAccount(BankAccount):\n    def add_interest(self, rate):\n        self.deposit(self.balance * rate)\n\ns = SavingsAccount("stackcone", 1000)\ns.add_interest(0.05)\nprint(s.balance)'),
     ("output", "1050.0"),
     ("note", "When to use a class", "If you only need to group a few values, a dictionary or a <code>dataclass</code> is simpler. Reach for a full class when behavior and data belong together."),
     ("exercise", "Add a <code>withdraw(amount)</code> method that refuses to make the balance negative. Return <code>True</code> when it works and <code>False</code> when it does not."),
-    ("solution", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def withdraw(self, amount):\n        if amount > self.balance:\n            return False\n        self.balance -= amount\n        return True\n\nacct = BankAccount("Amar", 100)\nprint(acct.withdraw(150), acct.withdraw(40), acct.balance)'),
+    ("solution", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def withdraw(self, amount):\n        if amount > self.balance:\n            return False\n        self.balance -= amount\n        return True\n\nacct = BankAccount("stackcone", 100)\nprint(acct.withdraw(150), acct.withdraw(40), acct.balance)'),
 ]
 
 CONTENT["python-file-handling"] = [

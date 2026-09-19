@@ -403,7 +403,7 @@ print(p.name, p.suffix, p.parent)''') + [
         "Formatting dates by hand with string slicing instead of <code>strftime</code>.",
     ]),
     ("exercise", "Build a dict with your name and a list of two hobbies, convert it to a JSON string with 2-space indent and print it. Then compute how many days are between <code>date(2026, 1, 1)</code> and <code>date(2026, 12, 25)</code>."),
-    ("solution", "python", 'import json\nfrom datetime import date\n\nme = {"name": "Amar", "hobbies": ["chess", "running"]}\nprint(json.dumps(me, indent=2))\n\nprint((date(2026, 12, 25) - date(2026, 1, 1)).days)'),
+    ("solution", "python", 'import json\nfrom datetime import date\n\nme = {"name": "stackcone", "hobbies": ["chess", "running"]}\nprint(json.dumps(me, indent=2))\n\nprint((date(2026, 12, 25) - date(2026, 1, 1)).days)'),
 ]
 
 # ---------------------------------------------------------------------------

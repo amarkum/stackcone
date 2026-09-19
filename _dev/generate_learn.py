@@ -120,7 +120,7 @@ LESSONS = [
      "sections": [
          ("p", "A variable is a name bound to a value. Python figures out the type at runtime — you do not declare it."),
          ("h2", "Core types"),
-         ("code", "python", 'age = 28\nprice = 19.99\nname = "Amar"\nactive = True\n\nprint(type(age), type(price), type(name), type(active))'),
+         ("code", "python", 'age = 28\nprice = 19.99\nname = "stackcone"\nactive = True\n\nprint(type(age), type(price), type(name), type(active))'),
          ("h2", "Type conversion"),
          ("code", "python", 'n = int("42")\ns = str(3.14)\nprint(n + 1, s)'),
          ("exercise", "Create variables for a product title, price, and in-stock flag. Print a one-line summary string."),
@@ -160,7 +160,7 @@ LESSONS = [
      "summary": "Model data with classes, __init__, methods, and self.",
      "objectives": ["Define a class with __init__", "Add instance methods", "Understand self"],
      "sections": [
-         ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\nacct = BankAccount("Amar", 100)\nacct.deposit(50)\nprint(acct.balance)'),
+         ("code", "python", 'class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n\nacct = BankAccount("stackcone", 100)\nacct.deposit(50)\nprint(acct.balance)'),
          ("exercise", "Add a <code>withdraw</code> method that refuses negative balances."),
      ]},
     {"slug": "python-file-handling", "track": "python", "title": "File Handling", "minutes": 12, "level": "Intermediate",
@@ -182,7 +182,7 @@ LESSONS = [
      "summary": "JDK setup, your first class, and the main method.",
      "objectives": ["Understand public class and main", "Compile with javac", "Run with java"],
      "sections": [
-         ("code", "java", 'public class Hello {\n    public static void main(String[] args) {\n        System.out.println("Hello, stackcone!");\n    }\n}'),
+         ("code", "java", 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, stackcone!");\n    }\n}'),
          ("code", "bash", "javac Hello.java\njava Hello"),
          ("exercise", "Print two lines: your name and a favorite language."),
      ]},
@@ -265,7 +265,7 @@ LESSONS = [
      "objectives": ["Explain how a hash maps to a bucket", "Use dict/HashMap", "Know collision strategies exist"],
      "sections": [
          ("p", "A hash table maps keys to buckets via a hash function. Average lookup is O(1); worst case O(n) when many keys collide."),
-         ("code", "python", 'cache = {}\ncache["user:42"] = {"name": "Amar"}\nprint(cache.get("user:42"))'),
+         ("code", "python", 'cache = {}\ncache["user:42"] = {"name": "stackcone"}\nprint(cache.get("user:42"))'),
          ("exercise", "Implement a function that returns the first duplicate character in a string using a set."),
      ]},
     {"slug": "ds-graphs", "track": "data-structures", "title": "Graphs", "minutes": 16, "level": "Advanced",
@@ -589,7 +589,7 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=4">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=29">
+  <link rel="stylesheet" href="/learn/learn.css?v=30">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -698,7 +698,7 @@ def lesson_html(les: dict) -> str:
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
-  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/java-runner.js?v=2" defer></script>
   <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
@@ -720,7 +720,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=29">
+  <link rel="stylesheet" href="/learn/learn.css?v=30">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -753,7 +753,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
-  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/java-runner.js?v=2" defer></script>
   <script src="/assets/monaco-code.js?v=19" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>

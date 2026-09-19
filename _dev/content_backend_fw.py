@@ -161,7 +161,7 @@ CONTENT["fastapi-introduction"] = [
     ("p", "In the next lessons you will see that the annotations you write, such as <code>item_id: int</code>, are not decoration: FastAPI reads them to convert, validate and document input automatically."),
     ("note", "FastAPI vs Flask vs Django", "Flask is minimal and unopinionated. Django is full-stack with an ORM and admin. FastAPI focuses on APIs, with validation, docs and async support built in."),
     ("exercise", "Add a <code>GET /about</code> endpoint that returns your name and app version, then open <code>/docs</code> and call it from the browser."),
-    ("solution", "python", '@app.get("/about")\ndef about():\n    return {"author": "Amar", "version": "1.0.0"}'),
+    ("solution", "python", '@app.get("/about")\ndef about():\n    return {"author": "stackcone", "version": "1.0.0"}'),
 ]
 
 CONTENT["fastapi-parameters"] = [

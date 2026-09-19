@@ -37,7 +37,7 @@ CONTENT["react-introduction"] = [
     ("p", "Component names must start with a capital letter; that is how React tells <code>&lt;App /&gt;</code> from a plain HTML tag like <code>&lt;div&gt;</code>. <code>StrictMode</code> runs extra checks in development, including rendering twice to reveal impure code."),
     ("note", "Prerequisite", "React is JavaScript. Be comfortable with functions, arrays, <code>map</code>/<code>filter</code>, destructuring and spread from the JavaScript course first."),
     ("exercise", "Edit <code>App.jsx</code> to show your name in an <code>h1</code> and a short list of three hobbies in a <code>ul</code>."),
-    ("solution", "javascript", 'function App() {\n  return (\n    <main>\n      <h1>Amar</h1>\n      <ul>\n        <li>Coding</li>\n        <li>Cycling</li>\n        <li>Chess</li>\n      </ul>\n    </main>\n  );\n}\nexport default App;'),
+    ("solution", "javascript", 'function App() {\n  return (\n    <main>\n      <h1>stackcone</h1>\n      <ul>\n        <li>Coding</li>\n        <li>Cycling</li>\n        <li>Chess</li>\n      </ul>\n    </main>\n  );\n}\nexport default App;'),
 ]
 
 CONTENT["react-jsx-components"] = [

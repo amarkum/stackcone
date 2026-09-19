@@ -77,8 +77,8 @@
 
   function sourcePath(code, className) {
     var pkg = extractPackage(code);
-    if (pkg) return '/str/' + pkg.replace(/\./g, '/') + '/' + className + '.java';
-    return '/str/' + className + '.java';
+    if (pkg) return '/files/' + pkg.replace(/\./g, '/') + '/' + className + '.java';
+    return '/files/' + className + '.java';
   }
 
   function hasMain(code) {
@@ -152,8 +152,8 @@
     var chunks = [];
     if (el && el.textContent) chunks.push(el.textContent);
     if (display) {
-      var nested = display.querySelector('#console, pre, .cheerpjConsole');
-      if (nested && nested.textContent) chunks.push(nested.textContent);
+      var text = (display.innerText || display.textContent || '').trim();
+      if (text) chunks.push(text);
     }
     return chunks.join('\n').replace(/\s+$/, '');
   }
@@ -171,20 +171,25 @@
 
   function writeSource(prepared) {
     var path = sourcePath(prepared.source, prepared.name);
-    if (typeof window.cheerpOSAddStringFile === 'function') {
-      window.cheerpOSAddStringFile(path, prepared.source);
-    } else if (typeof window.cheerpjAddStringFile === 'function') {
-      window.cheerpjAddStringFile(path, new TextEncoder().encode(prepared.source));
-    } else {
-      throw new Error('CheerpJ filesystem is not available.');
+    var alt = path.indexOf('/files/') === 0 ? '/str/' + path.slice('/files/'.length) : path;
+    function add(target) {
+      if (typeof window.cheerpOSAddStringFile === 'function') {
+        window.cheerpOSAddStringFile(target, prepared.source);
+      } else if (typeof window.cheerpjAddStringFile === 'function') {
+        window.cheerpjAddStringFile(target, new TextEncoder().encode(prepared.source));
+      } else {
+        throw new Error('CheerpJ filesystem is not available.');
+      }
     }
+    add(path);
+    if (alt !== path) add(alt);
     return path;
   }
 
   function compile(path) {
     return window.cheerpjRunMain(
       ECJ_MAIN,
-      ECJ_PATH,
+      ECJ_PATH + ':/files/',
       '-d',
       '/files/',
       '-classpath',
@@ -193,9 +198,14 @@
       '17',
       '-target',
       '17',
+      '-proc:none',
       '-nowarn',
       path
     );
+  }
+
+  function compileFailed(exit) {
+    return typeof exit === 'number' && exit !== 0;
   }
 
   function harnessSource(fqn) {
@@ -256,7 +266,7 @@
         var path = writeSource(prepared);
         return compile(path).then(function (exit) {
           var log = readConsole();
-          if (exit !== 0) {
+          if (compileFailed(exit)) {
             outputEl.textContent = log || 'Compilation failed.';
             outputEl.classList.add('is-error');
             return;
@@ -270,24 +280,24 @@
           clearConsole();
           var harness = { name: '__SCRun', source: harnessSource(prepared.fqn) };
           writeSource(harness);
-          return compile('/str/__SCRun.java').then(function (harnessExit) {
-            if (harnessExit !== 0) {
+          return compile('/files/__SCRun.java').then(function (harnessExit) {
+            if (compileFailed(harnessExit)) {
               return window.cheerpjRunMain(prepared.fqn, '/files/').then(function (runExit) {
                 var out = readConsole();
-                outputEl.textContent = out || (runExit ? 'Program exited with code ' + runExit : '(no output)');
-                outputEl.classList.toggle('is-error', runExit !== 0);
+                outputEl.textContent = out || (compileFailed(runExit) ? 'Program exited with code ' + runExit : '(no output)');
+                outputEl.classList.toggle('is-error', compileFailed(runExit));
               });
             }
             return window.cheerpjRunMain('__SCRun', '/files/').then(function (runExit) {
               return readStdoutFile().then(function (fileOut) {
                 var out = (fileOut || '').replace(/\s+$/, '') || readConsole();
-                if (runExit !== 0 && !out) {
+                if (compileFailed(runExit) && !out) {
                   outputEl.textContent = 'Program exited with code ' + runExit;
                   outputEl.classList.add('is-error');
                   return;
                 }
                 outputEl.textContent = out || '(no output)';
-                outputEl.classList.toggle('is-error', runExit !== 0);
+                outputEl.classList.toggle('is-error', compileFailed(runExit));
               });
             });
           });
