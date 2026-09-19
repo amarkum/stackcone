@@ -48,7 +48,7 @@ GOOGLE_BUTTON = """      <button type="button" class="auth-google" data-google>
 
 SCRIPT = """
   <script type="module">
-    import { signInWithGoogle, signUp, logIn, resetPassword, friendlyError } from "/assets/learn-auth.js?v=3";
+    import { signInWithGoogle, signUp, logIn, resetPassword, friendlyError } from "/assets/learn-auth.js?v=4";
     const mode = document.body.dataset.auth;
     const google = document.querySelector("[data-google]");
     const gLabel = google.querySelector("[data-label]");
@@ -163,7 +163,7 @@ def page(key: str, p: dict) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/auth.css?v=12">
+  <link rel="stylesheet" href="/assets/auth.css?v=16">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>

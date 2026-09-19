@@ -225,12 +225,12 @@
     if (!document.querySelector('link[href*="auth.css"]')) {
       var css = document.createElement("link");
       css.rel = "stylesheet";
-      css.href = "/assets/auth.css?v=12";
+      css.href = "/assets/auth.css?v=16";
       document.head.appendChild(css);
     }
     var auth = document.createElement("script");
     auth.type = "module";
-    auth.src = "/assets/learn-auth.js?v=3";
+    auth.src = "/assets/learn-auth.js?v=4";
     document.head.appendChild(auth);
   }
 

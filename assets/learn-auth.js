@@ -97,7 +97,34 @@ function here() {
   return encodeURIComponent(location.pathname + location.search);
 }
 
+/* Log in / Log out inside the mobile menu drawer (hidden on desktop by CSS). */
+let lastUser;
+function renderNavAccount(user) {
+  lastUser = user;
+  const nav = document.getElementById("main-nav");
+  if (!nav) return;
+  if (!nav.children.length) {   // site-nav.js has not built the menu yet
+    document.addEventListener("site-nav-ready", () => renderNavAccount(lastUser), { once: true });
+    return;
+  }
+  let box = nav.querySelector(".nav-account");
+  if (!box) {
+    box = document.createElement("div");
+    box.className = "nav-account";
+    nav.appendChild(box);
+  }
+  if (!user) {
+    box.innerHTML = `<a class="nav-account-btn nav-account-btn--primary" href="/login/?next=${here()}">Log in</a>
+      <a class="nav-account-btn" href="/signup/?next=${here()}">Create account</a>`;
+    return;
+  }
+  box.innerHTML = `<p class="nav-account-who"><strong>${escapeHtml(user.displayName || "Learner")}</strong><span>${escapeHtml(user.email || "")}</span></p>
+    <button type="button" class="nav-account-btn" data-nav-logout>Log out</button>`;
+  box.querySelector("[data-nav-logout]").addEventListener("click", () => logOut());
+}
+
 function renderAccount(user) {
+  renderNavAccount(user);
   document.querySelectorAll("[data-auth-note]").forEach((el) => { el.hidden = !!user; });
   // Lesson pages reserve a [data-account] slot; other pages get one appended to the header.
   const host = document.querySelector("[data-account]") || document.querySelector(".header-inner");

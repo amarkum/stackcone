@@ -1,7 +1,13 @@
 /* Accounts: header avatar/menu (any page that loads learn-auth.js) and the /login/ + /signup/ pages. */
 
 /* ---------- header account widget ---------- */
-.sc-account { position: relative; display: flex; align-items: center; margin-left: 1rem; flex-shrink: 0; }
+.sc-account { position: relative; display: flex; align-items: center; margin-left: auto; flex-shrink: 0; order: 2; }
+/* Keep the account button at the far right, with the menu toggle after it on phones. */
+.header-inner .nav-toggle { order: 3; }
+.header-inner:has(.sc-account) { justify-content: flex-start; }
+@media (min-width: 993px) { .sc-account { margin-left: 1rem; } }
+/* On phones the account lives inside the menu drawer instead. */
+@media (max-width: 992px) { .sc-account { display: none; } }
 .sc-account-login {
   font: 600 0.875rem/1 "DM Sans", system-ui, sans-serif; color: #0f172a; text-decoration: none;
   padding: 0.55rem 0.95rem; border: 1px solid #e2e8f0; border-radius: 999px; background: #fff;
@@ -9,9 +15,10 @@
 .sc-account-login:hover { border-color: #cbd5e1; background: #f8fafc; }
 .sc-avatar {
   width: 2.5rem; height: 2.5rem; border-radius: 50%; border: 0; cursor: pointer;
-  background: #dbe7fb; color: #1d4ed8; font: 700 0.875rem/1 "DM Sans", system-ui, sans-serif;
+  background: #0a0a0a; color: #fff; font: 700 0.8rem/1 "DM Sans", system-ui, sans-serif;
 }
-.sc-avatar:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+.sc-avatar:hover { background: #262626; }
+.sc-avatar:focus-visible { outline: 2px solid #0a0a0a; outline-offset: 2px; }
 .sc-account-menu {
   position: absolute; right: 0; top: calc(100% + 0.5rem); z-index: 60; min-width: 14rem;
   background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.4rem;
@@ -26,6 +33,22 @@
   text-decoration: none; cursor: pointer;
 }
 .sc-account-menu a:hover, .sc-account-menu button:hover { background: #f1f5f9; color: #0f172a; }
+
+/* ---------- account block inside the mobile menu ---------- */
+.nav-account { display: none; }
+@media (max-width: 992px) {
+  .nav-account { display: grid; gap: 0.6rem; margin-top: auto; padding: 1.25rem 0.25rem 0; border-top: 1px solid #e5e5e5; }
+  .nav-account-who { display: grid; gap: 0.1rem; margin: 0 0 0.25rem; overflow-wrap: anywhere; }
+  .nav-account-who strong { color: #0a0a0a; font-size: 0.95rem; }
+  .nav-account-who span { color: #737373; font-size: 0.8rem; }
+  .nav-account-btn {
+    display: block; width: 100%; box-sizing: border-box; padding: 0.7rem 1rem; border: 1px solid #d4d4d4; border-radius: 10px;
+    background: #fff; color: #0a0a0a; font: 600 0.95rem/1.2 "DM Sans", system-ui, sans-serif; text-align: center; text-decoration: none; cursor: pointer;
+  }
+  .nav-account-btn:hover { background: #f5f5f5; }
+  .nav-account-btn--primary { border-color: #0a0a0a; background: #0a0a0a; color: #fff; }
+  .nav-account-btn--primary:hover { background: #262626; }
+}
 
 /* ---------- login / signup: focused split-screen, no site chrome ---------- */
 .auth-page { margin: 0; background: #fff; color: #0a0a0a; font-family: "DM Sans", system-ui, sans-serif; }
