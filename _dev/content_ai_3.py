@@ -29,7 +29,17 @@ CONTENT = {}
 CONTENT["ai-tool-calling"] = [
     ("p", "A plain LLM can only produce text. It cannot check the weather, query your database, send an email or add two large numbers reliably. <strong>Tool calling</strong> (also called <em>function calling</em>) is the trick that fixes this, and it is the foundation of every agent you will meet. The idea is delightfully simple: <strong>the model does not run anything. It asks <em>you</em> to run something, and you tell it what happened.</strong>"),
     ("h2", "The loop, in plain words"),
-    ("code", "text", "1. You tell the model what tools exist (name, description, parameters)  ->  \"you may call get_weather(city)\"\n2. User: \"Do I need an umbrella in Paris?\"\n3. Model replies NOT with text but with a tool request:  get_weather({\"city\": \"Paris\"})\n4. YOUR code runs get_weather(\"Paris\") for real  ->  {\"temp\": 14, \"rain_chance\": 80}\n5. You send that result back to the model as a 'tool' message\n6. Model writes the final answer: \"Yes, bring one. 80% chance of rain, around 14 degrees.\"\n\nThe model never touches the outside world. Your code is always in the middle."),
+    ("diagram", "The tool-calling loop", """sequenceDiagram
+  participant You as Your app
+  participant M as Model
+  participant T as get_weather
+  You->>M: Tools plus user question about Paris
+  M-->>You: tool request get_weather city Paris
+  You->>T: run get_weather
+  T-->>You: temp 14, rain 80 percent
+  You->>M: tool result
+  M-->>You: Yes, bring an umbrella
+""", "The model never touches the outside world. Your code is always in the middle."),
     ("p", "That last sentence is your security model. Because <em>your</em> code executes every tool call, <em>your</em> code decides whether to allow it."),
     ("h2", "Describing a tool: the schema"),
     ("p", "Each tool is described to the model with a name, a plain-English description (the model reads this to decide <em>when</em> to use it, so write it well), and a <strong>JSON Schema</strong> for its parameters:"),
@@ -156,7 +166,12 @@ CONTENT["ai-agentic"] = [
     ("p", "An <strong>agent</strong> is an LLM that <strong>decides its own next step, in a loop, using tools, until a goal is reached</strong>. Three ingredients: a <em>goal</em>, <em>tools</em> to act on the world, and a <em>loop</em> in which the model chooses what to do based on what it has observed so far."),
     ("p", "The key word is <em>decides</em>. In a normal program <em>you</em> write the steps. In an agent, the <strong>model controls the control flow</strong>."),
     ("h2", "The autonomy spectrum"),
-    ("code", "text", "LESS autonomy                                                          MORE autonomy\n  |                                                                          |\n  v                                                                          v\n[ single LLM call ] -> [ chain / workflow ] -> [ router ] -> [ agent ] -> [ multi-agent system ]\n\n  \"summarise this\"     fixed steps you wrote:   model picks    model loops,      several agents\n                        extract -> classify      one branch     picks tools       coordinating\n                        -> draft                                and steps"),
+    ("diagram", "The autonomy spectrum", """flowchart LR
+  A["Single LLM call"] --> B["Chain / workflow"]
+  B --> C[Router]
+  C --> D[Agent]
+  D --> E[Multi-agent system]
+""", "Less autonomy on the left, more on the right. Use the simplest thing that works."),
     ("ul", [
         "<strong>Workflow</strong>: LLM calls and tools orchestrated by <em>predefined code paths</em>. Predictable, cheap, testable.",
         "<strong>Agent</strong>: the LLM <em>directs its own process</em>. Flexible for open-ended problems where you cannot list the steps in advance, but slower, costlier and harder to control.",
@@ -164,7 +179,19 @@ CONTENT["ai-agentic"] = [
     ("note", "The most important rule of agent design", "Use the <strong>simplest thing that works</strong>. If you can solve it with one prompt, do that. If a fixed workflow works, use it. Reach for an autonomous agent only when the number and order of steps genuinely cannot be known ahead of time. Agents trade predictability for flexibility, and most business tasks want predictability."),
     ("h2", "The ReAct loop: reason, act, observe"),
     ("p", "The classic agent pattern is <strong>ReAct</strong> (Reasoning + Acting). On each turn the model writes a short <em>thought</em>, picks an <em>action</em> (a tool call), you run it, and the <em>observation</em> is fed back. It repeats until the model decides it can give a final answer."),
-    ("code", "text", "Goal: \"What is the population of Norway divided by the population of Iceland?\"\n\nThought: I need both populations.        Action: search(\"population of Norway\")\nObservation: 5.5 million\nThought: Now Iceland.                     Action: search(\"population of Iceland\")\nObservation: 0.38 million\nThought: I should divide, use the calculator.   Action: calculator(\"5.5 / 0.38\")\nObservation: 14.47\nThought: I have the answer.               Final answer: about 14.5 times larger."),
+    ("diagram", "A ReAct loop: reason, act, observe", """sequenceDiagram
+  participant Agent
+  participant Search
+  participant Calc as Calculator
+  Note over Agent: Goal: Norway population divided by Iceland
+  Agent->>Search: population of Norway
+  Search-->>Agent: 5.5 million
+  Agent->>Search: population of Iceland
+  Search-->>Agent: 0.38 million
+  Agent->>Calc: 5.5 / 0.38
+  Calc-->>Agent: 14.47
+  Note over Agent: Final answer: about 14.5 times larger
+"""),
     ("p", "Here it is as running code. The \"model\" is scripted (a lookup of what a good model would decide) so the demo is deterministic, but the <strong>loop, the tool dispatch, the observations and the stopping conditions are exactly what a real agent has</strong>:"),
 ] + py('''import re
 
@@ -254,7 +281,15 @@ run_agent("How many times bigger is Norway's population than Iceland's?")''') + 
         "<strong>Escalation</strong>: when confidence is low or the request is unusual, hand off to a person with the context attached.",
     ]),
     ("h2", "So, should you build an agent?"),
-    ("code", "text", "Can one well-written prompt do it?            -> YES: do that.\nCan you list the steps in advance?            -> YES: build a WORKFLOW (chain/router).\nSteps unknown, but there is a clear success   -> Consider an AGENT, with tools that give feedback,\ncheck and tools that give feedback?               step limits, budgets and human approval.\nStakes high, no way to verify?                -> Keep a human in the loop, or don't automate it."),
+    ("diagram", "Should you build an agent?", """flowchart TD
+  Q1{Can one well-written prompt do it?}
+  Q1 -->|Yes| P[Just prompt]
+  Q1 -->|No| Q2{Can you list the steps in advance?}
+  Q2 -->|Yes| W[Build a workflow]
+  Q2 -->|No| Q3{Clear success check and tools?}
+  Q3 -->|Yes| A[Agent with limits and approval]
+  Q3 -->|No| H[Keep a human in the loop]
+"""),
     ("exercise", "Add a step limit test: change <code>max_steps</code> to 2 and rerun. What does the agent return? Then add a <code>history</code>-based loop guard that stops if the same (action, argument) pair is requested twice in a row."),
     ("solution", "python", 'def run(decisions, max_steps=6):\n    last = None\n    for step, (action, arg) in enumerate(decisions, 1):\n        if step > max_steps:\n            return "stopped: step limit"\n        if (action, arg) == last:\n            return f"stopped: repeated {action}({arg!r})"\n        last = (action, arg)\n        print("step", step, action, arg)\n    return "done"\n\nprint(run([("search", "x"), ("search", "x"), ("final", "y")]))'),
 ]
@@ -263,7 +298,19 @@ run_agent("How many times bigger is Norway's population than Iceland's?")''') + 
 CONTENT["ai-agent-harness"] = [
     ("p", "If you have used a coding assistant or a research agent, you have used a <strong>harness</strong> without knowing the word. The model is the <em>brain</em>; the harness is <em>everything else</em>: the loop, the tools, the memory, the guardrails, the budget, the logging. Two products using the identical model can feel completely different, and it is almost always the harness. This lesson opens one up and builds a small one."),
     ("h2", "What a harness is"),
-    ("code", "text", "+------------------------ AGENT HARNESS ----------------------------+\n|                                                                   |\n|   system prompt + rules      tool registry      permissions       |\n|   |                          |                  |                 |\n|   v                          v                  v                 |\n|  [ CONTEXT BUILDER ] --> [ MODEL CALL ] --> [ TOOL EXECUTOR ]     |\n|        ^   |                    |                  |              |\n|        |   v                    v                  v              |\n|   memory / compaction     stream tokens       sandbox / hooks     |\n|        ^                                           |              |\n|        +------------- observations ----------------+              |\n|                                                                   |\n|   budgets, step limits, cancellation, logging, tracing, evals     |\n+-------------------------------------------------------------------+"),
+    ("diagram", "What an agent harness contains", """flowchart TB
+  subgraph H["Agent harness"]
+    R[System prompt and rules] --> CB[Context builder]
+    TR[Tool registry] --> MC[Model call]
+    P[Permissions] --> TE[Tool executor]
+    CB --> MC --> TE
+    MEM[Memory / compaction] --> CB
+    MC --> ST[Stream tokens]
+    TE --> SB[Sandbox / hooks]
+    TE --> OBS[Observations]
+    OBS --> MEM
+  end
+"""),
     ("h2", "The eight jobs of a harness"),
     ("ul", [
         "<strong>1. The loop.</strong> Call the model, run requested tools, feed results back, repeat until done or stopped.",
@@ -417,7 +464,12 @@ CONTENT["ai-langgraph-llamaindex"] = [
         "<strong>Edges</strong>: which node runs next. <em>Conditional edges</em> choose the next node by looking at the state (\"if the model asked for a tool go to <code>tools</code>, else finish\").",
         "<strong>Checkpointing</strong>: the state is saved after every step, so you can pause for human approval, resume after a crash, replay, or \"time travel\" to debug.",
     ]),
-    ("code", "text", "        +----------+      tool requested?       +-----------+\n START->|  agent   |------------ yes ----------->|   tools   |\n        | (LLM call)|<---------------------------- +-----------+\n        +----+-----+       results appended to state\n             | no\n             v\n           END"),
+    ("diagram", "LangGraph agent loop", """stateDiagram-v2
+  [*] --> Agent: start
+  Agent --> Tools: tool requested
+  Tools --> Agent: results appended to state
+  Agent --> [*]: no tool
+"""),
     ("p", "The best way to understand it is to build the engine. This 30-line mini-LangGraph has state, nodes, edges and a conditional router:"),
 ] + py('''class Graph:
     def __init__(self):
@@ -544,7 +596,16 @@ print(orchestrator("Explain two AI building blocks", ["rag", "sse"]))''') + [
     ("p", "Anthropic's research team reported that a lead agent coordinating parallel sub-agents outperformed a single strong agent on broad research tasks, at the cost of using many more tokens. The lesson matches the theory: parallel exploration and clean, small contexts, paid for with compute."),
     ("h2", "MCP: the Model Context Protocol"),
     ("p", "Every AI app used to reinvent tool integrations: a custom GitHub tool for this assistant, another for that one. <strong>MCP</strong> is an open protocol that standardises the connection so that <em>any</em> MCP-capable app (a coding assistant, a chat app, your own agent) can use <em>any</em> MCP server (GitHub, Slack, a database, a browser, your company API). Write the integration once; use it everywhere."),
-    ("code", "text", "+------------------+   MCP (JSON-RPC over stdio or HTTP)   +-------------------+\n|  HOST / CLIENT   | <-----------------------------------> |    MCP SERVER     |\n|  (AI app: has    |   list_tools, call_tool,               | (wraps a system:  |\n|   the LLM)       |   list_resources, read_resource,       |  files, DB, API)  |\n+------------------+   prompts                              +-------------------+"),
+    ("diagram", "MCP host and server", """flowchart LR
+  subgraph Host["Host / client"]
+    APP["AI app with the LLM"]
+  end
+  subgraph Srv["MCP server"]
+    SYS["Wraps files, DB, API"]
+  end
+  Host -->|"list_tools, call_tool, resources"| Srv
+  Srv -->|"JSON-RPC over stdio or HTTP"| Host
+"""),
     ("p", "An MCP server can offer three kinds of things: <strong>tools</strong> (actions the model can invoke), <strong>resources</strong> (data the app can read, like files or records) and <strong>prompts</strong> (reusable templates). Messages are <strong>JSON-RPC 2.0</strong>. Here is a miniature MCP-style server answering the two calls every client makes first, <em>list the tools</em> and <em>call one</em>:"),
 ] + py('''import json
 
@@ -773,7 +834,23 @@ print(f"\\nspent ${spent:.4f} instead of ${len(questions) * cost['big-model']:.4
       f"(hits: {cache.hits}, misses: {cache.misses})")''') + [
     ("h2", "The architecture of a real streaming AI product"),
     ("p", "Putting the whole course together, here is what a production RAG chatbot looks like, with every concept from this course in its place:"),
-    ("code", "text", "Browser (React)  <------ SSE stream of tokens ------+\n   |  POST /chat {question, session_id}                |\n   v                                                    |\nAPI server (FastAPI) --auth--> rate limit --> budget check\n   |                                                    |\n   |-- rewrite query (small LLM, uses chat history)     |\n   |-- hybrid retrieve: BM25 + vector DB (filters by user permissions)\n   |-- rerank top 40 -> top 5                            |\n   |-- build prompt (system rules + <context> + question)|\n   |-- semantic cache check ---- hit? return ------------+\n   |-- LLM call (streaming, temperature 0, prompt caching)\n   |         \\__ tool calls -> your code -> results -> model (agent loop, step limit)\n   |-- stream tokens out ----------------------------------+\n   |-- faithfulness check / guardrails (async)\n   v\nTracing (spans, tokens, cost, retrieved chunks)  ->  eval dashboards  ->  alerts\nBackground: ingestion pipeline (parse -> chunk -> embed -> upsert), re-embedding jobs"),
+    ("diagram", "A production RAG chatbot", """flowchart TB
+  B[Browser React] -->|POST /chat| API[API server FastAPI]
+  API --> G[Auth, rate limit, budget]
+  G --> RW[Rewrite query]
+  RW --> RET[Hybrid retrieve]
+  RET --> RR[Rerank top 40 to top 5]
+  RR --> PR[Build prompt]
+  PR --> CACHE{Semantic cache hit?}
+  CACHE -->|Yes| B
+  CACHE -->|No| LLM[LLM streaming call]
+  LLM --> TOOLS[Tool loop]
+  TOOLS --> LLM
+  LLM -->|SSE tokens| B
+  LLM --> FG[Faithfulness / guardrails]
+  API --> TRACE[Tracing]
+  TRACE --> EVAL[Eval dashboards]
+"""),
     ("h2", "Fine-tuning: when is it the right answer?"),
     ("ul", [
         "<strong>Try first:</strong> better prompts, few-shot examples, RAG, and a stronger model. These solve most problems.",

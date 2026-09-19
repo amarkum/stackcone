@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -106,22 +106,21 @@
           </section>
       <p>You now own two search tools that fail in opposite ways. <strong>Vector search</strong> understands meaning but blurs exact tokens. <strong>BM25</strong> nails exact tokens but is blind to paraphrase. The obvious question: can we use both? Yes, and the result, <strong>hybrid search</strong>, is the single biggest upgrade most RAG systems can make. Then a second stage called <strong>reranking</strong> squeezes out extra precision.</p>
       <h2>The two-stage idea: cast a wide net, then look closely</h2>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>        query
-          |
-   +------+-------+
-   |              |
- BM25          vector        &lt;- stage 1: RETRIEVAL. Cheap and fast, looks at millions.
- (top 50)      (top 50)         Goal: high RECALL (do not miss the good ones)
-   |              |
-   +------+-------+
-          | fuse (RRF)      &lt;- combine the two ranked lists
-          v
-   top 50 candidates
-          |
-      RERANKER           &lt;- stage 2: RERANKING. Slow but smart, looks at ~50.
-          |                  Goal: high PRECISION (put the best on top)
-          v
-    top 5 -&gt; the LLM prompt</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="Hybrid retrieval then rerank">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TB
+  Q[Query]
+  Q --> BM25["BM25 top 50"]
+  Q --> VEC["Vector top 50"]
+  BM25 --> FUSE["Fuse with RRF"]
+  VEC --> FUSE
+  FUSE --> CAND[Top 50 candidates]
+  CAND --> RR[Reranker]
+  RR --> TOP[Top 5 to the LLM prompt]</div>
+        </div>
+        <p class="diagram-caption">Stage 1 is cheap recall over millions of docs. Stage 2 is slower precision over about 50.</p>
+      </div>
       <h2>Fusing two rankings: Reciprocal Rank Fusion</h2>
       <p>The tricky part of hybrid search: BM25 scores (like 12.7) and cosine similarities (like 0.83) are on completely different scales, so you cannot just add them. <strong>Reciprocal Rank Fusion (RRF)</strong> sidesteps that by ignoring scores entirely and using only <em>positions</em>. A document scores <code>1 / (k + rank)</code> in each list (with <code>k</code> around 60), and the scores are summed. Documents ranked high in <em>either</em> list rise; documents high in <em>both</em> win.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import defaultdict
@@ -277,6 +276,8 @@ for k in (60, 1):
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

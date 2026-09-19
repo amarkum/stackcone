@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -108,13 +108,16 @@
       <h2>LangGraph: your agent as a state machine</h2>
       <p>A simple loop ("call model, run tools, repeat") gets awkward once you need branches, retries, parallel steps, human approval pauses and resumable runs. <strong>LangGraph</strong> models the agent as a <strong>graph</strong>:</p>
       <ul><li><strong>State</strong>: a shared object (usually a dict) that flows through the graph: messages, retrieved documents, counters, flags.</li><li><strong>Nodes</strong>: functions that read the state and return updates. A node might call an LLM, run a tool, or apply a rule.</li><li><strong>Edges</strong>: which node runs next. <em>Conditional edges</em> choose the next node by looking at the state ("if the model asked for a tool go to <code>tools</code>, else finish").</li><li><strong>Checkpointing</strong>: the state is saved after every step, so you can pause for human approval, resume after a crash, replay, or "time travel" to debug.</li></ul>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>        +----------+      tool requested?       +-----------+
- START-&gt;|  agent   |------------ yes -----------&gt;|   tools   |
-        | (LLM call)|&lt;---------------------------- +-----------+
-        +----+-----+       results appended to state
-             | no
-             v
-           END</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="LangGraph agent loop">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">stateDiagram-v2
+  [*] --> Agent: start
+  Agent --> Tools: tool requested
+  Tools --> Agent: results appended to state
+  Agent --> [*]: no tool</div>
+        </div>
+      </div>
       <p>The best way to understand it is to build the engine. This 30-line mini-LangGraph has state, nodes, edges and a conditional router:</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>class Graph:
     def __init__(self):
@@ -260,6 +263,8 @@ print(run(&quot;hi&quot;, lambda t: len(t) &gt;= 5))  # satisfiable critic"><pre
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

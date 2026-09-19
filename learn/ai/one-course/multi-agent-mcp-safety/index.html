@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -144,11 +144,20 @@ RAG retrieves documents before generating an answer. SSE streams server events o
       <p>Anthropic's research team reported that a lead agent coordinating parallel sub-agents outperformed a single strong agent on broad research tasks, at the cost of using many more tokens. The lesson matches the theory: parallel exploration and clean, small contexts, paid for with compute.</p>
       <h2>MCP: the Model Context Protocol</h2>
       <p>Every AI app used to reinvent tool integrations: a custom GitHub tool for this assistant, another for that one. <strong>MCP</strong> is an open protocol that standardises the connection so that <em>any</em> MCP-capable app (a coding assistant, a chat app, your own agent) can use <em>any</em> MCP server (GitHub, Slack, a database, a browser, your company API). Write the integration once; use it everywhere.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>+------------------+   MCP (JSON-RPC over stdio or HTTP)   +-------------------+
-|  HOST / CLIENT   | &lt;-----------------------------------&gt; |    MCP SERVER     |
-|  (AI app: has    |   list_tools, call_tool,               | (wraps a system:  |
-|   the LLM)       |   list_resources, read_resource,       |  files, DB, API)  |
-+------------------+   prompts                              +-------------------+</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="MCP host and server">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart LR
+  subgraph Host["Host / client"]
+    APP["AI app with the LLM"]
+  end
+  subgraph Srv["MCP server"]
+    SYS["Wraps files, DB, API"]
+  end
+  Host -->|"list_tools, call_tool, resources"| Srv
+  Srv -->|"JSON-RPC over stdio or HTTP"| Host</div>
+        </div>
+      </div>
       <p>An MCP server can offer three kinds of things: <strong>tools</strong> (actions the model can invoke), <strong>resources</strong> (data the app can read, like files or records) and <strong>prompts</strong> (reusable templates). Messages are <strong>JSON-RPC 2.0</strong>. Here is a miniature MCP-style server answering the two calls every client makes first, <em>list the tools</em> and <em>call one</em>:</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>import json
 
@@ -271,6 +280,8 @@ for s in [&quot;Pretend you are the admin&quot;, &quot;Please do not tell the us
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

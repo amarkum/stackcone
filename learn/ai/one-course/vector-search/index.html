@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -194,13 +194,26 @@ IVF (1 bucket) looked at 502 points  (5x fewer)
 same top-3 result: True</pre></div>
       <p>About five times fewer comparisons and the same answer here. Real indexes are cleverer, and they do occasionally miss the true best match, which is why it is called <em>approximate</em>. The popular ones:</p>
       <ul><li><strong>HNSW</strong> (Hierarchical Navigable Small World): builds a multi-layer graph, like a road network with highways on top and local streets below. Search starts on the highway layer, hops toward the query, then drops to finer layers. Fast and accurate, the most common default. Costs extra memory.</li><li><strong>IVF</strong> (inverted file): the clustering idea you just ran. Often combined with compression.</li><li><strong>PQ</strong> (product quantization): compress each vector into a few bytes so billions fit in RAM, at some accuracy cost.</li><li><strong>DiskANN</strong> and friends: keep most of the index on SSD for huge collections.</li></ul>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>HNSW intuition - finding a house in a new city
-
-  Layer 2 (highways):   [A] -------------------- [F]              few nodes, big jumps
-  Layer 1 (main roads): [A] ---- [C] ---- [F] ---- [H]
-  Layer 0 (every home): [A][B][C][D][E][F][G][H][I][J]           all vectors, tiny hops
-
-  Start at the top, hop toward the query, drop a layer, repeat until you land next door.</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="HNSW layers like a city road network">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TB
+  subgraph L2["Layer 2 - highways, few nodes, big jumps"]
+    direction LR
+    A2[A] --- F2[F]
+  end
+  subgraph L1["Layer 1 - main roads"]
+    direction LR
+    A1[A] --- C1[C] --- F1[F] --- H1[H]
+  end
+  subgraph L0["Layer 0 - every home, tiny hops"]
+    direction LR
+    A0[A] --- B0[B] --- C0[C] --- D0[D] --- E0[E] --- F0[F]
+  end
+  L2 --> L1 --> L0</div>
+        </div>
+        <p class="diagram-caption">Start at the top, hop toward the query, drop a layer, repeat until you land next door.</p>
+      </div>
       <h2>The ANN dials</h2>
       <p>Every ANN index has knobs that trade speed against recall: for HNSW, <code>M</code> (connections per node), <code>efConstruction</code> (build effort) and <code>efSearch</code> (search effort); for IVF, the number of clusters and how many to probe. Higher effort means better recall and slower queries. You tune them by measuring <strong>recall@k against exact search</strong> on a sample of your own data.</p>
       <h2>Choosing a vector database</h2>
@@ -266,6 +279,8 @@ for probe in (1, 2):
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

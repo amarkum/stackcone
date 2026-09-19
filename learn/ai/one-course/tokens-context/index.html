@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -169,10 +169,17 @@ merge 7: &#x27;w&#x27; + &#x27;i&#x27; -&gt; &#x27;wi&#x27;
       <h2>The context window: the model&#x27;s working memory</h2>
       <p>The <strong>context window</strong> is the maximum number of tokens the model can consider in one go: your instructions, the conversation so far, any documents you pasted, <em>and</em> the answer it is writing. Modern models range from 8,000 to over a million tokens.</p>
       <p>Two ideas people mix up: the context window is <strong>not long-term memory</strong>. Nothing persists between requests. A chatbot "remembering" your name is your app re-sending the whole conversation every single time. When the conversation grows past the window, something must be dropped or summarised.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>+----------------------------- context window (say 128k tokens) -----------------------------+
-| system prompt | conversation history | retrieved documents | your question | answer so far |
-+--------------------------------------------------------------------------------------------+
-   everything here is re-read by the model on every single request, and every token costs money</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="What sits in a context window">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart LR
+  subgraph WIN["Context window - say 128k tokens"]
+    direction LR
+    A[System prompt] --- B[Conversation history] --- C[Retrieved documents] --- D[Your question] --- E[Answer so far]
+  end</div>
+        </div>
+        <p class="diagram-caption">Everything here is re-read by the model on every request, and every token costs money.</p>
+      </div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Lost in the middle</p><p class="learn-callout-body">Research keeps finding that models use information at the <em>start</em> and <em>end</em> of a long prompt better than the middle. Stuffing 500 pages in does not mean it reads all 500 equally well. Put the most important instructions first and last, and retrieve only what is relevant (which is what RAG is for).</p></aside>
       <h2>What does it cost? Doing the math</h2>
       <p>APIs charge <em>per token</em>, with output tokens costing more than input tokens (often 3&ndash;5&times;), because generating is more work than reading. Prices are quoted per million tokens. Let us build a calculator (the prices are illustrative; always check the current price sheet).</p>
@@ -243,6 +250,8 @@ print(f&quot;with caching: ${with_cache:,.2f}&quot;)"><pre><code># Write your so
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

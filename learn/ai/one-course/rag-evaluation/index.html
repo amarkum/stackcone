@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -195,19 +195,21 @@ chunk size 48 words -&gt;  2 chunks, hit rate 3/4</pre></div>
       <ul><li><strong>Faithfulness / groundedness</strong>: is every claim in the answer supported by the retrieved context? (Lesson 4.) The core anti-hallucination metric.</li><li><strong>Answer relevance</strong>: does it actually address the question?</li><li><strong>Correctness</strong>: does it match the reference answer?</li><li><strong>Context precision / recall</strong>: how much of the retrieved context was needed, and did it contain everything needed?</li><li><strong>Refusal accuracy</strong>: does it decline when the answer is not in the data, and only then?</li></ul>
       <p>Scoring these by hand does not scale, so teams use <strong>LLM-as-a-judge</strong>: a strong model reads (question, context, answer, reference) and returns scores against a rubric. It is imperfect (judges have biases: they favour longer answers and their own outputs), so <em>calibrate it against human labels</em> on a sample, and use pairwise comparison ("which answer is better?") where you can. Popular tooling: Ragas, DeepEval, TruLens, LangSmith, Braintrust and Arize Phoenix.</p>
       <h2>A diagnosis flowchart for a bad answer</h2>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>Bad answer
-  |
-  +-- Was the right chunk in the index at all?
-  |      NO  -&gt; ingestion bug: parsing, missing file, stale data
-  |
-  +-- Was it in the top-k retrieved?
-  |      NO  -&gt; retrieval problem: chunking, hybrid/BM25, embedding model, filters, query rewriting
-  |
-  +-- Was it in the prompt (after reranking / trimming)?
-  |      NO  -&gt; reranking or context-budget problem
-  |
-  +-- Did the model use it correctly?
-         NO  -&gt; generation problem: prompt, temperature, conflicting chunks, model too weak</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="Diagnosing a bad RAG answer">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TD
+  B[Bad answer]
+  B --> Q1{Right chunk in the index?}
+  Q1 -->|No| I[Ingestion bug]
+  Q1 -->|Yes| Q2{In the top-k retrieved?}
+  Q2 -->|No| R[Retrieval problem]
+  Q2 -->|Yes| Q3{In the prompt after rerank?}
+  Q3 -->|No| C[Rerank or context budget]
+  Q3 -->|Yes| Q4{Model used it correctly?}
+  Q4 -->|No| G[Generation problem]</div>
+        </div>
+      </div>
       <h2>Advanced RAG patterns</h2>
       <ul><li><strong>Parent-child (small-to-big) retrieval</strong>: search over small chunks for precision, but return the surrounding parent section for context.</li><li><strong>Contextual chunks</strong>: prepend each chunk with a short LLM-written summary of where it sits in the document ("This is from the 2024 refund policy, section 3"), which improves both embedding and BM25 matching.</li><li><strong>Metadata and self-querying</strong>: let the LLM turn "invoices from March over 500 dollars" into filters.</li><li><strong>GraphRAG</strong>: extract entities and relationships into a knowledge graph, then answer "how is X connected to Y?" or summarise whole corpora, which flat chunk retrieval handles poorly.</li><li><strong>Agentic RAG</strong>: instead of one retrieval, an agent decides <em>whether</em> to search, <em>what</em> to search, inspects results, and searches again if unsatisfied. Great for multi-hop questions; costs more calls (see the agents lessons).</li><li><strong>Corrective / self-reflective RAG</strong>: grade the retrieved chunks; if poor, rewrite the query or fall back to web search; check the final answer against the sources.</li><li><strong>Semantic caching</strong>: if a new question is nearly identical (by embedding) to a previous one, return the cached answer, saving cost and latency.</li><li><strong>Multimodal RAG</strong>: index images, charts and tables (parse tables into structured text; use vision models for figures).</li></ul>
       <h2>A practical improvement order</h2>
@@ -258,6 +260,8 @@ print(&quot;MRR      =&quot;, rr(retrieved, relevant))   # only the FIRST hit (r
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

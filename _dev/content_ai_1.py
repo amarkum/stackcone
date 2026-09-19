@@ -37,7 +37,15 @@ CONTENT["ai-what-is-an-llm"] = [
     ("p", "Welcome to the whole course in one sentence: <strong>a large language model is a machine that has read a huge part of the internet and got very, very good at guessing what word comes next</strong>. Everything else you will meet, from chatbots to agents to the scary word \"hallucination\", grows out of that one idea. So we start there, and we make it concrete by building a (very tiny) one together."),
     ("h2", "Start with the map: AI, ML, deep learning, LLM"),
     ("p", "These four terms get thrown around as if they mean the same thing. They do not. Think of Russian nesting dolls: each one sits inside the previous."),
-    ("code", "text", "+--------------------------------------------------------------+\n|  AI  - any machine doing something that looks intelligent    |\n|  +--------------------------------------------------------+  |\n|  |  Machine Learning - learns patterns from data,         |  |\n|  |  instead of being given hand-written rules             |  |\n|  |  +--------------------------------------------------+  |  |\n|  |  |  Deep Learning - ML with many-layered neural nets |  |  |\n|  |  |  +--------------------------------------------+  |  |  |\n|  |  |  |  LLM - a giant neural net that predicts    |  |  |  |\n|  |  |  |  the next token of text                    |  |  |  |\n|  |  |  +--------------------------------------------+  |  |  |\n|  |  +--------------------------------------------------+  |  |\n|  +--------------------------------------------------------+  |\n+--------------------------------------------------------------+"),
+    ("diagram", "AI, machine learning, deep learning and LLMs", """flowchart TB
+  subgraph AI["AI - any machine that looks intelligent"]
+    subgraph ML["Machine learning - learns patterns from data"]
+      subgraph DL["Deep learning - many-layered neural nets"]
+        LLM["LLM - predicts the next token of text"]
+      end
+    end
+  end
+""", "Each term sits inside the one above it. An LLM is a kind of deep-learning model, which is a kind of machine learning, which is a kind of AI."),
     ("ul", [
         "<strong>AI</strong> is the broad goal. A chess engine, a spam filter and a chatbot are all \"AI\". A thermostat with an <code>if</code> statement barely counts; a self-driving car definitely does.",
         "<strong>Machine learning (ML)</strong> is the approach where you do <em>not</em> write the rules. You show the computer thousands of examples and it works out the rules itself. Show it 100,000 emails labelled spam / not spam and it learns what spam looks like.",
@@ -95,7 +103,14 @@ for seed in (1, 2, 3):
     ]),
     ("h2", "What is inside: a peek at the architecture"),
     ("p", "Modern LLMs use the <strong>transformer</strong> architecture (2017). You do not need the math to work with them, but one idea is worth knowing: <strong>attention</strong>. When the model predicts the next word, attention lets it look back at <em>every</em> earlier word and decide which ones matter most. In \"The trophy did not fit in the suitcase because <em>it</em> was too big\", attention is how the model works out that \"it\" means the trophy."),
-    ("code", "text", "input tokens ->  [embedding] -> [transformer layer x N] -> [scores for every token] -> pick one\n                                 |\n                        each layer: attention (\"look back at relevant words\")\n                                  + feed-forward network (\"think about it\")"),
+    ("diagram", "Transformer pipeline", """flowchart TB
+  T[Input tokens] --> E[Embedding]
+  E --> L["Transformer layers x N"]
+  L --> S[Scores for every token]
+  S --> P[Pick one]
+  L --- Attn["Attention: look back at relevant words"]
+  L --- FF["Feed-forward: think about it"]
+"""),
     ("h2", "What LLMs are good at, and what they are not"),
     ("p", "<strong>Strong at:</strong> writing and rewriting text, summarising, translating, explaining, brainstorming, writing and reviewing code, extracting structured data from messy text, classifying, answering questions about text you provide."),
     ("p", "<strong>Weak or risky at:</strong> exact arithmetic without a calculator, facts after its training cut-off date, obscure facts (it may invent them), counting letters, anything needing a guarantee of correctness, and knowing what it does not know."),
@@ -180,7 +195,12 @@ for word in sorted(vocab):
     ("h2", "The context window: the model's working memory"),
     ("p", "The <strong>context window</strong> is the maximum number of tokens the model can consider in one go: your instructions, the conversation so far, any documents you pasted, <em>and</em> the answer it is writing. Modern models range from 8,000 to over a million tokens."),
     ("p", "Two ideas people mix up: the context window is <strong>not long-term memory</strong>. Nothing persists between requests. A chatbot \"remembering\" your name is your app re-sending the whole conversation every single time. When the conversation grows past the window, something must be dropped or summarised."),
-    ("code", "text", "+----------------------------- context window (say 128k tokens) -----------------------------+\n| system prompt | conversation history | retrieved documents | your question | answer so far |\n+--------------------------------------------------------------------------------------------+\n   everything here is re-read by the model on every single request, and every token costs money"),
+    ("diagram", "What sits in a context window", """flowchart LR
+  subgraph WIN["Context window - say 128k tokens"]
+    direction LR
+    A[System prompt] --- B[Conversation history] --- C[Retrieved documents] --- D[Your question] --- E[Answer so far]
+  end
+""", "Everything here is re-read by the model on every request, and every token costs money."),
     ("note", "Lost in the middle", "Research keeps finding that models use information at the <em>start</em> and <em>end</em> of a long prompt better than the middle. Stuffing 500 pages in does not mean it reads all 500 equally well. Put the most important instructions first and last, and retrieve only what is relevant (which is what RAG is for)."),
     ("h2", "What does it cost? Doing the math"),
     ("p", "APIs charge <em>per token</em>, with output tokens costing more than input tokens (often 3&ndash;5&times;), because generating is more work than reading. Prices are quoted per million tokens. Let us build a calculator (the prices are illustrative; always check the current price sheet)."),
@@ -396,7 +416,13 @@ CONTENT["ai-apis-streaming"] = [
     ("p", "So far we treated the model as a magic box. Now let us open the plumbing. How does your app actually talk to an LLM? Why does ChatGPT type out its answer word by word instead of making you wait? And what are SSE and WebSockets, the two words everyone throws around when discussing real-time AI apps? This lesson answers all of it, with a working streaming parser you can run."),
     ("h2", "APIs in one minute"),
     ("p", "An <strong>API</strong> (application programming interface) is a doorway that lets one program use another program's abilities. The web mostly speaks <strong>HTTP</strong>: your program sends a <em>request</em> (a URL, a method like <code>POST</code>, headers, a body), and gets back a <em>response</em> (a status code, headers, a body). The body is usually <strong>JSON</strong>, a simple text format for structured data."),
-    ("code", "text", "Your app                                          LLM provider\n   |  POST /v1/chat/completions                       |\n   |  Authorization: Bearer sk-...                    |\n   |  Content-Type: application/json                  |\n   |  {\"model\":\"...\",\"messages\":[...]}   ------------>|\n   |                                                  |  (model thinks)\n   |<------------  200 OK  {\"choices\":[{\"message\":...}]}"),
+    ("diagram", "A chat completions request", """sequenceDiagram
+  participant App as Your app
+  participant LLM as LLM provider
+  App->>LLM: POST /v1/chat/completions
+  Note right of App: Bearer key plus messages JSON
+  LLM-->>App: 200 OK with assistant message
+"""),
     ("ul", [
         "<strong>Method</strong>: <code>GET</code> reads, <code>POST</code> sends data (LLM calls are POSTs).",
         "<strong>Status codes</strong>: <code>200</code> ok, <code>400</code> you sent something wrong, <code>401</code> bad API key, <code>429</code> rate limited (slow down!), <code>500/503</code> the server had a problem.",
@@ -474,7 +500,18 @@ for event in sse_events(network_chunks):
     ("code", "jsfile", 'const response = await fetch("/chat", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify({ prompt: "Explain SSE" }),\n});\n\nconst reader = response.body.getReader();\nconst decoder = new TextDecoder();\nlet buffer = "";\n\nwhile (true) {\n  const { value, done } = await reader.read();\n  if (done) break;\n  buffer += decoder.decode(value, { stream: true });\n\n  let idx;\n  while ((idx = buffer.indexOf("\\n\\n")) !== -1) {\n    const raw = buffer.slice(0, idx);\n    buffer = buffer.slice(idx + 2);\n    if (raw.startsWith("data: ")) {\n      const data = raw.slice(6);\n      if (data === "[DONE]") return;\n      output.textContent += JSON.parse(data).text;   // paint each token\n    }\n  }\n}'),
     ("h2", "WebSockets: the two-way street"),
     ("p", "A WebSocket starts as a normal HTTP request with an <code>Upgrade: websocket</code> header. If the server agrees, the connection stops being HTTP and becomes a persistent pipe where either side can send <em>frames</em> at any moment. There is no request/response pairing."),
-    ("code", "text", "Client                                   Server\n  | GET /chat  Upgrade: websocket  ------->|\n  |<------ 101 Switching Protocols ---------|\n  |                                         |\n  |======== persistent two-way pipe =======|\n  |--- {\"type\":\"user_message\"...} -------->|\n  |<-- {\"type\":\"token\",\"text\":\"Hel\"} ------|\n  |<-- {\"type\":\"token\",\"text\":\"lo\"} --------|\n  |--- {\"type\":\"cancel\"} ----------------->|   <- client can interrupt mid-answer\n  |<-- {\"type\":\"done\"} ---------------------|"),
+    ("diagram", "WebSocket handshake and streaming", """sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: GET /chat Upgrade websocket
+  S-->>C: 101 Switching Protocols
+  Note over C,S: Persistent two-way pipe
+  C->>S: user_message
+  S-->>C: token Hel
+  S-->>C: token lo
+  C->>S: cancel
+  S-->>C: done
+"""),
     ("h2", "SSE vs WebSocket: how to choose"),
     ("ul", [
         "<strong>Direction.</strong> SSE is one-way (server to client). WebSocket is two-way. A chatbot that streams an answer needs mostly one-way, so SSE is enough.",

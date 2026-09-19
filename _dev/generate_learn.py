@@ -488,6 +488,20 @@ def render_section(item: tuple, title: str | None = None) -> str:
         return (f'      <aside class="learn-callout learn-exercise">'
                 f'<p class="learn-callout-label">{ICON_EXERCISE}Try it yourself</p>'
                 f'<p class="learn-callout-body">{rest[0]}</p></aside>')
+    if kind == "diagram":
+        title, source, *more = rest
+        caption = more[0] if more else ""
+        src = source.strip().replace("&", "&amp;").replace("<", "&lt;")
+        cap = f'\n        <p class="diagram-caption">{esc(caption)}</p>' if caption else ""
+        return (
+            f'      <div class="diagram-wrap" data-diagram-title="{esc(title)}">\n'
+            f'        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">'
+            f'<img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>\n'
+            f'        <div class="diagram-body">\n'
+            f'          <div class="mermaid-pending">{src}</div>\n'
+            f'        </div>{cap}\n'
+            f'      </div>'
+        )
     return ""
 
 
@@ -553,6 +567,12 @@ def lesson_html(les: dict) -> str:
     if cat_id and cat_id in CATEGORIES:
         breadcrumb_track += f' / <a href="/learn/{cat_id}/">{esc(CATEGORIES[cat_id]["label"])}</a>'
     breadcrumb_track += f' / <a href="{track_url(track_slug)}">{esc(track["label"])}</a>'
+    mermaid_scripts = ""
+    if any(item[0] == "diagram" for item in les.get("sections", [])):
+        mermaid_scripts = (
+            '  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>\n'
+            '  <script src="/solutions/diagrams.js?v=14"></script>\n'
+        )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -568,7 +588,7 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -671,7 +691,7 @@ def lesson_html(les: dict) -> str:
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-  <script src="/site-nav.js" defer></script>
+{mermaid_scripts}  <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=4"></script>
@@ -699,7 +719,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>

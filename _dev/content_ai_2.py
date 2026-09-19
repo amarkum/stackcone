@@ -242,7 +242,21 @@ print("same top-3 result:", exact == approx)''') + [
         "<strong>PQ</strong> (product quantization): compress each vector into a few bytes so billions fit in RAM, at some accuracy cost.",
         "<strong>DiskANN</strong> and friends: keep most of the index on SSD for huge collections.",
     ]),
-    ("code", "text", "HNSW intuition - finding a house in a new city\n\n  Layer 2 (highways):   [A] -------------------- [F]              few nodes, big jumps\n  Layer 1 (main roads): [A] ---- [C] ---- [F] ---- [H]\n  Layer 0 (every home): [A][B][C][D][E][F][G][H][I][J]           all vectors, tiny hops\n\n  Start at the top, hop toward the query, drop a layer, repeat until you land next door."),
+    ("diagram", "HNSW layers like a city road network", """flowchart TB
+  subgraph L2["Layer 2 - highways, few nodes, big jumps"]
+    direction LR
+    A2[A] --- F2[F]
+  end
+  subgraph L1["Layer 1 - main roads"]
+    direction LR
+    A1[A] --- C1[C] --- F1[F] --- H1[H]
+  end
+  subgraph L0["Layer 0 - every home, tiny hops"]
+    direction LR
+    A0[A] --- B0[B] --- C0[C] --- D0[D] --- E0[E] --- F0[F]
+  end
+  L2 --> L1 --> L0
+""", "Start at the top, hop toward the query, drop a layer, repeat until you land next door."),
     ("h2", "The ANN dials"),
     ("p", "Every ANN index has knobs that trade speed against recall: for HNSW, <code>M</code> (connections per node), <code>efConstruction</code> (build effort) and <code>efSearch</code> (search effort); for IVF, the number of clusters and how many to probe. Higher effort means better recall and slower queries. You tune them by measuring <strong>recall@k against exact search</strong> on a sample of your own data."),
     ("h2", "Choosing a vector database"),
@@ -394,7 +408,16 @@ print(f"BM25 says it is only          {bm25_ratio:.1f}x better")''') + [
 CONTENT["ai-hybrid-rerank"] = [
     ("p", "You now own two search tools that fail in opposite ways. <strong>Vector search</strong> understands meaning but blurs exact tokens. <strong>BM25</strong> nails exact tokens but is blind to paraphrase. The obvious question: can we use both? Yes, and the result, <strong>hybrid search</strong>, is the single biggest upgrade most RAG systems can make. Then a second stage called <strong>reranking</strong> squeezes out extra precision."),
     ("h2", "The two-stage idea: cast a wide net, then look closely"),
-    ("code", "text", "        query\n          |\n   +------+-------+\n   |              |\n BM25          vector        <- stage 1: RETRIEVAL. Cheap and fast, looks at millions.\n (top 50)      (top 50)         Goal: high RECALL (do not miss the good ones)\n   |              |\n   +------+-------+\n          | fuse (RRF)      <- combine the two ranked lists\n          v\n   top 50 candidates\n          |\n      RERANKER           <- stage 2: RERANKING. Slow but smart, looks at ~50.\n          |                  Goal: high PRECISION (put the best on top)\n          v\n    top 5 -> the LLM prompt"),
+    ("diagram", "Hybrid retrieval then rerank", """flowchart TB
+  Q[Query]
+  Q --> BM25["BM25 top 50"]
+  Q --> VEC["Vector top 50"]
+  BM25 --> FUSE["Fuse with RRF"]
+  VEC --> FUSE
+  FUSE --> CAND[Top 50 candidates]
+  CAND --> RR[Reranker]
+  RR --> TOP[Top 5 to the LLM prompt]
+""", "Stage 1 is cheap recall over millions of docs. Stage 2 is slower precision over about 50."),
     ("h2", "Fusing two rankings: Reciprocal Rank Fusion"),
     ("p", "The tricky part of hybrid search: BM25 scores (like 12.7) and cosine similarities (like 0.83) are on completely different scales, so you cannot just add them. <strong>Reciprocal Rank Fusion (RRF)</strong> sidesteps that by ignoring scores entirely and using only <em>positions</em>. A document scores <code>1 / (k + rank)</code> in each list (with <code>k</code> around 60), and the scores are summed. Documents ranked high in <em>either</em> list rise; documents high in <em>both</em> win."),
 ] + py('''from collections import defaultdict
@@ -505,7 +528,23 @@ CONTENT["ai-rag"] = [
     ("p", "The analogy: an <strong>open-book exam</strong>. A closed-book student relies on memory and bluffs. An open-book student looks up the relevant page first, then answers from it. RAG turns the LLM into the open-book student."),
     ("h2", "The two pipelines"),
     ("p", "RAG has an <strong>offline</strong> half (prepare the library) and an <strong>online</strong> half (answer a question):"),
-    ("code", "text", "OFFLINE - ingestion (run when documents change)\n  documents -> parse/clean -> CHUNK -> EMBED -> store in vector DB (+ BM25 index) with metadata\n\nONLINE - answering (run for every question)\n  question\n     -> (rewrite query)\n     -> RETRIEVE (hybrid: vector + BM25)  -> top 30\n     -> RERANK                             -> top 5\n     -> build PROMPT = instructions + retrieved chunks + question\n     -> LLM generates answer (with citations)\n     -> (check faithfulness) -> answer to user"),
+    ("diagram", "RAG offline and online pipelines", """flowchart TB
+  subgraph OFF["Offline - ingestion"]
+    D[Documents] --> PC[Parse and clean]
+    PC --> CH[Chunk]
+    CH --> EM[Embed]
+    EM --> ST[(Vector DB plus BM25)]
+  end
+  subgraph ON["Online - answering"]
+    Q[Question] --> RW[Rewrite query]
+    RW --> R[Hybrid retrieve]
+    R --> RR[Rerank]
+    RR --> PR[Build prompt]
+    PR --> LLM[LLM generates answer]
+    LLM --> CK[Faithfulness check]
+    CK --> A[Answer to user]
+  end
+"""),
     ("h2", "A complete mini-RAG you can run"),
     ("p", "No API key, no server. The retriever is the hybrid one from last lesson. The \"LLM\" is replaced by a small function that extracts the best-matching sentence, so you can see the pipeline shape clearly and the prompt that <em>would</em> go to a real model."),
 ] + py('''import math, re
@@ -717,7 +756,17 @@ for size in (6, 12, 24, 48):
     ]),
     ("p", "Scoring these by hand does not scale, so teams use <strong>LLM-as-a-judge</strong>: a strong model reads (question, context, answer, reference) and returns scores against a rubric. It is imperfect (judges have biases: they favour longer answers and their own outputs), so <em>calibrate it against human labels</em> on a sample, and use pairwise comparison (\"which answer is better?\") where you can. Popular tooling: Ragas, DeepEval, TruLens, LangSmith, Braintrust and Arize Phoenix."),
     ("h2", "A diagnosis flowchart for a bad answer"),
-    ("code", "text", "Bad answer\n  |\n  +-- Was the right chunk in the index at all?\n  |      NO  -> ingestion bug: parsing, missing file, stale data\n  |\n  +-- Was it in the top-k retrieved?\n  |      NO  -> retrieval problem: chunking, hybrid/BM25, embedding model, filters, query rewriting\n  |\n  +-- Was it in the prompt (after reranking / trimming)?\n  |      NO  -> reranking or context-budget problem\n  |\n  +-- Did the model use it correctly?\n         NO  -> generation problem: prompt, temperature, conflicting chunks, model too weak"),
+    ("diagram", "Diagnosing a bad RAG answer", """flowchart TD
+  B[Bad answer]
+  B --> Q1{Right chunk in the index?}
+  Q1 -->|No| I[Ingestion bug]
+  Q1 -->|Yes| Q2{In the top-k retrieved?}
+  Q2 -->|No| R[Retrieval problem]
+  Q2 -->|Yes| Q3{In the prompt after rerank?}
+  Q3 -->|No| C[Rerank or context budget]
+  Q3 -->|Yes| Q4{Model used it correctly?}
+  Q4 -->|No| G[Generation problem]
+"""),
     ("h2", "Advanced RAG patterns"),
     ("ul", [
         "<strong>Parent-child (small-to-big) retrieval</strong>: search over small chunks for precision, but return the surrounding parent section for context.",

@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -241,23 +241,27 @@ CACHE HIT   | how do I reset my password
 spent $0.0110 instead of $0.0500 (hits: 2, misses: 3)</pre></div>
       <h2>The architecture of a real streaming AI product</h2>
       <p>Putting the whole course together, here is what a production RAG chatbot looks like, with every concept from this course in its place:</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>Browser (React)  &lt;------ SSE stream of tokens ------+
-   |  POST /chat {question, session_id}                |
-   v                                                    |
-API server (FastAPI) --auth--&gt; rate limit --&gt; budget check
-   |                                                    |
-   |-- rewrite query (small LLM, uses chat history)     |
-   |-- hybrid retrieve: BM25 + vector DB (filters by user permissions)
-   |-- rerank top 40 -&gt; top 5                            |
-   |-- build prompt (system rules + &lt;context&gt; + question)|
-   |-- semantic cache check ---- hit? return ------------+
-   |-- LLM call (streaming, temperature 0, prompt caching)
-   |         \__ tool calls -&gt; your code -&gt; results -&gt; model (agent loop, step limit)
-   |-- stream tokens out ----------------------------------+
-   |-- faithfulness check / guardrails (async)
-   v
-Tracing (spans, tokens, cost, retrieved chunks)  -&gt;  eval dashboards  -&gt;  alerts
-Background: ingestion pipeline (parse -&gt; chunk -&gt; embed -&gt; upsert), re-embedding jobs</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="A production RAG chatbot">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TB
+  B[Browser React] -->|POST /chat| API[API server FastAPI]
+  API --> G[Auth, rate limit, budget]
+  G --> RW[Rewrite query]
+  RW --> RET[Hybrid retrieve]
+  RET --> RR[Rerank top 40 to top 5]
+  RR --> PR[Build prompt]
+  PR --> CACHE{Semantic cache hit?}
+  CACHE -->|Yes| B
+  CACHE -->|No| LLM[LLM streaming call]
+  LLM --> TOOLS[Tool loop]
+  TOOLS --> LLM
+  LLM -->|SSE tokens| B
+  LLM --> FG[Faithfulness / guardrails]
+  API --> TRACE[Tracing]
+  TRACE --> EVAL[Eval dashboards]</div>
+        </div>
+      </div>
       <h2>Fine-tuning: when is it the right answer?</h2>
       <ul><li><strong>Try first:</strong> better prompts, few-shot examples, RAG, and a stronger model. These solve most problems.</li><li><strong>Fine-tune for behaviour</strong>: a consistent tone, a strict output format, domain shorthand, or squeezing a small model to do one task cheaply and fast (distillation).</li><li><strong>Do not fine-tune for facts.</strong> Knowledge that changes belongs in retrieval. Fine-tuning teaches style far better than it teaches facts, and facts go stale.</li><li><strong>Embedding fine-tuning</strong> can lift retrieval on specialised jargon when you have labelled query-document pairs.</li><li><strong>Methods</strong>: full fine-tuning is heavy; parameter-efficient methods like LoRA adapt a model cheaply.</li></ul>
       <h2>Go-live checklist</h2>
@@ -307,6 +311,8 @@ for th in (0.4, 0.7, 0.9):
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

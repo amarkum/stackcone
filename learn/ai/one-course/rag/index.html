@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -110,17 +110,27 @@
       <p>The analogy: an <strong>open-book exam</strong>. A closed-book student relies on memory and bluffs. An open-book student looks up the relevant page first, then answers from it. RAG turns the LLM into the open-book student.</p>
       <h2>The two pipelines</h2>
       <p>RAG has an <strong>offline</strong> half (prepare the library) and an <strong>online</strong> half (answer a question):</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>OFFLINE - ingestion (run when documents change)
-  documents -&gt; parse/clean -&gt; CHUNK -&gt; EMBED -&gt; store in vector DB (+ BM25 index) with metadata
-
-ONLINE - answering (run for every question)
-  question
-     -&gt; (rewrite query)
-     -&gt; RETRIEVE (hybrid: vector + BM25)  -&gt; top 30
-     -&gt; RERANK                             -&gt; top 5
-     -&gt; build PROMPT = instructions + retrieved chunks + question
-     -&gt; LLM generates answer (with citations)
-     -&gt; (check faithfulness) -&gt; answer to user</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="RAG offline and online pipelines">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TB
+  subgraph OFF["Offline - ingestion"]
+    D[Documents] --> PC[Parse and clean]
+    PC --> CH[Chunk]
+    CH --> EM[Embed]
+    EM --> ST[(Vector DB plus BM25)]
+  end
+  subgraph ON["Online - answering"]
+    Q[Question] --> RW[Rewrite query]
+    RW --> R[Hybrid retrieve]
+    R --> RR[Rerank]
+    RR --> PR[Build prompt]
+    PR --> LLM[LLM generates answer]
+    LLM --> CK[Faithfulness check]
+    CK --> A[Answer to user]
+  end</div>
+        </div>
+      </div>
       <h2>A complete mini-RAG you can run</h2>
       <p>No API key, no server. The retriever is the hybrid one from last lesson. The "LLM" is replaced by a small function that extracts the best-matching sentence, so you can see the pipeline shape clearly and the prompt that <em>would</em> go to a real model.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>import math, re
@@ -295,6 +305,8 @@ for q in [&quot;When are invoices sent&quot;, &quot;When do I get billed&quot;, 
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

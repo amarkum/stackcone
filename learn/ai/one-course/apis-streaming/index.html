@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -107,13 +107,17 @@
       <p>So far we treated the model as a magic box. Now let us open the plumbing. How does your app actually talk to an LLM? Why does ChatGPT type out its answer word by word instead of making you wait? And what are SSE and WebSockets, the two words everyone throws around when discussing real-time AI apps? This lesson answers all of it, with a working streaming parser you can run.</p>
       <h2>APIs in one minute</h2>
       <p>An <strong>API</strong> (application programming interface) is a doorway that lets one program use another program's abilities. The web mostly speaks <strong>HTTP</strong>: your program sends a <em>request</em> (a URL, a method like <code>POST</code>, headers, a body), and gets back a <em>response</em> (a status code, headers, a body). The body is usually <strong>JSON</strong>, a simple text format for structured data.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>Your app                                          LLM provider
-   |  POST /v1/chat/completions                       |
-   |  Authorization: Bearer sk-...                    |
-   |  Content-Type: application/json                  |
-   |  {&quot;model&quot;:&quot;...&quot;,&quot;messages&quot;:[...]}   ------------&gt;|
-   |                                                  |  (model thinks)
-   |&lt;------------  200 OK  {&quot;choices&quot;:[{&quot;message&quot;:...}]}</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="A chat completions request">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">sequenceDiagram
+  participant App as Your app
+  participant LLM as LLM provider
+  App->>LLM: POST /v1/chat/completions
+  Note right of App: Bearer key plus messages JSON
+  LLM-->>App: 200 OK with assistant message</div>
+        </div>
+      </div>
       <ul><li><strong>Method</strong>: <code>GET</code> reads, <code>POST</code> sends data (LLM calls are POSTs).</li><li><strong>Status codes</strong>: <code>200</code> ok, <code>400</code> you sent something wrong, <code>401</code> bad API key, <code>429</code> rate limited (slow down!), <code>500/503</code> the server had a problem.</li><li><strong>API key</strong>: a secret that identifies you and bills you. Keep it on your <em>server</em>. Never put it in browser JavaScript or commit it to Git.</li><li><strong>Rate limits</strong>: providers cap requests and tokens per minute. Handle <code>429</code> with retry and <em>exponential backoff</em> (wait 1s, 2s, 4s, with a little randomness).</li></ul>
       <p>A minimal call with Python's <code>requests</code> library looks like this (shown for reading; it needs a real key so it has no Run button):</p>
       <div class="learn-code-wrap" data-lang="pyfile"><pre><code>import os, requests
@@ -241,16 +245,22 @@ while (true) {
 }</code></pre></div>
       <h2>WebSockets: the two-way street</h2>
       <p>A WebSocket starts as a normal HTTP request with an <code>Upgrade: websocket</code> header. If the server agrees, the connection stops being HTTP and becomes a persistent pipe where either side can send <em>frames</em> at any moment. There is no request/response pairing.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>Client                                   Server
-  | GET /chat  Upgrade: websocket  -------&gt;|
-  |&lt;------ 101 Switching Protocols ---------|
-  |                                         |
-  |======== persistent two-way pipe =======|
-  |--- {&quot;type&quot;:&quot;user_message&quot;...} --------&gt;|
-  |&lt;-- {&quot;type&quot;:&quot;token&quot;,&quot;text&quot;:&quot;Hel&quot;} ------|
-  |&lt;-- {&quot;type&quot;:&quot;token&quot;,&quot;text&quot;:&quot;lo&quot;} --------|
-  |--- {&quot;type&quot;:&quot;cancel&quot;} -----------------&gt;|   &lt;- client can interrupt mid-answer
-  |&lt;-- {&quot;type&quot;:&quot;done&quot;} ---------------------|</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="WebSocket handshake and streaming">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: GET /chat Upgrade websocket
+  S-->>C: 101 Switching Protocols
+  Note over C,S: Persistent two-way pipe
+  C->>S: user_message
+  S-->>C: token Hel
+  S-->>C: token lo
+  C->>S: cancel
+  S-->>C: done</div>
+        </div>
+      </div>
       <h2>SSE vs WebSocket: how to choose</h2>
       <ul><li><strong>Direction.</strong> SSE is one-way (server to client). WebSocket is two-way. A chatbot that streams an answer needs mostly one-way, so SSE is enough.</li><li><strong>Simplicity.</strong> SSE is plain HTTP: works with standard proxies, load balancers, auth cookies, and auto-reconnects for free. WebSockets need special handling in infrastructure.</li><li><strong>Reconnection.</strong> SSE has built-in reconnect with <code>Last-Event-ID</code>. With WebSockets you build it yourself.</li><li><strong>Data types.</strong> SSE is text only. WebSocket can carry binary (audio, images).</li><li><strong>Scale and cost.</strong> Many long-lived connections cost memory on the server either way; SSE is generally lighter to operate.</li><li><strong>Choose WebSockets when</strong> the client must send frequent messages <em>while</em> receiving: live voice conversations, collaborative editing, multiplayer, interrupt/cancel controls, browser agents streaming screenshots.</li><li><strong>Choose SSE when</strong> the client sends one request and the server streams back a response: chat answers, progress updates, live logs.</li></ul>
       <p>A useful mental model: <strong>SSE is a radio broadcast you tune into. A WebSocket is a phone call.</strong></p>
@@ -310,6 +320,8 @@ for data, last_id in sse_events(chunks):
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

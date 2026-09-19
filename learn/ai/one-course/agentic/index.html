@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -109,27 +109,38 @@
       <p>An <strong>agent</strong> is an LLM that <strong>decides its own next step, in a loop, using tools, until a goal is reached</strong>. Three ingredients: a <em>goal</em>, <em>tools</em> to act on the world, and a <em>loop</em> in which the model chooses what to do based on what it has observed so far.</p>
       <p>The key word is <em>decides</em>. In a normal program <em>you</em> write the steps. In an agent, the <strong>model controls the control flow</strong>.</p>
       <h2>The autonomy spectrum</h2>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>LESS autonomy                                                          MORE autonomy
-  |                                                                          |
-  v                                                                          v
-[ single LLM call ] -&gt; [ chain / workflow ] -&gt; [ router ] -&gt; [ agent ] -&gt; [ multi-agent system ]
-
-  &quot;summarise this&quot;     fixed steps you wrote:   model picks    model loops,      several agents
-                        extract -&gt; classify      one branch     picks tools       coordinating
-                        -&gt; draft                                and steps</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="The autonomy spectrum">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart LR
+  A["Single LLM call"] --> B["Chain / workflow"]
+  B --> C[Router]
+  C --> D[Agent]
+  D --> E[Multi-agent system]</div>
+        </div>
+        <p class="diagram-caption">Less autonomy on the left, more on the right. Use the simplest thing that works.</p>
+      </div>
       <ul><li><strong>Workflow</strong>: LLM calls and tools orchestrated by <em>predefined code paths</em>. Predictable, cheap, testable.</li><li><strong>Agent</strong>: the LLM <em>directs its own process</em>. Flexible for open-ended problems where you cannot list the steps in advance, but slower, costlier and harder to control.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The most important rule of agent design</p><p class="learn-callout-body">Use the <strong>simplest thing that works</strong>. If you can solve it with one prompt, do that. If a fixed workflow works, use it. Reach for an autonomous agent only when the number and order of steps genuinely cannot be known ahead of time. Agents trade predictability for flexibility, and most business tasks want predictability.</p></aside>
       <h2>The ReAct loop: reason, act, observe</h2>
       <p>The classic agent pattern is <strong>ReAct</strong> (Reasoning + Acting). On each turn the model writes a short <em>thought</em>, picks an <em>action</em> (a tool call), you run it, and the <em>observation</em> is fed back. It repeats until the model decides it can give a final answer.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>Goal: &quot;What is the population of Norway divided by the population of Iceland?&quot;
-
-Thought: I need both populations.        Action: search(&quot;population of Norway&quot;)
-Observation: 5.5 million
-Thought: Now Iceland.                     Action: search(&quot;population of Iceland&quot;)
-Observation: 0.38 million
-Thought: I should divide, use the calculator.   Action: calculator(&quot;5.5 / 0.38&quot;)
-Observation: 14.47
-Thought: I have the answer.               Final answer: about 14.5 times larger.</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="A ReAct loop: reason, act, observe">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">sequenceDiagram
+  participant Agent
+  participant Search
+  participant Calc as Calculator
+  Note over Agent: Goal: Norway population divided by Iceland
+  Agent->>Search: population of Norway
+  Search-->>Agent: 5.5 million
+  Agent->>Search: population of Iceland
+  Search-->>Agent: 0.38 million
+  Agent->>Calc: 5.5 / 0.38
+  Calc-->>Agent: 14.47
+  Note over Agent: Final answer: about 14.5 times larger</div>
+        </div>
+      </div>
       <p>Here it is as running code. The "model" is scripted (a lookup of what a good model would decide) so the demo is deterministic, but the <strong>loop, the tool dispatch, the observations and the stopping conditions are exactly what a real agent has</strong>:</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>import re
 
@@ -212,11 +223,19 @@ each step 90% reliable -&gt;   1 steps:   90%   5 steps:   59%  10 steps:   35% 
       <h2>Autonomy dials: keep a human in the loop</h2>
       <ul><li><strong>Read-only agents</strong> (research, analysis) can run freely.</li><li><strong>Write-capable agents</strong> should propose changes and wait for approval (a diff to review, a draft to send).</li><li><strong>Irreversible actions</strong> (payments, deletions, external emails) need explicit confirmation.</li><li><strong>Escalation</strong>: when confidence is low or the request is unusual, hand off to a person with the context attached.</li></ul>
       <h2>So, should you build an agent?</h2>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>Can one well-written prompt do it?            -&gt; YES: do that.
-Can you list the steps in advance?            -&gt; YES: build a WORKFLOW (chain/router).
-Steps unknown, but there is a clear success   -&gt; Consider an AGENT, with tools that give feedback,
-check and tools that give feedback?               step limits, budgets and human approval.
-Stakes high, no way to verify?                -&gt; Keep a human in the loop, or don&#x27;t automate it.</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="Should you build an agent?">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TD
+  Q1{Can one well-written prompt do it?}
+  Q1 -->|Yes| P[Just prompt]
+  Q1 -->|No| Q2{Can you list the steps in advance?}
+  Q2 -->|Yes| W[Build a workflow]
+  Q2 -->|No| Q3{Clear success check and tools?}
+  Q3 -->|Yes| A[Agent with limits and approval]
+  Q3 -->|No| H[Keep a human in the loop]</div>
+        </div>
+      </div>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a step limit test: change <code>max_steps</code> to 2 and rerun. What does the agent return? Then add a <code>history</code>-based loop guard that stops if the same (action, argument) pair is requested twice in a row.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def run(decisions, max_steps=6):
     last = None
@@ -261,6 +280,8 @@ print(run([(&quot;search&quot;, &quot;x&quot;), (&quot;search&quot;, &quot;x&quo
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>

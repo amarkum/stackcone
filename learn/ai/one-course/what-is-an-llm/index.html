@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/learn/learn.css?v=28">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -107,20 +107,20 @@
       <p>Welcome to the whole course in one sentence: <strong>a large language model is a machine that has read a huge part of the internet and got very, very good at guessing what word comes next</strong>. Everything else you will meet, from chatbots to agents to the scary word "hallucination", grows out of that one idea. So we start there, and we make it concrete by building a (very tiny) one together.</p>
       <h2>Start with the map: AI, ML, deep learning, LLM</h2>
       <p>These four terms get thrown around as if they mean the same thing. They do not. Think of Russian nesting dolls: each one sits inside the previous.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>+--------------------------------------------------------------+
-|  AI  - any machine doing something that looks intelligent    |
-|  +--------------------------------------------------------+  |
-|  |  Machine Learning - learns patterns from data,         |  |
-|  |  instead of being given hand-written rules             |  |
-|  |  +--------------------------------------------------+  |  |
-|  |  |  Deep Learning - ML with many-layered neural nets |  |  |
-|  |  |  +--------------------------------------------+  |  |  |
-|  |  |  |  LLM - a giant neural net that predicts    |  |  |  |
-|  |  |  |  the next token of text                    |  |  |  |
-|  |  |  +--------------------------------------------+  |  |  |
-|  |  +--------------------------------------------------+  |  |
-|  +--------------------------------------------------------+  |
-+--------------------------------------------------------------+</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="AI, machine learning, deep learning and LLMs">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TB
+  subgraph AI["AI - any machine that looks intelligent"]
+    subgraph ML["Machine learning - learns patterns from data"]
+      subgraph DL["Deep learning - many-layered neural nets"]
+        LLM["LLM - predicts the next token of text"]
+      end
+    end
+  end</div>
+        </div>
+        <p class="diagram-caption">Each term sits inside the one above it. An LLM is a kind of deep-learning model, which is a kind of machine learning, which is a kind of AI.</p>
+      </div>
       <ul><li><strong>AI</strong> is the broad goal. A chess engine, a spam filter and a chatbot are all "AI". A thermostat with an <code>if</code> statement barely counts; a self-driving car definitely does.</li><li><strong>Machine learning (ML)</strong> is the approach where you do <em>not</em> write the rules. You show the computer thousands of examples and it works out the rules itself. Show it 100,000 emails labelled spam / not spam and it learns what spam looks like.</li><li><strong>Deep learning</strong> is ML using <em>neural networks</em> with many layers, loosely inspired by the brain. It is what made image recognition, speech recognition and language models possible.</li><li><strong>An LLM (large language model)</strong> is a deep-learning model trained on text at enormous scale. "Large" means billions (sometimes trillions) of adjustable numbers called <em>parameters</em>. GPT, Claude, Gemini and Llama are LLMs.</li></ul>
       <h2>The one trick: predict the next token</h2>
       <p>An LLM does exactly one thing, over and over: given some text, it produces a <strong>probability for every possible next piece of text</strong> (a <em>token</em>, which you will meet properly in the next lesson), picks one, appends it, and repeats. That is the entire engine. Answering questions, writing code and translating languages are all "what comes next?" in disguise.</p>
@@ -178,10 +178,18 @@ the cat chased the dog . the cat .</pre></div>
       <ul><li><strong>1. Pre-training.</strong> The model reads trillions of tokens (web pages, books, code) and plays the next-token game billions of times, nudging its parameters after each guess. This costs millions of dollars and produces a <em>base model</em>: brilliant at continuing text, but not yet a helpful assistant. Ask a base model "What is the capital of France?" and it might continue with three more quiz questions, because that is what a quiz page looks like.</li><li><strong>2. Fine-tuning (instruction tuning).</strong> The base model is trained further on thousands of hand-written examples of good conversations: a question, then a helpful answer. Now it behaves like an assistant instead of an autocomplete.</li><li><strong>3. Alignment (RLHF and friends).</strong> Humans (or other models) compare pairs of answers and say which is better. The model is nudged toward the preferred style: helpful, honest, harmless, and willing to say "I do not know". This stage shapes personality and safety.</li></ul>
       <h2>What is inside: a peek at the architecture</h2>
       <p>Modern LLMs use the <strong>transformer</strong> architecture (2017). You do not need the math to work with them, but one idea is worth knowing: <strong>attention</strong>. When the model predicts the next word, attention lets it look back at <em>every</em> earlier word and decide which ones matter most. In "The trophy did not fit in the suitcase because <em>it</em> was too big", attention is how the model works out that "it" means the trophy.</p>
-      <div class="learn-code-wrap" data-lang="text"><pre><code>input tokens -&gt;  [embedding] -&gt; [transformer layer x N] -&gt; [scores for every token] -&gt; pick one
-                                 |
-                        each layer: attention (&quot;look back at relevant words&quot;)
-                                  + feed-forward network (&quot;think about it&quot;)</code></pre></div>
+      <div class="diagram-wrap" data-diagram-title="Transformer pipeline">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TB
+  T[Input tokens] --> E[Embedding]
+  E --> L["Transformer layers x N"]
+  L --> S[Scores for every token]
+  S --> P[Pick one]
+  L --- Attn["Attention: look back at relevant words"]
+  L --- FF["Feed-forward: think about it"]</div>
+        </div>
+      </div>
       <h2>What LLMs are good at, and what they are not</h2>
       <p><strong>Strong at:</strong> writing and rewriting text, summarising, translating, explaining, brainstorming, writing and reviewing code, extracting structured data from messy text, classifying, answering questions about text you provide.</p>
       <p><strong>Weak or risky at:</strong> exact arithmetic without a calculator, facts after its training cut-off date, obscure facts (it may invent them), counting letters, anything needing a guarantee of correctness, and knowing what it does not know.</p>
@@ -232,6 +240,8 @@ print(follows[&quot;dog&quot;].most_common(2))"><pre><code># Write your solution
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
