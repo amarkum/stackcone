@@ -566,9 +566,9 @@ def lesson_html(les: dict) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/pyodide-runner.js?v=2" defer></script>
   <script src="/assets/js-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=15" defer></script>
+  <script src="/assets/monaco-code.js?v=16" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>
@@ -616,9 +616,9 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/pyodide-runner.js?v=2" defer></script>
   <script src="/assets/js-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=15" defer></script>
+  <script src="/assets/monaco-code.js?v=16" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

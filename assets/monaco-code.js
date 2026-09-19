@@ -114,10 +114,73 @@
     javascript: { hint: 'jsfile', run: function () { return window.stackconeRunJs; } }
   };
 
+  // Web frameworks and LLM libraries cannot run in the in-browser runtime.
+  var PYODIDE_PAGE_BLOCK = /\/(flask|django|fastapi|langchain)(\/|-)/;
+
+  var PY_STDLIB = {
+    __future__: 1, abc: 1, argparse: 1, array: 1, ast: 1, asyncio: 1, atexit: 1,
+    base64: 1, bisect: 1, builtins: 1, calendar: 1, cmath: 1, collections: 1,
+    colorsys: 1, contextlib: 1, copy: 1, csv: 1, dataclasses: 1, datetime: 1,
+    decimal: 1, difflib: 1, enum: 1, errno: 1, fnmatch: 1, fractions: 1,
+    functools: 1, gc: 1, glob: 1, gzip: 1, hashlib: 1, heapq: 1, hmac: 1, html: 1,
+    http: 1, io: 1, ipaddress: 1, itertools: 1, json: 1, keyword: 1, linecache: 1,
+    locale: 1, logging: 1, math: 1, mimetypes: 1, numbers: 1, operator: 1, os: 1,
+    pathlib: 1, pickle: 1, platform: 1, pprint: 1, queue: 1, random: 1, re: 1,
+    secrets: 1, shlex: 1, shutil: 1, signal: 1, socket: 1, sqlite3: 1, ssl: 1,
+    stat: 1, statistics: 1, string: 1, struct: 1, subprocess: 1, sys: 1,
+    tempfile: 1, textwrap: 1, threading: 1, time: 1, timeit: 1, tokenize: 1,
+    traceback: 1, types: 1, typing: 1, unicodedata: 1, unittest: 1, urllib: 1,
+    uuid: 1, warnings: 1, weakref: 1, xml: 1, zipfile: 1, zlib: 1
+  };
+
+  // Packages Pyodide can load natively (e.g. pandas via loadPackagesFromImports).
+  var PYODIDE_MODULES = {
+    pandas: 1,
+    numpy: 1,
+    matplotlib: 1,
+    PIL: 1,
+    scipy: 1,
+    sklearn: 1,
+    dateutil: 1,
+    pytz: 1,
+    openpyxl: 1
+  };
+
+  function extractImportedNames(code) {
+    var names = [];
+    var re = /^\s*(?:from\s+(\S+)\s+import|import\s+([^\n#]+))/gm;
+    var m;
+    while ((m = re.exec(code))) {
+      if (m[1]) {
+        names.push(m[1]);
+        continue;
+      }
+      var parts = (m[2] || '').split(',');
+      for (var i = 0; i < parts.length; i++) {
+        var name = parts[i].trim().split(/\s+/)[0];
+        if (name) names.push(name);
+      }
+    }
+    return names;
+  }
+
+  function pythonCanRunInPyodide(code) {
+    if (PYODIDE_PAGE_BLOCK.test(location.pathname || '')) return false;
+    var names = extractImportedNames(code);
+    for (var i = 0; i < names.length; i++) {
+      var raw = names[i];
+      if (!raw || raw.charAt(0) === '.') return false;
+      var top = raw.split('.')[0];
+      if (!(PY_STDLIB[top] || PYODIDE_MODULES[top])) return false;
+    }
+    return true;
+  }
+
   function runnerFor(block, lang) {
     if (!block.wrap || !document.body.classList.contains('learn-page')) return null;
     var r = RUNNERS[lang];
     if (!r || block.hint === r.hint) return null;
+    if (lang === 'python' && !pythonCanRunInPyodide(block.code)) return null;
     return r;
   }
 

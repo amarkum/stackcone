@@ -37,6 +37,30 @@
     return window.__stackconePyodidePromise;
   }
 
+  function isPandasPage() {
+    var path = location.pathname || '';
+    return path.indexOf('/pandas/') !== -1 || /\/pandas-/.test(path);
+  }
+
+  function pagePackages() {
+    if (!isPandasPage()) return [];
+    var pkgs = ['pandas', 'numpy'];
+    if ((location.pathname || '').indexOf('time-plots') !== -1) pkgs.push('matplotlib');
+    return pkgs;
+  }
+
+  function ensurePagePrelude(pyodide) {
+    if (!isPandasPage()) return Promise.resolve(pyodide);
+    if (!window.__stackconePandasPrelude) {
+      window.__stackconePandasPrelude = pyodide.runPythonAsync(
+        'import pandas as pd\nimport numpy as np'
+      );
+    }
+    return window.__stackconePandasPrelude.then(function () {
+      return pyodide;
+    });
+  }
+
   function runPython(code, outputEl, runBtn) {
     if (!code || !code.trim()) {
       outputEl.textContent = '(no code to run)';
@@ -55,11 +79,15 @@
 
     return getPyodide()
       .then(function (pyodide) {
-        outputEl.textContent = 'Loading packages\u2026';
-        // Pulls in pandas, numpy, matplotlib and friends when the code imports them.
-        return pyodide.loadPackagesFromImports(code)
-          .catch(function () { /* unknown import: let Python report it */ })
-          .then(function () { return pyodide; });
+        var extra = pagePackages();
+        var ready = extra.length ? pyodide.loadPackage(extra) : Promise.resolve();
+        return ready.then(function () {
+          outputEl.textContent = 'Loading packages\u2026';
+          // Native Pyodide loader for pandas, numpy, matplotlib, and other supported wheels.
+          return pyodide.loadPackagesFromImports(code)
+            .catch(function () { /* unknown import: let Python report it */ })
+            .then(function () { return ensurePagePrelude(pyodide); });
+        });
       })
       .then(function (pyodide) {
         var stdout = '';
