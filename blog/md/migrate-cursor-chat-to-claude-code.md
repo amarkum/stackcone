@@ -64,7 +64,7 @@ Non-destructive. Stable session IDs (SHA-256 of source path). `entrypoint: curso
 
 **Not migrated:** subagent sidechains, Composer state.vscdb bubbles, checkpoints, tool replay.
 
-## Slug mapping (Cursor → Claude)
+## Slug mapping (Cursor to Claude)
 
 | Repo | Cursor slug | Claude folder |
 |------|-------------|---------------|

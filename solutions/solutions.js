@@ -70,7 +70,7 @@
       "<button type=\"button\" class=\"list-pagination-btn\"" +
         (currentPage <= 1 ? " disabled" : "") +
         " data-page=\"" + (currentPage - 1) + "\" aria-label=\"Previous page\">" +
-        "← Prev</button>"
+        "Prev</button>"
     );
 
     for (var page = 1; page <= totalPages; page += 1) {
@@ -87,7 +87,7 @@
       "<button type=\"button\" class=\"list-pagination-btn\"" +
         (currentPage >= totalPages ? " disabled" : "") +
         " data-page=\"" + (currentPage + 1) + "\" aria-label=\"Next page\">" +
-        "Next →</button>"
+        "Next</button>"
     );
 
     nav.innerHTML = parts.join("");

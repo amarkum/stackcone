@@ -128,13 +128,14 @@
 /* Buttons: one shape, primary variant is filled */
 .learn-btn,
 .learn-nav-btn,
+.learn-track-open,
 .blog-article a.learn-nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.7rem 1.15rem;
   border: 1px solid var(--l-line);
-  border-radius: 10px;
+  border-radius: var(--radius);
   background: var(--l-surface);
   font-size: 0.9rem;
   font-weight: 600;
@@ -153,6 +154,7 @@
 
 .learn-btn--primary,
 .learn-nav-btn--primary,
+.learn-track-card .learn-track-open,
 .blog-article a.learn-nav-btn--primary {
   background: var(--l-ink);
   border-color: var(--l-ink);
@@ -161,6 +163,7 @@
 
 .learn-btn--primary:hover,
 .learn-nav-btn--primary:hover,
+.learn-track-card:hover .learn-track-open,
 .blog-article a.learn-nav-btn--primary:hover {
   background: #1e293b;
   border-color: #1e293b;
@@ -307,22 +310,8 @@ a.learn-track-card:hover {
 }
 
 .learn-track-open {
-  display: inline-flex;
-  align-items: center;
   align-self: flex-start;
-  gap: 0.35rem;
   margin-top: 0.6rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #fff;
-  background: #059669;
-  border-radius: 8px;
-  transition: background var(--l-ease, 0.15s ease), transform var(--l-ease, 0.15s ease);
-}
-
-.learn-track-card:hover .learn-track-open {
-  background: #047857;
 }
 
 /* ============================================================

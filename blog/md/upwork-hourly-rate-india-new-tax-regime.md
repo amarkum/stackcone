@@ -15,8 +15,8 @@ This guide walks through the math we built into the [Upwork Rate Calculator](htt
 3. [FY 2025-26 new regime slabs](#tax-slabs)
 4. [Section 44ADA and the ₹12L rebate](#44ada-87a)
 5. [Worked example: $85/hr at 40 hrs/week](#worked-example)
-6. [Rate table: hourly → monthly in-hand](#rate-table)
-7. [Reverse rates: target in-hand → hourly](#reverse-rates)
+6. [Rate table: hourly to monthly in-hand](#rate-table)
+7. [Reverse rates: target in-hand to hourly](#reverse-rates)
 8. [How to set your rate](#how-to-set-rate)
 9. [What the calculator does not model](#limitations)
 10. [Glossary](#glossary)
@@ -87,7 +87,7 @@ Assumptions: **$85/hr**, **40 hrs/week**, **₹85.5/USD**, FY 2025-26 new regime
 
 So **$85/hr full-time** lands near **₹10 lakh/month in hand** — not ₹15 lakh+ you might guess from gross USD × FX.
 
-## Rate table: hourly → monthly in-hand {#rate-table}
+## Rate table: hourly to monthly in-hand {#rate-table}
 
 40 hours/week · ₹85.5/USD · new regime · Section 44ADA · fee chain as above.
 
@@ -101,7 +101,7 @@ So **$85/hr full-time** lands near **₹10 lakh/month in hand** — not ₹15 la
 
 Part-time at **$30/hr × 20 hrs** stays inside the **zero tax** band. Full-time at **$65+** does not.
 
-## Reverse rates: target in-hand → hourly {#reverse-rates}
+## Reverse rates: target in-hand to hourly {#reverse-rates}
 
 What hourly rate do you need for a **monthly in-hand target**? (40 hrs/week, same assumptions.)
 

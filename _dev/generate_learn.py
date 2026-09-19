@@ -252,7 +252,7 @@ LESSONS = [
      ]},
     {"slug": "ds-hash-tables", "track": "data-structures", "title": "Hash Tables", "minutes": 14, "level": "Intermediate",
      "summary": "Hash functions, collisions, and average O(1) lookup.",
-     "objectives": ["Explain hash → bucket", "Use dict/HashMap", "Know collision strategies exist"],
+     "objectives": ["Explain how a hash maps to a bucket", "Use dict/HashMap", "Know collision strategies exist"],
      "sections": [
          ("p", "A hash table maps keys to buckets via a hash function. Average lookup is O(1); worst case O(n) when many keys collide."),
          ("code", "python", 'cache = {}\ncache["user:42"] = {"name": "Amar"}\nprint(cache.get("user:42"))'),
@@ -466,12 +466,12 @@ def lesson_html(les: dict) -> str:
     objectives = "".join(f"<li>{esc(o)}</li>" for o in les["objectives"])
     sections = render_sections(les["sections"])
     prev_link = (
-        f'<a class="learn-nav-btn" href="{lesson_url(by_slug[les["prev"]])}">← Previous</a>'
-        if les["prev"] else '<span class="learn-nav-btn is-disabled">← Previous</span>'
+        f'<a class="learn-nav-btn" href="{lesson_url(by_slug[les["prev"]])}">Previous</a>'
+        if les["prev"] else '<span class="learn-nav-btn is-disabled">Previous</span>'
     )
     next_link = (
-        f'<a class="learn-nav-btn learn-nav-btn--primary" href="{lesson_url(by_slug[les["next"]])}">Next lesson →</a>'
-        if les["next"] else '<span class="learn-nav-btn is-disabled">Next lesson →</span>'
+        f'<a class="learn-nav-btn learn-nav-btn--primary" href="{lesson_url(by_slug[les["next"]])}">Next lesson</a>'
+        if les["next"] else '<span class="learn-nav-btn is-disabled">Next lesson</span>'
     )
     breadcrumb_track = ""
     cat_id = track.get("category")
@@ -493,7 +493,7 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=17">
+  <link rel="stylesheet" href="/learn/learn.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -588,7 +588,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/learn/learn.css?v=17">
+  <link rel="stylesheet" href="/learn/learn.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -648,7 +648,7 @@ def fmt_minutes(total: int) -> str:
 
 def level_range(lessons: list) -> str:
     levels = sorted({l["level"] for l in lessons}, key=lambda x: LEVEL_ORDER.get(x, 0))
-    return levels[0] if len(levels) == 1 else f"{levels[0]} → {levels[-1]}"
+    return levels[0] if len(levels) == 1 else f"{levels[0]} to {levels[-1]}"
 
 
 def course_highlights(lessons: list, limit: int = 6) -> list[str]:
@@ -685,7 +685,7 @@ def _framework_cards() -> str:
         <h2>{esc(fw["label"])}</h2>
         <p>{esc(fw["description"])}</p>
         <span class="learn-track-count">{n} lessons · {fmt_minutes(sum(l["minutes"] for l in by_track[fw["track"]]))}</span>
-        <span class="learn-track-open">View course →</span>
+        <span class="learn-track-open">View course</span>
       </a>""")
             continue
         cards.append(f"""
@@ -707,7 +707,7 @@ def _track_cards(track_ids: list[str]) -> str:
         <h2>{esc(track["label"])}</h2>
         <p>{esc(track["description"])}</p>
         <span class="learn-track-count">{len(lessons)} lessons · {fmt_minutes(sum(l["minutes"] for l in lessons))}</span>
-        <span class="learn-track-open">View course →</span>
+        <span class="learn-track-open">View course</span>
       </a>""")
     return "\n".join(cards)
 
@@ -728,7 +728,7 @@ def catalog_html() -> str:
         <h2>{esc(cat["label"])}</h2>
         <p>{esc(cat["description"])}</p>
         <span class="learn-track-count">{count_line}</span>
-        <span class="learn-track-open">Browse courses →</span>
+        <span class="learn-track-open">Browse courses</span>
       </a>""")
     body = f"""  <main class="learn-main">
     <div class="learn-main-inner learn-catalog">
