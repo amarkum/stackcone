@@ -126,6 +126,11 @@ function initTestimonials(testimonials) {
   var paginationEl = document.getElementById('testimonials-pagination');
   if (!grid || !paginationEl) return;
   if (!testimonials || !testimonials.length) testimonials = testimonialsFallback;
+  // Reviews from clients with a logo come first; order is otherwise unchanged.
+  testimonials = testimonials
+    .map(function (t, i) { return { t: t, i: i }; })
+    .sort(function (a, b) { return (b.t.logo ? 1 : 0) - (a.t.logo ? 1 : 0) || a.i - b.i; })
+    .map(function (x) { return x.t; });
   var perPage = 6;
   var currentPage = 1;
 
