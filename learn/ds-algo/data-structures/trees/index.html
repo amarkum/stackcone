@@ -65,6 +65,8 @@
             <ul><li>Define root, child, leaf</li><li>Walk in-order traversal</li><li>Understand BST ordering</li></ul>
           </div>
       <p>A <strong>tree</strong> is a hierarchy: one <em>root</em> node at the top, and every node may have <em>children</em> below it. Nodes with no children are <em>leaves</em>. Folders on your disk, the HTML DOM and organization charts are all trees. A <strong>binary tree</strong> limits each node to at most two children, called left and right.</p>
+      <h2>Data that branches</h2>
+      <p>Lists and arrays are lines. Many things in the real world are not lines: a folder contains folders that contain files, an organisation chart branches from a CEO, a web page's HTML nests elements inside elements. A <strong>tree</strong> models this. It has one <em>root</em> at the top, each node can have <em>children</em>, and there are no loops. Trees appear everywhere: file systems, the DOM, databases, compilers and search.</p>
       <h2>Vocabulary</h2>
       <ul><li><strong>Depth</strong> of a node: number of edges from the root.</li><li><strong>Height</strong> of the tree: the longest path from the root down to a leaf.</li><li><strong>Subtree</strong>: any node together with all of its descendants. Trees are recursive by nature.</li></ul>
       <div class="learn-code-wrap" data-lang="python"><pre><code>class TreeNode:
@@ -122,6 +124,66 @@ print(level_order(root))</code></pre></div>
 print(contains(root, 3), contains(root, 5))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True False</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Heights matter</p><p class="learn-callout-body">Self-balancing trees (AVL, red-black) keep the height near log n automatically. Databases and language libraries use them, so you rarely write one yourself.</p></aside>
+      <h2>Building a small tree and walking it</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+
+root = Node(&quot;projects&quot;)
+site = Node(&quot;site&quot;); notes = Node(&quot;notes&quot;)
+root.children += [site, notes]
+site.children += [Node(&quot;index.html&quot;), Node(&quot;style.css&quot;)]
+notes.children.append(Node(&quot;todo.txt&quot;))
+
+def show(node, depth=0):
+    print(&quot;  &quot; * depth + node.value)
+    for child in node.children:
+        show(child, depth + 1)
+
+show(root)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>projects
+  site
+    index.html
+    style.css
+  notes
+    todo.txt</pre></div>
+      <p>Notice the function calls itself on each child. Trees and recursion are natural partners: a tree is either empty or a node with smaller trees beneath it.</p>
+      <h2>Binary search tree: sorted and fast to search</h2>
+      <p>In a binary search tree, everything in a node's left subtree is smaller and everything in its right subtree is larger. Searching therefore discards half of the remaining tree at every step, exactly like binary search on a sorted list.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class BST:
+    def __init__(self, value):
+        self.value, self.left, self.right = value, None, None
+
+    def insert(self, v):
+        if v &lt; self.value:
+            if self.left: self.left.insert(v)
+            else: self.left = BST(v)
+        else:
+            if self.right: self.right.insert(v)
+            else: self.right = BST(v)
+
+    def contains(self, v):
+        if v == self.value: return True
+        side = self.left if v &lt; self.value else self.right
+        return bool(side) and side.contains(v)
+
+    def in_order(self):
+        return (self.left.in_order() if self.left else []) + [self.value] + (self.right.in_order() if self.right else [])
+
+t = BST(8)
+for n in [3, 10, 1, 6, 14, 4]:
+    t.insert(n)
+
+print(t.in_order())
+print(t.contains(6), t.contains(7))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 3, 4, 6, 8, 10, 14]
+True False</pre></div>
+      <p>An <em>in-order</em> walk of a binary search tree visits values in sorted order, which is a neat way to see that the structure is doing its job.</p>
+      <h2>Height decides speed</h2>
+      <p>Search cost is proportional to the tree's <em>height</em>. A balanced tree with a million nodes is only about 20 levels tall. A degenerate tree (inserting already-sorted numbers) becomes a long chain of height a million, no better than a linked list. Real databases use self-balancing trees to guarantee good height.</p>
+      <h2>Key takeaways</h2>
+      <ul><li>A tree has a root, parent-child links and no cycles; it models hierarchies.</li><li>Recursion is the natural way to process trees.</li><li>In a binary search tree, left is smaller and right is larger, giving <code>O(log n)</code> search when balanced.</li><li>In-order traversal of a BST yields sorted values.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>height(node)</code> that returns the height of a binary tree, counting an empty tree as 0.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def height(node):
     if not node:

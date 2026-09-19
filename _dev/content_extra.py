@@ -5,5 +5,6 @@ from content_extra_sql import EXTRA as _SQL
 from content_extra_git import EXTRA as _GIT
 from content_extra_java import EXTRA as _JAVA
 from content_extra_web import EXTRA as _WEB
+from content_extra_dsa import EXTRA as _DSA
 
-EXTRA = {**_PY, **_JS, **_SQL, **_GIT, **_JAVA, **_WEB}
+EXTRA = {**_PY, **_JS, **_SQL, **_GIT, **_JAVA, **_WEB, **_DSA}

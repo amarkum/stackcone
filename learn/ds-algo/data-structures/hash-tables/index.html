@@ -65,6 +65,8 @@
             <ul><li>Explain hash → bucket</li><li>Use dict/HashMap</li><li>Know collision strategies exist</li></ul>
           </div>
       <p>A <strong>hash table</strong> stores key-value pairs and finds a value from its key in about constant time, no matter how many items it holds. It is the structure behind Python's <code>dict</code> and <code>set</code>, Java's <code>HashMap</code> and JavaScript's <code>Map</code> and objects. If you learn one structure deeply, make it this one.</p>
+      <h2>The trick behind instant lookup</h2>
+      <p>Searching a list means checking items one by one. A <strong>hash table</strong> avoids searching by <em>computing</em> where an item lives. It runs the key through a <em>hash function</em> that turns it into a number, and uses that number as a position in an array. To find the key later, hash it again and go straight to the same spot. Python's <code>dict</code> and <code>set</code> are hash tables, which is why they are so fast.</p>
       <h2>How it works</h2>
       <p>The table is really an array of <em>buckets</em>. To store a key, a <strong>hash function</strong> turns it into a number, and that number modulo the array size picks the bucket. To look the key up later, you run the same hash and go straight to that bucket instead of searching.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def bucket_index(key, size):
@@ -103,6 +105,43 @@ duplicate: 3</pre></div>
 print(two_sum([2, 7, 11, 15], 9))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>(0, 1)</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Trade-off</p><p class="learn-callout-body">Hash tables trade memory and ordering for speed. If you need keys sorted or range queries, use a tree-based map instead.</p></aside>
+      <h2>Watching hashing happen</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>buckets = 8
+for key in [&quot;ada&quot;, &quot;linus&quot;, &quot;grace&quot;, &quot;alan&quot;]:
+    slot = sum(ord(c) for c in key) % buckets   # a toy hash function
+    print(f&quot;{key:&lt;6} -&gt; slot {slot}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>ada    -&gt; slot 6
+linus  -&gt; slot 3
+grace  -&gt; slot 2
+alan   -&gt; slot 4</pre></div>
+      <p>Each key maps to a slot number. Two different keys can land on the same slot; that is called a <strong>collision</strong>, and real tables handle it by keeping a small list per slot or probing to the next free slot. With a good hash function and enough slots collisions are rare and lookups stay near <code>O(1)</code>.</p>
+      <h2>What can be a key?</h2>
+      <p>Keys must be <em>hashable</em>, meaning immutable. Strings, numbers and tuples work. Lists and dicts do not, because their contents (and therefore their hash) could change.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>locations = {(0, 0): &quot;start&quot;, (2, 5): &quot;shop&quot;}
+print(locations[(2, 5)])
+
+try:
+    bad = {[1, 2]: &quot;nope&quot;}
+except TypeError as e:
+    print(&quot;TypeError:&quot;, e)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>shop
+TypeError: cannot use &#x27;list&#x27; as a dict key (unhashable type: &#x27;list&#x27;)</pre></div>
+      <h2>Worked example: find duplicates in one pass</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def first_duplicate(items):
+    seen = set()
+    for x in items:
+        if x in seen:
+            return x
+        seen.add(x)
+    return None
+
+print(first_duplicate([3, 1, 4, 1, 5, 9]))
+print(first_duplicate([1, 2, 3]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1
+None</pre></div>
+      <p>Without a set you would compare every pair of items, which is <code>O(n^2)</code>. With one you touch each item once: <code>O(n)</code>. Turning a nested loop into a set lookup is one of the most valuable optimisations you will ever learn.</p>
+      <h2>Key takeaways</h2>
+      <ul><li>A hash table computes a slot from the key, giving average <code>O(1)</code> lookup, insert and delete.</li><li>Collisions are handled internally; you just use <code>dict</code> and <code>set</code>.</li><li>Keys must be immutable (hashable): use tuples, not lists.</li><li>A <code>set</code> or <code>dict</code> often replaces a slow nested loop.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Return the first duplicate character in a string using a set, or <code>None</code> if all characters are unique.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def first_duplicate(s):
     seen = set()

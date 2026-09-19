@@ -63,6 +63,8 @@
             <ul><li>Write binary search without off-by-one bugs</li><li>Know when data must be sorted</li><li>Use the bisect module</li></ul>
           </div>
       <p>Searching means finding an item, or its position, inside a collection. How you do it depends on one question: <strong>is the data sorted?</strong> Sorted data lets you throw away half the possibilities at every step.</p>
+      <h2>Finding a needle, faster</h2>
+      <p>Searching is the most common job in computing. If you have no order to exploit you must check items one by one. If the data is sorted you can do far better by using the order, the way you open a dictionary near the middle rather than at page one. The idea behind <strong>binary search</strong> is to throw away half of the remaining possibilities with every question.</p>
       <h2>Linear search</h2>
       <p>Check items one by one. It works on any data and takes O(n) time, so it is perfectly fine for small lists or one-off lookups.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def linear_search(items, target):
@@ -120,6 +122,40 @@ def min_speed(piles, hours):
 print(min_speed([3, 6, 7, 11], 8))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Prerequisite</p><p class="learn-callout-body">Binary search on unsorted data gives wrong answers silently. If you must search repeatedly, sorting once (O(n log n)) or using a hash set (O(1) lookup) is often better.</p></aside>
+      <h2>How many guesses to find a number from 1 to 1,000?</h2>
+      <p>Guess the middle (500). Told "higher", the answer is now in 501-1000, half the size. Repeat. You need at most 10 guesses because 2 to the power 10 is 1,024. That is <code>O(log n)</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def binary_search(sorted_items, target):
+    lo, hi = 0, len(sorted_items) - 1
+    steps = 0
+    while lo &lt;= hi:
+        steps += 1
+        mid = (lo + hi) // 2
+        if sorted_items[mid] == target:
+            return mid, steps
+        if sorted_items[mid] &lt; target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1, steps
+
+numbers = list(range(1, 1001))
+print(binary_search(numbers, 777))
+print(binary_search(numbers, 5000))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>(776, 8)
+(-1, 10)</pre></div>
+      <p>It found 777 in at most 10 steps out of 1,000 items. The same code finds an item among a billion in about 30 steps.</p>
+      <h2>The three things that go wrong</h2>
+      <ul><li><strong>The data must be sorted</strong>. On unsorted data binary search silently returns wrong answers.</li><li><strong>Off-by-one on the boundaries</strong>: use <code>lo &lt;= hi</code> and move to <code>mid + 1</code> / <code>mid - 1</code>.</li><li><strong>Infinite loops</strong>: if you set <code>lo = mid</code> instead of <code>mid + 1</code>, the range may never shrink.</li></ul>
+      <h2>Use the library when you can</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from bisect import bisect_left
+
+prices = [10, 20, 20, 30, 45]
+print(bisect_left(prices, 20))    # first position where 20 fits
+print(bisect_left(prices, 25))    # where 25 would be inserted</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1
+3</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Linear search checks each item: <code>O(n)</code>, works on any data.</li><li>Binary search halves the range each step: <code>O(log n)</code>, needs sorted data.</li><li>Be careful with boundaries; prefer <code>bisect</code> in real code.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>first_true(a)</code> that receives a list of booleans like <code>[False, False, True, True]</code> (all False first, then all True) and returns the index of the first True, or -1.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def first_true(a):
     lo, hi, ans = 0, len(a) - 1, -1

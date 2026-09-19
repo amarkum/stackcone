@@ -63,6 +63,8 @@
             <ul><li>Compare O(n^2) and O(n log n) sorts</li><li>Implement merge sort</li><li>Sort with keys</li></ul>
           </div>
       <p>Sorting puts items in order, and a great deal of computing depends on it: fast searching, deduplication, merging, and ranking. Understanding a few classic algorithms teaches ideas (divide and conquer, invariants) that reach far beyond sorting itself.</p>
+      <h2>Why sorting matters</h2>
+      <p>Sorted data unlocks fast searching, easy duplicate detection, simple merging and readable reports. Sorting is also the classic place to study algorithm design, because there are many correct ways, with very different costs. In everyday Python you will simply call <code>sorted()</code>, but understanding how sorts work teaches you to think about efficiency.</p>
       <h2>Simple sorts: O(n squared)</h2>
       <p><strong>Bubble sort</strong> repeatedly swaps adjacent items that are out of order, so large values "bubble" to the end. <strong>Insertion sort</strong> grows a sorted prefix by inserting each new item into place, like sorting playing cards in your hand. Both are easy to write, and insertion sort is genuinely fast on tiny or nearly sorted inputs.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def insertion_sort(a):
@@ -121,6 +123,44 @@ print(sorted(people, key=lambda p: (-p[1], p[0])))   # age desc, then name</code
       <h2>The lower bound</h2>
       <p>Any sort that works by comparing items needs at least about n log n comparisons in the worst case. Non-comparison sorts such as counting sort get O(n) only when values are small integers in a known range.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Rule of thumb</p><p class="learn-callout-body">Memorize: bubble/insertion O(n squared), merge/heap O(n log n) always, quick O(n log n) average. Then use the standard library.</p></aside>
+      <h2>Bubble sort: the intuitive one</h2>
+      <p>Repeatedly walk the list and swap neighbours that are out of order. Big values "bubble" to the end. It is simple but takes <code>O(n^2)</code> comparisons, so it is only for teaching.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def bubble_sort(items):
+    items = items[:]
+    for end in range(len(items) - 1, 0, -1):
+        for i in range(end):
+            if items[i] &gt; items[i + 1]:
+                items[i], items[i + 1] = items[i + 1], items[i]
+    return items
+
+print(bubble_sort([5, 2, 9, 1, 7]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 5, 7, 9]</pre></div>
+      <h2>Merge sort: divide and conquer</h2>
+      <p>Split the list in half, sort each half (recursively), then <em>merge</em> two sorted halves by repeatedly taking the smaller front item. It is <code>O(n log n)</code>, dramatically faster on big inputs.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def merge_sort(items):
+    if len(items) &lt;= 1:
+        return items
+    mid = len(items) // 2
+    left, right = merge_sort(items[:mid]), merge_sort(items[mid:])
+
+    merged, i, j = [], 0, 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            merged.append(left[i]); i += 1
+        else:
+            merged.append(right[j]); j += 1
+    return merged + left[i:] + right[j:]
+
+print(merge_sort([5, 2, 9, 1, 7, 3]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 3, 5, 7, 9]</pre></div>
+      <h2>Sorting by more than one field</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>people = [(&quot;Ann&quot;, 31), (&quot;Bob&quot;, 25), (&quot;Cy&quot;, 31)]
+by_age_then_name = sorted(people, key=lambda p: (-p[1], p[0]))
+print(by_age_then_name)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[(&#x27;Ann&#x27;, 31), (&#x27;Cy&#x27;, 31), (&#x27;Bob&#x27;, 25)]</pre></div>
+      <p>In real code, call <code>sorted()</code> or <code>list.sort()</code>. Python's built-in <em>Timsort</em> is stable, fast and already tuned. Reach for hand-written sorts only for learning or very special cases.</p>
+      <h2>Key takeaways</h2>
+      <ul><li>Simple sorts (bubble, insertion) are <code>O(n^2)</code>; merge and quick sort are <code>O(n log n)</code>.</li><li>Merge sort divides, sorts halves recursively, then merges.</li><li>Use built-in <code>sorted</code> with a <code>key</code> for real work; it is stable.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Sort a list of words by length, and alphabetically within the same length, using <code>sorted</code> and a tuple key.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="words = [&quot;pear&quot;, &quot;fig&quot;, &quot;apple&quot;, &quot;kiwi&quot;, &quot;date&quot;]
 print(sorted(words, key=lambda w: (len(w), w)))

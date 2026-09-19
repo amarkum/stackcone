@@ -65,6 +65,9 @@
             <ul><li>Read O(1), O(n), O(log n), O(n²)</li><li>Drop constants in big-O</li><li>Pick structure by operation cost</li></ul>
           </div>
       <p>How do you compare two solutions to the same problem? Timing them on your laptop depends on the hardware and the input. <strong>Big O notation</strong> instead describes how the number of steps <em>grows</em> as the input size <code>n</code> grows. It lets you predict whether code that works on 100 items will survive 100 million.</p>
+      <h2>The question Big O answers</h2>
+      <p>Two programs give the same answer; which is better? Timing them on your laptop is unreliable, because it depends on the machine and the sample data. <strong>Big O notation</strong> instead describes how the work <em>grows as the input grows</em>. If the input doubles, does the work stay the same, double, or quadruple? That growth rate is what decides whether a program still works with a million users.</p>
+      <p>Big O ignores small details (a constant factor of 2, a lower-order term) and focuses on the shape of the growth.</p>
       <h2>The common classes</h2>
       <ul><li><strong>O(1) constant</strong>: same work regardless of size. Array index, dict lookup.</li><li><strong>O(log n) logarithmic</strong>: each step halves the problem. Binary search.</li><li><strong>O(n) linear</strong>: touch every item once. Scanning a list.</li><li><strong>O(n log n)</strong>: efficient sorting (merge sort, Python's <code>sorted</code>).</li><li><strong>O(n squared) quadratic</strong>: a loop inside a loop over the same data. Comparing all pairs.</li><li><strong>O(2 to the n) exponential</strong>: doubles with every added item. Naive recursion over subsets.</li></ul>
       <h2>Reading code</h2>
@@ -106,6 +109,43 @@ print(binary_search([1, 3, 5, 7, 9, 11], 7))</code></pre></div>
       <h2>Best, average, worst</h2>
       <p>Big O usually quotes the worst case. Quicksort is O(n log n) on average but O(n squared) in the worst case; hash lookups are O(1) on average and O(n) worst case. State which one you mean.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Practical advice</p><p class="learn-callout-body">Big O matters most as n gets large. For tiny inputs, a simple O(n squared) solution is fine and often faster. Measure before optimizing.</p></aside>
+      <h2>Feel the growth</h2>
+      <p>Count the operations each style of algorithm does for an input of size n. The numbers, not the notation, are what to remember.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import math
+
+print(f&quot;{&#x27;n&#x27;:&gt;8} {&#x27;O(log n)&#x27;:&gt;10} {&#x27;O(n)&#x27;:&gt;10} {&#x27;O(n log n)&#x27;:&gt;12} {&#x27;O(n^2)&#x27;:&gt;16}&quot;)
+for n in [10, 1_000, 1_000_000]:
+    print(f&quot;{n:&gt;8} {math.log2(n):&gt;10.0f} {n:&gt;10} {n * math.log2(n):&gt;12.0f} {n * n:&gt;16}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>       n   O(log n)       O(n)   O(n log n)           O(n^2)
+      10          3         10           33              100
+    1000         10       1000         9966          1000000
+ 1000000         20    1000000     19931569    1000000000000</pre></div>
+      <p>At n = 1,000,000 a logarithmic algorithm does about 20 steps, a linear one a million, and a quadratic one <em>a trillion</em>. That is the difference between instant and never finishing.</p>
+      <h2>Reading Big O straight from code</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def constant(items):            # O(1): one step regardless of size
+    return items[0]
+
+def linear(items):              # O(n): one pass
+    total = 0
+    for x in items:
+        total += x
+    return total
+
+def quadratic(items):           # O(n^2): loop inside a loop
+    pairs = 0
+    for a in items:
+        for b in items:
+            pairs += 1
+    return pairs
+
+data = list(range(100))
+print(constant(data), linear(data), quadratic(data))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>0 4950 10000</pre></div>
+      <ul><li>No loop over the input → <code>O(1)</code>.</li><li>One loop over the input → <code>O(n)</code>.</li><li>A loop nested inside a loop over the same input → <code>O(n^2)</code>.</li><li>Halving the problem each step (binary search) → <code>O(log n)</code>.</li><li>Two loops one after the other (not nested) → still <code>O(n)</code>; add, then drop constants.</li></ul>
+      <h2>Trade time for memory</h2>
+      <p>Faster is often possible if you spend memory. Checking for duplicates with nested loops is <code>O(n^2)</code> time and <code>O(1)</code> extra space; using a set is <code>O(n)</code> time and <code>O(n)</code> space. Most real optimisations are exactly this swap.</p>
+      <h2>Key takeaways</h2>
+      <ul><li>Big O describes how work grows with input size, ignoring constants.</li><li>Order to remember: <code>O(1)</code> &lt; <code>O(log n)</code> &lt; <code>O(n)</code> &lt; <code>O(n log n)</code> &lt; <code>O(n^2)</code>.</li><li>Count loops: one is linear, nested is quadratic, halving is logarithmic.</li><li>Extra memory (a set or dict) frequently buys a big speedup.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">What is the time complexity of finding whether a list contains duplicates by comparing every pair? Rewrite it using a set to reach O(n).</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="# Pairwise comparison: O(n^2) time, O(1) space
 # With a set: O(n) time, O(n) space

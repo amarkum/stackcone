@@ -65,6 +65,8 @@
             <ul><li>O(1) index access</li><li>Understand fixed vs dynamic arrays</li><li>Know when cache locality helps</li></ul>
           </div>
       <p>An <strong>array</strong> stores elements one after another in a single block of memory. Because every element takes the same amount of space, the computer can calculate the address of element <code>i</code> directly: start address plus <code>i</code> times the element size. That is why reading <code>arr[i]</code> takes the same tiny amount of time whether the array has ten items or ten million.</p>
+      <h2>The simplest structure: numbered slots</h2>
+      <p>An array is a row of equal-sized boxes stored side by side in memory, each with a number starting at 0. Because the boxes are neighbours and the same size, the computer can jump to box 500 by simple arithmetic (start address plus 500 times the box size) without visiting boxes 0 to 499. That is why reading <code>arr[i]</code> is instant, no matter how big the array is.</p>
       <h2>What is fast and what is slow</h2>
       <ul><li><strong>Read or write by index</strong>: O(1).</li><li><strong>Append at the end</strong>: O(1) on average.</li><li><strong>Insert or delete in the middle or front</strong>: O(n), because everything after it must shift.</li><li><strong>Search for a value</strong> in an unsorted array: O(n), since you may check every element.</li></ul>
       <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [10, 20, 30, 40]
@@ -93,6 +95,44 @@ print(vals)</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[5, 4, 3, 2, 1]</pre></div>
       <p>This runs in O(n) time and O(1) extra space, because it swaps in place instead of building a second array.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body">Off-by-one errors and reading past the end (<code>IndexError</code>). Remember valid indexes run from <code>0</code> to <code>len(a) - 1</code>.</p></aside>
+      <h2>What is cheap and what is costly</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [10, 20, 30, 40, 50]
+
+print(nums[3])        # read by index: instant
+nums.append(60)       # add at the end: cheap
+nums.insert(0, 5)     # add at the front: every item must shift right
+print(nums)
+nums.pop(0)           # remove from the front: every item shifts left
+print(nums)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>40
+[5, 10, 20, 30, 40, 50, 60]
+[10, 20, 30, 40, 50, 60]</pre></div>
+      <p>Adding at the <em>end</em> is cheap because nothing has to move. Adding or removing at the <em>front</em> is costly because every other item shifts one place, which is <code>O(n)</code> work. Remember this whenever you use a list as a queue.</p>
+      <h2>Worked example: reverse in place</h2>
+      <p>Two markers, one at each end, swap and move inward. No extra list is needed.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def reverse(items):
+    left, right = 0, len(items) - 1
+    while left &lt; right:
+        items[left], items[right] = items[right], items[left]
+        left += 1
+        right -= 1
+
+data = [1, 2, 3, 4, 5]
+reverse(data)
+print(data)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[5, 4, 3, 2, 1]</pre></div>
+      <h2>Worked example: running maximum</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>temps = [18, 21, 19, 25, 23, 30, 28]
+best = temps[0]
+for t in temps[1:]:
+    if t &gt; best:
+        best = t
+print(&quot;highest:&quot;, best)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>highest: 30</pre></div>
+      <h2>Common array mistakes</h2>
+      <ul><li>Off-by-one: valid indexes are <code>0</code> to <code>len - 1</code>.</li><li>Modifying a list while looping over it, which skips items. Loop over a copy or build a new list.</li><li>Assuming an empty list has a first item; check <code>if items:</code> first.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Arrays give instant access by index because items sit side by side in memory.</li><li>Appending at the end is cheap; inserting or removing at the front shifts everything.</li><li>Two-pointer techniques process an array in one pass without extra memory.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Reverse an array in place without using <code>reverse()</code> or slicing. Then write a function that returns the second largest value in one pass.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def second_largest(a):
     first = second = float(&quot;-inf&quot;)

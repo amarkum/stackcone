@@ -63,6 +63,9 @@
             <ul><li>Use choose-explore-unchoose</li><li>Generate subsets and permutations</li><li>Prune the search</li></ul>
           </div>
       <p><strong>Backtracking</strong> is systematic trial and error. You build a solution one choice at a time; if a partial solution cannot possibly work, you <em>undo</em> the last choice and try another. It is the tool for problems that ask for <em>all</em> arrangements: subsets, permutations, puzzles like Sudoku and N-Queens.</p>
+      <h2>Try, and undo if it does not work</h2>
+      <p>Backtracking is how you would solve a maze: walk down a path; if you hit a dead end, step back to the last junction and try another turn. In code it means building a solution one choice at a time, exploring where it leads, and <em>undoing</em> the choice to try the next option. It systematically explores all possibilities while abandoning hopeless branches early. Puzzles such as Sudoku, N-Queens, generating subsets and permutations are all solved this way.</p>
+      <p>Every backtracking solution follows the same three-beat rhythm: <strong>choose</strong> an option, <strong>explore</strong> further with it, <strong>unchoose</strong> it.</p>
       <h2>The pattern: choose, explore, unchoose</h2>
       <p>Every backtracking solution has the same skeleton: if the current path is a complete answer, record it; otherwise, for each available option, add it to the path, recurse, then remove it again.</p>
       <h2>Subsets</h2>
@@ -125,6 +128,65 @@ print(combination_sum([2, 3, 6, 7], 7))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[[2, 2, 3], [7]]</pre></div>
       <h2>Cost</h2>
       <p>Backtracking is exponential in the worst case: 2 to the n subsets, n factorial permutations. That is acceptable for n up to roughly 10 to 20, which is exactly the range these puzzle problems use. If you find repeated subproblems, switch to dynamic programming.</p>
+      <h2>Generating every subset</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def subsets(items):
+    result, current = [], []
+
+    def explore(start):
+        result.append(current[:])          # record what we have so far
+        for i in range(start, len(items)):
+            current.append(items[i])       # choose
+            explore(i + 1)                 # explore
+            current.pop()                  # unchoose
+
+    explore(0)
+    return result
+
+print(subsets([1, 2, 3]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]</pre></div>
+      <h2>Generating permutations</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def permutations(items):
+    result, current, used = [], [], [False] * len(items)
+
+    def explore():
+        if len(current) == len(items):
+            result.append(current[:])
+            return
+        for i, x in enumerate(items):
+            if used[i]:
+                continue
+            used[i] = True; current.append(x)      # choose
+            explore()                              # explore
+            current.pop(); used[i] = False         # unchoose
+
+    explore()
+    return result
+
+print(permutations([&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;], [&#x27;A&#x27;, &#x27;C&#x27;, &#x27;B&#x27;], [&#x27;B&#x27;, &#x27;A&#x27;, &#x27;C&#x27;], [&#x27;B&#x27;, &#x27;C&#x27;, &#x27;A&#x27;], [&#x27;C&#x27;, &#x27;A&#x27;, &#x27;B&#x27;], [&#x27;C&#x27;, &#x27;B&#x27;, &#x27;A&#x27;]]</pre></div>
+      <h2>Pruning: stop bad branches early</h2>
+      <p>Backtracking checks constraints as it goes and abandons a branch the instant it cannot succeed. Here we find combinations that add up to a target, cutting off any branch that already exceeds it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def combos(nums, target):
+    nums.sort()
+    out, cur = [], []
+
+    def go(start, remaining):
+        if remaining == 0:
+            out.append(cur[:]); return
+        for i in range(start, len(nums)):
+            if nums[i] &gt; remaining:
+                break                        # prune: too big, and all later ones are bigger
+            cur.append(nums[i])
+            go(i, remaining - nums[i])           # can reuse the same number
+            cur.pop()
+
+    go(0, target)
+    return out
+
+print(combos([2, 3, 6, 7], 7))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[[2, 2, 3], [7]]</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Backtracking = choose, explore, unchoose; it tries every possibility systematically.</li><li>Copy the current path when saving a result (<code>current[:]</code>).</li><li>Prune branches as early as possible; otherwise the cost explodes exponentially.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Generate all valid combinations of n pairs of parentheses. For n=3 there are 5, such as <code>((()))</code> and <code>()()()</code>. Prune: only add <code>(</code> while opens &lt; n, and <code>)</code> while closes &lt; opens.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def gen_parens(n):
     out = []

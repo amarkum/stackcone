@@ -65,6 +65,8 @@
             <ul><li>Implement stack with list append/pop</li><li>Use collections.deque for queue</li><li>Name real-world uses</li></ul>
           </div>
       <p>Stacks and queues are simple structures that restrict <em>where</em> you can add and remove items. That restriction is their strength: it matches many real problems exactly and keeps every operation O(1).</p>
+      <h2>Two ways of waiting in line</h2>
+      <p>A <strong>stack</strong> is a pile of plates: you add to the top and take from the top, so the last one in is the first one out (LIFO). A <strong>queue</strong> is a line at a shop: people join at the back and leave from the front, so first in, first out (FIFO). Both restrict how you touch the data, and that restriction is exactly what makes them useful for modelling real processes.</p>
       <h2>Stack: last in, first out</h2>
       <p>Think of a stack of plates. You add to the top and take from the top. The two core operations are <code>push</code> and <code>pop</code>, plus <code>peek</code> to look without removing. In Python a plain list works: <code>append</code> is push and <code>pop()</code> is pop.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>stack = []
@@ -111,6 +113,56 @@ False</pre></div>
       <h2>Related structures</h2>
       <ul><li><strong>Deque</strong>: add and remove at both ends.</li><li><strong>Priority queue</strong>: serves the smallest (or largest) item first, usually built on a heap (<code>heapq</code> in Python).</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body">Popping from an empty stack or queue raises an error. Check <code>if stack:</code> first, or handle the exception.</p></aside>
+      <h2>A stack in action: undo</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>history = []
+
+for action in [&quot;type A&quot;, &quot;type B&quot;, &quot;delete B&quot;, &quot;type C&quot;]:
+    history.append(action)
+
+print(&quot;undo -&gt;&quot;, history.pop())
+print(&quot;undo -&gt;&quot;, history.pop())
+print(&quot;remaining:&quot;, history)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>undo -&gt; type C
+undo -&gt; delete B
+remaining: [&#x27;type A&#x27;, &#x27;type B&#x27;]</pre></div>
+      <h2>A queue in action: first come, first served</h2>
+      <p>Use <code>collections.deque</code> for queues. Removing from the front of a plain list is slow because every item shifts, while <code>deque.popleft()</code> is instant.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+
+line = deque()
+line.append(&quot;Ada&quot;)
+line.append(&quot;Linus&quot;)
+line.append(&quot;Grace&quot;)
+
+print(&quot;serving&quot;, line.popleft())
+print(&quot;serving&quot;, line.popleft())
+print(&quot;waiting:&quot;, list(line))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>serving Ada
+serving Linus
+waiting: [&#x27;Grace&#x27;]</pre></div>
+      <h2>Worked example: balanced brackets, explained</h2>
+      <p>Each opening bracket is pushed; each closing bracket must match the most recent unclosed opener, which is exactly the top of the stack.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def balanced(text):
+    pairs = {&quot;)&quot;: &quot;(&quot;, &quot;]&quot;: &quot;[&quot;, &quot;}&quot;: &quot;{&quot;}
+    stack = []
+    for ch in text:
+        if ch in &quot;([{&quot;:
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+
+for s in [&quot;([]{})&quot;, &quot;([)]&quot;, &quot;((&quot;, &quot;&quot;]:
+    print(repr(s), balanced(s))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>&#x27;([]{})&#x27; True
+&#x27;([)]&#x27; False
+&#x27;((&#x27; False
+&#x27;&#x27; True</pre></div>
+      <h2>Where you meet these every day</h2>
+      <ul><li>The <strong>call stack</strong>: every function call is pushed, every return pops (this is why infinite recursion crashes with a "stack overflow").</li><li>Browser <strong>back</strong> button and editor <strong>undo</strong>: stacks.</li><li>Print spoolers, message brokers, task workers: queues.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Stack = LIFO (push and pop at the top); queue = FIFO (enqueue at the back, dequeue at the front).</li><li>Use a list for a stack and <code>collections.deque</code> for a queue.</li><li>Matching-pairs problems (brackets, tags) are a natural fit for a stack.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Use a stack to reverse a string. Then use a queue to simulate three customers being served in arrival order.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="from collections import deque
 

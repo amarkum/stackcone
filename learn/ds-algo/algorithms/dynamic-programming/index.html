@@ -63,6 +63,9 @@
             <ul><li>Recognize DP problems</li><li>Write memoized and tabulated solutions</li><li>Reduce space</li></ul>
           </div>
       <p><strong>Dynamic programming</strong> (DP) solves problems by breaking them into <em>overlapping subproblems</em>, solving each only once and reusing the stored answer. It turns many exponential recursions into polynomial ones. Two properties signal DP: <em>optimal substructure</em> (the best answer is built from best answers to smaller pieces) and <em>overlapping subproblems</em> (the same small problem comes up repeatedly).</p>
+      <h2>Do not solve the same problem twice</h2>
+      <p>If a friend asks you the same difficult question ten times, you would write the answer down after the first time. <strong>Dynamic programming</strong> (DP) applies that idea to algorithms. When a problem breaks into smaller subproblems that <em>repeat</em>, you solve each subproblem once, store the result, and reuse it. Problems that took exponential time recursively often become fast and polynomial.</p>
+      <p>Two signs that DP may help: the problem asks for a best/count/yes-no answer, and a naive recursion keeps recomputing the same inputs.</p>
       <h2>A recipe</h2>
       <ul><li>Define the <strong>state</strong>: what do the parameters of a subproblem mean?</li><li>Write the <strong>recurrence</strong>: how does a state depend on smaller states?</li><li>Identify the <strong>base cases</strong>.</li><li>Choose <strong>memoization</strong> (top-down recursion plus a cache) or <strong>tabulation</strong> (bottom-up loops filling a table).</li></ul>
       <h2>Climbing stairs</h2>
@@ -124,6 +127,47 @@ print(edit_distance(&quot;kitten&quot;, &quot;sitting&quot;))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3</pre></div>
       <h2>Tips</h2>
       <ul><li>Start with plain recursion, then add a cache: the fastest path to a correct DP.</li><li>Draw the table by hand for a tiny input to find the recurrence.</li><li>Look at which earlier cells a cell needs; often you can keep just one or two rows to save memory.</li><li>Time is roughly (number of states) times (work per state).</li></ul>
+      <h2>From slow recursion to DP, in three steps</h2>
+      <p>Count ways to climb n stairs taking 1 or 2 steps at a time. First the plain recursion, then the same idea with a memo, then a bottom-up table.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from functools import lru_cache
+
+def ways_slow(n):
+    return 1 if n &lt;= 1 else ways_slow(n - 1) + ways_slow(n - 2)
+
+@lru_cache(None)
+def ways_memo(n):
+    return 1 if n &lt;= 1 else ways_memo(n - 1) + ways_memo(n - 2)
+
+def ways_table(n):
+    dp = [1, 1] + [0] * (n - 1)
+    for i in range(2, n + 1):
+        dp[i] = dp[i - 1] + dp[i - 2]
+    return dp[n]
+
+print(ways_slow(15), ways_memo(15), ways_table(15))
+print(ways_table(50))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>987 987 987
+20365011074</pre></div>
+      <h2>The DP recipe</h2>
+      <ul><li><strong>State</strong>: what does <code>dp[i]</code> mean, in one sentence?</li><li><strong>Transition</strong>: how does <code>dp[i]</code> follow from smaller states?</li><li><strong>Base cases</strong>: which values are known directly?</li><li><strong>Order</strong>: fill the table so dependencies are ready first.</li><li><strong>Answer</strong>: which cell holds the result?</li></ul>
+      <h2>Coin change, where greedy failed</h2>
+      <p>DP solves the coin problem that greedy got wrong. <code>dp[a]</code> is the fewest coins needed to make amount <code>a</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def fewest_coins(coins, amount):
+    INF = float(&quot;inf&quot;)
+    dp = [0] + [INF] * amount
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c &lt;= a and dp[a - c] + 1 &lt; dp[a]:
+                dp[a] = dp[a - c] + 1
+    return dp[amount] if dp[amount] != INF else -1
+
+print(fewest_coins([1, 3, 4], 6))      # 2  (3 + 3)
+print(fewest_coins([2], 3))            # -1 (impossible)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>2
+-1</pre></div>
+      <p>For 6 with coins 1, 3, 4 greedy needed three coins; DP correctly finds two. DP considers <em>every</em> option for each amount, remembering the best.</p>
+      <h2>Key takeaways</h2>
+      <ul><li>DP stores answers to overlapping subproblems so each is solved once.</li><li>Define the state, the transition and the base cases, then fill a table (or memoize).</li><li>DP finds optimal answers where greedy can fail, at the cost of extra memory.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Find the length of the longest increasing subsequence of <code>[10, 9, 2, 5, 3, 7, 101, 18]</code> using <code>dp[i]</code> = best length ending at index i.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def lis(nums):
     dp = [1] * len(nums)

@@ -63,6 +63,8 @@
             <ul><li>Identify base and recursive cases</li><li>Trace the call stack</li><li>Convert recursion to iteration</li></ul>
           </div>
       <p>A <strong>recursive</strong> function solves a problem by calling itself on a smaller version of the same problem. It feels odd at first, but many problems (trees, nested folders, divide-and-conquer) are naturally recursive, and the code ends up shorter than a loop.</p>
+      <h2>Solving a problem by shrinking it</h2>
+      <p>Recursion means a function that calls <em>itself</em> on a smaller version of the same problem. Russian nesting dolls are a good picture: to count the dolls, open the outer one, count what is inside, add one. Every recursive solution needs two parts: a <strong>base case</strong> (the smallest problem, answered directly) and a <strong>recursive case</strong> (reduce the problem and trust the function to solve the smaller one). Forget the base case and the function never stops.</p>
       <h2>Two required parts</h2>
       <ul><li><strong>Base case</strong>: the smallest problem, answered directly. Without it, the function never stops.</li><li><strong>Recursive case</strong>: reduce the problem and call yourself, trusting that the call returns the right answer for the smaller input.</li></ul>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def factorial(n):
@@ -115,6 +117,60 @@ print(fib(50))</code></pre></div>
       <h2>Recursion vs iteration</h2>
       <p>Anything recursive can be written with a loop and an explicit stack. Prefer a loop when depth could be large or the loop is just as clear; prefer recursion when it mirrors the structure of the problem.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Debugging tip</p><p class="learn-callout-body">Write the base case first, then check that every recursive call moves strictly closer to it. Print the arguments at the top of the function to watch the stack build.</p></aside>
+      <h2>Factorial, traced</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def factorial(n):
+    if n &lt;= 1:                  # base case
+        return 1
+    return n * factorial(n - 1) # recursive case
+
+print(factorial(5))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>120</pre></div>
+      <p>Trace it: <code>factorial(3)</code> waits for <code>factorial(2)</code>, which waits for <code>factorial(1)</code>. That returns 1, then 2 * 1 = 2, then 3 * 2 = 6. Each call waits on the <strong>call stack</strong> until the one below finishes.</p>
+      <h2>Watch the calls happen</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def countdown(n, depth=0):
+    print(&quot;  &quot; * depth + f&quot;countdown({n})&quot;)
+    if n == 0:
+        print(&quot;  &quot; * depth + &quot;liftoff&quot;)
+        return
+    countdown(n - 1, depth + 1)
+    print(&quot;  &quot; * depth + f&quot;back in countdown({n})&quot;)
+
+countdown(2)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>countdown(2)
+  countdown(1)
+    countdown(0)
+    liftoff
+  back in countdown(1)
+back in countdown(2)</pre></div>
+      <h2>Worked example: summing a nested list</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def total(node):
+    if isinstance(node, int):
+        return node
+    return sum(total(child) for child in node)
+
+print(total([1, [2, 3], [4, [5, 6]]]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>21</pre></div>
+      <h2>Making Fibonacci fast with memoization</h2>
+      <p>The obvious version recomputes the same values over and over, taking exponential time. Remembering answers (memoization) turns it linear.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from functools import lru_cache
+
+calls = 0
+
+def slow(n):
+    global calls
+    calls += 1
+    return n if n &lt; 2 else slow(n - 1) + slow(n - 2)
+
+@lru_cache(None)
+def fast(n):
+    return n if n &lt; 2 else fast(n - 1) + fast(n - 2)
+
+print(slow(20), &quot;calls:&quot;, calls)
+print(fast(20), &quot;cache size:&quot;, fast.cache_info().currsize)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>6765 calls: 21891
+6765 cache size: 21</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Every recursive function needs a base case and a step that moves toward it.</li><li>Calls stack up and unwind; a missing base case causes a stack overflow.</li><li>Recursion suits nested and tree-shaped data; memoize when subproblems repeat.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a recursive <code>is_palindrome(s)</code> that returns True if a string reads the same backward.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def is_palindrome(s):
     if len(s) &lt;= 1:

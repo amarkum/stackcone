@@ -65,6 +65,8 @@
             <ul><li>Represent a graph as adjacency list</li><li>Run BFS for shortest unweighted path</li><li>Know when graphs model real systems</li></ul>
           </div>
       <p>A <strong>graph</strong> is a set of <em>vertices</em> (nodes) joined by <em>edges</em>. It models anything made of connections: roads between cities, friends in a social network, links between web pages, packages that depend on other packages. A tree is just a graph with no cycles and one root.</p>
+      <h2>Anything connected is a graph</h2>
+      <p>A graph is just <em>things</em> (nodes, or vertices) and <em>connections</em> between them (edges). Friends on a social network, cities joined by roads, web pages linking to each other, tasks that depend on other tasks: all graphs. Trees are a special, well-behaved kind of graph. Graph algorithms answer questions such as "is there a route from A to B?", "what is the shortest route?" and "who are the friends of friends?"</p>
       <h2>Kinds of graphs</h2>
       <ul><li><strong>Undirected</strong>: an edge works both ways (friendship). <strong>Directed</strong>: an edge has a direction (follows, links to).</li><li><strong>Weighted</strong>: edges carry a cost such as distance or time.</li><li><strong>Cyclic</strong> or <strong>acyclic</strong>: whether you can follow edges and return to where you started. A directed acyclic graph (DAG) models task dependencies.</li></ul>
       <h2>Representing a graph</h2>
@@ -113,6 +115,62 @@ print(sorted(dfs(&quot;A&quot;)))</code></pre></div>
       <h2>Where to go next</h2>
       <ul><li><strong>Dijkstra</strong>: shortest paths with weighted edges.</li><li><strong>Topological sort</strong>: order tasks so dependencies come first.</li><li><strong>Union-Find</strong>: quickly answer whether two nodes are connected.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Always mark visited</p><p class="learn-callout-body">Forgetting the <code>seen</code> set is the most common graph bug. On any graph with a cycle it causes an infinite loop.</p></aside>
+      <h2>Store a graph as an adjacency list</h2>
+      <p>The most common representation is a dictionary that maps each node to the list of its neighbours.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>graph = {
+    &quot;Ada&quot;:   [&quot;Linus&quot;, &quot;Grace&quot;],
+    &quot;Linus&quot;: [&quot;Ada&quot;, &quot;Alan&quot;],
+    &quot;Grace&quot;: [&quot;Ada&quot;, &quot;Alan&quot;],
+    &quot;Alan&quot;:  [&quot;Linus&quot;, &quot;Grace&quot;, &quot;Tim&quot;],
+    &quot;Tim&quot;:   [&quot;Alan&quot;],
+}
+
+print(graph[&quot;Alan&quot;])
+print(len(graph[&quot;Ada&quot;]), &quot;friends&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;Linus&#x27;, &#x27;Grace&#x27;, &#x27;Tim&#x27;]
+2 friends</pre></div>
+      <h2>Breadth-first search finds the shortest path</h2>
+      <p>BFS explores all neighbours first, then their neighbours, spreading outward one layer at a time like ripples in a pond. Because it visits nearer nodes before farther ones, the first time it reaches a target it has found the route with the fewest hops.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+
+graph = {
+    &quot;Ada&quot;: [&quot;Linus&quot;, &quot;Grace&quot;], &quot;Linus&quot;: [&quot;Ada&quot;, &quot;Alan&quot;],
+    &quot;Grace&quot;: [&quot;Ada&quot;, &quot;Alan&quot;], &quot;Alan&quot;: [&quot;Linus&quot;, &quot;Grace&quot;, &quot;Tim&quot;], &quot;Tim&quot;: [&quot;Alan&quot;],
+}
+
+def shortest_path(start, goal):
+    queue = deque([[start]])
+    seen = {start}
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        if node == goal:
+            return path
+        for nxt in graph[node]:
+            if nxt not in seen:
+                seen.add(nxt)
+                queue.append(path + [nxt])
+    return None
+
+print(shortest_path(&quot;Ada&quot;, &quot;Tim&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;Ada&#x27;, &#x27;Linus&#x27;, &#x27;Alan&#x27;, &#x27;Tim&#x27;]</pre></div>
+      <h2>Why the seen set is essential</h2>
+      <p>Graphs can contain loops (Ada knows Linus, Linus knows Ada). Without remembering visited nodes, the search would walk in circles forever. Marking nodes as seen the moment you queue them keeps every node visited at most once.</p>
+      <h2>Depth-first search explores one branch fully</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>graph = {&quot;A&quot;: [&quot;B&quot;, &quot;C&quot;], &quot;B&quot;: [&quot;D&quot;], &quot;C&quot;: [&quot;D&quot;], &quot;D&quot;: []}
+
+def dfs(node, seen=None):
+    seen = seen if seen is not None else []
+    seen.append(node)
+    for nxt in graph[node]:
+        if nxt not in seen:
+            dfs(nxt, seen)
+    return seen
+
+print(dfs(&quot;A&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;A&#x27;, &#x27;B&#x27;, &#x27;D&#x27;, &#x27;C&#x27;]</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A graph is nodes plus edges; store it as a dict of neighbour lists.</li><li>BFS uses a queue and finds shortest paths in unweighted graphs; DFS uses recursion (or a stack) and explores deeply.</li><li>Always track visited nodes to avoid infinite loops.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend <code>bfs</code> to take a target and return the shortest path as a list of nodes, or <code>None</code> if unreachable.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="from collections import deque
 
