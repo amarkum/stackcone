@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow">
-  <title>System Design Fundamentals | System Design | stackcone Learn</title>
-  <meta name="description" content="Requirements, latency, throughput, CAP and a framework for every design interview.">
-  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/">
+  <title>Key-Value Store and Pastebin | System Design | stackcone Learn</title>
+  <meta name="description" content="A Dynamo-style KV store, then Pastebin as a thin API on top of it.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/kv-store/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,7 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> / System Design Fundamentals</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> / Key-Value Store and Pastebin</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="sysdesign">
           <div class="learn-sidebar-head">
@@ -49,14 +49,14 @@
           <p class="learn-sidebar-progress" data-progress-count>0 of 15 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
           <nav class="learn-sidebar-lessons">
-          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/fundamentals/" aria-current="page" data-lesson="sysdesign-fundamentals" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">System Design Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/fundamentals/" data-lesson="sysdesign-fundamentals" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">System Design Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/scaling-caching/" data-lesson="sysdesign-scaling-caching" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Scaling and Caching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/databases/" data-lesson="sysdesign-databases" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Choosing and Scaling Databases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/queues-apis/" data-lesson="sysdesign-queues-apis" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Queues, APIs and Reliability</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/unique-id/" data-lesson="sysdesign-unique-id" data-minutes="18"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Unique ID Generator</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/case-study/" data-lesson="sysdesign-case-study" data-minutes="22"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">URL Shortener</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/rate-limiter/" data-lesson="sysdesign-rate-limiter" data-minutes="20"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/kv-store/" data-lesson="sysdesign-kv-store" data-minutes="22"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/kv-store/" aria-current="page" data-lesson="sysdesign-kv-store" data-minutes="22"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/news-feed/" data-lesson="sysdesign-news-feed" data-minutes="22"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">News Feed (Twitter / Instagram)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/chat/" data-lesson="sysdesign-chat" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Chat System (WhatsApp / Messenger)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/video/" data-lesson="sysdesign-video" data-minutes="22"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Video Streaming (YouTube)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -68,23 +68,23 @@
         </aside>
         <article class="blog-article learn-lesson">
           <div class="learn-lesson-top">
-            <p class="learn-eyebrow"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> · Lesson 1 of 15</p>
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> · Lesson 8 of 15</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <span class="learn-top-btn is-disabled"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</span>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/sysdesign/scaling-caching/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/ds-algo/sysdesign/rate-limiter/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/sysdesign/news-feed/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
-          <h1>System Design Fundamentals</h1>
-          <p class="learn-summary">Requirements, latency, throughput, CAP and a framework for every design interview.</p>
+          <h1>Key-Value Store and Pastebin</h1>
+          <p class="learn-summary">A Dynamo-style KV store, then Pastebin as a thin API on top of it.</p>
           <ul class="learn-facts">
-            <li><span class="learn-badge">Intermediate</span></li>
+            <li><span class="learn-badge">Advanced</span></li>
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>22 min read</li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
-          
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/sysdesign/rate-limiter/">Lesson 7: Rate Limiter</a></p>
           <div class="learn-objectives">
             <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
-            <ul><li>Run the 6-step interview framework</li><li>Estimate QPS and storage</li><li>Name the designs interviewers ask</li></ul>
+            <ul><li>Shard with consistent hashing</li><li>Replicate and resolve conflicts</li><li>Design Pastebin on a KV store</li></ul>
           </div>
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
@@ -99,51 +99,50 @@
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
           </section>
-      <p><strong>System design</strong> is deciding how the pieces of a software system (servers, databases, caches, queues, CDNs) fit together so it works correctly for many users, stays fast and survives failures. There is rarely one right answer. Interviews reward a <em>structured</em> walk-through: clarify, estimate, sketch, deep-dive, trade-offs.</p>
-<h2>Key vocabulary</h2>
-<ul><li><strong>Latency</strong>: how long one request takes (p50 / p99 milliseconds).</li><li><strong>Throughput</strong>: requests per second (QPS).</li><li><strong>Availability</strong>: fraction of time the system works. Three nines (99.9%) is about 8.8 hours down a year; four nines about 53 minutes.</li><li><strong>Scalability</strong>: handle growth by adding resources.</li><li><strong>Reliability</strong>: keep working correctly despite faults.</li><li><strong>Consistency</strong>: whether every read sees the latest write.</li></ul>
-<h2>A framework for any design</h2>
-<ul><li><strong>1. Clarify requirements.</strong> Functional (what it does) and non-functional (scale, latency, availability, consistency). Ask; do not assume. Drop features if the interviewer agrees (for example no search in v1).</li><li><strong>2. Estimate scale.</strong> DAU, QPS, read/write ratio, storage, bandwidth. Back-of-the-envelope is enough.</li><li><strong>3. Sketch the API and data model.</strong> Main endpoints, core tables or keys.</li><li><strong>4. Draw a high-level design.</strong> Clients, DNS, load balancer, app servers, database, cache, object storage, queue.</li><li><strong>5. Deep-dive on the hard parts.</strong> The bottleneck the interviewer cares about.</li><li><strong>6. Trade-offs and failure modes.</strong> What breaks? What changes at 100x traffic?</li></ul>
-<div class="diagram-wrap" data-diagram-title="Interview skeleton"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart LR
-  Q[Clarify] --> E[Estimate]
-  E --> A[API and data]
-  A --> H[High-level design]
-  H --> D[Deep dive]
-  D --> T[Trade-offs]</div></div><p class="diagram-caption">Use this order in every interview. Invite the interviewer to steer after the high-level sketch.</p></div>
-<h2>Numbers you should know</h2>
-<p>A day has 86,400 seconds (call it 100,000). One million requests per day is about 12 QPS. Memory is ~100 ns, SSD ~100 µs, disk seek ~10 ms, same-datacenter RTT ~0.5 ms, cross-continent ~150 ms. A typical app server might handle 1,000–5,000 simple QPS; a single Postgres primary often handles a few thousand writes per second before you shard.</p>
-<div class="learn-code-wrap" data-lang="python"><pre><code># Example: a photo app with 10M daily users
-users = 10_000_000
-uploads_per_user = 2
-avg_photo_mb = 3
+      <p>A distributed <strong>key-value store</strong> (Dynamo, Cassandra, Riak) is the backbone under URL shorteners, sessions, and Pastebin. Interviews want consistent hashing, replication, conflict resolution and a thin API on top — Pastebin is that API.</p>
+<h2>Part A — Dynamo-style KV</h2>
+<h3>Requirements</h3>
+<ul><li><code>put(key, value)</code>, <code>get(key)</code>, optional TTL. Values from bytes to a few MB.</li><li>High availability over strict consistency (AP in CAP). Tunable <code>N, W, R</code>.</li><li>Scale by adding nodes; survive node and network failure.</li></ul>
+<div class="diagram-wrap" data-diagram-title="Consistent hash ring"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart TB
+  subgraph ring [Hash ring]
+    N1[Node A]
+    N2[Node B]
+    N3[Node C]
+    N4[Node D]
+  end
+  K[hash key] --> N2
+  N2 -->|replica 1| N3
+  N2 -->|replica 2| N4</div></div><p class="diagram-caption">The key lands on the first node clockwise, then the next N-1 nodes store replicas. Virtual nodes keep load even.</p></div>
+<h3>Core mechanics</h3>
+<ul><li><strong>Partitioning</strong>: consistent hashing with virtual nodes. A lookup table or gossip tells clients (or a coordinator) who owns the key.</li><li><strong>Replication</strong>: store N copies (often 3). Coordinator sends to W nodes on write, waits for R on read. <code>W + R &gt; N</code> gives quorum consistency (you overlap at least one fresh replica).</li><li><strong>Sloppy quorum / hinted handoff</strong>: if a replica is down, write to a neighbor with a hint, replay later.</li><li><strong>Conflicts</strong>: vector clocks or last-write-wins. Reads may return siblings; the client (or a merge function) reconciles.</li><li><strong>Anti-entropy</strong>: Merkle trees compare replicas in the background and repair.</li><li><strong>Storage engine</strong>: LSM tree (Cassandra, RocksDB) for high write throughput; SSTables plus compaction.</li></ul>
+<div class="learn-code-wrap" data-lang="python"><pre><code># Quorum: N=3, W=2, R=2  -&gt; a read hits at least one node that took the write
+N, W, R = 3, 2, 2
+print(&quot;quorum overlap&quot;, W + R &gt; N)
+print(&quot;fast write, stale-possible read&quot;, (W, R) == (1, 1))</code></pre></div>
+<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>quorum overlap True
+fast write, stale-possible read True</pre></div>
+<h2>Part B — Pastebin</h2>
+<p>Pastebin is a KV store with a public URL, paste metadata, and optional expiry — TinyURL for blobs of text.</p>
+<div class="learn-code-wrap" data-lang="text"><pre><code>POST /api/v1/pastes   { content, expire_seconds?, language? } -&gt; { url }
+GET  /{id}            raw or HTML view
+GET  /{id}.json       metadata
 
-uploads_per_day = users * uploads_per_user            # 20M
-uploads_per_sec = uploads_per_day / 86_400            # ~230/s average
-peak_per_sec = uploads_per_sec * 3                    # ~700/s at peak
-storage_per_day_tb = uploads_per_day * avg_photo_mb / 1_000_000   # 60 TB/day
-print(round(uploads_per_sec), round(peak_per_sec), storage_per_day_tb)</code></pre></div>
-<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>231 694 60.0</pre></div>
-<p>Sixty terabytes a day means object storage (S3) and a CDN, not a <code>BYTEA</code> column. The estimate decides the architecture.</p>
-<h2>CAP, PACELC and consistency</h2>
-<p>During a network <em>partition</em> you cannot have both perfect consistency and perfect availability. Banks lean CP (refuse the write). Feeds lean AP (serve a slightly stale timeline). <strong>PACELC</strong> adds: even without a partition, you trade latency versus consistency (sync replication is safer and slower). Interviews want you to <em>name</em> the choice for this product.</p>
-<h2>Read-heavy vs write-heavy</h2>
-<p>Most consumer products read far more than they write (often 100:1). That points to caching, CDNs and read replicas. Write-heavy systems (logs, metrics, chat ingest) point to queues, batching and append-friendly stores.</p>
-<h2>What interviewers actually ask</h2>
-<p>The rest of this course is the standard catalog — the same designs you see in Educative's <em>Grokking the System Design Interview</em> and in on-sites at Meta, Google, Amazon and Uber. Lessons 2–4 are building blocks. Lessons 5–15 are full case studies:</p>
-<ul><li><strong>Unique ID generator</strong> — Snowflake, ticket servers, UUID.</li><li><strong>URL shortener</strong> (TinyURL) — encoding, redirects, analytics.</li><li><strong>Rate limiter</strong> — token bucket, sliding window, Redis.</li><li><strong>Key-value store / Pastebin</strong> — consistent hashing, replication, gossip.</li><li><strong>News feed</strong> (Twitter / Instagram) — fan-out on write vs read.</li><li><strong>Chat</strong> (WhatsApp / Messenger) — WebSockets, receipts, groups.</li><li><strong>Video</strong> (YouTube) — transcode, CDN, adaptive bitrate.</li><li><strong>File storage</strong> (Dropbox) — chunking, sync, sharing.</li><li><strong>Web crawler</strong> — frontier, politeness, dedup.</li><li><strong>Typeahead and nearby search</strong> — tries, geohash, Uber/Yelp.</li><li><strong>Notifications</strong> — push / email / SMS fan-out.</li></ul>
-<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Avoid over-engineering</p><p class="learn-callout-body">Start with the simplest design that meets the stated numbers. Add a cache, queue or shard only when a calculation justifies it. Interviewers mark people down for jumping to Kafka and Cassandra for 100 QPS.</p></aside>
-<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A service gets 50 million requests a day. Estimate average and peak QPS (assume peak is 5 times the average) and say whether one server handling 1,000 QPS would suffice.</p></aside><div class="learn-code-wrap learn-practice" data-lang="python" data-solution="daily = 50_000_000
-avg = daily / 86_400        # ~579 QPS
-peak = avg * 5              # ~2,894 QPS
-print(round(avg), round(peak))
-# One 1,000 QPS server is not enough at peak: need at least 3-4 plus redundancy."><pre><code># Write your solution here
+key   = paste id (base62 of Snowflake)
+value = content (or S3 pointer if &gt; 1 MB)
+meta  = created_at, expire_at, user_id, views</code></pre></div>
+<ul><li>IDs from lesson 5. Content under ~1 MB in the KV / DB; larger blobs go to object storage, metadata keeps the pointer.</li><li>Hot pastes (viral gists) sit in Redis. CDN for public immutable pastes.</li><li>Expiry: TTL in the KV, plus a sweeper for S3 objects.</li><li>Abuse: size caps, rate limits, malware scanning of pastes.</li></ul>
+<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Interview map</p><p class="learn-callout-body">If they say 'design Dynamo', stay on the ring, N/W/R, and repair. If they say Pastebin, spend two minutes on the KV, then APIs, expiry and S3.</p></aside>
+<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Paste.bin must store 10 million new pastes a day, 20% larger than 1 MB, kept for 30 days. Where does the data live, and what is roughly 30-day storage?</p></aside><div class="learn-code-wrap learn-practice" data-lang="text" data-solution="Average paste ~30 KB for the 80% small ones; 20% at ~2 MB.
+Small: 8e6 * 30KB ~ 240 GB/day
+Large: 2e6 * 2MB ~ 4 TB/day
+30 days ~ 127 TB. Small pastes in Cassandra/Dynamo; large in S3 with id -&gt; s3_key in metadata. TTL 30 days. Cache hot ids in Redis."><pre><code>// Write your solution here
 </code></pre></div>
-          <a class="learn-upnext" href="/learn/ds-algo/sysdesign/scaling-caching/"><span class="learn-upnext-label">Up next · Lesson 2</span><strong>Scaling and Caching</strong><small>Load balancers, horizontal scaling, caches, CDNs and consistent hashing.</small></a>
+          <a class="learn-upnext" href="/learn/ds-algo/sysdesign/news-feed/"><span class="learn-upnext-label">Up next · Lesson 9</span><strong>News Feed (Twitter / Instagram)</strong><small>Fan-out on write vs read, ranking, media and celebrity users.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
-            <span class="learn-nav-btn is-disabled">Previous</span>
+            <a class="learn-nav-btn" href="/learn/ds-algo/sysdesign/rate-limiter/">Previous</a>
             <div class="learn-lesson-nav-end">
-            <button type="button" class="learn-complete" data-mark-complete="sysdesign-fundamentals" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/sysdesign/scaling-caching/">Next lesson</a>
+            <button type="button" class="learn-complete" data-mark-complete="sysdesign-kv-store" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/sysdesign/news-feed/">Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">

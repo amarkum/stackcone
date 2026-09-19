@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow">
-  <title>System Design Fundamentals | System Design | stackcone Learn</title>
-  <meta name="description" content="Requirements, latency, throughput, CAP and a framework for every design interview.">
-  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/">
+  <title>Rate Limiter | System Design | stackcone Learn</title>
+  <meta name="description" content="Token bucket, sliding window, Redis counters and where to place a limiter.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/rate-limiter/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,7 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> / System Design Fundamentals</p>
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> / Rate Limiter</p>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="sysdesign">
           <div class="learn-sidebar-head">
@@ -49,13 +49,13 @@
           <p class="learn-sidebar-progress" data-progress-count>0 of 15 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
           <nav class="learn-sidebar-lessons">
-          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/fundamentals/" aria-current="page" data-lesson="sysdesign-fundamentals" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">System Design Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/fundamentals/" data-lesson="sysdesign-fundamentals" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">System Design Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/scaling-caching/" data-lesson="sysdesign-scaling-caching" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Scaling and Caching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/databases/" data-lesson="sysdesign-databases" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Choosing and Scaling Databases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/queues-apis/" data-lesson="sysdesign-queues-apis" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Queues, APIs and Reliability</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/unique-id/" data-lesson="sysdesign-unique-id" data-minutes="18"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Unique ID Generator</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/case-study/" data-lesson="sysdesign-case-study" data-minutes="22"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">URL Shortener</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/rate-limiter/" data-lesson="sysdesign-rate-limiter" data-minutes="20"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/rate-limiter/" aria-current="page" data-lesson="sysdesign-rate-limiter" data-minutes="20"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/kv-store/" data-lesson="sysdesign-kv-store" data-minutes="22"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/news-feed/" data-lesson="sysdesign-news-feed" data-minutes="22"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">News Feed (Twitter / Instagram)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/chat/" data-lesson="sysdesign-chat" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Chat System (WhatsApp / Messenger)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -68,23 +68,23 @@
         </aside>
         <article class="blog-article learn-lesson">
           <div class="learn-lesson-top">
-            <p class="learn-eyebrow"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> · Lesson 1 of 15</p>
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> · Lesson 7 of 15</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <span class="learn-top-btn is-disabled"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</span>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/sysdesign/scaling-caching/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/ds-algo/sysdesign/case-study/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/sysdesign/kv-store/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
-          <h1>System Design Fundamentals</h1>
-          <p class="learn-summary">Requirements, latency, throughput, CAP and a framework for every design interview.</p>
+          <h1>Rate Limiter</h1>
+          <p class="learn-summary">Token bucket, sliding window, Redis counters and where to place a limiter.</p>
           <ul class="learn-facts">
-            <li><span class="learn-badge">Intermediate</span></li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>22 min read</li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
-          
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/sysdesign/case-study/">Lesson 6: URL Shortener</a></p>
           <div class="learn-objectives">
             <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
-            <ul><li>Run the 6-step interview framework</li><li>Estimate QPS and storage</li><li>Name the designs interviewers ask</li></ul>
+            <ul><li>Pick an algorithm</li><li>Place the limiter in the stack</li><li>Scale with Redis</li></ul>
           </div>
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
@@ -99,51 +99,60 @@
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
           </section>
-      <p><strong>System design</strong> is deciding how the pieces of a software system (servers, databases, caches, queues, CDNs) fit together so it works correctly for many users, stays fast and survives failures. There is rarely one right answer. Interviews reward a <em>structured</em> walk-through: clarify, estimate, sketch, deep-dive, trade-offs.</p>
-<h2>Key vocabulary</h2>
-<ul><li><strong>Latency</strong>: how long one request takes (p50 / p99 milliseconds).</li><li><strong>Throughput</strong>: requests per second (QPS).</li><li><strong>Availability</strong>: fraction of time the system works. Three nines (99.9%) is about 8.8 hours down a year; four nines about 53 minutes.</li><li><strong>Scalability</strong>: handle growth by adding resources.</li><li><strong>Reliability</strong>: keep working correctly despite faults.</li><li><strong>Consistency</strong>: whether every read sees the latest write.</li></ul>
-<h2>A framework for any design</h2>
-<ul><li><strong>1. Clarify requirements.</strong> Functional (what it does) and non-functional (scale, latency, availability, consistency). Ask; do not assume. Drop features if the interviewer agrees (for example no search in v1).</li><li><strong>2. Estimate scale.</strong> DAU, QPS, read/write ratio, storage, bandwidth. Back-of-the-envelope is enough.</li><li><strong>3. Sketch the API and data model.</strong> Main endpoints, core tables or keys.</li><li><strong>4. Draw a high-level design.</strong> Clients, DNS, load balancer, app servers, database, cache, object storage, queue.</li><li><strong>5. Deep-dive on the hard parts.</strong> The bottleneck the interviewer cares about.</li><li><strong>6. Trade-offs and failure modes.</strong> What breaks? What changes at 100x traffic?</li></ul>
-<div class="diagram-wrap" data-diagram-title="Interview skeleton"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart LR
-  Q[Clarify] --> E[Estimate]
-  E --> A[API and data]
-  A --> H[High-level design]
-  H --> D[Deep dive]
-  D --> T[Trade-offs]</div></div><p class="diagram-caption">Use this order in every interview. Invite the interviewer to steer after the high-level sketch.</p></div>
-<h2>Numbers you should know</h2>
-<p>A day has 86,400 seconds (call it 100,000). One million requests per day is about 12 QPS. Memory is ~100 ns, SSD ~100 µs, disk seek ~10 ms, same-datacenter RTT ~0.5 ms, cross-continent ~150 ms. A typical app server might handle 1,000–5,000 simple QPS; a single Postgres primary often handles a few thousand writes per second before you shard.</p>
-<div class="learn-code-wrap" data-lang="python"><pre><code># Example: a photo app with 10M daily users
-users = 10_000_000
-uploads_per_user = 2
-avg_photo_mb = 3
+      <p>A <strong>rate limiter</strong> caps how often a client may call an API. Interviewers ask it on its own and as a piece of every public API. Goals: stop abuse, protect downstreams, keep fair usage, return HTTP 429 with a <code>Retry-After</code> header.</p>
+<h2>1. Requirements</h2>
+<ul><li>Limit by API key, IP, or user id; different rules per endpoint (<code>POST /login</code> stricter than <code>GET /public</code>).</li><li>Low latency on the allow path (in-memory or Redis, not a disk DB).</li><li>Accurate enough across many app servers. Slight softness is OK; double-charging is not the failure mode here.</li><li>Optional: burst vs sustained rate, distributed, admin-configurable rules.</li></ul>
+<h2>2. Algorithms</h2>
+<ul><li><strong>Token bucket</strong> (default answer): tokens refill at rate <em>r</em>, bucket holds at most <em>c</em>. Allows bursts up to <em>c</em>, then steady <em>r</em>.</li><li><strong>Leaky bucket</strong>: queue requests and drain at a fixed rate. Smooths bursts; can add latency.</li><li><strong>Fixed window</strong>: count hits in the current minute. Cheap, but a burst at the window edge can be 2× the limit.</li><li><strong>Sliding window log</strong>: store timestamps, drop those older than the window. Accurate, more memory.</li><li><strong>Sliding window counter</strong>: weight the previous window by overlap. Good Redis compromise.</li></ul>
+<div class="learn-code-wrap" data-lang="python"><pre><code>import time
 
-uploads_per_day = users * uploads_per_user            # 20M
-uploads_per_sec = uploads_per_day / 86_400            # ~230/s average
-peak_per_sec = uploads_per_sec * 3                    # ~700/s at peak
-storage_per_day_tb = uploads_per_day * avg_photo_mb / 1_000_000   # 60 TB/day
-print(round(uploads_per_sec), round(peak_per_sec), storage_per_day_tb)</code></pre></div>
-<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>231 694 60.0</pre></div>
-<p>Sixty terabytes a day means object storage (S3) and a CDN, not a <code>BYTEA</code> column. The estimate decides the architecture.</p>
-<h2>CAP, PACELC and consistency</h2>
-<p>During a network <em>partition</em> you cannot have both perfect consistency and perfect availability. Banks lean CP (refuse the write). Feeds lean AP (serve a slightly stale timeline). <strong>PACELC</strong> adds: even without a partition, you trade latency versus consistency (sync replication is safer and slower). Interviews want you to <em>name</em> the choice for this product.</p>
-<h2>Read-heavy vs write-heavy</h2>
-<p>Most consumer products read far more than they write (often 100:1). That points to caching, CDNs and read replicas. Write-heavy systems (logs, metrics, chat ingest) point to queues, batching and append-friendly stores.</p>
-<h2>What interviewers actually ask</h2>
-<p>The rest of this course is the standard catalog — the same designs you see in Educative's <em>Grokking the System Design Interview</em> and in on-sites at Meta, Google, Amazon and Uber. Lessons 2–4 are building blocks. Lessons 5–15 are full case studies:</p>
-<ul><li><strong>Unique ID generator</strong> — Snowflake, ticket servers, UUID.</li><li><strong>URL shortener</strong> (TinyURL) — encoding, redirects, analytics.</li><li><strong>Rate limiter</strong> — token bucket, sliding window, Redis.</li><li><strong>Key-value store / Pastebin</strong> — consistent hashing, replication, gossip.</li><li><strong>News feed</strong> (Twitter / Instagram) — fan-out on write vs read.</li><li><strong>Chat</strong> (WhatsApp / Messenger) — WebSockets, receipts, groups.</li><li><strong>Video</strong> (YouTube) — transcode, CDN, adaptive bitrate.</li><li><strong>File storage</strong> (Dropbox) — chunking, sync, sharing.</li><li><strong>Web crawler</strong> — frontier, politeness, dedup.</li><li><strong>Typeahead and nearby search</strong> — tries, geohash, Uber/Yelp.</li><li><strong>Notifications</strong> — push / email / SMS fan-out.</li></ul>
-<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Avoid over-engineering</p><p class="learn-callout-body">Start with the simplest design that meets the stated numbers. Add a cache, queue or shard only when a calculation justifies it. Interviewers mark people down for jumping to Kafka and Cassandra for 100 QPS.</p></aside>
-<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A service gets 50 million requests a day. Estimate average and peak QPS (assume peak is 5 times the average) and say whether one server handling 1,000 QPS would suffice.</p></aside><div class="learn-code-wrap learn-practice" data-lang="python" data-solution="daily = 50_000_000
-avg = daily / 86_400        # ~579 QPS
-peak = avg * 5              # ~2,894 QPS
-print(round(avg), round(peak))
-# One 1,000 QPS server is not enough at peak: need at least 3-4 plus redundancy."><pre><code># Write your solution here
+class TokenBucket:
+    def __init__(self, rate, capacity):
+        self.rate, self.capacity = rate, capacity
+        self.tokens, self.last = capacity, time.monotonic()
+
+    def allow(self):
+        now = time.monotonic()
+        self.tokens = min(self.capacity, self.tokens + (now - self.last) * self.rate)
+        self.last = now
+        if self.tokens &gt;= 1:
+            self.tokens -= 1
+            return True
+        return False
+
+bucket = TokenBucket(rate=5, capacity=10)
+print(sum(bucket.allow() for _ in range(12)))   # 10 tokens, then deny</code></pre></div>
+<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>10</pre></div>
+<div class="diagram-wrap" data-diagram-title="Where to put it"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart TB
+  C[Client] --> CDN[CDN / API gateway]
+  CDN --> RL[Rate limiter]
+  RL -->|allow| APP[App servers]
+  RL -->|429| C
+  RL --> Redis[(Redis cluster)]</div></div><p class="diagram-caption">The gateway is the usual place: one policy, before you spend app CPU. Redis holds shared counters so all boxes agree.</p></div>
+<h2>3. Distributed implementation</h2>
+<p>Local memory on each app server is wrong: 10 boxes × 100 req/s = 1000 req/s to the backend. Use Redis: <code>INCR</code> + <code>EXPIRE</code> for a fixed window, or a Lua script for a token bucket so refill and consume are atomic. Shard Redis by client key (consistent hash). For huge fan-out, an in-process cache of the decision for a few milliseconds reduces Redis QPS.</p>
+<div class="learn-code-wrap" data-lang="python"><pre><code># Sliding window counter (previous + current minute)
+def allow(redis, key, limit, now_s):
+    window = now_s // 60
+    prev, cur = f&quot;{key}:{window-1}&quot;, f&quot;{key}:{window}&quot;
+    # counts would come from Redis MGET + INCR
+    counts = {prev: 40, cur: 30}
+    frac = (now_s % 60) / 60
+    approx = counts[cur] + counts[prev] * (1 - frac)
+    return approx &lt; limit
+
+print(allow(None, &quot;user:42&quot;, 100, 60 + 15))</code></pre></div>
+<h2>4. Rules and response</h2>
+<ul><li>Return 429, <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>Retry-After</code>.</li><li>Hard block scrapers; softer limits for paying customers (token bucket with larger capacity).</li><li>Login and password-reset endpoints need tighter limits plus captcha, separate from the global API quota.</li></ul>
+<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Soft vs hard</p><p class="learn-callout-body">At the edge, slightly exceeding the limit under Redis lag is acceptable. For billing or SMS send, use a stronger atomic check.</p></aside>
+<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">You must allow 1000 req/min per API key across 20 app servers, bursts of 50. Which algorithm and storage do you pick, and how do you avoid a thundering herd of Redis calls?</p></aside><div class="learn-code-wrap learn-practice" data-lang="text" data-solution="Token bucket in Redis (Lua INCR/refill) keyed by api_key, capacity 50, refill 1000/60 tokens per second. Shard Redis by key. Cache the last allow/deny in the gateway for 10-50 ms so hot keys do not hit Redis on every request. Return 429 with Retry-After when empty."><pre><code>// Write your solution here
 </code></pre></div>
-          <a class="learn-upnext" href="/learn/ds-algo/sysdesign/scaling-caching/"><span class="learn-upnext-label">Up next · Lesson 2</span><strong>Scaling and Caching</strong><small>Load balancers, horizontal scaling, caches, CDNs and consistent hashing.</small></a>
+          <a class="learn-upnext" href="/learn/ds-algo/sysdesign/kv-store/"><span class="learn-upnext-label">Up next · Lesson 8</span><strong>Key-Value Store and Pastebin</strong><small>A Dynamo-style KV store, then Pastebin as a thin API on top of it.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
-            <span class="learn-nav-btn is-disabled">Previous</span>
+            <a class="learn-nav-btn" href="/learn/ds-algo/sysdesign/case-study/">Previous</a>
             <div class="learn-lesson-nav-end">
-            <button type="button" class="learn-complete" data-mark-complete="sysdesign-fundamentals" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/sysdesign/scaling-caching/">Next lesson</a>
+            <button type="button" class="learn-complete" data-mark-complete="sysdesign-rate-limiter" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/sysdesign/kv-store/">Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">
