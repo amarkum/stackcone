@@ -1,4 +1,4 @@
-"""AI: One Course, part 1 — LLM foundations, tokens, prompts, hallucinations, APIs and streaming.
+"""AI (Artificial Intelligence), part 1 — LLM foundations, tokens, prompts, hallucinations, APIs and streaming.
 
 Every runnable example is executed at build time, so the printed output is real.
 The demos are tiny pure-Python models on purpose: they run in your browser, and
@@ -8,7 +8,7 @@ from extra_util import py
 
 
 def M(slug, title, minutes, level, summary, objectives):
-    return {"slug": slug, "track": "one-course", "title": title, "minutes": minutes,
+    return {"slug": slug, "track": "artificial-intelligence", "title": title, "minutes": minutes,
             "level": level, "summary": summary, "objectives": objectives}
 
 

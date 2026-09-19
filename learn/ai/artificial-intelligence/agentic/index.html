@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Agentic AI: From Chatbots to Agents | AI (Artificial Intelligence) | stackcone Learn</title>
+  <meta name="description" content="What an agent really is, the ReAct loop with a runnable demo, workflows vs agents, patterns and failure modes.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/artificial-intelligence/agentic/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=4">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=29">
+  <link rel="stylesheet" href="/assets/auth.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/artificial-intelligence/what-is-an-llm/">AI (Artificial Intelligence)</a> / Agentic AI: From Chatbots to Agents</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="artificial-intelligence">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ai/artificial-intelligence/what-is-an-llm/">AI (Artificial Intelligence)</a></p>
+              <p class="learn-sidebar-tagline">Learn AI (Artificial Intelligence) from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 20 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/what-is-an-llm/" data-lesson="ai-what-is-an-llm" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">What Is AI? What Is an LLM?</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/tokens-context/" data-lesson="ai-tokens-context" data-minutes="20"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Tokens, Context Windows and Cost</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/prompts-sampling/" data-lesson="ai-prompts-sampling" data-minutes="24"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompts, Temperature and Sampling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/hallucinations/" data-lesson="ai-hallucinations" data-minutes="20"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Hallucinations: Why and How to Reduce Them</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/apis-streaming/" data-lesson="ai-apis-streaming" data-minutes="26"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">APIs, SSE, WebSockets and Streaming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/embeddings/" data-lesson="ai-embeddings" data-minutes="26"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Vectors and Embeddings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/vector-search/" data-lesson="ai-vector-search" data-minutes="26"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Chunking, Vector Databases and ANN Search</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/bm25/" data-lesson="ai-bm25" data-minutes="24"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Keyword Search and BM25</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/hybrid-rerank/" data-lesson="ai-hybrid-rerank" data-minutes="24"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Hybrid Search and Reranking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/rag/" data-lesson="ai-rag" data-minutes="30"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">RAG: Retrieval-Augmented Generation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/rag-evaluation/" data-lesson="ai-rag-evaluation" data-minutes="26"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Evaluating and Improving RAG</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/tool-calling/" data-lesson="ai-tool-calling" data-minutes="26"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Tool Calling and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/artificial-intelligence/agentic/" aria-current="page" data-lesson="ai-agentic" data-minutes="30"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Agentic AI: From Chatbots to Agents</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/agent-harness/" data-lesson="ai-agent-harness" data-minutes="32"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">The Agent Harness and Agent SDKs</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/langgraph-llamaindex/" data-lesson="ai-langgraph-llamaindex" data-minutes="28"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">LangGraph, LlamaIndex and LangChain</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/multi-agent-mcp-safety/" data-lesson="ai-multi-agent-mcp-safety" data-minutes="30"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Multi-Agent Systems, MCP and AI Safety</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/production/" data-lesson="ai-production" data-minutes="30"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Shipping AI to Production</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/interview-basics/" data-lesson="ai-interview-basics" data-minutes="40"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Interview Special I: LLM, Embeddings, RAG and Search Questions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/interview-advanced/" data-lesson="ai-interview-advanced" data-minutes="45"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">Interview Special II: Agents, System Design and Live Scenarios</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/glossary-roadmap/" data-lesson="ai-glossary-roadmap" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">Glossary, Cheat Sheet and Learning Roadmap</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ai/artificial-intelligence/what-is-an-llm/">AI (Artificial Intelligence)</a> · Lesson 13 of 20</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ai/artificial-intelligence/tool-calling/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ai/artificial-intelligence/agent-harness/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Agentic AI: From Chatbots to Agents</h1>
+          <p class="learn-summary">What an agent really is, the ReAct loop with a runnable demo, workflows vs agents, patterns and failure modes.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/artificial-intelligence/tool-calling/">Lesson 12: Tool Calling and Structured Output</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Define agentic AI precisely</li><li>Trace a ReAct loop</li><li>Choose between a workflow and an agent</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 20 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 20</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 9 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
+      <p>"Agentic AI" is the hottest phrase in the industry and also one of the most abused. Vendors slap it on anything with a chat box. Let us define it properly, watch a real agent loop run step by step, and learn the single most valuable skill in this whole area: <strong>knowing when <em>not</em> to build an agent</strong>.</p>
+      <h2>A precise definition</h2>
+      <p>An <strong>agent</strong> is an LLM that <strong>decides its own next step, in a loop, using tools, until a goal is reached</strong>. Three ingredients: a <em>goal</em>, <em>tools</em> to act on the world, and a <em>loop</em> in which the model chooses what to do based on what it has observed so far.</p>
+      <p>The key word is <em>decides</em>. In a normal program <em>you</em> write the steps. In an agent, the <strong>model controls the control flow</strong>.</p>
+      <h2>The autonomy spectrum</h2>
+      <div class="diagram-wrap" data-diagram-title="The autonomy spectrum">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart LR
+  A["Single LLM call"] --> B["Chain / workflow"]
+  B --> C[Router]
+  C --> D[Agent]
+  D --> E[Multi-agent system]</div>
+        </div>
+        <p class="diagram-caption">Less autonomy on the left, more on the right. Use the simplest thing that works.</p>
+      </div>
+      <ul><li><strong>Workflow</strong>: LLM calls and tools orchestrated by <em>predefined code paths</em>. Predictable, cheap, testable.</li><li><strong>Agent</strong>: the LLM <em>directs its own process</em>. Flexible for open-ended problems where you cannot list the steps in advance, but slower, costlier and harder to control.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The most important rule of agent design</p><p class="learn-callout-body">Use the <strong>simplest thing that works</strong>. If you can solve it with one prompt, do that. If a fixed workflow works, use it. Reach for an autonomous agent only when the number and order of steps genuinely cannot be known ahead of time. Agents trade predictability for flexibility, and most business tasks want predictability.</p></aside>
+      <h2>The ReAct loop: reason, act, observe</h2>
+      <p>The classic agent pattern is <strong>ReAct</strong> (Reasoning + Acting). On each turn the model writes a short <em>thought</em>, picks an <em>action</em> (a tool call), you run it, and the <em>observation</em> is fed back. It repeats until the model decides it can give a final answer.</p>
+      <div class="diagram-wrap" data-diagram-title="A ReAct loop: reason, act, observe">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">sequenceDiagram
+  participant Agent
+  participant Search
+  participant Calc as Calculator
+  Note over Agent: Goal: Norway population divided by Iceland
+  Agent->>Search: population of Norway
+  Search-->>Agent: 5.5 million
+  Agent->>Search: population of Iceland
+  Search-->>Agent: 0.38 million
+  Agent->>Calc: 5.5 / 0.38
+  Calc-->>Agent: 14.47
+  Note over Agent: Final answer: about 14.5 times larger</div>
+        </div>
+      </div>
+      <p>Here it is as running code. The "model" is scripted (a lookup of what a good model would decide) so the demo is deterministic, but the <strong>loop, the tool dispatch, the observations and the stopping conditions are exactly what a real agent has</strong>:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import re
+
+# ---------- tools ----------
+FACTS = {&quot;population of norway&quot;: &quot;5.5 million&quot;, &quot;population of iceland&quot;: &quot;0.38 million&quot;}
+
+def search(query):
+    return FACTS.get(query.lower(), &quot;no results&quot;)
+
+def calculator(expression):
+    if not re.fullmatch(r&quot;[0-9.\s+\-*/()]+&quot;, expression):        # never eval arbitrary text!
+        return &quot;error: only arithmetic allowed&quot;
+    return str(round(eval(expression), 2))
+
+TOOLS = {&quot;search&quot;: search, &quot;calculator&quot;: calculator}
+
+# ---------- a scripted stand-in for the LLM&#x27;s decisions ----------
+def decide(goal, history):
+    &quot;&quot;&quot;Returns (thought, action, argument) or (thought, &#x27;final&#x27;, answer).&quot;&quot;&quot;
+    seen = {a: obs for a, arg, obs in history}
+    got = [obs for a, arg, obs in history]
+    if len(history) == 0:
+        return &quot;I need Norway&#x27;s population first.&quot;, &quot;search&quot;, &quot;population of Norway&quot;
+    if len(history) == 1:
+        return &quot;Now I need Iceland&#x27;s population.&quot;, &quot;search&quot;, &quot;population of Iceland&quot;
+    if len(history) == 2:
+        a = float(got[0].split()[0]); b = float(got[1].split()[0])
+        return &quot;Divide the two numbers with the calculator.&quot;, &quot;calculator&quot;, f&quot;{a} / {b}&quot;
+    return &quot;I have everything I need.&quot;, &quot;final&quot;, f&quot;Norway has about {got[2]} times as many people as Iceland.&quot;
+
+# ---------- the agent loop ----------
+def run_agent(goal, max_steps=6):
+    history = []                                                   # (action, argument, observation)
+    for step in range(1, max_steps + 1):
+        thought, action, arg = decide(goal, history)
+        print(f&quot;step {step}&quot;)
+        print(f&quot;  thought    : {thought}&quot;)
+        if action == &quot;final&quot;:
+            print(f&quot;  FINAL      : {arg}&quot;)
+            return arg
+        observation = TOOLS[action](arg)
+        print(f&quot;  action     : {action}({arg!r})&quot;)
+        print(f&quot;  observation: {observation}&quot;)
+        history.append((action, arg, observation))
+    return &quot;stopped: step limit reached&quot;
+
+run_agent(&quot;How many times bigger is Norway&#x27;s population than Iceland&#x27;s?&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>step 1
+  thought    : I need Norway&#x27;s population first.
+  action     : search(&#x27;population of Norway&#x27;)
+  observation: 5.5 million
+step 2
+  thought    : Now I need Iceland&#x27;s population.
+  action     : search(&#x27;population of Iceland&#x27;)
+  observation: 0.38 million
+step 3
+  thought    : Divide the two numbers with the calculator.
+  action     : calculator(&#x27;5.5 / 0.38&#x27;)
+  observation: 14.47
+step 4
+  thought    : I have everything I need.
+  FINAL      : Norway has about 14.47 times as many people as Iceland.</pre></div>
+      <p>Every real agent, from a coding assistant to a research bot, is this loop with a smarter <code>decide()</code> (an LLM call) and more tools. Notice the two guardrails already in the code: <code>max_steps</code> (so it cannot run forever) and the calculator refusing anything that is not arithmetic.</p>
+      <h2>Five workflow patterns you should know</h2>
+      <p>Before reaching for a full agent, these composable patterns solve most problems with far more control:</p>
+      <ul><li><strong>1. Prompt chaining.</strong> Break a task into a fixed sequence: draft, then critique, then rewrite. Each LLM call handles one easy step; you can insert checks between steps.</li><li><strong>2. Routing.</strong> Classify the input first, then send it down the right path: refund question, tech support, or sales; easy questions to a cheap model, hard ones to a big model.</li><li><strong>3. Parallelisation.</strong> Run independent subtasks at once (check one document against five criteria simultaneously) or vote (run three times, take the majority).</li><li><strong>4. Orchestrator-workers.</strong> A central LLM breaks a task into subtasks it did not know in advance and delegates them to worker LLMs, then merges results. (Great for coding across many files.)</li><li><strong>5. Evaluator-optimiser.</strong> One LLM produces, another critiques, repeat until the critic is satisfied.</li></ul>
+      <h2>What agents are genuinely good at</h2>
+      <ul><li><strong>Coding</strong>: reading a repo, editing files, running tests, fixing failures. Ideal, because there is a verifiable signal (do the tests pass?).</li><li><strong>Research</strong>: search, read, follow leads, synthesise.</li><li><strong>Customer support</strong> with tools (look up order, issue refund) plus human escalation.</li><li><strong>Data tasks</strong>: explore a database, write queries, fix them when they error.</li><li><strong>Computer/browser use</strong>: operating software through screenshots and clicks.</li></ul>
+      <p>The common thread: tasks with <em>clear success criteria</em> and <em>tools that give feedback</em>. The agent can tell when it is wrong and try again.</p>
+      <h2>How agents fail</h2>
+      <ul><li><strong>Compounding errors.</strong> If each step is 95% reliable, ten steps are only 60% reliable (0.95<sup>10</sup>). Long chains decay fast.</li><li><strong>Infinite or wasteful loops.</strong> Retrying the same failing action forever. Fix with step limits, budgets and loop detection.</li><li><strong>Context bloat.</strong> Every observation is appended, the prompt grows, cost climbs, and quality drops ("lost in the middle").</li><li><strong>Tool misuse.</strong> Wrong tool, wrong arguments, or a destructive action taken too eagerly.</li><li><strong>Goal drift and over-eagerness.</strong> Doing more than asked.</li><li><strong>Prompt injection.</strong> A web page the agent reads says "ignore your instructions and..." (safety lesson).</li><li><strong>Cost and latency.</strong> Ten LLM calls per task adds up. Measure it.</li></ul>
+      <p>Let us put a number on that first bullet, because it changes how you design systems:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>for per_step in (0.99, 0.95, 0.90):
+    row = &quot;  &quot;.join(f&quot;{n:&gt;2} steps: {per_step ** n:5.0%}&quot; for n in (1, 5, 10, 20))
+    print(f&quot;each step {per_step:.0%} reliable -&gt;  {row}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>each step 99% reliable -&gt;   1 steps:   99%   5 steps:   95%  10 steps:   90%  20 steps:   82%
+each step 95% reliable -&gt;   1 steps:   95%   5 steps:   77%  10 steps:   60%  20 steps:   36%
+each step 90% reliable -&gt;   1 steps:   90%   5 steps:   59%  10 steps:   35%  20 steps:   12%</pre></div>
+      <p>A step that is right 95% of the time sounds great until you chain twenty of them (36%). This is why good agent design <strong>keeps loops short, adds verification steps, and lets humans approve risky moves</strong>.</p>
+      <h2>Autonomy dials: keep a human in the loop</h2>
+      <ul><li><strong>Read-only agents</strong> (research, analysis) can run freely.</li><li><strong>Write-capable agents</strong> should propose changes and wait for approval (a diff to review, a draft to send).</li><li><strong>Irreversible actions</strong> (payments, deletions, external emails) need explicit confirmation.</li><li><strong>Escalation</strong>: when confidence is low or the request is unusual, hand off to a person with the context attached.</li></ul>
+      <h2>So, should you build an agent?</h2>
+      <div class="diagram-wrap" data-diagram-title="Should you build an agent?">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TD
+  Q1{Can one well-written prompt do it?}
+  Q1 -->|Yes| P[Just prompt]
+  Q1 -->|No| Q2{Can you list the steps in advance?}
+  Q2 -->|Yes| W[Build a workflow]
+  Q2 -->|No| Q3{Clear success check and tools?}
+  Q3 -->|Yes| A[Agent with limits and approval]
+  Q3 -->|No| H[Keep a human in the loop]</div>
+        </div>
+      </div>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a step limit test: change <code>max_steps</code> to 2 and rerun. What does the agent return? Then add a <code>history</code>-based loop guard that stops if the same (action, argument) pair is requested twice in a row.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def run(decisions, max_steps=6):
+    last = None
+    for step, (action, arg) in enumerate(decisions, 1):
+        if step &gt; max_steps:
+            return &quot;stopped: step limit&quot;
+        if (action, arg) == last:
+            return f&quot;stopped: repeated {action}({arg!r})&quot;
+        last = (action, arg)
+        print(&quot;step&quot;, step, action, arg)
+    return &quot;done&quot;
+
+print(run([(&quot;search&quot;, &quot;x&quot;), (&quot;search&quot;, &quot;x&quot;), (&quot;final&quot;, &quot;y&quot;)]))"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/ai/artificial-intelligence/agent-harness/"><span class="learn-upnext-label">Up next · Lesson 14</span><strong>The Agent Harness and Agent SDKs</strong><small>The code around the model: loop, tools, context, memory, permissions, budgets. Build a mini harness and meet the SDKs.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/artificial-intelligence/tool-calling/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <button type="button" class="learn-complete" data-mark-complete="ai-agentic" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ai/artificial-intelligence/agent-harness/">Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
+  <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

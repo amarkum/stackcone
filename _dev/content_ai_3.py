@@ -1,4 +1,4 @@
-"""AI: One Course, part 3 — tools, agents, harnesses, LangGraph/LlamaIndex, MCP, safety and production."""
+"""AI (Artificial Intelligence), part 3 — tools, agents, harnesses, LangGraph/LlamaIndex, MCP, safety and production."""
 from extra_util import py
 from content_ai_1 import M
 

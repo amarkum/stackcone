@@ -59,12 +59,15 @@ export async function signUp(name, email, password) {
   const { auth, a } = await need();
   const cred = await auth.createUserWithEmailAndPassword(a, email, password);
   if (name) await auth.updateProfile(cred.user, { displayName: name });
+  writeSnap(cred.user);
   return cred.user;
 }
 
 export async function logIn(email, password) {
   const { auth, a } = await need();
-  return (await auth.signInWithEmailAndPassword(a, email, password)).user;
+  const user = (await auth.signInWithEmailAndPassword(a, email, password)).user;
+  writeSnap(user);
+  return user;
 }
 
 export async function resetPassword(email) {
@@ -77,20 +80,48 @@ export async function signInWithGoogle() {
   const { auth, a } = await need();
   const provider = new auth.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
-  return (await auth.signInWithPopup(a, provider)).user;
+  const cred = await auth.signInWithPopup(a, provider);
+  writeSnap(cred.user);
+  return cred.user;
 }
 
 export async function logOut() {
+  writeSnap(null);
   const { auth, a } = await need();
   await auth.signOut(a);
 }
 
 /* ---------- header avatar ---------- */
 
+const SNAP_KEY = "sc.auth.snapshot.v1";
+
 function initials(user) {
   const src = (user.displayName || user.email || "?").trim();
   const parts = src.split(/[\s@._-]+/).filter(Boolean);
   return ((parts[0] || "?")[0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
+}
+
+function readSnap() {
+  try {
+    const raw = localStorage.getItem(SNAP_KEY);
+    if (raw === null) return { known: false, user: null };
+    return { known: true, user: JSON.parse(raw) };
+  } catch (e) {
+    return { known: false, user: null };
+  }
+}
+
+function writeSnap(user) {
+  try {
+    if (!user) localStorage.setItem(SNAP_KEY, "null");
+    else {
+      localStorage.setItem(SNAP_KEY, JSON.stringify({
+        uid: user.uid || "",
+        displayName: user.displayName || "",
+        email: user.email || "",
+      }));
+    }
+  } catch (e) { /* private mode */ }
 }
 
 function here() {
@@ -123,12 +154,9 @@ function renderNavAccount(user) {
   box.querySelector("[data-nav-logout]").addEventListener("click", () => logOut());
 }
 
-function renderAccount(user) {
-  renderNavAccount(user);
-  document.querySelectorAll("[data-auth-note]").forEach((el) => { el.hidden = !!user; });
-  // Lesson pages reserve a [data-account] slot; other pages get one appended to the header.
+function accountBox() {
   const host = document.querySelector("[data-account]") || document.querySelector(".header-inner");
-  if (!host) return;
+  if (!host) return null;
   let box = document.getElementById("sc-account");
   if (!box) {
     box = document.createElement("div");
@@ -136,8 +164,54 @@ function renderAccount(user) {
     box.className = "sc-account";
     host.appendChild(box);
   }
+  return box;
+}
+
+function wireAccount(box) {
+  if (!document.documentElement.dataset.scAccountDoc) {
+    document.documentElement.dataset.scAccountDoc = "1";
+    document.addEventListener("click", () => {
+      const menu = document.querySelector("#sc-account .sc-account-menu");
+      const btn = document.querySelector("#sc-account .sc-avatar");
+      if (menu && btn) {
+        menu.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+  if (!box || box.dataset.wired === "1") return;
+  box.dataset.wired = "1";
+  box.addEventListener("click", (e) => {
+    const btn = e.target.closest(".sc-avatar");
+    const menu = box.querySelector(".sc-account-menu");
+    if (btn && menu) {
+      e.stopPropagation();
+      menu.hidden = !menu.hidden;
+      btn.setAttribute("aria-expanded", String(!menu.hidden));
+      return;
+    }
+    if (e.target.closest("[data-logout]")) {
+      writeSnap(null);
+      renderAccount(null);
+      logOut().catch(() => {});
+    }
+  });
+}
+
+function renderAccount(user) {
+  renderNavAccount(user);
+  document.querySelectorAll("[data-auth-note]").forEach((el) => { el.hidden = !!user; });
+  const box = accountBox();
+  if (!box) return;
+  const uid = user ? (user.uid || "") : "";
+  if (box.getAttribute("data-uid") === uid && box.childNodes.length) {
+    wireAccount(box);
+    return;
+  }
+  box.setAttribute("data-uid", uid);
   if (!user) {
     box.innerHTML = `<a class="sc-account-login" href="/login/?next=${here()}">Log in</a>`;
+    wireAccount(box);
     return;
   }
   const label = user.displayName || user.email;
@@ -148,15 +222,7 @@ function renderAccount(user) {
       <a href="/learn/">My courses</a>
       <button type="button" data-logout>Log out</button>
     </div>`;
-  const btn = box.querySelector(".sc-avatar");
-  const menu = box.querySelector(".sc-account-menu");
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    menu.hidden = !menu.hidden;
-    btn.setAttribute("aria-expanded", String(!menu.hidden));
-  });
-  document.addEventListener("click", () => { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); });
-  box.querySelector("[data-logout]").addEventListener("click", () => logOut());
+  wireAccount(box);
 }
 
 function escapeHtml(s) {
@@ -211,9 +277,26 @@ function stopSync() {
   clearTimeout(pushTimer);
 }
 
+(function paintCachedAccount() {
+  const snap = readSnap();
+  if (!snap.known) return;
+  renderAccount(snap.user);
+})();
+
 ready.then((f) => {
   if (!f) return;
   f.auth.onAuthStateChanged(f.a, (user) => {
+    let pending = false;
+    try { pending = sessionStorage.getItem("sc.auth.pendingLogout") === "1"; } catch (e) { /* ignore */ }
+    if (pending) {
+      try { sessionStorage.removeItem("sc.auth.pendingLogout"); } catch (e) { /* ignore */ }
+      writeSnap(null);
+      if (user) {
+        logOut().catch(() => {});
+        return;
+      }
+    }
+    writeSnap(user);
     stopSync();
     renderAccount(user);
     if (user) startSync(f, user);

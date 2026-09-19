@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Evaluating and Improving RAG | AI (Artificial Intelligence) | stackcone Learn</title>
+  <meta name="description" content="recall@k, MRR and nDCG computed by hand, faithfulness, chunk-size experiments, and advanced RAG patterns.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/artificial-intelligence/rag-evaluation/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=4">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=29">
+  <link rel="stylesheet" href="/assets/auth.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/artificial-intelligence/what-is-an-llm/">AI (Artificial Intelligence)</a> / Evaluating and Improving RAG</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="artificial-intelligence">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ai/artificial-intelligence/what-is-an-llm/">AI (Artificial Intelligence)</a></p>
+              <p class="learn-sidebar-tagline">Learn AI (Artificial Intelligence) from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 20 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/what-is-an-llm/" data-lesson="ai-what-is-an-llm" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">What Is AI? What Is an LLM?</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/tokens-context/" data-lesson="ai-tokens-context" data-minutes="20"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Tokens, Context Windows and Cost</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/prompts-sampling/" data-lesson="ai-prompts-sampling" data-minutes="24"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompts, Temperature and Sampling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/hallucinations/" data-lesson="ai-hallucinations" data-minutes="20"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Hallucinations: Why and How to Reduce Them</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/apis-streaming/" data-lesson="ai-apis-streaming" data-minutes="26"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">APIs, SSE, WebSockets and Streaming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/embeddings/" data-lesson="ai-embeddings" data-minutes="26"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Vectors and Embeddings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/vector-search/" data-lesson="ai-vector-search" data-minutes="26"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Chunking, Vector Databases and ANN Search</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/bm25/" data-lesson="ai-bm25" data-minutes="24"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Keyword Search and BM25</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/hybrid-rerank/" data-lesson="ai-hybrid-rerank" data-minutes="24"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Hybrid Search and Reranking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/rag/" data-lesson="ai-rag" data-minutes="30"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">RAG: Retrieval-Augmented Generation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/artificial-intelligence/rag-evaluation/" aria-current="page" data-lesson="ai-rag-evaluation" data-minutes="26"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Evaluating and Improving RAG</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/tool-calling/" data-lesson="ai-tool-calling" data-minutes="26"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Tool Calling and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/agentic/" data-lesson="ai-agentic" data-minutes="30"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Agentic AI: From Chatbots to Agents</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/agent-harness/" data-lesson="ai-agent-harness" data-minutes="32"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">The Agent Harness and Agent SDKs</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/langgraph-llamaindex/" data-lesson="ai-langgraph-llamaindex" data-minutes="28"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">LangGraph, LlamaIndex and LangChain</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/multi-agent-mcp-safety/" data-lesson="ai-multi-agent-mcp-safety" data-minutes="30"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Multi-Agent Systems, MCP and AI Safety</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/production/" data-lesson="ai-production" data-minutes="30"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Shipping AI to Production</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/interview-basics/" data-lesson="ai-interview-basics" data-minutes="40"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Interview Special I: LLM, Embeddings, RAG and Search Questions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/interview-advanced/" data-lesson="ai-interview-advanced" data-minutes="45"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">Interview Special II: Agents, System Design and Live Scenarios</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/artificial-intelligence/glossary-roadmap/" data-lesson="ai-glossary-roadmap" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">Glossary, Cheat Sheet and Learning Roadmap</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ai/artificial-intelligence/what-is-an-llm/">AI (Artificial Intelligence)</a> · Lesson 11 of 20</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ai/artificial-intelligence/rag/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ai/artificial-intelligence/tool-calling/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Evaluating and Improving RAG</h1>
+          <p class="learn-summary">recall@k, MRR and nDCG computed by hand, faithfulness, chunk-size experiments, and advanced RAG patterns.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>26 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/artificial-intelligence/rag/">Lesson 10: RAG: Retrieval-Augmented Generation</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Compute retrieval metrics</li><li>Diagnose a bad RAG answer</li><li>Apply advanced patterns like parent-child and GraphRAG</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 20 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 20</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 9 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
+      <p>"It seems to work" is not a strategy. Teams that ship reliable RAG systems all share one habit: they <strong>measure</strong>. This lesson gives you the vocabulary and the tools: retrieval metrics you can compute in a few lines, a way to judge answer quality, a diagnosis flowchart for bad answers, and the advanced patterns (parent-child, GraphRAG, agentic RAG, caching) that senior engineers reach for after the basics work.</p>
+      <h2>Step zero: build a golden dataset</h2>
+      <p>Collect 50&ndash;200 realistic questions. For each, record the <em>correct answer</em> and <em>which document chunk(s) contain it</em>. Include tricky cases: paraphrased questions, multi-hop questions (needing two documents), questions with <strong>no</strong> answer in your data, and adversarial ones. Source them from real users, logs and support tickets, not just from your imagination. Every evaluation below runs against this set.</p>
+      <h2>Retrieval metrics: did we fetch the right chunks?</h2>
+      <p>Evaluate retrieval <em>separately</em> from generation. For each question you have a ranked list of retrieved chunk IDs and a set of truly relevant IDs:</p>
+      <ul><li><strong>Hit rate / Recall@k</strong>: what fraction of the relevant chunks appear in the top k? The most important metric for RAG: if the answer is not retrieved, the model cannot use it.</li><li><strong>Precision@k</strong>: what fraction of the top k are relevant? Low precision means noise in the prompt.</li><li><strong>MRR (Mean Reciprocal Rank)</strong>: average of <code>1 / rank of the first relevant result</code>. Rewards putting the right answer near the top.</li><li><strong>nDCG</strong>: rewards relevant results ranked high, with a smooth discount for lower positions; handles graded relevance.</li></ul>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import math
+
+def recall_at_k(retrieved, relevant, k):
+    return len(set(retrieved[:k]) &amp; relevant) / len(relevant)
+
+def precision_at_k(retrieved, relevant, k):
+    return len(set(retrieved[:k]) &amp; relevant) / k
+
+def reciprocal_rank(retrieved, relevant):
+    for rank, doc in enumerate(retrieved, 1):
+        if doc in relevant:
+            return 1 / rank
+    return 0.0
+
+def ndcg_at_k(retrieved, relevant, k):
+    dcg = sum(1 / math.log2(i + 2) for i, d in enumerate(retrieved[:k]) if d in relevant)
+    ideal = sum(1 / math.log2(i + 2) for i in range(min(len(relevant), k)))
+    return dcg / ideal
+
+# Three test questions: what we retrieved (best first) vs what was truly relevant
+tests = [
+    ([&quot;c1&quot;, &quot;c7&quot;, &quot;c3&quot;, &quot;c9&quot;, &quot;c2&quot;], {&quot;c1&quot;}),              # perfect: hit at rank 1
+    ([&quot;c4&quot;, &quot;c8&quot;, &quot;c2&quot;, &quot;c5&quot;, &quot;c6&quot;], {&quot;c2&quot;}),              # found, but at rank 3
+    ([&quot;c9&quot;, &quot;c8&quot;, &quot;c7&quot;, &quot;c6&quot;, &quot;c5&quot;], {&quot;c1&quot;, &quot;c2&quot;}),        # missed completely
+]
+
+for name, fn in [(&quot;recall@3&quot;, lambda r, rel: recall_at_k(r, rel, 3)),
+                 (&quot;precision@3&quot;, lambda r, rel: precision_at_k(r, rel, 3)),
+                 (&quot;MRR&quot;, reciprocal_rank),
+                 (&quot;nDCG@5&quot;, lambda r, rel: ndcg_at_k(r, rel, 5))]:
+    scores = [fn(r, rel) for r, rel in tests]
+    print(f&quot;{name:&lt;12} per question {[round(s, 2) for s in scores]}   mean = {sum(scores)/len(scores):.2f}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>recall@3     per question [1.0, 1.0, 0.0]   mean = 0.67
+precision@3  per question [0.33, 0.33, 0.0]   mean = 0.22
+MRR          per question [1.0, 0.33, 0.0]   mean = 0.44
+nDCG@5       per question [1.0, 0.5, 0.0]   mean = 0.50</pre></div>
+      <p>Read the output like a doctor: recall@3 of 0.5 means half the time the good chunk is not even in the top three. That tells you to fix <em>retrieval</em> (chunking, hybrid search, reranking), and no amount of prompt tuning will help.</p>
+      <h2>Comparing retrieval strategies, the honest way</h2>
+      <p>The whole point of these metrics is <em>A/B comparison</em>. Run the same golden set through vector-only, BM25-only, hybrid, and hybrid+rerank, and compare recall@5 and MRR. Change one thing at a time (chunk size, k, embedding model, reranker) and keep a results table. Here is the shape of a chunk-size experiment on a toy problem:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import math, re
+from collections import Counter
+
+DOC = (&quot;Refunds. Laptops can be returned within 30 days for a full refund. Opened software is not refundable. &quot;
+       &quot;Shipping. Shipping is free on orders over 50 dollars. Express shipping takes two days. &quot;
+       &quot;Warranty. Every laptop has a one year warranty. Batteries are covered for six months. &quot;
+       &quot;Support. Support is open Monday to Friday. Error ERR-4471 means the payment gateway timed out.&quot;)
+
+QUESTIONS = [   # (question, phrase that must appear in a retrieved chunk to count as a hit)
+    (&quot;how many days to return a laptop&quot;, &quot;30 days&quot;),
+    (&quot;is shipping free&quot;, &quot;free on orders&quot;),
+    (&quot;battery warranty length&quot;, &quot;six months&quot;),
+    (&quot;what is ERR-4471&quot;, &quot;ERR-4471&quot;),
+]
+
+tok = lambda t: re.findall(r&quot;[a-z0-9-]+&quot;, t.lower())
+
+def make_chunks(size):
+    words = DOC.split()
+    return [&quot; &quot;.join(words[i:i + size]) for i in range(0, len(words), size)]
+
+def score(q, chunk, chunks):
+    N = len(chunks); df = Counter(w for c in chunks for w in set(tok(c)))
+    tf = Counter(tok(chunk)); s = 0
+    for w in tok(q):
+        if w in tf:
+            s += math.log((N - df[w] + .5) / (df[w] + .5) + 1) * tf[w]
+    return s
+
+for size in (6, 12, 24, 48):
+    chunks = make_chunks(size)
+    hits = 0
+    for q, needle in QUESTIONS:
+        best = max(chunks, key=lambda c: score(q, c, chunks))
+        hits += needle in best
+    avg_words = sum(len(c.split()) for c in chunks) / len(chunks)
+    print(f&quot;chunk size {size:&gt;2} words -&gt; {len(chunks):&gt;2} chunks, hit rate {hits}/{len(QUESTIONS)}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>chunk size  6 words -&gt; 10 chunks, hit rate 2/4
+chunk size 12 words -&gt;  5 chunks, hit rate 1/4
+chunk size 24 words -&gt;  3 chunks, hit rate 3/4
+chunk size 48 words -&gt;  2 chunks, hit rate 3/4</pre></div>
+      <p>On this toy text the 6- and 12-word chunks slice answers away from their keywords, while 24 words and up worked. On real documents the curve usually rises and then falls again as chunks grow, because huge chunks dilute the signal. The exact best size is a property of <em>your</em> documents and questions, which is why you measure instead of copying someone's default.</p>
+      <h2>Generation metrics: is the answer good?</h2>
+      <ul><li><strong>Faithfulness / groundedness</strong>: is every claim in the answer supported by the retrieved context? (Lesson 4.) The core anti-hallucination metric.</li><li><strong>Answer relevance</strong>: does it actually address the question?</li><li><strong>Correctness</strong>: does it match the reference answer?</li><li><strong>Context precision / recall</strong>: how much of the retrieved context was needed, and did it contain everything needed?</li><li><strong>Refusal accuracy</strong>: does it decline when the answer is not in the data, and only then?</li></ul>
+      <p>Scoring these by hand does not scale, so teams use <strong>LLM-as-a-judge</strong>: a strong model reads (question, context, answer, reference) and returns scores against a rubric. It is imperfect (judges have biases: they favour longer answers and their own outputs), so <em>calibrate it against human labels</em> on a sample, and use pairwise comparison ("which answer is better?") where you can. Popular tooling: Ragas, DeepEval, TruLens, LangSmith, Braintrust and Arize Phoenix.</p>
+      <h2>A diagnosis flowchart for a bad answer</h2>
+      <div class="diagram-wrap" data-diagram-title="Diagnosing a bad RAG answer">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+          <div class="mermaid-pending">flowchart TD
+  B[Bad answer]
+  B --> Q1{Right chunk in the index?}
+  Q1 -->|No| I[Ingestion bug]
+  Q1 -->|Yes| Q2{In the top-k retrieved?}
+  Q2 -->|No| R[Retrieval problem]
+  Q2 -->|Yes| Q3{In the prompt after rerank?}
+  Q3 -->|No| C[Rerank or context budget]
+  Q3 -->|Yes| Q4{Model used it correctly?}
+  Q4 -->|No| G[Generation problem]</div>
+        </div>
+      </div>
+      <h2>Advanced RAG patterns</h2>
+      <ul><li><strong>Parent-child (small-to-big) retrieval</strong>: search over small chunks for precision, but return the surrounding parent section for context.</li><li><strong>Contextual chunks</strong>: prepend each chunk with a short LLM-written summary of where it sits in the document ("This is from the 2024 refund policy, section 3"), which improves both embedding and BM25 matching.</li><li><strong>Metadata and self-querying</strong>: let the LLM turn "invoices from March over 500 dollars" into filters.</li><li><strong>GraphRAG</strong>: extract entities and relationships into a knowledge graph, then answer "how is X connected to Y?" or summarise whole corpora, which flat chunk retrieval handles poorly.</li><li><strong>Agentic RAG</strong>: instead of one retrieval, an agent decides <em>whether</em> to search, <em>what</em> to search, inspects results, and searches again if unsatisfied. Great for multi-hop questions; costs more calls (see the agents lessons).</li><li><strong>Corrective / self-reflective RAG</strong>: grade the retrieved chunks; if poor, rewrite the query or fall back to web search; check the final answer against the sources.</li><li><strong>Semantic caching</strong>: if a new question is nearly identical (by embedding) to a previous one, return the cached answer, saving cost and latency.</li><li><strong>Multimodal RAG</strong>: index images, charts and tables (parse tables into structured text; use vision models for figures).</li></ul>
+      <h2>A practical improvement order</h2>
+      <ul><li><strong>1.</strong> Build the golden set and a baseline number before touching anything.</li><li><strong>2.</strong> Fix ingestion and parsing (garbage in, garbage out; check tables and PDFs).</li><li><strong>3.</strong> Add hybrid search (BM25 + vectors).</li><li><strong>4.</strong> Tune chunking, add overlap and metadata.</li><li><strong>5.</strong> Add a reranker.</li><li><strong>6.</strong> Improve the prompt and refusal behaviour.</li><li><strong>7.</strong> Only then consider fine-tuning an embedding model, agentic loops or GraphRAG, since each adds cost and complexity.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">In the metrics demo, add a fourth test where two chunks are relevant and retrieval returns one of them at rank 2 and the other at rank 5. Compute recall@3 and recall@5 by hand first, then check with the code. Why can recall@5 be higher while MRR stays the same?</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def recall_at_k(r, rel, k):
+    return len(set(r[:k]) &amp; rel) / len(rel)
+
+def rr(r, rel):
+    for i, d in enumerate(r, 1):
+        if d in rel:
+            return 1 / i
+    return 0
+
+retrieved = [&quot;c9&quot;, &quot;c1&quot;, &quot;c8&quot;, &quot;c7&quot;, &quot;c2&quot;]
+relevant = {&quot;c1&quot;, &quot;c2&quot;}
+print(&quot;recall@3 =&quot;, recall_at_k(retrieved, relevant, 3))
+print(&quot;recall@5 =&quot;, recall_at_k(retrieved, relevant, 5))
+print(&quot;MRR      =&quot;, rr(retrieved, relevant))   # only the FIRST hit (rank 2) counts"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/ai/artificial-intelligence/tool-calling/"><span class="learn-upnext-label">Up next · Lesson 12</span><strong>Tool Calling and Structured Output</strong><small>How a model calls functions: schemas, the request/response loop, validation, parallel calls and error handling.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/artificial-intelligence/rag/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <button type="button" class="learn-complete" data-mark-complete="ai-rag-evaluation" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ai/artificial-intelligence/tool-calling/">Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=14"></script>
+  <script src="/site-nav.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=19" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

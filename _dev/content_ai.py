@@ -1,4 +1,4 @@
-"""AI: One Course. Aggregates the lesson modules, in course order."""
+"""AI (Artificial Intelligence). Aggregates the lesson modules, in course order."""
 from content_ai_1 import META as _M1, CONTENT as _C1
 from content_ai_2 import META as _M2, CONTENT as _C2
 from content_ai_3 import META as _M3, CONTENT as _C3

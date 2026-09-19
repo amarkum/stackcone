@@ -55,7 +55,7 @@
       label: "AI",
       href: "/learn/ai/",
       children: [
-        { href: "/learn/ai/one-course/what-is-an-llm/", label: "AI: One Course", matches: ["/learn/ai/one-course"] },
+        { href: "/learn/ai/artificial-intelligence/what-is-an-llm/", label: "AI (Artificial Intelligence)", matches: ["/learn/ai/artificial-intelligence"] },
         { href: "/learn/ai/", label: "All AI", separator: true }
       ]
     },
@@ -218,18 +218,64 @@
     }
   });
 
-  // Log in / avatar in the header on every page: load the styles and the auth module once.
+  // Paint the avatar from last visit before Firebase loads, so it does not pop in late.
+  if (!document.querySelector('link[href*="auth.css"]')) {
+    var css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = "/assets/auth.css?v=18";
+    document.head.appendChild(css);
+  }
+  (function paintCachedAccount() {
+    var snap = null;
+    var known = false;
+    try {
+      var raw = localStorage.getItem("sc.auth.snapshot.v1");
+      if (raw !== null) {
+        known = true;
+        snap = JSON.parse(raw);
+      }
+    } catch (e) { /* private mode */ }
+    if (!known) return;
+    var host = document.querySelector("[data-account]") || document.querySelector(".header-inner");
+    if (!host) return;
+    var box = document.getElementById("sc-account");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "sc-account";
+      box.className = "sc-account";
+      host.appendChild(box);
+    }
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+      });
+    }
+    var next = encodeURIComponent(location.pathname + location.search);
+    if (!snap) {
+      box.setAttribute("data-uid", "");
+      box.innerHTML = '<a class="sc-account-login" href="/login/?next=' + next + '">Log in</a>';
+      return;
+    }
+    var src = (snap.displayName || snap.email || "?").trim();
+    var parts = src.split(/[\s@._-]+/).filter(Boolean);
+    var initials = ((parts[0] || "?")[0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
+    var label = snap.displayName || snap.email || "";
+    box.setAttribute("data-uid", snap.uid || "");
+    box.innerHTML =
+      '<button type="button" class="sc-avatar" aria-haspopup="true" aria-expanded="false" title="' + esc(label) + '">' + esc(initials) + "</button>" +
+      '<div class="sc-account-menu" hidden>' +
+      '<p class="sc-account-who"><strong>' + esc(snap.displayName || "Learner") + "</strong><span>" + esc(snap.email || "") + "</span></p>" +
+      '<a href="/learn/">My courses</a>' +
+      '<button type="button" data-logout>Log out</button>' +
+      "</div>";
+  })();
+
+  // Log in / avatar in the header on every page: load the auth module once.
   // The module URL matches the lesson pages and /login/, so it only ever runs one instance.
   if (!document.querySelector('script[src*="learn-auth.js"]')) {
-    if (!document.querySelector('link[href*="auth.css"]')) {
-      var css = document.createElement("link");
-      css.rel = "stylesheet";
-      css.href = "/assets/auth.css?v=18";
-      document.head.appendChild(css);
-    }
     var auth = document.createElement("script");
     auth.type = "module";
-    auth.src = "/assets/learn-auth.js?v=4";
+    auth.src = "/assets/learn-auth.js?v=5";
     document.head.appendChild(auth);
   }
 

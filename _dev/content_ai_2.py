@@ -1,4 +1,4 @@
-"""AI: One Course, part 2 — embeddings, vector search, BM25, hybrid search, RAG and evaluation."""
+"""AI (Artificial Intelligence), part 2 — embeddings, vector search, BM25, hybrid search, RAG and evaluation."""
 from extra_util import py
 from content_ai_1 import M
 

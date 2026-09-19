@@ -48,7 +48,7 @@ GOOGLE_BUTTON = """      <button type="button" class="auth-google" data-google>
 
 SCRIPT = """
   <script type="module">
-    import { signInWithGoogle, signUp, logIn, resetPassword, friendlyError } from "/assets/learn-auth.js?v=4";
+    import { signInWithGoogle, signUp, logIn, resetPassword, friendlyError } from "/assets/learn-auth.js?v=5";
     const mode = document.body.dataset.auth;
     const google = document.querySelector("[data-google]");
     const gLabel = google.querySelector("[data-label]");

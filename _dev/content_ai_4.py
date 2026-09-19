@@ -1,4 +1,4 @@
-"""AI: One Course, part 4 — interview preparation, scenarios, coding rounds, glossary and roadmap."""
+"""AI (Artificial Intelligence), part 4 — interview preparation, scenarios, coding rounds, glossary and roadmap."""
 from extra_util import py
 from content_ai_1 import M
 

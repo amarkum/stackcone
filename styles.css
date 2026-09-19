@@ -25,6 +25,8 @@
   --section-padding-x: 1.5rem;
   --section-gap: 2rem;
   --container-padding: 1.5rem;
+  --header-pad-y: 0.55rem;
+  --logo-height: 38px;
   --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --reveal-distance: 48px;
@@ -179,7 +181,7 @@ img {
   width: 100%;
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 1rem var(--container-padding);
+  padding: var(--header-pad-y) var(--container-padding);
   flex-wrap: nowrap;
   box-sizing: border-box;
 }
@@ -192,7 +194,7 @@ img {
 }
 
 .logo {
-  height: 48px;
+  height: var(--logo-height);
   width: auto;
   max-width: 220px;
   object-fit: contain;
@@ -2080,7 +2082,7 @@ body.landing-page main > section:not(.hero) {
     flex-direction: row;
     align-items: center;
     flex-wrap: nowrap;
-    padding: 1rem 1rem;
+    padding: var(--header-pad-y) 1rem;
   }
 
   /* Overlay: dimmed backdrop when menu is open (tap outside to close) */
@@ -2266,7 +2268,7 @@ body.landing-page main > section:not(.hero) {
 
 @media (max-width: 768px) {
   .header-inner {
-    padding: 1rem 1rem;
+    padding: var(--header-pad-y) 1rem;
   }
 
   .hero {
@@ -2352,11 +2354,10 @@ body.landing-page main > section:not(.hero) {
 /* Responsive: mobile */
 @media (max-width: 640px) {
   .header-inner {
-    padding: 0.75rem 1rem;
+    padding: var(--header-pad-y) 1rem;
   }
 
   .logo {
-    height: 40px;
     max-width: 180px;
   }
 
@@ -2452,7 +2453,7 @@ body.landing-page main > section:not(.hero) {
 /* Responsive: small mobile */
 @media (max-width: 380px) {
   .header-inner {
-    padding: 0.5rem 0.75rem;
+    padding: var(--header-pad-y) 0.75rem;
   }
 
   .hero {
@@ -2500,20 +2501,15 @@ body.landing-page main > section:not(.hero) {
 /* Responsive: large screens (big monitors) */
 @media (min-width: 1200px) {
   .header-inner {
-    padding: 1.25rem 2rem;
+    padding: var(--header-pad-y) 2rem;
   }
 
   .logo {
-    height: 52px;
     max-width: 240px;
   }
 
   .nav {
     gap: 0.35rem 0.75rem;
-  }
-
-  .nav > .nav-link {
-    font-size: 0.95rem;
   }
 
   .hero {
@@ -2691,7 +2687,7 @@ body.landing-page main > section:not(.hero) {
 /* Responsive: extra-large (ultrawide / 4K) */
 @media (min-width: 1600px) {
   .header-inner {
-    padding: 1.5rem 2.5rem;
+    padding: var(--header-pad-y) 2.5rem;
   }
 
   .hero {

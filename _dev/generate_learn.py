@@ -57,8 +57,8 @@ TRACKS = {
         "description": "Typed, fast Python APIs with validation and automatic docs."},
     "express": {"label": "Express", "parent": "Frameworks", "category": "frameworks",
         "description": "Routes, middleware and REST APIs on Node.js."},
-    "one-course": {
-        "label": "AI: One Course",
+    "artificial-intelligence": {
+        "label": "AI (Artificial Intelligence)",
         "parent": "AI",
         "category": "ai",
         "description": "LLMs, tokens, prompts, embeddings, vector search, BM25, hybrid search, RAG, agents, harnesses, LangGraph, streaming and interview prep. Beginner to expert, in one place.",
@@ -586,9 +586,9 @@ def lesson_html(les: dict) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=3">
+  <link rel="stylesheet" href="/styles.css?v=4">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=28">
+  <link rel="stylesheet" href="/learn/learn.css?v=29">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -691,10 +691,10 @@ def lesson_html(les: dict) -> str:
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-{mermaid_scripts}  <script src="/site-nav.js" defer></script>
+{mermaid_scripts}  <script src="/site-nav.js?v=2" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
-  <script type="module" src="/assets/learn-auth.js?v=4"></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
@@ -718,8 +718,8 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=3">
-  <link rel="stylesheet" href="/learn/learn.css?v=28">
+  <link rel="stylesheet" href="/styles.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=29">
   <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -746,10 +746,10 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-  <script src="/site-nav.js" defer></script>
+  <script src="/site-nav.js?v=2" defer></script>
   <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
-  <script type="module" src="/assets/learn-auth.js?v=4"></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
@@ -896,7 +896,7 @@ def catalog_html() -> str:
   </main>"""
     return _page_shell(
         "Learn Coding &amp; Data Structures | stackcone",
-        "Free coding and AI courses — Programming, DS & Algo, Frameworks and the AI: One Course guide from LLMs to agents. Interactive lessons with exercises.",
+        "Free coding and AI courses — Programming, DS & Algo, Frameworks and the AI (Artificial Intelligence) guide from LLMs to agents. Interactive lessons with exercises.",
         "https://stackcone.com/learn/",
         body,
     )
@@ -973,6 +973,16 @@ def main() -> None:
         _first = first_lesson_url(_t)
         redirects[f"/learn/{_t}/"] = _first
         redirects[f"/learn/courses/{_t}/"] = _first
+    # Previous AI course slug was /learn/ai/one-course/.
+    _ai_first = first_lesson_url("artificial-intelligence")
+    redirects["/learn/one-course/"] = _ai_first
+    redirects["/learn/courses/one-course/"] = _ai_first
+    redirects["/learn/ai/one-course/"] = _ai_first
+    for _l in LESSONS:
+        if _l["track"] != "artificial-intelligence":
+            continue
+        _suffix = _l["slug"].split("-", 1)[1]
+        redirects[f"/learn/ai/one-course/{_suffix}/"] = lesson_url(_l)
     (ROOT / "assets" / "learn-redirects.json").write_text(
         json.dumps(redirects, indent=0, sort_keys=True), encoding="utf-8")
 
