@@ -170,14 +170,15 @@ print(sum(i[&quot;qty&quot;] for i in order[&quot;items&quot;]))</code></pre></d
       <div class="learn-code-wrap" data-lang="python"><pre><code>a = {&quot;python&quot;, &quot;sql&quot;, &quot;git&quot;}
 b = {&quot;git&quot;, &quot;docker&quot;, &quot;sql&quot;}
 
-print(a &amp; b)      # in both
-print(a | b)      # in either
-print(a - b)      # only in a
+print(sorted(a &amp; b))   # in both
+print(sorted(a | b))   # in either
+print(sorted(a - b))   # only in a
 print(len({1, 1, 2, 2, 3}))</code></pre></div>
-      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;sql&#x27;, &#x27;git&#x27;}
-{&#x27;sql&#x27;, &#x27;docker&#x27;, &#x27;git&#x27;, &#x27;python&#x27;}
-{&#x27;python&#x27;}
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;git&#x27;, &#x27;sql&#x27;]
+[&#x27;docker&#x27;, &#x27;git&#x27;, &#x27;python&#x27;, &#x27;sql&#x27;]
+[&#x27;python&#x27;]
 3</pre></div>
+      <p>Each result is wrapped in <code>sorted()</code> for a reason: a set has <strong>no order</strong>, so printing one directly shows its items in an arbitrary arrangement that can differ between runs. Sort it whenever you need predictable output.</p>
       <h2>Key takeaways</h2>
       <ul><li>A dictionary maps unique keys to values; use it when data has names.</li><li>Read with <code>d[key]</code> or the safe <code>d.get(key, default)</code>.</li><li>Loop with <code>.items()</code>; counting is the classic pattern.</li><li>Sets store unique items and support union, intersection and difference.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a word-frequency dictionary from a sentence, then print the word that appears most often.</p></aside>

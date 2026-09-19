@@ -805,6 +805,18 @@ def main() -> None:
         out = ROOT / lesson_url(les).strip("/") / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(lesson_html(les), encoding="utf-8")
+    # Old lesson URLs (/learn/courses/<slug>/ and /learn/<track>/) are gone;
+    # 404.html reads this map so external links still land on the right lesson.
+    redirects = {}
+    for _l in LESSONS:
+        redirects[f"/learn/courses/{_l['slug']}/"] = lesson_url(_l)
+    for _t in TRACKS:
+        _first = first_lesson_url(_t)
+        redirects[f"/learn/{_t}/"] = _first
+        redirects[f"/learn/courses/{_t}/"] = _first
+    (ROOT / "assets" / "learn-redirects.json").write_text(
+        json.dumps(redirects, indent=0, sort_keys=True), encoding="utf-8")
+
     print(f"Generated {len(LESSONS)} lessons + {len(TRACKS)} tracks + {len(CATEGORIES)} categories + catalog")
 
 

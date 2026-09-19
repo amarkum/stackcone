@@ -170,7 +170,8 @@ EXTRA["python-dictionaries"] = {
         ("p", "Values can be lists or other dictionaries, which is how real data such as API responses is shaped. Read it one level at a time."),
         *py('order = {\n    "id": 1001,\n    "customer": {"name": "Ada", "city": "London"},\n    "items": [{"sku": "A1", "qty": 2}, {"sku": "B7", "qty": 1}],\n}\n\nprint(order["customer"]["city"])\nprint(order["items"][0]["qty"])\nprint(sum(i["qty"] for i in order["items"]))'),
         ("h2", "Sets: unique items and fast membership"),
-        *py('a = {"python", "sql", "git"}\nb = {"git", "docker", "sql"}\n\nprint(a & b)      # in both\nprint(a | b)      # in either\nprint(a - b)      # only in a\nprint(len({1, 1, 2, 2, 3}))'),
+        *py('a = {"python", "sql", "git"}\nb = {"git", "docker", "sql"}\n\nprint(sorted(a & b))   # in both\nprint(sorted(a | b))   # in either\nprint(sorted(a - b))   # only in a\nprint(len({1, 1, 2, 2, 3}))'),
+        ("p", "Each result is wrapped in <code>sorted()</code> for a reason: a set has <strong>no order</strong>, so printing one directly shows its items in an arbitrary arrangement that can differ between runs. Sort it whenever you need predictable output."),
     ],
     "recap": [
         "A dictionary maps unique keys to values; use it when data has names.",

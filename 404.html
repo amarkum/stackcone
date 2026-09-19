@@ -12,6 +12,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
+  <script>
+  // Lesson URLs moved from /learn/courses/<slug>/ to /learn/<category>/<track>/<lesson>/.
+  // GitHub Pages cannot issue 301s, so send visitors on from the 404 handler.
+  (function () {
+    var path = location.pathname;
+    if (path.indexOf('/learn/') !== 0) return;
+    if (path.charAt(path.length - 1) !== '/') path += '/';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/assets/learn-redirects.json', false);
+    try {
+      xhr.send(null);
+      if (xhr.status === 200) {
+        var dest = JSON.parse(xhr.responseText)[path];
+        if (dest) location.replace(dest + location.hash);
+      }
+    } catch (e) { /* fall through to the 404 page */ }
+  })();
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
