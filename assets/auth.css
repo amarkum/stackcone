@@ -183,3 +183,72 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-google, .auth-google.is-busy svg, .auth-strength i, .auth-field input { transition: none; animation: none; }
 }
+
+/* ---------- dark theme (html[data-theme="dark"], set by /assets/theme.js) ---------- */
+[data-theme="dark"] .sc-account-login { border-color: #f2f2f2; background: #f2f2f2; color: #0a0a0a; }
+[data-theme="dark"] .sc-account-login:hover { border-color: #d4d4d4; background: #d4d4d4; color: #0a0a0a; }
+[data-theme="dark"] .sc-account-login:focus-visible,
+[data-theme="dark"] .sc-avatar:focus-visible { outline-color: #f2f2f2; }
+[data-theme="dark"] .sc-avatar { background: #f2f2f2; color: #0a0a0a; }
+[data-theme="dark"] .sc-avatar:hover { background: #d4d4d4; }
+[data-theme="dark"] .sc-account-menu { background: #141414; border-color: #2a2a2a; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); }
+[data-theme="dark"] .sc-account-who { border-bottom-color: #2a2a2a; }
+[data-theme="dark"] .sc-account-who strong { color: #f2f2f2; }
+[data-theme="dark"] .sc-account-who span { color: #9a9a9a; }
+[data-theme="dark"] .sc-account-menu a,
+[data-theme="dark"] .sc-account-menu button { color: #c8c8c8; }
+[data-theme="dark"] .sc-account-menu a:hover,
+[data-theme="dark"] .sc-account-menu button:hover { background: #222; color: #f2f2f2; }
+@media (max-width: 992px) {
+  [data-theme="dark"] .nav-account { border-top-color: #2a2a2a; }
+  [data-theme="dark"] .nav-account-who strong { color: #f2f2f2; }
+  [data-theme="dark"] .nav-account-who span { color: #9a9a9a; }
+  [data-theme="dark"] .nav-account-btn { border-color: #3a3a3a; background: #141414; color: #f2f2f2; }
+  [data-theme="dark"] .nav-account-btn:hover { background: #1c1c1c; }
+  [data-theme="dark"] .nav-account-btn--primary { border-color: #f2f2f2; background: #f2f2f2; color: #0a0a0a; }
+  [data-theme="dark"] .nav-account-btn--primary:hover { background: #d4d4d4; }
+}
+
+/* login / signup */
+.auth-pane { position: relative; }
+.auth-pane > .theme-toggle {
+  position: absolute; top: 1.25rem; right: 1.25rem; z-index: 2;
+  display: grid; place-items: center; width: 36px; height: 36px; padding: 0;
+  border: 1px solid #e5e5e5; border-radius: 999px; background: #fff; color: #0a0a0a; cursor: pointer;
+}
+.auth-pane > .theme-toggle:hover { border-color: #a3a3a3; }
+.auth-pane > .theme-toggle .theme-icon--sun { display: none; }
+[data-theme="dark"] .auth-pane > .theme-toggle { border-color: #2a2a2a; background: #141414; color: #f2f2f2; }
+[data-theme="dark"] .auth-pane > .theme-toggle .theme-icon--sun { display: block; }
+[data-theme="dark"] .auth-pane > .theme-toggle .theme-icon--moon { display: none; }
+
+[data-theme="dark"] .auth-page,
+[data-theme="dark"] .auth-pane { background: #0a0a0a; color: #f2f2f2; }
+[data-theme="dark"] .auth-side { border-right: 1px solid #1f1f1f; }
+[data-theme="dark"] .auth-form-logo img { filter: invert(1) brightness(1.1); }
+[data-theme="dark"] .auth-alt,
+[data-theme="dark"] .auth-back,
+[data-theme="dark"] .auth-link { color: #a3a3a3; }
+[data-theme="dark"] .auth-alt a,
+[data-theme="dark"] .auth-back:hover,
+[data-theme="dark"] .auth-link:hover,
+[data-theme="dark"] .auth-eye:hover { color: #f2f2f2; }
+[data-theme="dark"] .auth-fine a { color: #9a9a9a; }
+[data-theme="dark"] .auth-field > span:first-child { color: #d4d4d4; }
+[data-theme="dark"] .auth-google,
+[data-theme="dark"] .auth-field input { border-color: #2a2a2a; background: #141414; color: #f2f2f2; }
+[data-theme="dark"] .auth-google:hover { background: #1c1c1c; border-color: #404040; }
+[data-theme="dark"] .auth-field input::placeholder { color: #666; }
+[data-theme="dark"] .auth-field input:focus { border-color: #f2f2f2; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08); }
+[data-theme="dark"] .auth-google:focus-visible,
+[data-theme="dark"] .auth-submit:focus-visible,
+[data-theme="dark"] .auth-eye:focus-visible,
+[data-theme="dark"] .auth-link:focus-visible { outline-color: #f2f2f2; }
+[data-theme="dark"] .auth-eye:hover { background: #222; }
+[data-theme="dark"] .auth-or::before,
+[data-theme="dark"] .auth-or::after,
+[data-theme="dark"] .auth-strength i { background: #2a2a2a; }
+[data-theme="dark"] .auth-submit { background: #f2f2f2; color: #0a0a0a; }
+[data-theme="dark"] .auth-submit:hover { background: #d4d4d4; }
+[data-theme="dark"] .auth-msg.is-error { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.1); color: #fca5a5; }
+[data-theme="dark"] .auth-msg.is-ok { border-color: rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.1); color: #6ee7b7; }

@@ -488,7 +488,45 @@
     });
   }
 
+  // Editor colours follow the site theme (html[data-theme], set by /assets/theme.js).
+  // Backgrounds match --code-bg in styles.css so the editor blends into its card.
+  function siteMonacoTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'sc-dark' : 'sc-light';
+  }
+
+  var themesReady = false;
+  function setupThemes(monaco) {
+    if (themesReady) return;
+    themesReady = true;
+    monaco.editor.defineTheme('sc-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#f8fafc',
+        'editorLineNumber.foreground': '#94a3b8',
+        'editorLineNumber.activeForeground': '#475569',
+        'editor.selectionBackground': '#cbd5e1'
+      }
+    });
+    monaco.editor.defineTheme('sc-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [],
+      colors: {
+        'editor.background': '#111113',
+        'editorLineNumber.foreground': '#52525b',
+        'editorLineNumber.activeForeground': '#a1a1aa',
+        'editor.selectionBackground': '#3f3f46'
+      }
+    });
+    new MutationObserver(function () {
+      monaco.editor.setTheme(siteMonacoTheme());
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+
   function createEditor(monaco, host, block) {
+    setupThemes(monaco);
     var mount = host.querySelector('.monaco-code-mount') || host;
     var lang = detectLang(block.code, block.hint);
     var runner = runnerFor(block, lang);
@@ -523,7 +561,7 @@
       fontSize: 13,
       lineHeight: 20,
       fontFamily: "'Source Code Pro', ui-monospace, monospace",
-      theme: 'vs-dark',
+      theme: siteMonacoTheme(),
       wordWrap: 'off',
       automaticLayout: true,
       padding: { top: 12, bottom: 12 },
