@@ -79,7 +79,7 @@
 
   /* ---------------- rendering ---------------- */
 
-  // Same format as fmt_left() in _dev/generate_learn.py, so the first paint doesn't jump.
+  // Keep the first paint stable: "Xm left" until under an hour, then "Done".
   function fmtMinutes(total) {
     if (total <= 0) return "Done";
     if (total < 60) return "~ " + total + " min";

@@ -546,10 +546,8 @@ _pipeline/                          ← optional orchestration (not deployed)
 └── scripts/                        ← qa-blog-post.sh, validate-brief.sh
 
 sitemap.xml                         ← root sitemap
-robots.txt                          ← Disallow: /blog/md/
-_dev/
-└── sync_blog_index.py</code></pre></div>
-    <p>Deploy script (<code>.github/scripts/prepare-pages.sh</code>) removes <code>blog/md/</code>, <code>_dev/</code>, <code>_pipeline/</code>, and legacy redirect stubs before GitHub Pages upload. Only HTML is public.</p>
+robots.txt                          ← Disallow: /blog/md/</code></pre></div>
+    <p>Deploy script (<code>.github/scripts/prepare-pages.sh</code>) removes <code>blog/md/</code>, <code>_pipeline/</code>, and legacy redirect stubs before GitHub Pages upload. Only HTML is public.</p>
     <p><strong>Intent agent data source:</strong> Google Search Console → Queries with impressions but zero clicks = content gaps worth filling.</p>
     <p><strong>Writer agent rules:</strong> <code>.cursor/rules/blog-posts.mdc</code> — md source + html publish, never link to <code>.md</code>.</p>
     <p><strong>Publisher skill steps:</strong></p>
@@ -557,7 +555,6 @@ _dev/
     <li>Write <code>blog/md/{slug}.md</code></li>
     <li>Write <code>blog/posts/{slug}/index.html</code> with full SEO head</li>
     <li>Update <code>blog/posts.json</code>, <code>sitemap.xml</code>, <code>blog/index.html</code></li>
-    <li>Run <code>python3 _dev/sync_blog_index.py</code></li>
     <li>QA: <code>_pipeline/scripts/qa-blog-post.sh {slug}</code></li>
     </ol>
     <h2 id="complete-ship-blog-post-skillmd">Complete ship-blog-post SKILL.md</h2>
@@ -566,7 +563,7 @@ _dev/
 name: ship-blog-post
 description: &gt;-
   Publish a stackcone blog post — convert md to HTML, update posts.json,
-  sitemap.xml, blog/index.html, run sync_blog_index.py, run QA script.
+  sitemap.xml, blog/index.html, run QA script.
   Use when user asks to ship, publish, or deploy a blog post.
 disable-model-invocation: true
 ---

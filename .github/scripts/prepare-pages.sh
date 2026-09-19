@@ -9,7 +9,6 @@ cd "$ROOT"
 # Legacy auto-generated stubs have been replaced with permanent redirects to canonical URLs.
 
 PATHS=(
-  _dev
   .cursor
   .github
   blog/md

@@ -597,10 +597,9 @@ _pipeline/                          ← optional orchestration (not deployed)
 
 sitemap.xml                         ← root sitemap
 robots.txt                          ← Disallow: /blog/md/
-_dev/
 ```
 
-Deploy script (`.github/scripts/prepare-pages.sh`) removes `blog/md/`, `_dev/`, `_pipeline/`, and legacy redirect stubs before GitHub Pages upload. Only HTML is public.
+Deploy script (`.github/scripts/prepare-pages.sh`) removes `blog/md/`, `_pipeline/`, and legacy redirect stubs before GitHub Pages upload. Only HTML is public.
 
 **Intent agent data source:** Google Search Console → Queries with impressions but zero clicks = content gaps worth filling.
 

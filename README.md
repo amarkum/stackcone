@@ -65,7 +65,7 @@ This repo is the source for [stackcone.com](https://stackcone.com/), deployed vi
 
 - **Stack:** Static HTML, CSS, JavaScript — no build step required for deploy
 - **Deploy:** Push to `main` → GitHub Actions → GitHub Pages
-- **Dev tooling:** code blocks are highlighted at render time by Monaco (`assets/monaco-code.js`); `_dev/sync_blog_index.py` rebuilds the blog listing
+- **Dev tooling:** code blocks are highlighted at render time by Monaco (`assets/monaco-code.js`)
 
 ```bash
 # Local preview (any static server)
