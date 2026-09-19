@@ -56,6 +56,7 @@
       href: "/learn/ai/",
       children: [
         { href: "/learn/ai/artificial-intelligence/what-is-an-llm/", label: "AI (Artificial Intelligence)", matches: ["/learn/ai/artificial-intelligence"] },
+        { href: "/learn/ai/interview-questions/ai-ml-fundamentals/", label: "AI Interview Questions", matches: ["/learn/ai/interview-questions"] },
         { href: "/learn/ai/", label: "All AI", separator: true }
       ]
     },
