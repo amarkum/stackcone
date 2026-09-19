@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Inference, Serving Performance and LLMOps | AI Interview Questions | stackcone Learn</title>
+  <meta name="description" content="TTFT and throughput, continuous batching, PagedAttention, speculative decoding, quantisation, parallelism, caching, cost control, failover and observability.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/interview-questions/inference-serving-llmops/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=10">
+  <link rel="stylesheet" href="/learn/learn.css?v=35">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=17">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> / Inference, Serving Performance and LLMOps</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="ai-interview-questions">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a></p>
+              <p class="learn-sidebar-tagline">88 questions with model answers</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 8 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/ai-ml-fundamentals/" data-lesson="aiq-ai-ml-fundamentals" data-minutes="16"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">AI and Machine Learning Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/llm-transformers/" data-lesson="aiq-llm-transformers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">LLMs and Transformers: How They Actually Work</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/prompt-engineering/" data-lesson="aiq-prompt-engineering" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompt Engineering and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/rag-fundamentals/" data-lesson="aiq-rag-fundamentals" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">RAG: Retrieval-Augmented Generation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/embeddings-vector-databases/" data-lesson="aiq-embeddings-vector-databases" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Embeddings, Vector Databases and Advanced RAG</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/agents-tools-mcp/" data-lesson="aiq-agents-tools-mcp" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">AI Agents, Tool Use and MCP</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/fine-tuning-alignment/" data-lesson="aiq-fine-tuning-alignment" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Fine-Tuning, LoRA and Alignment (RLHF, DPO)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/interview-questions/inference-serving-llmops/" aria-current="page" data-lesson="aiq-inference-serving-llmops" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Inference, Serving Performance and LLMOps</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> · Lesson 8 of 8</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ai/interview-questions/fine-tuning-alignment/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              
+            </nav>
+          </div>
+          <h1>Inference, Serving Performance and LLMOps</h1>
+          <p class="learn-summary">TTFT and throughput, continuous batching, PagedAttention, speculative decoding, quantisation, parallelism, caching, cost control, failover and observability.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>11 questions</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/interview-questions/fine-tuning-alignment/">Lesson 7: Fine-Tuning, LoRA and Alignment (RLHF, DPO)</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain why LLM serving is memory-bound and how batching, caching and quantisation change the economics</li><li>Do back-of-envelope latency, memory and cost estimates</li><li>Design for rate limits, outages, monitoring and safe rollouts</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 8 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 8</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 2 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
+      <p>Companies that run models at scale care intensely about this lesson. It is where "I can call an API" becomes "I can keep a feature fast, available and affordable for a million users". The questions reward <strong>numbers and named techniques</strong>: time-to-first-token, tokens per second, continuous batching, KV cache, p99.</p>
+      <p>Even if you will only call hosted APIs, the same ideas apply to caching, routing, cost control and failure handling, so do not skip it.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>How to use this lesson</p><p class="learn-callout-body">Cover the answer, say yours out loud for a minute, then compare. Each answer follows the shape interviewers reward: a one-line definition, a concrete example, then the trade-off or failure mode. The <em>Follow-up</em> line is what a good interviewer asks next.</p></aside>
+      <h2>The 11 questions in this lesson</h2>
+      <ol class="aiq-toc" start="78"><li><a href="#q78">How do you serve an LLM in production? Sketch the architecture.</a></li><li><a href="#q79">Define TTFT, inter-token latency and throughput. Why is decoding memory-bandwidth-bound? Do the roofline maths.</a></li><li><a href="#q80">What is continuous batching and PagedAttention, and why do engines like vLLM outperform naive serving?</a></li><li><a href="#q81">What is speculative decoding and how much speed-up can it give?</a></li><li><a href="#q82">Explain model quantisation. Compare INT8, INT4, FP8, PTQ and QAT. What happens when you push to 2 to 4 bits?</a></li><li><a href="#q83">What are tensor, pipeline, data and expert parallelism? How do you serve a model larger than one GPU?</a></li><li><a href="#q84">How do prompt caching and semantic caching work, and what are the risks?</a></li><li><a href="#q85">How do you estimate and reduce the cost of running an LLM feature?</a></li><li><a href="#q86">How do you handle rate limits, provider outages and failover? Explain retries with exponential backoff and circuit breakers.</a></li><li><a href="#q87">What should you monitor and log in a production LLM application? What is LLM observability?</a></li><li><a href="#q88">How do you release model, prompt and pipeline changes safely? What does CI/CD look like for AI applications?</a></li></ol>
+      <h3 id="q78">78. How do you serve an LLM in production? Sketch the architecture.</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>The pieces around the model matter as much as the model. A typical stack:</p>
+      <div class="diagram-wrap" data-diagram-title="LLM serving architecture">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart LR
+  C[Clients] --&gt; GW["API gateway: auth, quotas, rate limits, request validation"]
+  GW --&gt; CA{"Response cache: exact and semantic"}
+  CA -- hit --&gt; C
+  CA -- miss --&gt; RT["Router: pick model by task, cost, load, region"]
+  RT --&gt; ENG["Inference engine: vLLM, SGLang or TensorRT-LLM&lt;br/&gt;continuous batching, KV cache, quantised weights"]
+  ENG --&gt; GPU[(GPU pool with autoscaling)]
+  RT -. fallback .-&gt; EXT[Backup provider or smaller model]
+  ENG --&gt; OBS["Observability: traces, token counts, latency, cost, quality signals"]
+  GW --&gt; GR[Guardrails: input and output filters]</div>
+        </div>
+      </div>
+      <ul><li><strong>Gateway:</strong> authentication, per-user and per-tenant quotas, token-based rate limiting, request size checks.</li><li><strong>Engine:</strong> use an optimised server (vLLM, SGLang, TensorRT-LLM, or llama.cpp for CPU and edge) rather than a naive framework loop: they provide continuous batching, paged KV cache, quantisation and parallelism.</li><li><strong>Streaming:</strong> return tokens as they are generated (server-sent events) so users see output immediately; it changes perceived latency far more than raw speed.</li><li><strong>Scaling:</strong> autoscale on queue depth or GPU utilisation, keep warm capacity to avoid cold starts (loading tens of GB of weights takes minutes), and separate latency-sensitive traffic from batch jobs.</li><li><strong>Reliability:</strong> health checks, timeouts, retries with backoff, circuit breakers and a fallback path.</li><li><strong>Safety and observability:</strong> guardrails, logging with PII controls, metrics and tracing, cost attribution per feature.</li></ul>
+      <p>Build-versus-buy: hosted APIs give the best quality and zero ops at variable cost; self-hosting pays off for privacy or data residency, very high steady volume, latency control, or custom fine-tuned models.</p>
+      <p><strong>Follow-up:</strong> When does self-hosting an open model become cheaper than an API, and what hidden costs do people forget?</p>
+      <h3 id="q79">79. Define TTFT, inter-token latency and throughput. Why is decoding memory-bandwidth-bound? Do the roofline maths.</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <ul><li><strong>TTFT (time to first token):</strong> from request to first output token. Dominated by queueing plus the <em>prefill</em> of the prompt (compute-bound).</li><li><strong>Inter-token latency / TPOT:</strong> time between subsequent tokens. Set by the <em>decode</em> step (memory-bound). Users read at perhaps 5 to 10 tokens per second, so 20 to 50 tokens per second per user feels instant.</li><li><strong>Throughput:</strong> total tokens per second across all users on the hardware. What determines cost per token.</li></ul>
+      <strong>Why decode is memory-bound:</strong> generating one token needs a full forward pass, which reads <em>all</em> the model weights (and the KV cache) from GPU memory but performs very little arithmetic per byte read (matrix-vector work at batch size 1). Speed is therefore limited by <strong>memory bandwidth</strong>, not FLOPs. Upper bound for one stream: <code>tokens per second = memory bandwidth / bytes of weights read per token</code>.
+      <p>Example: an 80 GB H100 has about 3.35 TB/s of bandwidth. A 70B model in FP16 (140 GB) does not even fit on one GPU; in FP8 (70 GB) the ceiling is about 3.35e12 / 70e9 = <strong>48 tokens per second</strong> for a single stream; in 4-bit (35 GB) about 95. A 8B model in FP16 (16 GB) reaches about 200. This is why <strong>batching</strong> is the key to economics: reading the weights once serves <em>many</em> requests at nearly the same cost, so throughput rises almost linearly with batch size until compute or KV-cache memory becomes the limit.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def max_tokens_per_sec(bandwidth_tb_s, model_gb):
+    return bandwidth_tb_s * 1e12 / (model_gb * 1e9)
+
+H100 = 3.35            # TB/s HBM bandwidth
+for name, gb in [("8B  FP16", 16), ("70B FP8", 70), ("70B INT4", 35)]:
+    single = max_tokens_per_sec(H100, gb)
+    print("%-9s single stream ceiling %6.0f tok/s | batch of 32: about %6.0f tok/s aggregate" % (name, single, single * 32))
+# batching amortises the weight reads; in practice you land below these ceilings (KV cache reads, kernel overheads)</code></pre></div>
+      <p><strong>Follow-up:</strong> Why does doubling the batch size barely change per-user latency at first, and when does it start to?</p>
+      <h3 id="q80">80. What is continuous batching and PagedAttention, and why do engines like vLLM outperform naive serving?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <strong>Static batching</strong> groups requests, runs them together, and waits until the <em>slowest</em> finishes. Since output lengths vary wildly, the GPU idles on finished slots. <strong>Continuous (in-flight) batching</strong> schedules at the level of individual <em>decode steps</em>: after every token step, finished sequences leave and waiting ones join immediately, keeping the GPU full. Throughput improvements of several times are typical.
+      <strong>PagedAttention</strong> (the idea behind vLLM) attacks memory waste in the KV cache. Naive servers reserve one contiguous block per request sized for the maximum length, wasting a large share of GPU memory to fragmentation and over-reservation. PagedAttention stores the cache in small fixed-size <em>blocks</em> allocated on demand, like virtual memory pages, with a block table mapping each sequence to its blocks. Less waste means more concurrent sequences, and identical prefixes (a shared system prompt) can <em>share</em> blocks, which is the basis of automatic prefix caching.
+      <div class="diagram-wrap" data-diagram-title="Static versus continuous batching">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">sequenceDiagram
+  participant Q as Request queue
+  participant G as GPU batch
+  Note over G: Static: batch of 4 waits for the longest output
+  Q-&gt;&gt;G: A, B, C, D start together
+  G--&gt;&gt;Q: B, C finished early - slots sit idle
+  G--&gt;&gt;Q: A and D finish - only now can new requests start
+  Note over G: Continuous: refill after every decode step
+  Q-&gt;&gt;G: E takes B's freed slot immediately
+  Q-&gt;&gt;G: F takes C's freed slot immediately</div>
+        </div>
+      </div>
+      <p>Related techniques worth naming: <strong>chunked prefill</strong> (split a long prompt so it does not stall other users' decoding, improving tail latency) and <strong>prefill-decode disaggregation</strong> (run the compute-bound and memory-bound phases on separate GPU pools tuned for each).</p>
+      <p><strong>Follow-up:</strong> A few very long prompts are causing latency spikes for everyone. Which two techniques address it?</p>
+      <h3 id="q81">81. What is speculative decoding and how much speed-up can it give?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Decoding is slow because each token needs a full pass of a big model, but <em>verifying</em> several candidate tokens costs almost the same as generating one (the weights are read once either way). <strong>Speculative decoding</strong> exploits this: a small, fast <strong>draft model</strong> proposes the next gamma tokens, then the large <strong>target model</strong> checks all of them in <em>one</em> parallel pass. Tokens are accepted up to the first disagreement, the target supplies the corrected token, and the process repeats. A rejection-sampling rule guarantees the output distribution is <strong>exactly the same</strong> as the target model's, so quality is unchanged: it is a pure speed-up.</p>
+      <div class="diagram-wrap" data-diagram-title="Speculative decoding">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart LR
+  D["Draft model proposes 4 tokens quickly"] --&gt; V["Target model verifies all 4 in one pass"]
+  V --&gt; A{"Which prefix agrees?"}
+  A -- "3 accepted" --&gt; N["Emit 3 tokens plus 1 corrected token = 4 tokens for one target pass"]
+  N --&gt; D</div>
+        </div>
+      </div>
+      <p>If the per-token acceptance probability is alpha and the draft length is gamma, the expected number of tokens produced per target pass is <code>(1 - alpha^(gamma+1)) / (1 - alpha)</code>. Variants avoid a separate draft model: <strong>Medusa</strong> adds extra prediction heads, <strong>EAGLE</strong> drafts at the feature level, and <strong>n-gram / prompt-lookup</strong> speculation copies likely continuations from the prompt (excellent for editing and summarisation tasks). Gains are best at low batch sizes and for predictable text; at high batch sizes, where the GPU is already busy, the benefit shrinks.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def expected_tokens(alpha, gamma):
+    return (1 - alpha ** (gamma + 1)) / (1 - alpha)
+
+for alpha in (0.5, 0.7, 0.8, 0.9):
+    print("acceptance %.1f -&gt; %.2f tokens per target pass (gamma=4)" % (alpha, expected_tokens(alpha, 4)))</code></pre></div>
+      <p><strong>Follow-up:</strong> Why does speculative decoding help less when the server is already running large batches?</p>
+      <h3 id="q82">82. Explain model quantisation. Compare INT8, INT4, FP8, PTQ and QAT. What happens when you push to 2 to 4 bits?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Quantisation stores weights (and sometimes activations and the KV cache) with fewer bits, cutting memory, memory traffic and often latency. Because decoding is memory-bound, halving the bytes per weight nearly doubles single-stream speed.</p>
+      <table><thead><tr><th>Format</th><th>Bytes per weight</th><th>Notes</th></tr></thead><tbody><tr><td>FP32</td><td>4</td><td>Training precision; rarely used for serving</td></tr><tr><td>FP16 / BF16</td><td>2</td><td>Standard serving baseline; BF16 has a wider range and is preferred for training</td></tr><tr><td>FP8</td><td>1</td><td>Supported by recent GPUs (Hopper and newer); small quality loss; good default for large models</td></tr><tr><td>INT8</td><td>1</td><td>Widely supported; usually near-lossless for weights</td></tr><tr><td>INT4 (GPTQ, AWQ)</td><td>0.5</td><td>Big savings; quality loss is small for large models and larger for small ones</td></tr><tr><td>2 to 3 bits</td><td>0.25 to 0.4</td><td>Research-grade; noticeable degradation unless carefully done</td></tr></tbody></table>
+      <strong>Post-training quantisation (PTQ)</strong> converts an already-trained model using a small calibration set (GPTQ minimises layer-wise error; AWQ protects the salient weights by scaling; SmoothQuant tames activation outliers). It is quick and needs no training. <strong>Quantisation-aware training (QAT)</strong> simulates low precision during training or fine-tuning so the model learns to compensate; it recovers more quality at low bit-widths but costs compute.
+      <p>What breaks at 2 to 4 bits: <em>outlier</em> weights and activations (a few large values dominate the error), long-context and reasoning-heavy tasks degrade first, smaller models are hurt more, and average benchmark scores can hide task-specific regressions. So: quantise, then <strong>re-run your own evaluation set</strong> and compare with the full-precision baseline; consider mixed precision (keep sensitive layers, embeddings and the output head in higher precision); and quantise the KV cache separately for long contexts.</p>
+      <p><strong>Follow-up:</strong> You quantised to INT4 and accuracy dropped 6 points. What do you try, in order?</p>
+      <h3 id="q83">83. What are tensor, pipeline, data and expert parallelism? How do you serve a model larger than one GPU?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <table><thead><tr><th>Parallelism</th><th>What is split</th><th>Communication</th><th>Best for</th></tr></thead><tbody><tr><td>Data parallel</td><td>Whole model replicated; requests (or training batches) split</td><td>Little at inference; gradient sync in training</td><td>Scaling throughput once the model fits on one GPU</td></tr><tr><td>Tensor parallel</td><td>Each layer's weight matrices sliced across GPUs</td><td>All-reduce every layer: needs fast links (NVLink)</td><td>Fitting big models and lowering latency within a node</td></tr><tr><td>Pipeline parallel</td><td>Consecutive layers assigned to different GPUs</td><td>Activations passed between stages; bubbles</td><td>Very large models spanning nodes</td></tr><tr><td>Expert parallel</td><td>Different experts on different GPUs (MoE models)</td><td>All-to-all token routing</td><td>Mixture-of-experts models</td></tr><tr><td>Sequence / context parallel</td><td>Long sequences split across GPUs</td><td>Ring or all-gather patterns</td><td>Very long contexts</td></tr></tbody></table>
+      <p>Rule of thumb for a 70B model: it needs about 140 GB in 16-bit, so use <strong>tensor parallelism across 2 to 4 (or 8) GPUs</strong> inside one NVLink-connected node, then add <strong>data-parallel replicas</strong> for throughput. Quantising to FP8 or INT4 can bring it onto fewer GPUs. Pipeline parallelism is for models that exceed a node. For training, sharding methods such as <strong>FSDP</strong> and <strong>DeepSpeed ZeRO</strong> partition parameters, gradients and optimiser state across GPUs and gather them when needed, trading communication for memory.</p>
+      <p><strong>Follow-up:</strong> Tensor parallelism across two nodes is slower than within one node. Why?</p>
+      <h3 id="q84">84. How do prompt caching and semantic caching work, and what are the risks?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>There are two very different caches:</p>
+      <ul><li><strong>Prompt (prefix) caching:</strong> the provider or engine stores the computed KV cache for the <em>beginning</em> of a prompt so later requests with the same prefix skip its prefill. It cuts cost and TTFT substantially for long, repeated system prompts, tool definitions, few-shot examples and documents. To benefit, keep the static part identical and first, put user-specific content last, and do not change earlier tokens (even whitespace or timestamps) between calls.</li><li><strong>Response caching:</strong> store complete answers keyed by the request. <em>Exact</em> caching (hash of the normalised prompt) is safe and precise. <em>Semantic</em> caching embeds the query and returns a stored answer when a new query is similar enough (cosine above a threshold), saving whole LLM calls for FAQ-style traffic.</li></ul>
+      <p>Risks of semantic caching: <strong>false hits</strong> ("cancel my order" versus "cancel my subscription" can be very close in embedding space and have different answers), stale answers, and leaking one user's personalised or private answer to another. Mitigate with a high threshold tuned on real traffic, a check on entities and intent, scoping the cache by tenant and permissions, time-to-live, not caching personalised or high-stakes flows, and monitoring the false-hit rate.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import math, re
+from collections import Counter
+
+def vec(text):
+    return Counter(re.findall(r"[a-z]+", text.lower()))
+
+def cosine(a, b):
+    num = sum(a[t] * b[t] for t in a)
+    den = math.sqrt(sum(v * v for v in a.values())) * math.sqrt(sum(v * v for v in b.values()))
+    return num / den if den else 0.0
+
+cache = [("how do i reset my password", "Go to Settings, then Security, then Reset password.")]
+
+def lookup(query, threshold=0.7):
+    q = vec(query)
+    best = max(cache, key=lambda item: cosine(q, vec(item[0])))
+    score = cosine(q, vec(best[0]))
+    return (best[1], round(score, 2)) if score &gt;= threshold else (None, round(score, 2))
+
+print(lookup("how can i reset my password"))     # hit
+print(lookup("how do i delete my account"))      # miss: must call the model</code></pre></div>
+      <p><strong>Follow-up:</strong> How would you pick and monitor the similarity threshold in production?</p>
+      <h3 id="q85">85. How do you estimate and reduce the cost of running an LLM feature?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Estimate from traffic: <code>monthly cost = requests x (avg input tokens x input price + avg output tokens x output price)</code>, then add retries, evaluation traffic, embedding and reranking calls, vector database and hosting costs, and engineering time. Always model the <strong>p50 and p95</strong> prompt sizes, because long-tail requests dominate the bill, and use <em>cost per successful task</em> rather than cost per call.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def monthly_cost(requests_per_day, in_tokens, out_tokens, price_in_per_m, price_out_per_m, cache_hit_rate=0.0):
+    billable = requests_per_day * 30 * (1 - cache_hit_rate)
+    return billable * (in_tokens * price_in_per_m + out_tokens * price_out_per_m) / 1e6
+
+# example prices only - replace with your provider's current rates
+big   = monthly_cost(200_000, 3000, 400, price_in_per_m=3.00, price_out_per_m=15.00)
+small = monthly_cost(200_000, 3000, 400, price_in_per_m=0.25, price_out_per_m=1.25)
+routed = 0.7 * small + 0.3 * big                                   # 70% of traffic handled by the small model
+cached = monthly_cost(200_000, 3000, 400, 3.00, 15.00, cache_hit_rate=0.25)
+print("all on large model : $%9.0f / month" % big)
+print("all on small model : $%9.0f / month" % small)
+print("70/30 routed       : $%9.0f / month" % routed)
+print("large + 25%% cached : $%9.0f / month" % cached)</code></pre></div>
+      <p>Levers, roughly in order of payoff: <strong>route</strong> easy requests to small models and hard ones to large; <strong>cache</strong> (prefix, exact, semantic); <strong>shorten</strong> prompts and outputs (fewer, reranked chunks; concise formats); <strong>batch</strong> non-urgent work through discounted batch endpoints; <strong>quantise or distil</strong> a self-hosted model for high volume; <strong>cap</strong> tokens, steps and retries; and <strong>track</strong> spend per feature and per tenant with alerts so a runaway loop is caught in minutes, not at month end. Verify each change against your quality benchmark.</p>
+      <p><strong>Follow-up:</strong> Finance says the LLM bill doubled with flat traffic. Where do you look first?</p>
+      <h3 id="q86">86. How do you handle rate limits, provider outages and failover? Explain retries with exponential backoff and circuit breakers.</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Providers rate-limit by requests and by tokens per minute, and they have outages, so design for <strong>graceful degradation</strong>:</p>
+      <ul><li><strong>Retry transient errors</strong> (429, 500, 503, timeouts) with <strong>exponential backoff plus jitter</strong>: wait a random time up to <code>min(cap, base x 2^attempt)</code>. Jitter prevents thousands of clients retrying in lockstep (a thundering herd). Honour <code>Retry-After</code> headers; cap attempts; do not retry client errors (400s) or non-idempotent actions without an idempotency key.</li><li><strong>Client-side rate limiting:</strong> a token-bucket limiter that meters <em>tokens</em> (not just requests), with queues and priorities so interactive traffic beats batch jobs.</li><li><strong>Circuit breaker:</strong> after N consecutive failures stop calling the provider for a cool-down period, fail fast, and probe periodically to recover, so a dead dependency does not exhaust your threads and timeouts.</li><li><strong>Fallbacks:</strong> a secondary provider or region (behind a gateway that normalises the API), a smaller local model, a cached answer, or a clear degraded experience ("answers are limited right now"). Test the fallback path regularly, and re-check quality, prompts and safety on the fallback model.</li><li><strong>Backpressure and timeouts:</strong> bounded queues, per-request deadlines, and load shedding so you fail some requests cleanly rather than all of them slowly.</li></ul>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import random
+
+def backoff_schedule(attempts, base=0.5, cap=20.0, seed=4):
+    rng = random.Random(seed)
+    waits = []
+    for n in range(attempts):
+        ceiling = min(cap, base * (2 ** n))
+        waits.append(round(rng.uniform(0, ceiling), 2))      # "full jitter": random between 0 and the ceiling
+    return waits
+
+print("no jitter, ceilings :", [min(20.0, 0.5 * 2 ** n) for n in range(7)])
+print("full-jitter waits   :", backoff_schedule(7))
+# two clients with different seeds retry at different moments instead of together
+print("another client      :", backoff_schedule(7, seed=9))</code></pre></div>
+      <p><strong>Follow-up:</strong> Your provider is down for 40 minutes. What does the user see, and what does your system do?</p>
+      <h3 id="q87">87. What should you monitor and log in a production LLM application? What is LLM observability?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Classic service metrics are necessary but not sufficient, because an LLM system can be fast, error-free and <em>wrong</em>. Track four families:</p>
+      <table><thead><tr><th>Family</th><th>Examples</th></tr></thead><tbody><tr><td>Performance</td><td>TTFT, tokens per second, p50/p95/p99 latency, queue time, error and timeout rates, rate-limit hits</td></tr><tr><td>Cost</td><td>Input and output tokens, cost per request, per feature, per tenant, cache hit rate, retries</td></tr><tr><td>Quality</td><td>Online evaluation scores (LLM judge on a sample), thumbs up/down, regeneration and edit rates, refusal rate, groundedness for RAG, escalation to humans</td></tr><tr><td>Safety and behaviour</td><td>Guardrail triggers, prompt-injection detections, PII flagged, toxic outputs, tool-call anomalies, topic drift</td></tr></tbody></table>
+      <strong>Observability</strong> means being able to answer "why did it do that?" for any request. Capture a <strong>trace per request</strong>: prompt template version, full rendered prompt (with PII redaction), retrieved documents and scores, each tool call and result, model and parameters, output, token counts and latency for every span. Store enough to replay a request against a new model or prompt. Tools include LangSmith, Langfuse, Arize Phoenix, OpenTelemetry-based tracing and provider dashboards.
+      <p>Add alerts on budgets and anomalies (a spike in tokens per request signals a loop or prompt bloat), sample real traffic into the evaluation pipeline to catch drift, and mind privacy: logs contain user data, so apply retention limits, access control and redaction.</p>
+      <p><strong>Follow-up:</strong> Users say answers got worse this week but every dashboard is green. What do you check?</p>
+      <h3 id="q88">88. How do you release model, prompt and pipeline changes safely? What does CI/CD look like for AI applications?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>AI changes are riskier than code changes because behaviour is statistical: a change can improve the average and break an important segment. So the release pipeline adds evaluation gates on top of the usual tests:</p>
+      <ol><li><strong>Version everything:</strong> prompts, model ids (pin exact versions, never a moving alias), retrieval configuration, embedding model, tool schemas and evaluation data.</li><li><strong>Offline gate in CI:</strong> run the regression set (golden questions, edge cases, adversarial inputs, safety tests) and compare metrics against the current production version; block on regressions in quality, safety, latency or cost.</li><li><strong>Shadow mode:</strong> send live traffic to the candidate without showing results, and compare with production.</li><li><strong>Canary and A/B:</strong> release to a small share of users with guardrail metrics and automatic rollback; use feature flags so rollback is a switch, not a deploy.</li><li><strong>Monitor after release</strong> on both system and quality metrics; keep the previous version warm for instant rollback.</li><li><strong>Handle provider deprecations:</strong> when a provider retires a model, treat the migration as a release with a full evaluation.</li></ol>
+      <p>Statistical care matters: compare variants on enough traffic and with confidence intervals (or paired evaluations with the same inputs), watch segment-level metrics, and beware novelty effects.</p>
+      <p><strong>Follow-up:</strong> A/B results show +2% satisfaction but +30% cost. How do you decide?</p>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Pick a model size and GPU. Compute the single-stream tokens-per-second ceiling from memory bandwidth, then the KV-cache memory for 16 concurrent 8k-token requests and check that it fits. Then estimate the monthly bill for 100,000 requests per day at your own token counts, and show two changes that would cut it by a third without hurting quality.</p></aside>
+      <h2>Sources and further reading</h2>
+      <ul><li><a href="https://arxiv.org/abs/2309.06180" rel="noopener noreferrer" target="_blank">Kwon et al., Efficient Memory Management for LLM Serving with PagedAttention (vLLM)</a></li><li><a href="https://arxiv.org/abs/2211.17192" rel="noopener noreferrer" target="_blank">Leviathan et al., Fast Inference from Transformers via Speculative Decoding</a></li><li><a href="https://www.usenix.org/conference/osdi22/presentation/yu" rel="noopener noreferrer" target="_blank">Yu et al., Orca: Continuous Batching</a></li><li><a href="https://arxiv.org/abs/2210.17323" rel="noopener noreferrer" target="_blank">Frantar et al., GPTQ</a></li><li><a href="https://arxiv.org/abs/2306.00978" rel="noopener noreferrer" target="_blank">Lin et al., AWQ: Activation-aware Weight Quantization</a></li><li><a href="https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/" rel="noopener noreferrer" target="_blank">AWS Architecture Blog: Exponential Backoff and Jitter</a></li><li><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions" rel="noopener noreferrer" target="_blank">AI Engineering interview questions (Outcome School, Apache-2.0)</a></li></ul>
+          
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/interview-questions/fine-tuning-alignment/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <button type="button" class="learn-complete" data-mark-complete="aiq-inference-serving-llmops" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=15"></script>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=21" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>
