@@ -133,12 +133,15 @@ function initTestimonials(testimonials) {
     var article = document.createElement('article');
     article.className = 'testimonial-card';
     article.innerHTML =
-      '<span class="testimonial-quote" aria-hidden="true">"</span>' +
-      '<span class="testimonial-quote testimonial-quote--end" aria-hidden="true">"</span>' +
-      '<div class="testimonial-avatar" aria-hidden="true">' + (t.initial || 'C') + '</div>' +
-      '<cite class="testimonial-name">' + escapeHtml(t.client) + '</cite>' +
+      '<div class="testimonial-stars" aria-hidden="true">★★★★★</div>' +
       '<p class="testimonial-text">' + escapeHtml(t.review) + '</p>' +
-      '<div class="testimonial-stars" aria-hidden="true">★★★★★</div>';
+      '<footer class="testimonial-footer">' +
+        '<div class="testimonial-avatar" aria-hidden="true">' + escapeHtml(t.initial || 'C') + '</div>' +
+        '<div class="testimonial-who">' +
+          '<cite class="testimonial-name">' + escapeHtml(t.client) + '</cite>' +
+          '<span class="testimonial-source"><img src="/assets/icons/upwork.svg" alt="" width="14" height="14" loading="lazy">Verified on Upwork</span>' +
+        '</div>' +
+      '</footer>';
     return article;
   }
 
