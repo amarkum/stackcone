@@ -288,10 +288,12 @@
     document.head.appendChild(search);
   }
 
-  // "Listen" (read aloud) control on lesson pages.
-  if (/^\/learn\//.test(location.pathname) && document.querySelector(".learn-lesson") && !document.querySelector('script[src*="learn-tts.js"]')) {
+  // "Listen" (read aloud) control on lessons, blog posts and solution write-ups.
+  var readable = document.querySelector(".learn-lesson") ||
+    (/^\/(blog\/posts|solutions)\/[^/]+/.test(location.pathname) && document.querySelector("article.blog-article h1"));
+  if (readable && !document.querySelector('script[src*="learn-tts.js"]')) {
     var tts = document.createElement("script");
-    tts.src = "/assets/learn-tts.js?v=2";
+    tts.src = "/assets/learn-tts.js?v=3";
     tts.defer = true;
     document.head.appendChild(tts);
   }

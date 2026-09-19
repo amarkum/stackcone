@@ -1,5 +1,6 @@
-/* Read lessons aloud with the browser's built-in speech synthesis (free, no API).
-   Adds a Listen control to the lesson facts row; code, output and page chrome are skipped. */
+/* Read lessons, blog posts and solution write-ups aloud with the browser's built-in
+   speech synthesis (free, no API). Adds a Listen control under the title area;
+   code, output, charts and page chrome are skipped. */
 (function () {
   if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
 
@@ -9,7 +10,8 @@
   var SKIP =
     "pre, code, .learn-code-wrap, .learn-output, .learn-progress, .learn-top-nav, nav, " +
     ".learn-facts, .learn-prereq, .learn-upnext, .learn-solution, .learn-complete, " +
-    "[data-auth-note], .diagram-wrap, .learn-eyebrow, .sc-tts, script, style";
+    "[data-auth-note], .diagram-wrap, .learn-eyebrow, .sc-tts, script, style, " +
+    ".meta, .blog-cta, .chart-wrap, .blog-widget, .blog-toc, .toc, canvas, svg";
 
   var article, bar, playBtn, rateBtn, stopBtn;
   var queue = [];
@@ -142,16 +144,18 @@
   function render() {
     var label = state === "playing" ? "Pause" : state === "paused" ? "Resume" : "Listen";
     playBtn.innerHTML = (state === "playing" ? ICON_PAUSE : ICON_PLAY) + "<span>" + label + "</span>";
-    playBtn.setAttribute("aria-label", label + " lesson audio");
+    playBtn.setAttribute("aria-label", label + " (read this page aloud)");
     playBtn.classList.toggle("is-active", state !== "idle");
     stopBtn.hidden = state === "idle";
     rateBtn.textContent = RATES[rateIndex] + "×";
   }
 
   function mount() {
-    article = document.querySelector(".blog-article.learn-lesson") || document.querySelector(".learn-lesson");
-    if (!article || article.querySelector(".sc-tts")) return;
+    article = document.querySelector(".learn-lesson") || document.querySelector("article.blog-article");
+    if (!article || article.querySelector(".sc-tts") || !article.querySelector("h1")) return;
     var facts = article.querySelector(".learn-facts");
+    // Blog and solution posts: under the "date · author" line, else under the title.
+    var anchor = facts ? null : article.querySelector(":scope > .meta") || article.querySelector("h1");
     readRate();
 
     bar = document.createElement(facts ? "li" : "div");
@@ -182,7 +186,7 @@
     });
 
     if (facts) facts.appendChild(bar);
-    else article.insertBefore(bar, article.firstChild);
+    else anchor.insertAdjacentElement("afterend", bar);
     render();
 
     // Voices load asynchronously in Chrome.
