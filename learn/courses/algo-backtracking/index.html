@@ -11,10 +11,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=11">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=8">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -126,7 +126,7 @@ print(combination_sum([2, 3, 6, 7], 7))</code></pre></div>
       <h2>Cost</h2>
       <p>Backtracking is exponential in the worst case: 2 to the n subsets, n factorial permutations. That is acceptable for n up to roughly 10 to 20, which is exactly the range these puzzle problems use. If you find repeated subproblems, switch to dynamic programming.</p>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Generate all valid combinations of n pairs of parentheses. For n=3 there are 5, such as <code>((()))</code> and <code>()()()</code>. Prune: only add <code>(</code> while opens &lt; n, and <code>)</code> while closes &lt; opens.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def gen_parens(n):
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def gen_parens(n):
     out = []
     def go(cur, opens, closes):
         if len(cur) == 2 * n:
@@ -138,7 +138,8 @@ print(combination_sum([2, 3, 6, 7], 7))</code></pre></div>
     go(&quot;&quot;, 0, 0)
     return out
 
-print(gen_parens(3))</code></pre></div></div></details>
+print(gen_parens(3))"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/algo-dynamic-programming/"><span class="learn-upnext-label">Up next · Lesson 6</span><strong>Dynamic Programming</strong><small>Overlapping subproblems, memoization, tabulation, knapsack and edit distance.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-greedy/">← Previous</a>
@@ -168,7 +169,7 @@ print(gen_parens(3))</code></pre></div></div></details>
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

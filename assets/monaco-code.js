@@ -93,7 +93,8 @@
         pre: pre,
         wrap: wrap,
         code: extractCode(codeEl),
-        hint: hint
+        hint: hint,
+        solution: wrap && wrap.hasAttribute('data-solution') ? wrap.getAttribute('data-solution') : null
       });
     });
     return blocks;
@@ -131,7 +132,8 @@
     var lang = detectLang(block.code, block.hint);
     var title = resolveBlockTitle(block) || LANG_LABELS[lang] || '';
     var runnable = !!(editor && isRunnablePython(block, lang));
-    if (!title && !runnable) return;
+    var practice = !!(editor && block.solution !== null);
+    if (!title && !runnable && !practice) return;
 
     var toolbar = document.createElement('div');
     toolbar.className = 'learn-code-toolbar';
@@ -147,12 +149,37 @@
       toolbar.appendChild(spacer);
     }
 
+    var actions = document.createElement('div');
+    actions.className = 'learn-code-actions';
+    toolbar.appendChild(actions);
+
+    if (practice) {
+      var solBtn = document.createElement('button');
+      solBtn.type = 'button';
+      solBtn.className = 'learn-code-solution';
+      solBtn.textContent = 'Show solution';
+      actions.appendChild(solBtn);
+      block.wrap.classList.add('monaco-practice');
+
+      solBtn.addEventListener('click', function () {
+        editor.setValue(block.solution);
+        solBtn.textContent = 'Solution shown';
+        solBtn.disabled = true;
+      });
+      editor.onDidChangeModelContent(function () {
+        if (editor.getValue() !== block.solution) {
+          solBtn.textContent = 'Show solution';
+          solBtn.disabled = false;
+        }
+      });
+    }
+
     if (runnable) {
       var runBtn = document.createElement('button');
       runBtn.type = 'button';
       runBtn.className = 'learn-code-run';
       runBtn.innerHTML = PLAY_ICON + '<span>Run</span>';
-      toolbar.appendChild(runBtn);
+      actions.appendChild(runBtn);
 
       var output = document.createElement('div');
       output.className = 'learn-code-output';
@@ -253,11 +280,13 @@
   function createEditor(monaco, host, block) {
     var lang = detectLang(block.code, block.hint);
     var runnable = isRunnablePython(block, lang);
+    var practice = block.solution !== null;
+    var editable = runnable || practice;
     var editor = monaco.editor.create(host, {
       value: block.code,
       language: lang,
-      readOnly: !runnable,
-      domReadOnly: !runnable,
+      readOnly: !editable,
+      domReadOnly: !editable,
       minimap: { enabled: false },
       scrollBeyondLastLine: false,
       lineNumbers: 'on',
@@ -295,7 +324,7 @@
     });
 
     host.setAttribute('data-language', lang);
-    if (runnable) {
+    if (editable) {
       host.classList.add('monaco-code-host--editable');
       createRunnableChrome(block, host, editor);
       editor.onDidChangeModelContent(function () {

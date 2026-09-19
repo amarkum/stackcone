@@ -340,6 +340,19 @@ def esc(s: str) -> str:
     return html.escape(s, quote=True)
 
 
+_HASH_LANGS = {"python", "py", "bash", "sh", "shell", "yaml", "yml", "ruby", "dockerfile"}
+
+
+def starter_for(lang: str) -> str:
+    """Empty editor scaffold so the learner writes the answer themselves."""
+    lang = lang.lower()
+    if lang in _HASH_LANGS:
+        return "# Write your solution here\n"
+    if lang == "sql":
+        return "-- Write your solution here\n"
+    return "// Write your solution here\n"
+
+
 def render_section(item: tuple, title: str | None = None) -> str:
     kind, *rest = item
     if kind == "p":
@@ -363,15 +376,10 @@ def render_section(item: tuple, title: str | None = None) -> str:
                 f'<span class="learn-output-label">{ICON_OUTPUT}Output</span>'
                 f'<pre>{esc(rest[0])}</pre></div>')
     if kind == "solution":
-        return (f'      <details class="learn-solution">'
-                f'<summary class="learn-solution-toggle">'
-                f'<span class="learn-solution-text">'
-                f'<span class="when-closed">Show solution</span>'
-                f'<span class="when-open">Hide solution</span></span>'
-                f'{ICON_CHEVRON}</summary>'
-                f'<div class="learn-solution-body">'
-                f'<div class="learn-code-wrap" data-lang="{esc(rest[0])}">'
-                f'<pre><code>{esc(rest[1])}</code></pre></div></div></details>')
+        lang, code = rest
+        return (f'      <div class="learn-code-wrap learn-practice" data-lang="{esc(lang)}" '
+                f'data-solution="{esc(code)}">'
+                f'<pre><code>{esc(starter_for(lang))}</code></pre></div>')
     if kind == "exercise":
         return (f'      <aside class="learn-callout learn-exercise">'
                 f'<p class="learn-callout-label">{ICON_EXERCISE}Try it yourself</p>'
@@ -442,10 +450,10 @@ def lesson_html(les: dict) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=11">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=8">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -518,7 +526,7 @@ def lesson_html(les: dict) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
@@ -538,9 +546,9 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/learn/learn.css?v=11">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=8">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -567,7 +575,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

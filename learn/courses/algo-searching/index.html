@@ -11,10 +11,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=11">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=8">
+  <link rel="stylesheet" href="/learn/learn.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -121,7 +121,7 @@ print(min_speed([3, 6, 7, 11], 8))</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Prerequisite</p><p class="learn-callout-body">Binary search on unsorted data gives wrong answers silently. If you must search repeatedly, sorting once (O(n log n)) or using a hash set (O(1) lookup) is often better.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>first_true(a)</code> that receives a list of booleans like <code>[False, False, True, True]</code> (all False first, then all True) and returns the index of the first True, or -1.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def first_true(a):
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def first_true(a):
     lo, hi, ans = 0, len(a) - 1, -1
     while lo &lt;= hi:
         mid = (lo + hi) // 2
@@ -132,7 +132,8 @@ print(min_speed([3, 6, 7, 11], 8))</code></pre></div>
             lo = mid + 1
     return ans
 
-print(first_true([False, False, True, True]))   # 2</code></pre></div></div></details>
+print(first_true([False, False, True, True]))   # 2"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/algo-sorting/"><span class="learn-upnext-label">Up next · Lesson 2</span><strong>Sorting</strong><small>Bubble, merge and quick sort, plus stability and what Python really uses.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>
@@ -162,7 +163,7 @@ print(first_true([False, False, True, True]))   # 2</code></pre></div></div></de
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=7" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
