@@ -54,30 +54,53 @@
     return { svg: "", bindFunctions: null };
   }
 
+  // Diagram colours follow the site theme (html[data-theme], set by /assets/theme.js).
+  function isDark() {
+    return document.documentElement.getAttribute("data-theme") === "dark";
+  }
+
+  function themeVariables() {
+    var d = isDark();
+    return {
+      fontFamily: "DM Sans, system-ui, sans-serif",
+      fontSize: "11px",
+      darkMode: d,
+      mainBkg: d ? "#1c1c1f" : "#ffffff",
+      background: d ? "#141414" : "#ffffff",
+      primaryColor: d ? "#1c1c1f" : "#f5f5f5",
+      primaryTextColor: d ? "#f2f2f2" : "#1a1a1a",
+      primaryBorderColor: d ? "#52525b" : "#a3a3a3",
+      secondaryColor: d ? "#18181b" : "#fafafa",
+      tertiaryColor: d ? "#141414" : "#ffffff",
+      nodeBorder: d ? "#52525b" : "#a3a3a3",
+      textColor: d ? "#e4e4e7" : "#1a1a1a",
+      titleColor: d ? "#f2f2f2" : "#1a1a1a",
+      clusterBkg: d ? "#18181b" : "#ffffff",
+      clusterBorder: d ? "#3f3f46" : "#d4d4d4",
+      edgeLabelBackground: d ? "#141414" : "#ffffff",
+      lineColor: d ? "#a1a1aa" : "#525252",
+      actorBkg: d ? "#1c1c1f" : "#f7f7f7",
+      actorBorder: d ? "#52525b" : "#a3a3a3",
+      actorTextColor: d ? "#f2f2f2" : "#1a1a1a",
+      actorLineColor: d ? "#a1a1aa" : "#525252",
+      signalColor: d ? "#a1a1aa" : "#525252",
+      signalTextColor: d ? "#f2f2f2" : "#1a1a1a",
+      noteBkgColor: d ? "#27272a" : "#fafafa",
+      noteTextColor: d ? "#f2f2f2" : "#1a1a1a",
+      noteBorderColor: d ? "#52525b" : "#d4d4d4",
+      labelBoxBkgColor: d ? "#18181b" : "#fafafa",
+      labelBoxBorderColor: d ? "#3f3f46" : "#d4d4d4",
+      labelTextColor: d ? "#f2f2f2" : "#1a1a1a"
+    };
+  }
+
   var INLINE_MAX_HEIGHT = 440;
 
   window.StackconeMermaidConfig = {
     startOnLoad: false,
     securityLevel: "loose",
     theme: "base",
-    themeVariables: {
-      fontFamily: "DM Sans, system-ui, sans-serif",
-      fontSize: "11px",
-      mainBkg: "#ffffff",
-      background: "#ffffff",
-      primaryColor: "#f5f5f5",
-      primaryTextColor: "#1a1a1a",
-      primaryBorderColor: "#a3a3a3",
-      lineColor: "#525252",
-      actorBkg: "#f7f7f7",
-      actorTextColor: "#1a1a1a",
-      actorLineColor: "#525252",
-      signalColor: "#525252",
-      signalTextColor: "#1a1a1a",
-      labelBoxBkgColor: "#fafafa",
-      labelBoxBorderColor: "#d4d4d4",
-      labelTextColor: "#1a1a1a"
-    },
+    themeVariables: themeVariables(),
     flowchart: {
       useMaxWidth: true,
       curve: "basis",
@@ -413,6 +436,7 @@
     if (!definition) return Promise.resolve();
 
     node.setAttribute("data-definition", definition);
+    node.setAttribute("data-source", definition);
 
     var api = getMermaid();
     var renderId = "stackcone-mmd-" + index + "-" + String(Date.now()).slice(-6);
@@ -454,6 +478,7 @@
       return Promise.reject(new Error("Mermaid not loaded"));
     }
 
+    window.StackconeMermaidConfig.themeVariables = themeVariables();
     api.initialize(window.StackconeMermaidConfig);
 
     return Promise.all(
@@ -477,6 +502,20 @@
   };
 
   document.addEventListener("stackcone:mermaid-rendered", initDiagramUI);
+
+  // Re-draw rendered diagrams when the visitor switches light/dark.
+  new MutationObserver(function () {
+    var nodes = findDiagramNodes().filter(function (node) {
+      return node.classList.contains("is-rendered") && node.getAttribute("data-source");
+    });
+    if (!nodes.length) return;
+    nodes.forEach(function (node) {
+      node.setAttribute("data-definition", node.getAttribute("data-source"));
+      node.classList.remove("is-rendered");
+      node.innerHTML = "";
+    });
+    renderMermaidDiagrams().catch(function () {});
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
   var booted = false;
   var rendering = false;
