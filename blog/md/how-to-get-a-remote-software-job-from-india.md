@@ -52,7 +52,7 @@ You do not need seven languages. You need one stack you can ship and explain: wh
 | Data / ML adjacent | Python + a dataset you own | A notebook is not enough; ship an eval or a small app |
 | Mobile | Kotlin/Swift or Flutter | Store build or TestFlight/Play internal track |
 
-Language wars are a distraction. If you are choosing between Python, Java, and JavaScript for jobs, read [Python vs Java vs JavaScript](/blog/posts/python-vs-java-vs-javascript/). If the job is AI-adjacent, [Python vs Java with AI](/blog/posts/python-vs-java-with-ai/) is the shorter argument. Course shopping is optional; [best AI courses and skills](/blog/posts/best-ai-courses-and-skills-to-learn/) and [best AI/ML courses India vs US](/blog/posts/best-ai-ml-data-science-course-india-us/) are for people who already know they need a structured path — not a substitute for a public repo.
+Language wars are a distraction. For Python vs Java vs JavaScript as a career pick, read [Python vs Java vs JavaScript](/blog/posts/python-vs-java-vs-javascript/). AI-adjacent jobs: [Python vs Java with AI](/blog/posts/python-vs-java-with-ai/). Courses are optional ([best AI courses](/blog/posts/best-ai-courses-and-skills-to-learn/), [India vs US](/blog/posts/best-ai-ml-data-science-course-india-us/)) — they are not a substitute for a public repo.
 
 Depth beats a certificate wall. A hiring manager will open GitHub before they open your Coursera PDF.
 
