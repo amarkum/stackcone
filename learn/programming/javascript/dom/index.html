@@ -63,6 +63,15 @@
             <ul><li>Query the DOM</li><li>Add event listeners</li><li>Update text and classes</li></ul>
           </div>
       <p>When a browser loads an HTML page it builds the <strong>DOM</strong> (Document Object Model), a tree of objects representing every element. JavaScript can read and change that tree, which is how pages become interactive. Everything starts from the global <code>document</code> object.</p>
+      <h2>What the DOM is</h2>
+      <p>When a browser loads HTML it builds a live tree of objects in memory, one for every element. That tree is the <strong>DOM</strong> (Document Object Model). JavaScript can find any node in the tree, read it, change it, add new ones, and react when the user interacts with them. Everything dynamic on a web page, from a dropdown menu to a live search, is JavaScript editing the DOM.</p>
+      <p>Picture the HTML as a family tree: <code>&lt;html&gt;</code> is the ancestor, <code>&lt;body&gt;</code> a child, and each paragraph or button a leaf further down. To change the page you locate the right relative, then change it.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;body&gt;
+  &lt;h1 id=&quot;title&quot;&gt;Todo&lt;/h1&gt;
+  &lt;ul id=&quot;list&quot;&gt;
+    &lt;li&gt;Learn JS&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;</code></pre></div>
       <h2>Selecting elements</h2>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>const title = document.querySelector(&quot;h1&quot;);        // first match
 const items = document.querySelectorAll(&quot;.item&quot;);  // all matches
@@ -100,6 +109,54 @@ document.querySelector(&quot;ul&quot;).append(li);</code></pre></div>
   if (li) li.classList.toggle(&quot;done&quot;);
 });</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Timing</p><p class="learn-callout-body">Scripts placed in the <code>&lt;head&gt;</code> run before the elements exist. Add <code>defer</code> to the script tag, or place it at the end of <code>&lt;body&gt;</code>.</p></aside>
+      <h2>A complete example: a working to-do list</h2>
+      <p>This page combines everything from the lesson: find elements, listen for a click, read an input, create an element and add it to the page. Save it as <code>todo.html</code> and open it in your browser.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;My tasks&lt;/h1&gt;
+  &lt;input id=&quot;task&quot; placeholder=&quot;New task&quot;&gt;
+  &lt;button id=&quot;add&quot;&gt;Add&lt;/button&gt;
+  &lt;ul id=&quot;list&quot;&gt;&lt;/ul&gt;
+
+  &lt;script&gt;
+    const input = document.querySelector(&quot;#task&quot;);
+    const list = document.querySelector(&quot;#list&quot;);
+
+    document.querySelector(&quot;#add&quot;).addEventListener(&quot;click&quot;, () =&gt; {
+      const text = input.value.trim();
+      if (!text) return;               // ignore empty input
+
+      const li = document.createElement(&quot;li&quot;);
+      li.textContent = text;           // textContent is safe from HTML injection
+      list.append(li);
+
+      input.value = &quot;&quot;;
+      input.focus();
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+      <h2>How to read that code</h2>
+      <ul><li><code>querySelector</code> finds the first element matching a CSS selector.</li><li><code>addEventListener("click", fn)</code> registers <code>fn</code> to run each time the button is clicked.</li><li>Inside the handler we read the input's <code>value</code>, create an <code>&lt;li&gt;</code>, set its text and <code>append</code> it to the list.</li><li>Finally we clear the field and put the cursor back so the user can type the next task.</li></ul>
+      <h2>Toggling classes instead of styles</h2>
+      <p>Rather than setting colours from JavaScript, add or remove a CSS class and let the stylesheet decide how it looks. This keeps design in CSS and behaviour in JavaScript.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;style&gt;
+  .done { text-decoration: line-through; color: gray; }
+&lt;/style&gt;
+&lt;ul id=&quot;list&quot;&gt;&lt;li&gt;Buy milk&lt;/li&gt;&lt;li&gt;Write code&lt;/li&gt;&lt;/ul&gt;
+&lt;script&gt;
+  document.querySelector(&quot;#list&quot;).addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.target.matches(&quot;li&quot;)) {
+      event.target.classList.toggle(&quot;done&quot;);
+    }
+  });
+&lt;/script&gt;</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Never use innerHTML with user input</p><p class="learn-callout-body">Setting <code>innerHTML</code> from text a user typed lets them inject scripts (an XSS attack). Use <code>textContent</code> for plain text, or create elements with <code>createElement</code>.</p></aside>
+      <h2>Debugging DOM code</h2>
+      <ul><li><code>null</code> errors usually mean your selector found nothing. Check the spelling and that the script runs after the element exists.</li><li>Open DevTools, choose the <em>Elements</em> tab and confirm what the page really contains.</li><li>Log the event: <code>console.log(event.target)</code> shows exactly what was clicked.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>The DOM is a live tree of objects the browser builds from your HTML.</li><li>Find with <code>querySelector</code>, change with <code>textContent</code> and <code>classList</code>, add with <code>createElement</code> and <code>append</code>.</li><li>React to users with <code>addEventListener</code>; use one listener on a parent for many children.</li><li>Prefer <code>textContent</code> over <code>innerHTML</code> for user text.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a counter: a button that increments a number shown on the page each time it is clicked, plus a reset button.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="// HTML: &lt;p id=&quot;n&quot;&gt;0&lt;/p&gt; &lt;button id=&quot;inc&quot;&gt;+1&lt;/button&gt; &lt;button id=&quot;reset&quot;&gt;Reset&lt;/button&gt;
 let n = 0;

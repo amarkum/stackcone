@@ -64,6 +64,8 @@
             <ul><li>Insert rows</li><li>Update with WHERE</li><li>Wrap changes in a transaction</li></ul>
           </div>
       <p>Queries read data; three statements change it. Because they change data, the golden rule is: <strong>write the WHERE clause first</strong>, and run it as a SELECT to check what it matches before you UPDATE or DELETE.</p>
+      <h2>From reading to changing</h2>
+      <p>Until now every query only <em>read</em> data. Real applications also create, edit and remove it: signing up adds a row, changing your email edits one, closing an account deletes one. Those three actions are <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code>. Because they change data permanently, they deserve extra care, which is why this lesson also covers transactions.</p>
       <h2>INSERT</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>INSERT INTO customers (name, country, age)
 VALUES (&#x27;Margaret&#x27;, &#x27;US&#x27;, 52);
@@ -96,6 +98,45 @@ COMMIT;      -- or ROLLBACK; to undo everything since BEGIN</code></pre></div>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>INSERT INTO customers (id, name, country, age)
 VALUES (1, &#x27;Ada&#x27;, &#x27;UK&#x27;, 37)
 ON CONFLICT (id) DO UPDATE SET age = excluded.age;</code></pre></div>
+      <h2>Seeing a change happen</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>INSERT INTO customers (id, name, country, age) VALUES (4, &#x27;Kim&#x27;, &#x27;KR&#x27;, 29);
+SELECT id, name FROM customers</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | name
+---+------
+1  | Ada
+2  | Linus
+3  | Grace
+4  | Kim</pre></div>
+      <h2>UPDATE: always check your WHERE first</h2>
+      <p>An <code>UPDATE</code> without <code>WHERE</code> changes <strong>every row</strong>. A safe habit is to write the same <code>WHERE</code> in a <code>SELECT</code> first, confirm it returns the rows you expect, and only then turn it into an <code>UPDATE</code>.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>UPDATE orders SET status = &#x27;paid&#x27; WHERE id = 12;
+SELECT id, status FROM orders ORDER BY id</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | status
+---+-------
+10 | paid
+11 | paid
+12 | paid</pre></div>
+      <h2>DELETE works the same way</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>DELETE FROM orders WHERE status = &#x27;refunded&#x27;;
+SELECT id, status FROM orders</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | status
+---+-------
+10 | paid
+11 | paid</pre></div>
+      <h2>Why transactions matter</h2>
+      <p>Moving money between accounts takes two steps: subtract from one, add to the other. If the program crashes between them, money vanishes. A <strong>transaction</strong> groups steps so either all succeed or none do. Put <code>BEGIN</code> first, <code>COMMIT</code> to keep the changes, or <code>ROLLBACK</code> to undo them.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>BEGIN;
+UPDATE accounts SET balance = balance - 50 WHERE id = 1;
+UPDATE accounts SET balance = balance + 50 WHERE id = 2;
+COMMIT;
+SELECT id, balance FROM accounts ORDER BY id</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | balance
+---+--------
+1  | 50
+2  | 70</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Back up before you experiment</p><p class="learn-callout-body">On a production database, run risky changes inside a transaction first and check the result before committing. Most teams also restrict who may run <code>DELETE</code> and <code>UPDATE</code> at all.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li><code>INSERT</code> adds rows, <code>UPDATE</code> edits them, <code>DELETE</code> removes them.</li><li>Always include a <code>WHERE</code> on <code>UPDATE</code> and <code>DELETE</code>; test it with <code>SELECT</code> first.</li><li>Transactions make multi-step changes all-or-nothing (<code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>).</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Insert two products, raise the price of one by 10 percent, then delete any product priced under 1. Wrap it in a transaction.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="BEGIN;
 INSERT INTO products (name, price) VALUES (&#x27;Pen&#x27;, 1.50), (&#x27;Gum&#x27;, 0.50);

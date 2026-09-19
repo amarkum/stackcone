@@ -64,6 +64,9 @@
             <ul><li>Write an INNER JOIN</li><li>Know when LEFT JOIN is needed</li><li>Avoid duplicate-row surprises</li></ul>
           </div>
       <p>Good database design splits data across tables so nothing is duplicated: a customer's name lives once in <code>customers</code>, not on every order. A <strong>join</strong> stitches related rows back together at query time, matching a foreign key to a primary key.</p>
+      <h2>Why data is split across tables</h2>
+      <p>Imagine storing the customer's name, country and age on every one of their orders. If Ada moves country you would have to fix hundreds of rows, and miss one. Good design keeps each fact in exactly one place: customers in one table, orders in another, linked by an id. A <strong>join</strong> temporarily stitches those tables back together when you need an answer that spans both.</p>
+      <p>Picture two lists on a table. A join lays a line from each order to its customer wherever the ids match, then reads across.</p>
       <h2>INNER JOIN</h2>
       <p>Returns only rows that have a match in both tables.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, o.id AS order_id, o.total
@@ -101,6 +104,41 @@ ORDER BY spent DESC;</code></pre></div>
 FROM employees e
 LEFT JOIN employees m ON e.manager_id = m.id;</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Duplicate rows</p><p class="learn-callout-body">Joining a customer to many orders repeats the customer per order. That is correct, but summing a customer-level column after such a join double counts. Aggregate before joining when that matters.</p></aside>
+      <h2>INNER JOIN: only rows that match on both sides</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, o.id AS order_id, o.total FROM customers c INNER JOIN orders o ON o.customer_id = c.id</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | order_id | total
+------+----------+------
+Ada   | 10       | 120.0
+Ada   | 11       | 35.5
+Grace | 12       | 80.0</pre></div>
+      <p>Linus placed no orders, so he does not appear. An inner join keeps only the pairs that have a match. The <code>ON</code> clause is the matching rule, and <code>c</code> and <code>o</code> are short aliases so we can write <code>c.name</code> and <code>o.total</code> without ambiguity.</p>
+      <h2>LEFT JOIN: keep everyone from the left table</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, o.id AS order_id, o.total FROM customers c LEFT JOIN orders o ON o.customer_id = c.id</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | order_id | total
+------+----------+------
+Ada   | 11       | 35.5
+Ada   | 10       | 120.0
+Linus | NULL     | NULL
+Grace | 12       | 80.0</pre></div>
+      <p>Now Linus appears, with <code>NULL</code> where the order columns would be. Use a left join when you want "all customers, and their orders if they have any".</p>
+      <h2>The classic use: find what is missing</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name FROM customers c LEFT JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
+-----
+Linus</pre></div>
+      <p>"Customers who never ordered" is a left join plus a check for <code>NULL</code> on the right side. Learn this pattern; you will use it constantly.</p>
+      <h2>Joining and summarising together</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, COUNT(o.id) AS orders, COALESCE(SUM(o.total), 0) AS spent FROM customers c LEFT JOIN orders o ON o.customer_id = c.id GROUP BY c.id, c.name ORDER BY spent DESC</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | orders | spent
+------+--------+------
+Ada   | 2      | 155.5
+Grace | 1      | 80.0
+Linus | 0      | 0</pre></div>
+      <p><code>COUNT(o.id)</code> counts only real orders (it ignores <code>NULL</code>), and <code>COALESCE</code> replaces a missing sum with 0. This single query is a real customer report.</p>
+      <h2>Debugging a join that returns too many rows</h2>
+      <ul><li><strong>Forgot the ON clause</strong>: every row pairs with every row (a cartesian product).</li><li><strong>Joining on the wrong column</strong>: check that you match a foreign key to the primary key it points at.</li><li><strong>Duplicate matches</strong>: if the right table has several matching rows, the left row repeats. That is correct, but it inflates sums, so aggregate carefully.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Join tables on a foreign key = primary key match using <code>ON</code>.</li><li><code>INNER JOIN</code> keeps matches only; <code>LEFT JOIN</code> keeps every left row, using <code>NULL</code> when nothing matches.</li><li>Left join plus <code>IS NULL</code> finds rows with no partner.</li><li>Aliases (<code>c</code>, <code>o</code>) keep multi-table queries readable.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">List each order's id, total and the name of the customer who placed it, but only for refunded orders.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT o.id, o.total, c.name
 FROM orders o

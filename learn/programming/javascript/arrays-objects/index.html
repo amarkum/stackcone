@@ -63,6 +63,16 @@
             <ul><li>Transform arrays without loops</li><li>Destructure objects</li><li>Copy with spread</li></ul>
           </div>
       <p>Arrays hold ordered lists and objects hold named properties. Almost all real JavaScript is transforming these two shapes. Learning the array methods well means you rarely need a manual <code>for</code> loop.</p>
+      <h2>The two shapes of data</h2>
+      <p>Almost all data in JavaScript is one of two shapes, or a mix of both. An <strong>array</strong> is an ordered list: <code>["red", "green", "blue"]</code>. An <strong>object</strong> is a set of named properties: <code>{ name: "Ada", age: 36 }</code>. A list of users is an array of objects. JSON, the format almost every web API speaks, is exactly these two shapes written as text.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
+const user = { name: &quot;Ada&quot;, age: 36 };
+const users = [user, { name: &quot;Linus&quot;, age: 54 }];
+
+console.log(colors[1], user.name, users[1].age);
+console.log(users.length);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>green Ada 54
+2</pre></div>
       <h2>Arrays</h2>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>const nums = [1, 2, 3];
 nums.push(4);         // add to end
@@ -108,6 +118,65 @@ const byLetter = words.reduce((acc, w) =&gt; {
 }, {});
 console.log(byLetter);</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{ a: [ &#x27;apple&#x27;, &#x27;avocado&#x27; ], b: [ &#x27;banana&#x27; ] }</pre></div>
+      <h2>Changing arrays</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const nums = [3, 1, 2];
+nums.push(4);          // add to the end
+nums.unshift(0);       // add to the start
+const last = nums.pop();
+nums.sort((a, b) =&gt; a - b);
+
+console.log(nums, last);
+console.log(nums.includes(2), nums.indexOf(3));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[ 0, 1, 2, 3 ] 4
+true 3</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>sort needs a comparator for numbers</p><p class="learn-callout-body">Without <code>(a, b) =&gt; a - b</code>, <code>sort()</code> compares items as text, so <code>[10, 9, 1]</code> sorts to <code>[1, 10, 9]</code>.</p></aside>
+      <h2>Thinking in map, filter and reduce</h2>
+      <p>Instead of writing a loop that builds a new array by hand, describe the transformation. <code>map</code> changes every item, <code>filter</code> keeps some items, and <code>reduce</code> folds all items into one value. They chain together like a pipeline.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const orders = [
+  { item: &quot;book&quot;, price: 12, qty: 2 },
+  { item: &quot;pen&quot;, price: 2, qty: 10 },
+  { item: &quot;bag&quot;, price: 40, qty: 1 },
+];
+
+const totals = orders.map(o =&gt; o.price * o.qty);
+const big = orders.filter(o =&gt; o.price * o.qty &gt;= 24);
+const grand = totals.reduce((sum, t) =&gt; sum + t, 0);
+
+console.log(totals);
+console.log(big.map(o =&gt; o.item));
+console.log(grand);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[ 24, 20, 40 ]
+[ &#x27;book&#x27;, &#x27;bag&#x27; ]
+84</pre></div>
+      <h2>Finding one item</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const users = [{ id: 1, name: &quot;Ada&quot; }, { id: 2, name: &quot;Linus&quot; }];
+console.log(users.find(u =&gt; u.id === 2));
+console.log(users.find(u =&gt; u.id === 9));
+console.log(users.some(u =&gt; u.name === &quot;Ada&quot;), users.every(u =&gt; u.id &gt; 1));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{ id: 2, name: &#x27;Linus&#x27; }
+undefined
+true false</pre></div>
+      <h2>Working with object properties</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const car = { make: &quot;Toyota&quot;, year: 2020 };
+car.color = &quot;blue&quot;;        // add
+car.year = 2021;           // change
+delete car.make;           // remove
+
+console.log(car);
+console.log(Object.keys(car), Object.values(car));
+console.log(&quot;color&quot; in car, car.wheels);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{ year: 2021, color: &#x27;blue&#x27; }
+[ &#x27;year&#x27;, &#x27;color&#x27; ] [ 2021, &#x27;blue&#x27; ]
+true undefined</pre></div>
+      <h2>Optional chaining for safe access</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const data = { user: { profile: null } };
+
+console.log(data.user.profile?.email);          // undefined, no crash
+console.log(data.settings?.theme ?? &quot;light&quot;);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>undefined
+light</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Arrays are ordered lists; objects are named properties; real data is a mix.</li><li><code>map</code> transforms, <code>filter</code> selects, <code>reduce</code> combines; chain them.</li><li><code>find</code>, <code>some</code> and <code>every</code> answer questions about an array.</li><li>Use <code>?.</code> and <code>??</code> to read data that might be missing.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given an array of user objects with <code>name</code> and <code>age</code>, produce an array of the names of users aged 18 or over, sorted alphabetically.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="const users = [{ name: &quot;Zed&quot;, age: 20 }, { name: &quot;Amy&quot;, age: 15 }, { name: &quot;Bob&quot;, age: 30 }];
 const adults = users

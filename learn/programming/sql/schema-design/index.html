@@ -64,6 +64,9 @@
             <ul><li>Create tables with constraints</li><li>Model one-to-many relations</li><li>Normalize a design</li></ul>
           </div>
       <p>Before you can query data you have to shape it. <strong>Schema design</strong> decides which tables exist, what columns they have and how they connect. A good schema prevents whole categories of bugs, because the database itself refuses bad data.</p>
+      <h2>Design before you build</h2>
+      <p>The tables you create decide how easy every future query will be. A good schema stops bad data from ever entering the database (an order for a customer who does not exist, two accounts with the same email) and avoids storing the same fact in many places. Spending ten minutes on design saves months of clean-up.</p>
+      <p>A simple method: list the <em>things</em> your application knows about (customers, orders, products). Each becomes a table. Then ask how they relate: one customer has many orders, so each order stores its customer's id.</p>
       <h2>CREATE TABLE</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>CREATE TABLE customers (
   id      INTEGER PRIMARY KEY,
@@ -97,6 +100,40 @@ CREATE TABLE orders (
 ALTER TABLE customers DROP COLUMN phone;
 DROP TABLE IF EXISTS old_orders;</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Migrations</p><p class="learn-callout-body">In real projects schema changes are written as versioned migration files (Django, Flyway, Alembic) and applied in order, so every environment stays identical.</p></aside>
+      <h2>A schema that protects itself</h2>
+      <p>Constraints are rules the database enforces for you, so bugs in your application cannot corrupt the data. Here the database itself rejects an order that points at a customer who does not exist.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>CREATE TABLE customers (
+  id      INTEGER PRIMARY KEY,
+  email   TEXT NOT NULL UNIQUE,
+  name    TEXT NOT NULL
+);
+
+CREATE TABLE orders (
+  id           INTEGER PRIMARY KEY,
+  customer_id  INTEGER NOT NULL REFERENCES customers(id),
+  total        REAL NOT NULL CHECK (total &gt;= 0),
+  created_at   TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);</code></pre></div>
+      <ul><li><code>PRIMARY KEY</code>: unique, never null; identifies the row.</li><li><code>NOT NULL</code>: the value is required.</li><li><code>UNIQUE</code>: no two rows may share this value (two users cannot register the same email).</li><li><code>REFERENCES</code>: a foreign key; the value must exist in the other table.</li><li><code>CHECK</code>: a custom rule, such as a total that cannot be negative.</li><li><code>DEFAULT</code>: what to store when no value is given.</li></ul>
+      <h2>Seeing constraints in action</h2>
+      <p>Trying to break a rule produces an error instead of bad data. This is exactly what you want.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>INSERT INTO orders (customer_id, total) VALUES (999, 10);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Error: FOREIGN KEY constraint failed</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>INSERT INTO customers (email, name) VALUES (&#x27;ada@example.com&#x27;, &#x27;Ada&#x27;);
+INSERT INTO customers (email, name) VALUES (&#x27;ada@example.com&#x27;, &#x27;Ada Two&#x27;);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Error: UNIQUE constraint failed: customers.email</pre></div>
+      <h2>Many-to-many needs a bridge table</h2>
+      <p>A student can join many courses and a course has many students. You cannot store that in either table alone, so you add a third table holding one row per pairing.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>CREATE TABLE students (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+CREATE TABLE courses  (id INTEGER PRIMARY KEY, title TEXT NOT NULL);
+
+CREATE TABLE enrollments (
+  student_id INTEGER NOT NULL REFERENCES students(id),
+  course_id  INTEGER NOT NULL REFERENCES courses(id),
+  PRIMARY KEY (student_id, course_id)   -- a student can enrol only once per course
+);</code></pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Each kind of thing gets its own table; relationships use foreign keys.</li><li>Constraints (<code>NOT NULL</code>, <code>UNIQUE</code>, <code>REFERENCES</code>, <code>CHECK</code>) reject bad data automatically.</li><li>Many-to-many relationships need a bridge table.</li><li>Store each fact once; that is the heart of normalization.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Design tables for a blog: authors, posts and tags, where a post has one author and many tags. Write the CREATE TABLE statements.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
 CREATE TABLE posts (

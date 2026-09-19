@@ -63,6 +63,9 @@
             <ul><li>Run code in the console and Node</li><li>Use console.log</li><li>Understand where JS runs</li></ul>
           </div>
       <p>JavaScript began as a small scripting language for web pages and now runs almost everywhere: every browser, servers through <strong>Node.js</strong>, mobile apps and desktop tools. It is the only language browsers run natively, so anyone who builds for the web meets it sooner or later.</p>
+      <h2>What JavaScript is for</h2>
+      <p>Every web page has three layers. <strong>HTML</strong> is the structure (headings, paragraphs, buttons). <strong>CSS</strong> is the look (colours, spacing, layout). <strong>JavaScript</strong> is the behaviour: what happens when you click, type, scroll or wait. Without it a page is a poster; with it a page is an application. Since Node.js arrived, the same language also runs servers, scripts and command-line tools.</p>
+      <p>That makes JavaScript unusual: learn it once and you can build the front end, the back end and everything in between.</p>
       <h2>Two places to run it</h2>
       <ul><li><strong>The browser console</strong>: open developer tools (F12, or Cmd+Option+J on a Mac) and type code straight in. Nothing to install.</li><li><strong>Node.js</strong>: install it from nodejs.org, save code in a file and run it from the terminal.</li></ul>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(&quot;Hello, stackcone!&quot;);
@@ -79,8 +82,47 @@ const greeting = &quot;hi&quot;; /* inline block comment */
 console.log(greeting);</code></pre></div>
       <h2>JavaScript is not Java</h2>
       <p>The names are a marketing accident. The languages are unrelated: JavaScript is dynamically typed and runs in an engine (V8 in Chrome and Node), while Java is compiled and statically typed.</p>
+      <h2>Try it right now in your browser</h2>
+      <p>You already have a JavaScript playground installed. In any browser, press <strong>F12</strong> (or <strong>Cmd+Option+J</strong> on a Mac), open the <em>Console</em> tab, type a line and press Enter. It runs immediately, and you can experiment without saving anything.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(&quot;Hello from the console&quot;);
+console.log(2 + 3 * 4);
+console.log(&quot;5&quot; + 1, &quot;5&quot; - 1);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello from the console
+14
+51 4</pre></div>
+      <p>Look at the last line: the same <code>5</code> behaves differently with <code>+</code> and <code>-</code>. JavaScript quietly converts between types, which is powerful and occasionally surprising. The next lesson explains the rules so they stop being surprising.</p>
+      <h2>console.log is your best friend</h2>
+      <p>When you want to know what a value is, print it. <code>console.log</code> accepts several values and understands objects and arrays, so it is the fastest debugging tool you have.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const user = { name: &quot;Ada&quot;, langs: [&quot;JS&quot;, &quot;Python&quot;] };
+console.log(user);
+console.log(&quot;Name:&quot;, user.name, &quot;| count:&quot;, user.langs.length);
+console.table([{ id: 1, ok: true }, { id: 2, ok: false }]);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{ name: &#x27;Ada&#x27;, langs: [ &#x27;JS&#x27;, &#x27;Python&#x27; ] }
+Name: Ada | count: 2
+┌─────────┬────┬───────┐
+│ (index) │ id │ ok    │
+├─────────┼────┼───────┤
+│ 0       │ 1  │ true  │
+│ 1       │ 2  │ false │
+└─────────┴────┴───────┘</pre></div>
+      <h2>Your first HTML page with JavaScript</h2>
+      <p>Save this as <code>index.html</code> and double-click it. The <code>&lt;script&gt;</code> tag holds your code, and <code>document.title</code> is a value the browser gives you for free.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1 id=&quot;title&quot;&gt;Hello&lt;/h1&gt;
+    &lt;script&gt;
+      const heading = document.getElementById(&quot;title&quot;);
+      heading.textContent = &quot;Hello, JavaScript!&quot;;
+      console.log(&quot;page title is&quot;, document.title);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+      <p>Refresh the page and the heading changes: your code reached into the page and rewrote it. You will do exactly this in the DOM lesson.</p>
       <h2>Common mistakes</h2>
       <ul><li>Forgetting quotes around text, giving <code>ReferenceError: Hello is not defined</code>.</li><li>Typing <code>Console.log</code> with a capital C; names are case sensitive.</li><li>Ignoring the console: red errors there almost always tell you the file, line and cause.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>JavaScript adds behaviour to HTML and CSS, and also runs on servers through Node.js.</li><li>The browser console and <code>node file.js</code> are the two quickest places to run code.</li><li><code>console.log</code> prints values and objects; use it constantly while learning.</li><li>JavaScript converts types automatically, so learn the rules in the next lesson.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Print your name, then your favorite number multiplied by 3, on two separate lines.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="console.log(&quot;Amar&quot;);
 console.log(7 * 3);"><pre><code>// Write your solution here

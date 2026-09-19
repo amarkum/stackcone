@@ -64,6 +64,8 @@
             <ul><li>Select specific columns</li><li>Filter with AND/OR/IN/LIKE</li><li>Handle NULL correctly</li></ul>
           </div>
       <p><code>SELECT</code> chooses <em>columns</em>; <code>WHERE</code> chooses <em>rows</em>. Combining them lets you pull exactly the data you need, and nothing else.</p>
+      <h2>The two most-used clauses</h2>
+      <p>If you learn only two things in SQL, learn these. <strong>SELECT</strong> chooses which <em>columns</em> you see. <strong>WHERE</strong> chooses which <em>rows</em> you see. Almost every real query, from a small report to a complex dashboard, is built by adding to this pair.</p>
       <h2>Choosing columns</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers;               -- every column
 SELECT name, age FROM customers;        -- only some
@@ -91,6 +93,52 @@ SELECT * FROM customers WHERE name LIKE &#x27;_da&#x27;;            -- one char 
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers WHERE phone IS NULL;
 SELECT name, COALESCE(phone, &#x27;n/a&#x27;) AS phone FROM customers;</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body"><code>WHERE country &lt;&gt; 'UK'</code> silently excludes rows where country is NULL. Add <code>OR country IS NULL</code> if you want them.</p></aside>
+      <h2>Comparison operators</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, age FROM customers WHERE age &gt;= 30 AND country &lt;&gt; &#x27;FI&#x27;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | age
+------+----
+Ada   | 36
+Grace | 45</pre></div>
+      <p>The operators are <code>=</code>, <code>&lt;&gt;</code> (or <code>!=</code>), <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>. Note that SQL uses a single <code>=</code> to compare, unlike most programming languages. Text values go in single quotes; numbers do not.</p>
+      <h2>AND, OR and parentheses</h2>
+      <p><code>AND</code> needs both sides true, <code>OR</code> needs one. When you mix them, use parentheses. Without them <code>AND</code> is evaluated first, which often is not what you meant.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, country, age FROM customers WHERE (country = &#x27;UK&#x27; OR country = &#x27;US&#x27;) AND age &gt; 40</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | country | age
+------+---------+----
+Grace | US      | 45</pre></div>
+      <h2>Patterns with LIKE</h2>
+      <p><code>LIKE</code> searches text. <code>%</code> matches any number of characters, and <code>_</code> matches exactly one. Use it for "starts with", "ends with" and "contains" searches.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name FROM customers WHERE name LIKE &#x27;G%&#x27;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
+-----
+Grace</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name FROM customers WHERE name LIKE &#x27;%n%&#x27;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
+-----
+Linus</pre></div>
+      <h2>Lists and ranges: IN and BETWEEN</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, country FROM customers WHERE country IN (&#x27;UK&#x27;, &#x27;FI&#x27;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | country
+------+--------
+Ada   | UK
+Linus | FI</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, age FROM customers WHERE age BETWEEN 30 AND 40</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name | age
+-----+----
+Ada  | 36</pre></div>
+      <p><code>BETWEEN</code> includes both ends. <code>IN</code> is a tidy way to write several <code>OR</code>s on the same column.</p>
+      <h2>Missing values: IS NULL</h2>
+      <p><code>NULL</code> means "unknown", not zero and not empty text. You cannot test it with <code>=</code>; you must ask <code>IS NULL</code>. Here we add a customer with no age to see the difference.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name FROM people WHERE age IS NULL</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
+----
+Zed</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name FROM people WHERE age = NULL</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
+----</pre></div>
+      <p>The second query returns nothing at all: <code>age = NULL</code> is never true, because "unknown equals unknown" is itself unknown. This is one of the most common SQL bugs.</p>
+      <h2>Key takeaways</h2>
+      <ul><li><code>SELECT</code> picks columns; <code>WHERE</code> picks rows.</li><li>Combine conditions with <code>AND</code>/<code>OR</code> and use parentheses when mixing them.</li><li><code>LIKE</code> with <code>%</code> and <code>_</code> searches text; <code>IN</code> and <code>BETWEEN</code> shorten lists and ranges.</li><li>Test for missing values with <code>IS NULL</code>, never <code>= NULL</code>.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">From <code>orders</code>, return the id and total of every paid order over 50.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT id, total
 FROM orders

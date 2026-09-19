@@ -258,7 +258,7 @@ EXTRA["python-error-handling"] = {
         ("h2", "Catch specific errors, not everything"),
         ("p", "Writing a bare <code>except:</code> hides real bugs, including typos. Catch the exact exception you expect, and let unexpected ones crash loudly so you notice them."),
         *py('data = {"price": "12.5"}\n\ntry:\n    value = float(data["price"]) / int(data.get("qty", 0))\nexcept (KeyError, ValueError):\n    print("bad input")\nexcept ZeroDivisionError:\n    print("quantity was zero")'),
-        ("h2", "Raising your own errors"),
+        ("h2", "Writing helpful error messages"),
         ("p", "Use <code>raise</code> when a caller gives you something invalid. A clear message saves the next developer (often you) hours of guessing."),
         *py('def set_age(age):\n    if not 0 <= age <= 130:\n        raise ValueError(f"age out of range: {age}")\n    return age\n\ntry:\n    set_age(200)\nexcept ValueError as err:\n    print("Rejected:", err)'),
         ("h2", "Worked example: ask until valid"),

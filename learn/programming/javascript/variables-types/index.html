@@ -63,6 +63,14 @@
             <ul><li>Choose const or let</li><li>Name the primitive types</li><li>Use === not ==</li></ul>
           </div>
       <p>You create variables with <code>const</code> and <code>let</code>. <code>const</code> means the name cannot be reassigned; <code>let</code> allows reassignment. A good habit: <strong>use <code>const</code> by default</strong> and switch to <code>let</code> only when the value must change. Avoid the old <code>var</code>; its scoping rules cause bugs.</p>
+      <h2>Storing information</h2>
+      <p>Programs are mostly about moving information around: a name typed in a form, a price from a server, a score in a game. A <strong>variable</strong> is a named place to keep that information so you can use it later. In modern JavaScript you create one with <code>const</code> (a value you will not reassign) or <code>let</code> (a value that may change).</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const siteName = &quot;stackcone&quot;;
+let visitors = 10;
+visitors = visitors + 1;
+console.log(siteName, visitors);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>stackcone 11</pre></div>
+      <p>Try to reassign a <code>const</code> and JavaScript refuses with a <code>TypeError</code>. That is a feature: it protects you from accidentally overwriting something. A good habit is to write <code>const</code> by default and switch to <code>let</code> only when you truly need to change the value.</p>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>const name = &quot;Ada&quot;;
 let count = 0;
 count += 1;
@@ -95,6 +103,49 @@ false</pre></div>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>const user = { profile: null };
 console.log(user.profile?.email ?? &quot;no email&quot;);</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>no email</pre></div>
+      <h2>The typeof operator</h2>
+      <p>When unsure what you are holding, ask. <code>typeof</code> returns the type as text. There is one famous quirk: <code>typeof null</code> says <code>"object"</code>, a bug from 1995 that can never be fixed.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(typeof 42, typeof 3.14);
+console.log(typeof &quot;hi&quot;, typeof true);
+console.log(typeof undefined, typeof null);
+console.log(typeof [1, 2], Array.isArray([1, 2]));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>number number
+string boolean
+undefined object
+object true</pre></div>
+      <h2>undefined versus null</h2>
+      <p><code>undefined</code> means "no value has been given yet": a variable you declared but never set, or a property that does not exist. <code>null</code> means "I deliberately have nothing here." You will mostly meet <code>undefined</code> as JavaScript's way of saying you asked for something that was not there.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>let notSet;
+const user = { name: &quot;Ada&quot; };
+console.log(notSet);
+console.log(user.email);
+console.log(user.email ?? &quot;no email on file&quot;);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>undefined
+undefined
+no email on file</pre></div>
+      <h2>Numbers: what to watch for</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(0.1 + 0.2);
+console.log((0.1 + 0.2).toFixed(2));
+console.log(10 / 3, 10 % 3);
+console.log(Number(&quot;42&quot;), Number(&quot;abc&quot;));
+console.log(Number.isNaN(Number(&quot;abc&quot;)));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>0.30000000000000004
+0.30
+3.3333333333333335 1
+42 NaN
+true</pre></div>
+      <p>Like most languages, JavaScript stores decimals in binary, so <code>0.1 + 0.2</code> is not exactly <code>0.3</code>. For money, count whole cents as integers or round with <code>toFixed</code>. <code>NaN</code> ("not a number") is what you get when a conversion fails; it is the only value not equal to itself, so test it with <code>Number.isNaN</code>.</p>
+      <h2>Converting between types on purpose</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(String(123) + &quot;!&quot;);
+console.log(Number(&quot;7&quot;) + 1);
+console.log(parseInt(&quot;42px&quot;), parseFloat(&quot;3.5kg&quot;));
+console.log(Boolean(&quot;&quot;), Boolean(&quot;text&quot;), Boolean(0), Boolean([]));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>123!
+8
+42 3.5
+false true false true</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Use <code>const</code> by default and <code>let</code> when a value must change; avoid <code>var</code>.</li><li>Primitive types: string, number, boolean, <code>undefined</code>, <code>null</code>, bigint, symbol.</li><li><code>typeof</code> reveals a type; <code>Number.isNaN</code> checks failed conversions.</li><li>Always compare with <code>===</code>, and know which values are falsy.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Convert the string <code>"42"</code> to a number, add 8, and print a message using a template string. Then check whether <code>NaN === NaN</code> and explain the result.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="const n = Number(&quot;42&quot;) + 8;
 console.log(`The answer is ${n}`);

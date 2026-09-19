@@ -50,13 +50,16 @@ def sql(setup, query):
     """Run `setup` (hidden DDL/INSERTs) then `query`; show the query and a text table."""
     con = sqlite3.connect(":memory:")
     con.executescript(setup)
-    cur = con.execute(query)
+    *before, last = [p.strip() for p in query.split(";") if p.strip()]
+    for stmt in before:
+        con.execute(stmt)
+    cur = con.execute(last)
     cols = [c[0] for c in cur.description]
     rows = [[("NULL" if v is None else str(v)) for v in r] for r in cur.fetchall()]
     widths = [max(len(c), *(len(r[i]) for r in rows)) if rows else len(c) for i, c in enumerate(cols)]
     line = lambda cells: " | ".join(c.ljust(widths[i]) for i, c in enumerate(cells)).rstrip()
     out = "\n".join([line(cols), "-+-".join("-" * w for w in widths)] + [line(r) for r in rows])
-    return _block("sql", query, out)
+    return _block("sql", query.strip().replace("; ", ";\n") if ";" in query else query, out)
 
 
 def sh(cmds, cwd_setup=None):

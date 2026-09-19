@@ -64,6 +64,9 @@
             <ul><li>Define table, row, column</li><li>Explain primary keys</li><li>Run a first query</li></ul>
           </div>
       <p>A <strong>relational database</strong> stores data in <em>tables</em>, like spreadsheets with strict rules. Each <em>row</em> is one record and each <em>column</em> is one attribute with a fixed type. <strong>SQL</strong> (Structured Query Language) is the standard language for asking these databases questions and changing their data. It works, with small dialect differences, in PostgreSQL, MySQL, SQLite, SQL Server and Oracle.</p>
+      <h2>Why databases exist</h2>
+      <p>A spreadsheet works for a small list, but imagine an online shop with millions of customers, orders and products being read and changed by thousands of people at the same moment. You need something faster, safer and more organised. That is a <strong>database</strong>, and <strong>SQL</strong> (Structured Query Language) is the language you use to talk to it. It is over 40 years old and still the most important data skill in software, used by analysts, backend developers, data scientists and product managers alike.</p>
+      <p>SQL is <em>declarative</em>: you describe <strong>what</strong> you want ("the names of customers over 30") and the database works out <strong>how</strong> to find it. That makes simple questions very short to write.</p>
       <h2>A sample table</h2>
       <p>Throughout this course we use two tables. <code>customers</code> holds people, and <code>orders</code> holds purchases, each pointing at a customer.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>-- customers
@@ -93,6 +96,43 @@ Grace  | US</pre></div>
 sqlite&gt; CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT, country TEXT, age INTEGER);
 sqlite&gt; .tables</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>SQL families</p><p class="learn-callout-body">Statements fall into groups: <strong>DQL</strong> (SELECT), <strong>DML</strong> (INSERT, UPDATE, DELETE), <strong>DDL</strong> (CREATE, ALTER, DROP) and <strong>TCL</strong> (COMMIT, ROLLBACK). You will meet all of them.</p></aside>
+      <h2>The vocabulary, with a picture</h2>
+      <p>Think of a table as a spreadsheet tab with strict rules. Every <strong>column</strong> has a name and a type (text, number, date), and every <strong>row</strong> is one record. A <strong>database</strong> is a collection of related tables. A <strong>query</strong> is a question you ask about them.</p>
+      <ul><li><strong>Table</strong>: a set of rows about one kind of thing, such as <code>customers</code>.</li><li><strong>Row</strong> (record): one customer.</li><li><strong>Column</strong> (field): one attribute, such as <code>country</code>.</li><li><strong>Primary key</strong>: a column that uniquely identifies each row, like <code>id</code>.</li><li><strong>Foreign key</strong>: a column that points at a row in another table, like <code>orders.customer_id</code>.</li></ul>
+      <h2>Ask your first three questions</h2>
+      <p>Every example on this page runs against the same two small tables, so you can follow along. Here is everything in <code>customers</code>:</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM customers</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | name  | country | age
+---+-------+---------+----
+1  | Ada   | UK      | 36
+2  | Linus | FI      | 28
+3  | Grace | US      | 45</pre></div>
+      <p>Now only two columns. The database returns exactly the columns you list, in the order you list them:</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, country FROM customers</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | country
+------+--------
+Ada   | UK
+Linus | FI
+Grace | US</pre></div>
+      <p>And a question that needs a decision: which customers are older than 30?</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, age FROM customers WHERE age &gt; 30</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | age
+------+----
+Ada   | 36
+Grace | 45</pre></div>
+      <h2>Reading a query in plain English</h2>
+      <p>Read <code>SELECT name, age FROM customers WHERE age &gt; 30</code> aloud in a different order and it becomes a sentence: "<strong>From</strong> the customers table, <strong>keep</strong> the rows where age is over 30, and <strong>show me</strong> the name and age." SQL is written in a slightly unusual order but read it as that sentence and it always makes sense.</p>
+      <h2>Two tables, one relationship</h2>
+      <p>Orders live in their own table and refer to customers by id instead of repeating the customer's details. This is the core idea of relational databases: store each fact once, and link rows together. A quick look at <code>orders</code>:</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT * FROM orders</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | customer_id | total | status
+---+-------------+-------+---------
+10 | 1           | 120.0 | paid
+11 | 1           | 35.5  | paid
+12 | 3           | 80.0  | refunded</pre></div>
+      <p>Customer 1 (Ada) appears twice because she placed two orders, and there is nothing for Linus (id 2) at all. The joins lesson shows how to combine the two tables into one answer.</p>
+      <h2>Key takeaways</h2>
+      <ul><li>A database holds tables; a table holds rows; each row has the same columns.</li><li>A primary key uniquely identifies a row; a foreign key points at a row in another table.</li><li><code>SELECT columns FROM table WHERE condition</code> is the shape of most questions.</li><li>SQL is declarative: say what you want, not how to get it.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a query that returns only the <code>name</code> and <code>age</code> columns from <code>customers</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT name, age
 FROM customers;"><pre><code>-- Write your solution here

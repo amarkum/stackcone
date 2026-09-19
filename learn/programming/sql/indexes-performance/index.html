@@ -64,6 +64,8 @@
             <ul><li>Create an index</li><li>Read a query plan</li><li>Avoid common slow patterns</li></ul>
           </div>
       <p>A query that takes 2 ms on a hundred rows can take minutes on a hundred million. Without help, the database must read every row to find matches, a <strong>full table scan</strong>. An <strong>index</strong> is a separate, sorted lookup structure (usually a B-tree) that lets it jump straight to the right rows, like the index at the back of a book.</p>
+      <h2>Why queries get slow</h2>
+      <p>With 100 rows every query feels instant, whatever you write. With 100 million rows, the way the database finds data matters enormously. Without help it must read <em>every row</em> to find matches, a <strong>full table scan</strong>, like finding a name by reading a phone book from page one. An <strong>index</strong> is the alphabetical order that lets it jump straight to the right page.</p>
       <h2>Creating an index</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>CREATE INDEX idx_orders_customer ON orders (customer_id);
 CREATE UNIQUE INDEX idx_customers_email ON customers (email);
@@ -92,6 +94,22 @@ SELECT * FROM customers WHERE email = &#x27;a@b.com&#x27;;</code></pre></div>
       <h2>Other habits that keep queries fast</h2>
       <ul><li>Select only needed columns instead of <code>SELECT *</code>.</li><li>Paginate with <code>LIMIT</code>; for deep pages prefer keyset pagination (<code>WHERE id &gt; last_seen</code>) over big OFFSETs.</li><li>Avoid the N+1 problem: one query per row from application code. Fetch related rows with a join or an <code>IN</code> list.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Measure, do not guess</p><p class="learn-callout-body">Add an index, re-run EXPLAIN and compare. Query planners are complex, and real data often surprises you.</p></aside>
+      <h2>See the difference with EXPLAIN</h2>
+      <p>Databases can describe their plan for a query. Below, the same search is run before and after adding an index. The plan changes from a scan of the whole table to a direct search through the index.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = &#x27;ada@example.com&#x27;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>SCAN users</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>CREATE INDEX idx_users_email ON users(email);
+EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = &#x27;ada@example.com&#x27;;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>SEARCH users USING INDEX idx_users_email (email=?)</pre></div>
+      <p><code>SCAN</code> means "read everything"; <code>SEARCH ... USING INDEX</code> means "jump to the match." The words differ between databases (PostgreSQL says <em>Seq Scan</em> and <em>Index Scan</em>) but the idea is identical.</p>
+      <h2>What to index</h2>
+      <ul><li>Columns you filter on often in <code>WHERE</code> (email, status, created_at).</li><li>Foreign-key columns used in joins (<code>orders.customer_id</code>).</li><li>Columns you sort by frequently.</li></ul>
+      <h2>Indexes are not free</h2>
+      <p>Every index takes disk space and must be updated on each <code>INSERT</code>, <code>UPDATE</code> and <code>DELETE</code>. Too many indexes make writes slow. Add them for real, measured slow queries, not on every column just in case.</p>
+      <h2>A tuning routine that works</h2>
+      <ul><li><strong>Measure first</strong>: find which query is actually slow (most databases have a slow-query log).</li><li><strong>Explain it</strong>: does the plan show a full scan on a big table?</li><li><strong>Fix the cause</strong>: add an index, select fewer columns, or rewrite the filter so the index can be used.</li><li><strong>Measure again</strong>: confirm the plan and the time both improved.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Without an index the database scans every row; an index lets it jump to matches.</li><li>Use <code>EXPLAIN</code> to see whether a query scans or searches an index.</li><li>Index columns you filter, join and sort on; avoid indexing everything.</li><li>Measure before and after; guessing is not tuning.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A query <code>SELECT * FROM orders WHERE customer_id = ? AND status = 'paid' ORDER BY created DESC</code> is slow. Propose an index and explain the column order.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="-- Equality columns first, then the sort column, so the database can
 -- read matching rows already in order without a separate sort step.

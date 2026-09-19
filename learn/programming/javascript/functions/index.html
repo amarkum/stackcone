@@ -63,6 +63,16 @@
             <ul><li>Write arrow functions</li><li>Explain closures</li><li>Use default and rest parameters</li></ul>
           </div>
       <p>Functions are values in JavaScript: you can store them in variables, pass them to other functions and return them. That flexibility powers almost every modern pattern, from array methods to React components.</p>
+      <h2>Functions are the building blocks</h2>
+      <p>A function packages a task so you can run it whenever you like, with different inputs each time. Instead of repeating the same lines in five places, you write them once, name them, and call the name. In JavaScript functions are also <em>values</em>: you can store them in variables, pass them to other functions and return them, which is why so much JavaScript code is built from small functions handed to other functions.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>function greet(name) {
+  return &quot;Hello, &quot; + name + &quot;!&quot;;
+}
+
+console.log(greet(&quot;Ada&quot;));
+console.log(greet(&quot;Linus&quot;));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, Ada!
+Hello, Linus!</pre></div>
       <h2>Three ways to write one</h2>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>function add(a, b) {        // declaration
   return a + b;
@@ -106,6 +116,63 @@ repeat(3, (i) =&gt; console.log(&quot;run&quot;, i));</code></pre></div>
 run 1
 run 2</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common bug</p><p class="learn-callout-body">A function with no <code>return</code> gives back <code>undefined</code>. Also, a <code>return</code> followed by a newline before the value returns <code>undefined</code>; keep the value on the same line.</p></aside>
+      <h2>Parameters, arguments and return values</h2>
+      <p>The names in the definition are <em>parameters</em>; the actual values you pass are <em>arguments</em>. A function without a <code>return</code> gives back <code>undefined</code>. A function stops running the moment it returns.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>function area(w, h) {
+  if (w &lt;= 0 || h &lt;= 0) return 0;   // early return
+  return w * h;
+}
+
+console.log(area(3, 4), area(-1, 5));
+
+function noReturn() { const x = 1; }
+console.log(noReturn());</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>12 0
+undefined</pre></div>
+      <h2>Arrow functions in plain words</h2>
+      <p>An arrow function is a shorter way to write a small function. Read <code>(x) =&gt; x * 2</code> as "given x, produce x times 2." When the body is one expression, the <code>return</code> is implied.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const double = (x) =&gt; x * 2;
+const add = (a, b) =&gt; a + b;
+const logAndAdd = (a, b) =&gt; {
+  console.log(&quot;adding&quot;, a, b);
+  return a + b;
+};
+
+console.log(double(21), add(2, 3), logAndAdd(4, 5));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>adding 4 5
+42 5 9</pre></div>
+      <h2>Closures: a function that remembers</h2>
+      <p>A function remembers the variables that existed where it was created, even after that outer code has finished. This lets you build functions that keep private state, like a counter that nobody else can tamper with.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>function makeCounter() {
+  let count = 0;
+  return () =&gt; {
+    count += 1;
+    return count;
+  };
+}
+
+const a = makeCounter();
+const b = makeCounter();
+console.log(a(), a(), a());
+console.log(b());</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1 2 3
+1</pre></div>
+      <h2>Callbacks: passing a function to a function</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>function repeat(times, action) {
+  for (let i = 1; i &lt;= times; i++) action(i);
+}
+
+repeat(3, (n) =&gt; console.log(&quot;round&quot;, n));
+
+[10, 20, 30].forEach((v, i) =&gt; console.log(i, v));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>round 1
+round 2
+round 3
+0 10
+1 20
+2 30</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A function names reusable work: parameters in, <code>return</code> out.</li><li>Arrow functions <code>(a, b) =&gt; a + b</code> are concise; use them for short callbacks.</li><li>Closures let a function remember the variables from where it was created.</li><li>Functions are values: store them, pass them, and return them.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>makeMultiplier(factor)</code> that returns a function multiplying its input by <code>factor</code>. Use it to make <code>double</code> and <code>triple</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="const makeMultiplier = (factor) =&gt; (x) =&gt; x * factor;
 const double = makeMultiplier(2);

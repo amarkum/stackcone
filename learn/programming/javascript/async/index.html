@@ -63,6 +63,15 @@
             <ul><li>Explain the event loop</li><li>Use async/await</li><li>Run requests in parallel</li></ul>
           </div>
       <p>JavaScript runs your code on a <strong>single thread</strong>. To stay responsive while waiting for things like network requests or timers, it hands slow work to the environment and continues. When the result is ready, a callback is queued and runs once the current code has finished. This mechanism is the <em>event loop</em>.</p>
+      <h2>Why waiting is hard</h2>
+      <p>Some work is slow: loading data from a server, reading a file, waiting for a timer. JavaScript has a single main thread, so if it simply stood still until each slow task finished, the whole page would freeze. Instead it starts the slow job, carries on with other work, and comes back when the result is ready. Think of ordering coffee: you give your order, take a buzzer, sit down, and collect the drink when the buzzer goes off. The buzzer is a <strong>Promise</strong>.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(&quot;1: order coffee&quot;);
+setTimeout(() =&gt; console.log(&quot;3: coffee is ready&quot;), 100);
+console.log(&quot;2: check phone while waiting&quot;);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1: order coffee
+2: check phone while waiting
+3: coffee is ready</pre></div>
+      <p>Notice the order. The timer's message prints <em>last</em>, even though it was written second. The code did not wait; it scheduled the callback and moved on.</p>
       <div class="learn-code-wrap" data-lang="javascript"><pre><code>console.log(&quot;1 start&quot;);
 setTimeout(() =&gt; console.log(&quot;3 timer&quot;), 0);
 console.log(&quot;2 end&quot;);</code></pre></div>
@@ -105,8 +114,76 @@ main();</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>parallel: 201ms
 A B</pre></div>
       <p><code>Promise.allSettled</code> waits for every promise and reports each outcome, which is handy when partial failure is acceptable.</p>
+      <h2>A promise has three states</h2>
+      <ul><li><strong>pending</strong>: the work has started and is not finished.</li><li><strong>fulfilled</strong>: it finished and produced a value.</li><li><strong>rejected</strong>: it failed and produced an error.</li></ul>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const wait = (ms, value) =&gt; new Promise(resolve =&gt; setTimeout(() =&gt; resolve(value), ms));
+
+wait(50, &quot;done&quot;).then(v =&gt; console.log(&quot;resolved with&quot;, v));
+console.log(&quot;this prints first&quot;);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>this prints first
+resolved with done</pre></div>
+      <h2>Same thing, easier to read: async and await</h2>
+      <p><code>await</code> pauses <em>that function</em> until the promise settles, then gives you the value as if the code were ordinary top-to-bottom. It can only be used inside an <code>async</code> function. Other code keeps running while you wait.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const wait = (ms, value) =&gt; new Promise(r =&gt; setTimeout(() =&gt; r(value), ms));
+
+async function main() {
+  console.log(&quot;start&quot;);
+  const a = await wait(50, &quot;first&quot;);
+  const b = await wait(50, &quot;second&quot;);
+  console.log(a, b);
+  console.log(&quot;end&quot;);
+}
+main();</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>start
+first second
+end</pre></div>
+      <h2>Handling failure</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const failing = () =&gt; new Promise((_, reject) =&gt; setTimeout(() =&gt; reject(new Error(&quot;server down&quot;)), 20));
+
+async function load() {
+  try {
+    await failing();
+  } catch (err) {
+    console.log(&quot;caught:&quot;, err.message);
+  } finally {
+    console.log(&quot;cleanup&quot;);
+  }
+}
+load();</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>caught: server down
+cleanup</pre></div>
+      <h2>Sequential versus parallel</h2>
+      <p>Two <code>await</code>s in a row run one after the other, which is slow if the tasks are independent. Start them together and wait for both with <code>Promise.all</code>.</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const wait = (ms, v) =&gt; new Promise(r =&gt; setTimeout(() =&gt; r(v), ms));
+
+async function main() {
+  let t = Date.now();
+  await wait(100); await wait(100);
+  console.log(&quot;one by one:&quot;, Math.round((Date.now() - t) / 100) * 100, &quot;ms&quot;);
+
+  t = Date.now();
+  const [a, b] = await Promise.all([wait(100, &quot;x&quot;), wait(100, &quot;y&quot;)]);
+  console.log(&quot;together:&quot;, Math.round((Date.now() - t) / 100) * 100, &quot;ms&quot;, a, b);
+}
+main();</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>one by one: 200 ms
+together: 100 ms x y</pre></div>
+      <h2>A realistic fetch example</h2>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>async function getUser(id) {
+  const response = await fetch(`https://api.example.com/users/${id}`);
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`);
+  }
+  return response.json();   // also returns a promise
+}
+
+getUser(1)
+  .then(user =&gt; console.log(user.name))
+  .catch(err =&gt; console.error(err.message));</code></pre></div>
       <h2>Common mistakes</h2>
       <ul><li>Forgetting <code>await</code>, so you log a pending promise instead of its value.</li><li>Using <code>await</code> inside <code>forEach</code>; it does not wait. Use a <code>for...of</code> loop or <code>Promise.all</code> with <code>map</code>.</li><li>Not handling rejections, which produce "unhandled promise rejection" errors.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Slow work returns a Promise (pending, fulfilled or rejected) so the page never freezes.</li><li><code>async</code>/<code>await</code> lets you read asynchronous code top to bottom.</li><li>Wrap awaits in <code>try/catch</code>; check <code>response.ok</code> when using <code>fetch</code>.</li><li>Use <code>Promise.all</code> for independent tasks that can run together.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>retry(fn, times)</code>, an async function that calls <code>fn</code> and, if it throws, tries again up to <code>times</code> attempts before giving up.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="async function retry(fn, times) {
   let lastErr;

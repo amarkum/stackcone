@@ -64,6 +64,8 @@
             <ul><li>Sort and paginate</li><li>Summarize with aggregates</li><li>Group rows</li></ul>
           </div>
       <p>So far we have listed rows. Real questions are usually about <em>order</em> (who is biggest?) and <em>summaries</em> (how much in total?). This lesson covers both.</p>
+      <h2>From rows to answers</h2>
+      <p>Reading raw rows is useful, but the questions people actually ask are summaries: "How many orders did we get?", "What is the average order value?", "Which country spends the most?". SQL answers these with <strong>aggregate functions</strong>. First, though, you often want the rows in a sensible order, which is what <code>ORDER BY</code> does.</p>
       <h2>ORDER BY and LIMIT</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, age FROM customers
 ORDER BY age DESC, name ASC
@@ -101,6 +103,48 @@ WHERE status = &#x27;paid&#x27;          -- rows first
 GROUP BY customer_id
 HAVING SUM(total) &gt; 100;       -- then groups</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Logical order</p><p class="learn-callout-body">SQL runs clauses in this order: FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT. That is why you cannot use a SELECT alias inside WHERE.</p></aside>
+      <h2>Sorting and limiting</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, age FROM customers ORDER BY age DESC</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | age
+------+----
+Grace | 45
+Ada   | 36
+Linus | 28</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT id, total FROM orders ORDER BY total DESC LIMIT 2</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | total
+---+------
+10 | 120.0
+12 | 80.0</pre></div>
+      <p><code>ASC</code> (ascending) is the default. <code>LIMIT</code> keeps only the first rows after sorting, which is how you build "top 10" lists and pages of results.</p>
+      <h2>Summarising with aggregate functions</h2>
+      <p>An aggregate takes many rows and returns one value: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT COUNT(*) AS orders, SUM(total) AS revenue, AVG(total) AS average, MAX(total) AS biggest FROM orders</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>orders | revenue | average | biggest
+-------+---------+---------+--------
+3      | 235.5   | 78.5    | 120.0</pre></div>
+      <h2>GROUP BY: one summary per group</h2>
+      <p>Without <code>GROUP BY</code> an aggregate collapses everything into a single row. Add <code>GROUP BY column</code> and you get one result row per distinct value, which is how you answer "per country", "per month" or "per customer" questions.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT status, COUNT(*) AS n, SUM(total) AS money FROM orders GROUP BY status</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>status   | n | money
+---------+---+------
+paid     | 2 | 155.5
+refunded | 1 | 80.0</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT customer_id, COUNT(*) AS orders, SUM(total) AS spent FROM orders GROUP BY customer_id ORDER BY spent DESC</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>customer_id | orders | spent
+------------+--------+------
+1           | 2      | 155.5
+3           | 1      | 80.0</pre></div>
+      <h2>The order SQL actually runs things</h2>
+      <p>You write <code>SELECT</code> first, but the database processes clauses in a different order. Knowing it explains most error messages.</p>
+      <ul><li><code>FROM</code>: pick the table.</li><li><code>WHERE</code>: throw away rows that do not match.</li><li><code>GROUP BY</code>: bundle the remaining rows into groups.</li><li><code>HAVING</code>: throw away whole groups that do not match.</li><li><code>SELECT</code>: compute the columns to show.</li><li><code>ORDER BY</code> then <code>LIMIT</code>: sort and trim the final result.</li></ul>
+      <h2>WHERE versus HAVING, with a real example</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT customer_id, SUM(total) AS spent FROM orders WHERE status = &#x27;paid&#x27; GROUP BY customer_id HAVING SUM(total) &gt; 100</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>customer_id | spent
+------------+------
+1           | 155.5</pre></div>
+      <p><code>WHERE status = 'paid'</code> removes the refunded order <em>before</em> grouping. <code>HAVING SUM(total) &gt; 100</code> then removes customers whose paid total is too small <em>after</em> grouping. You cannot put an aggregate inside <code>WHERE</code>.</p>
+      <h2>Key takeaways</h2>
+      <ul><li><code>ORDER BY</code> sorts (<code>DESC</code> for descending); <code>LIMIT</code> keeps the top rows.</li><li>Aggregates (<code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>) turn many rows into one value.</li><li><code>GROUP BY</code> gives one result row per group.</li><li><code>WHERE</code> filters rows before grouping; <code>HAVING</code> filters groups after.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Find the number of customers in each country, showing only countries with two or more customers, most first.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT country, COUNT(*) AS customers
 FROM customers

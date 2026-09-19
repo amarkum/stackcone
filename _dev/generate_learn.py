@@ -320,6 +320,9 @@ def _apply_extra(les):
 
 for _les in LESSONS:
     _apply_extra(_les)
+    _heads = [x[1] for x in _les["sections"] if x[0] == "h2"]
+    _dupes = {h for h in _heads if _heads.count(h) > 1}
+    assert not _dupes, f'{_les["slug"]}: duplicate headings {_dupes}'
 
 # Teaching order for the Python course (new lessons slot in between the originals)
 _PY_ORDER = ["python-hello-world", "python-variables-and-types", "python-strings",
