@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Evaluation, Safety, Bias and Responsible AI | AI Interview Questions | stackcone Learn</title>
+  <meta name="description" content="LLM metrics, LLM-as-a-judge, golden datasets, benchmark pitfalls, A/B testing, hallucination control, red teaming, fairness, privacy, the EU AI Act and guardrails.">
+  <link rel="canonical" href="https://stackcone.com/learn/ai/interview-questions/evaluation-safety/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=10">
+  <link rel="stylesheet" href="/learn/learn.css?v=35">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=17">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> / Evaluation, Safety, Bias and Responsible AI</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="ai-interview-questions">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a></p>
+              <p class="learn-sidebar-tagline">99 questions with model answers</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 9 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/ai-ml-fundamentals/" data-lesson="aiq-ai-ml-fundamentals" data-minutes="16"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">AI and Machine Learning Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/llm-transformers/" data-lesson="aiq-llm-transformers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">LLMs and Transformers: How They Actually Work</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/prompt-engineering/" data-lesson="aiq-prompt-engineering" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompt Engineering and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/rag-fundamentals/" data-lesson="aiq-rag-fundamentals" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">RAG: Retrieval-Augmented Generation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/embeddings-vector-databases/" data-lesson="aiq-embeddings-vector-databases" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Embeddings, Vector Databases and Advanced RAG</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/agents-tools-mcp/" data-lesson="aiq-agents-tools-mcp" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">AI Agents, Tool Use and MCP</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/fine-tuning-alignment/" data-lesson="aiq-fine-tuning-alignment" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Fine-Tuning, LoRA and Alignment (RLHF, DPO)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ai/interview-questions/inference-serving-llmops/" data-lesson="aiq-inference-serving-llmops" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Inference, Serving Performance and LLMOps</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ai/interview-questions/evaluation-safety/" aria-current="page" data-lesson="aiq-evaluation-safety" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Evaluation, Safety, Bias and Responsible AI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> · Lesson 9 of 9</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ai/interview-questions/inference-serving-llmops/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              
+            </nav>
+          </div>
+          <h1>Evaluation, Safety, Bias and Responsible AI</h1>
+          <p class="learn-summary">LLM metrics, LLM-as-a-judge, golden datasets, benchmark pitfalls, A/B testing, hallucination control, red teaming, fairness, privacy, the EU AI Act and guardrails.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>11 questions</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/interview-questions/inference-serving-llmops/">Lesson 8: Inference, Serving Performance and LLMOps</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Build an evaluation strategy that catches regressions the benchmarks miss</li><li>Measure and mitigate hallucination, bias and privacy risks with concrete techniques</li><li>Speak credibly about regulation, audits, red teaming and guardrails</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 9 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 9</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 2 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
+      <p>If there is one topic that separates experienced AI engineers from enthusiasts, it is evaluation. Anyone can build a demo; the people companies hire can prove a system works, notice when it stops working, and show it is safe and fair enough to ship.</p>
+      <p>Interviewers also probe responsibility: bias, privacy, misuse and regulation. Answer concretely (a metric, a control, a process) rather than with values alone.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>How to use this lesson</p><p class="learn-callout-body">Cover the answer, say yours out loud for a minute, then compare. Each answer follows the shape interviewers reward: a one-line definition, a concrete example, then the trade-off or failure mode. The <em>Follow-up</em> line is what a good interviewer asks next.</p></aside>
+      <h2>The 11 questions in this lesson</h2>
+      <ol class="aiq-toc" start="89"><li><a href="#q89">How do you evaluate the output of an LLM? Explain BLEU, ROUGE, BERTScore, perplexity and pass@k, and when each is appropriate.</a></li><li><a href="#q90">What is LLM-as-a-judge, and what are its limitations and how do you calibrate it?</a></li><li><a href="#q91">You have to evaluate a new LLM application but there is no labelled data and experts are expensive. How do you build an evaluation set?</a></li><li><a href="#q92">What are MMLU, HumanEval and GSM8K? What is benchmark contamination, and why can a model with higher benchmark scores feel worse to users?</a></li><li><a href="#q93">How do you compare two prompts or models in a statistically sound way? Offline versus online evaluation?</a></li><li><a href="#q94">How do you detect, measure and reduce hallucinations?</a></li><li><a href="#q95">What is red teaming, and how would you red team an LLM chatbot (including a multimodal one) before launch?</a></li><li><a href="#q96">How do you detect and mitigate bias in an AI system? Explain fairness metrics and proxy discrimination.</a></li><li><a href="#q97">How do you protect privacy in AI systems: PII handling, GDPR, the right to be forgotten, membership inference and differential privacy?</a></li><li><a href="#q98">What is the EU AI Act, the NIST AI Risk Management Framework, and model cards? How do you make AI decisions explainable and auditable?</a></li><li><a href="#q99">How do you implement guardrails, content moderation and AI-content provenance, and how do you respond when an AI system causes harm?</a></li></ol>
+      <h3 id="q89">89. How do you evaluate the output of an LLM? Explain BLEU, ROUGE, BERTScore, perplexity and pass@k, and when each is appropriate.</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Pick the metric by <em>what a good answer is</em> for the task, and prefer checks that can be automated against a ground truth when one exists.</p>
+      <table><thead><tr><th>Metric</th><th>What it measures</th><th>Good for</th><th>Weakness</th></tr></thead><tbody><tr><td>Exact match / accuracy / F1</td><td>Answer equals a reference; token overlap</td><td>Extraction, classification, short-answer QA</td><td>Penalises valid rewordings</td></tr><tr><td>BLEU</td><td>n-gram precision against reference text</td><td>Machine translation (historical)</td><td>Word overlap, not meaning; bad for open-ended text</td></tr><tr><td>ROUGE</td><td>n-gram and longest-common-subsequence recall</td><td>Summarisation baselines</td><td>Same; rewards copying</td></tr><tr><td>BERTScore</td><td>Embedding similarity of tokens with the reference</td><td>Paraphrase-tolerant comparison</td><td>Still needs a reference; misses factual errors</td></tr><tr><td>Perplexity</td><td>How surprised a model is by text</td><td>Comparing language models on the same data</td><td>Not a measure of usefulness or truth</td></tr><tr><td>pass@k</td><td>Fraction of problems where at least one of k generated programs passes the unit tests</td><td>Code generation</td><td>Needs tests; tests may be weak</td></tr><tr><td>LLM-as-judge / human rating</td><td>Rubric-based quality scoring</td><td>Open-ended answers, tone, helpfulness</td><td>Judge bias and cost; needs calibration</td></tr><tr><td>Task success / business KPI</td><td>Did the user's goal get achieved</td><td>Agents, RAG, support bots</td><td>Harder to attribute; slower</td></tr></tbody></table>
+      <p>The unbiased estimator for pass@k from n samples with c correct is <code>1 - C(n-c, k) / C(n, k)</code>:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from math import comb
+
+def pass_at_k(n, c, k):
+    # probability that at least one of k samples (drawn from n, c correct) is correct
+    if n - c &lt; k:
+        return 1.0
+    return 1.0 - comb(n - c, k) / comb(n, k)
+
+n, c = 20, 5                        # 20 generations for one problem, 5 pass the tests
+for k in (1, 5, 10):
+    print("pass@%-2d = %.3f" % (k, pass_at_k(n, c, k)))</code></pre></div>
+      <p>In practice combine several: automatic checks (format, exact facts, tests), an LLM judge for quality, and periodic human review, and always keep metrics that reflect the <em>user's</em> goal.</p>
+      <p><strong>Follow-up:</strong> Why is ROUGE a poor primary metric for an abstractive summariser?</p>
+      <h3 id="q90">90. What is LLM-as-a-judge, and what are its limitations and how do you calibrate it?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>An LLM-as-a-judge scores or ranks outputs against a rubric ("is every claim supported by the context?", "which answer is more helpful, A or B?"). It scales far beyond human review and correlates well with human ratings when done carefully, which is why frameworks such as G-Eval, MT-Bench-style pairwise judging and RAG evaluators use it.</p>
+      <ul><li><strong>Position bias:</strong> judges favour the first (or last) answer. Swap the order and count a win only if it is consistent.</li><li><strong>Verbosity bias:</strong> longer answers get higher scores regardless of quality. Control for length or instruct against it.</li><li><strong>Self-preference:</strong> a model tends to prefer its own family's style. Use a different, stronger model as the judge.</li><li><strong>Leniency, inconsistency and prompt sensitivity:</strong> scores vary between runs and phrasings. Use a clear rubric with examples, low temperature, and integer scales with definitions.</li><li><strong>Shared blind spots:</strong> the judge may miss the same factual errors the generator makes. Give it the source or reference, or use retrieval and tools to verify.</li></ul>
+      <strong>Calibration:</strong> label 100 to 200 examples by hand, measure agreement between the judge and humans (Cohen's kappa or correlation), iterate the rubric until agreement is acceptable, and re-check periodically and whenever the judge model changes. Use pairwise comparison for ranking, and have the judge write its reasoning <em>before</em> the score.
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import random
+
+def biased_judge(a, b, rng):
+    # a judge that says 'first is better' 65% of the time regardless of quality
+    return "A" if rng.random() &lt; 0.65 else "B"
+
+rng = random.Random(0)
+consistent = 0
+trials = 2000
+for _ in range(trials):
+    r1 = biased_judge("resp1", "resp2", rng)            # order 1
+    r2 = biased_judge("resp2", "resp1", rng)            # swapped order
+    # consistent only if the same response wins in both orders
+    consistent += (r1 == "A" and r2 == "B") or (r1 == "B" and r2 == "A")
+print("verdicts that survive swapping the order: %.0f%%" % (100 * consistent / trials))
+print("a truly quality-driven judge would be consistent nearly always")</code></pre></div>
+      <p><strong>Follow-up:</strong> How would you detect that your judge prefers longer answers?</p>
+      <h3 id="q91">91. You have to evaluate a new LLM application but there is no labelled data and experts are expensive. How do you build an evaluation set?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Start small and grow it deliberately. A useful first set is <strong>50 to 200 examples</strong> that are <em>representative and hard</em>, not thousands of easy ones.</p>
+      <ol><li><strong>Harvest real inputs:</strong> logs, support tickets, search queries, pilot-user questions (with privacy review). If none exist, have domain colleagues write realistic ones.</li><li><strong>Cover the space:</strong> tag each example by topic, difficulty and type, and make sure the set includes edge cases, ambiguous queries, unanswerable questions (the right answer is a refusal), adversarial prompts, multilingual input and long inputs.</li><li><strong>Get labels cheaply:</strong> have a strong model draft reference answers or rubrics, then have an expert <em>review and correct</em> them (reviewing is far faster than writing); label only a stratified sample if budget is tight.</li><li><strong>Prefer checkable criteria:</strong> exact facts, required fields, must-include or must-not-include phrases, schema validity, unit tests, so much of the score is automatic.</li><li><strong>Calibrate the judge</strong> on the human-reviewed subset for the fuzzy criteria.</li><li><strong>Keep it alive:</strong> add every production failure as a new test case, version the set, keep a frozen held-out portion that you never tune against, and re-run on every prompt, model or retrieval change (<em>evaluation-driven development</em>).</li></ol>
+      <p>Define "done" before building: an agreed metric and threshold (for example 90 percent faithfulness and under 2 percent unsafe outputs) makes the evaluation a decision tool rather than a report.</p>
+      <p><strong>Follow-up:</strong> How do you keep the evaluation set from leaking into your prompts or fine-tuning data?</p>
+      <h3 id="q92">92. What are MMLU, HumanEval and GSM8K? What is benchmark contamination, and why can a model with higher benchmark scores feel worse to users?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <strong>MMLU</strong>: multiple-choice questions across 57 subjects (general knowledge and reasoning). <strong>HumanEval</strong>: 164 hand-written Python problems checked by unit tests (measured by pass@k). <strong>GSM8K</strong>: grade-school maths word problems. Others: MATH, GPQA (graduate-level science), SWE-bench (real repository issues), and MT-Bench and Chatbot Arena style human or judge preference for chat quality.
+      <strong>Contamination</strong> is when benchmark questions (or near copies) appear in a model's training data, so it partly memorised the answers and the score overstates ability. Signals: unusually high scores on old public sets versus fresh or paraphrased variants. Countermeasures: use private or freshly written held-out sets, rotate or perturb questions, check n-gram overlap with training data where possible, and prefer dynamic benchmarks.
+      <strong>Why benchmarks and users disagree:</strong> public benchmarks are narrow, saturated and easy to over-optimise (Goodhart's law: once a measure becomes a target it stops being a good measure); they test single-turn tasks while users value tone, instruction-following, latency, formatting, refusals, long-context behaviour and consistency; a new model may be tuned for benchmark-style prompts and be worse on your prompts or system message; and behavioural changes (more verbose, more refusals, different formatting) can break your downstream parsing without moving any score. <strong>Fix:</strong> evaluate on <em>your</em> task-specific golden set, look at segment-level regressions, run a shadow or A/B test, and read real conversations.
+      <p><strong>Follow-up:</strong> A vendor claims a new state-of-the-art benchmark score. What would you check before believing it?</p>
+      <h3 id="q93">93. How do you compare two prompts or models in a statistically sound way? Offline versus online evaluation?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <strong>Offline evaluation</strong> runs candidates on a fixed test set: fast, cheap, repeatable, good for gating and iterating, but limited to the cases you thought of. <strong>Online evaluation</strong> measures real users on live traffic (A/B test, interleaving, shadow mode): the ground truth for business impact, but slower, riskier and noisier. Use offline to filter, online to decide.
+      <p>To compare A and B <em>honestly</em>: run both on the <strong>same inputs</strong> (paired design) so difficulty differences cancel; run several samples per input if the model is stochastic; report a <strong>confidence interval</strong> for the difference (a paired bootstrap works for any metric) rather than a single average; make sure you have enough examples for the effect size you care about (small differences need hundreds or thousands of cases); check subgroups for hidden regressions; and correct for multiple comparisons if you test many variants. For online tests, randomise by user, fix the sample size and metric in advance, watch guardrail metrics (safety, cost, latency), and beware novelty effects.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import random
+random.seed(11)
+
+# per-question correctness (1/0) for two prompts evaluated on the SAME 150 questions
+a = [1 if random.random() &lt; 0.72 else 0 for _ in range(150)]
+b = [x if random.random() &lt; 0.85 else (1 if random.random() &lt; 0.8 else 0) for x in a]   # B is a bit better
+
+def paired_bootstrap(a, b, iters=5000):
+    n, diffs = len(a), []
+    for _ in range(iters):
+        idx = [random.randrange(n) for _ in range(n)]
+        diffs.append(sum(b[i] - a[i] for i in idx) / n)
+    diffs.sort()
+    return diffs[int(0.025 * iters)], diffs[int(0.975 * iters)]
+
+lo, hi = paired_bootstrap(a, b)
+print("accuracy A %.3f  B %.3f  observed diff %.3f" % (sum(a) / 150, sum(b) / 150, (sum(b) - sum(a)) / 150))
+print("95%% CI for the difference: [%.3f, %.3f]" % (lo, hi))
+print("interval includes 0 -&gt; not convincing yet" if lo &lt;= 0 &lt;= hi else "interval excludes 0 -&gt; B is credibly better")</code></pre></div>
+      <p><strong>Follow-up:</strong> Your offline test says B is 3 points better, but the online test shows no change. What could explain it?</p>
+      <h3 id="q94">94. How do you detect, measure and reduce hallucinations?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <strong>Define it first.</strong> <em>Factual</em> hallucination: a statement contradicting the world. <em>Faithfulness</em> hallucination: a statement not supported by the provided context (the metric that matters for RAG and summarisation). <em>Instruction</em> or <em>tool</em> hallucination: inventing a tool, a citation or an argument.
+      <strong>Measure:</strong> claim-level checking (split the answer into atomic claims and verify each against the context, a knowledge base or search) using NLI models or an LLM judge; a golden set that includes unanswerable questions to test refusal; consistency checks such as SelfCheckGPT (sample several answers and flag claims that vary); human review of a sample. Track the rate over time.
+      <div class="diagram-wrap" data-diagram-title="Layered hallucination controls">
+        <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
+        <div class="diagram-body">
+<div class="mermaid-pending">flowchart TB
+  A[Model choice and grounding] --&gt; B[Retrieval and tools for facts, maths and lookups]
+  B --&gt; C[Prompt: answer only from sources, allow I do not know, require citations]
+  C --&gt; D[Decoding: lower temperature, constrained formats]
+  D --&gt; E[Verification: claim-level faithfulness check, citation validation, second-model review]
+  E --&gt; F[Fallback: refuse, ask a clarifying question, or hand off to a human]
+  F --&gt; G[Monitoring: sampled review and user feedback loop]</div>
+        </div>
+      </div>
+      <p>No technique removes hallucination; you <strong>reduce and contain</strong> it. Match the control to the stakes: a marketing draft can tolerate errors, medical or legal answers need grounded sources, verification and human sign-off. Be honest with users about limits, show sources, and design the interface so mistakes are easy to spot.</p>
+      <p><strong>Follow-up:</strong> Your summariser inserts facts that are not in the article. Name three fixes and how you would prove they worked.</p>
+      <h3 id="q95">95. What is red teaming, and how would you red team an LLM chatbot (including a multimodal one) before launch?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <p>Red teaming is <strong>adversarial testing by people (or tools) trying to make the system fail</strong>: produce harmful content, leak secrets, follow injected instructions, discriminate, or take unsafe actions. Automated benchmarks find known problems; red teaming finds the creative ones.</p>
+      <ol><li><strong>Define scope and harms:</strong> from the product's context (a banking bot cares about fraud and data leakage; a kids' app cares about age-inappropriate content), plus universal categories (self-harm, hate, illegal activity, privacy, misinformation, prompt injection, tool abuse).</li><li><strong>Assemble diverse testers:</strong> security engineers, domain experts, and people from affected communities, plus automated attackers (LLM-generated attack prompts, fuzzing, jailbreak libraries).</li><li><strong>Attack systematically:</strong> direct and indirect prompt injection, role-play and multi-turn escalation, encoding and translation tricks, system-prompt extraction, tool and permission abuse, data exfiltration, over-reliance and misuse scenarios.</li><li><strong>Record everything</strong> with severity ratings and reproduction steps; convert each finding into a regression test.</li><li><strong>Fix at the right layer:</strong> model or prompt changes, filters, permission changes, product design; re-test after fixes; set launch criteria (for example zero critical findings open).</li><li><strong>Continue after launch:</strong> monitoring, bug bounties and periodic exercises.</li></ol>
+      <strong>Multimodal</strong> systems add attack surface that text-only tests miss: instructions hidden in images (text in a screenshot or a QR code), audio prompts, and <em>cross-modal</em> attacks where a harmless caption plus a harmful image slip past text filters. Test each modality alone and in combination, include OCR-extracted text in your injection tests, and apply safety classifiers to images and audio, not only to text.
+      <p><strong>Follow-up:</strong> Which findings would block your launch, and who signs off on shipping with known residual risk?</p>
+      <h3 id="q96">96. How do you detect and mitigate bias in an AI system? Explain fairness metrics and proxy discrimination.</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Bias can enter through <strong>data</strong> (under-representation, historical inequities, biased labels), <strong>design</strong> (proxy features, objective choice) and <strong>deployment</strong> (feedback loops where model outputs shape future data). Detect it by evaluating performance and outcomes <em>per group</em>, including <em>intersections</em> (a model fair for gender and for race separately can still fail for a specific combination).</p>
+      <table><thead><tr><th>Fairness notion</th><th>Meaning</th></tr></thead><tbody><tr><td>Demographic parity</td><td>Selection rate is the same across groups</td></tr><tr><td>Equal opportunity</td><td>True-positive rate is the same across groups (qualified people are accepted equally often)</td></tr><tr><td>Equalised odds</td><td>Both true-positive and false-positive rates match across groups</td></tr><tr><td>Calibration within groups</td><td>A score of 0.7 means 70 percent likelihood for every group</td></tr></tbody></table>
+      <p>These cannot generally all be satisfied at once when base rates differ, so the choice is a <strong>policy decision</strong> tied to the harm you most want to avoid, made with legal and domain input. A common screening rule in US employment settings is the <em>four-fifths rule</em>: if a group's selection rate is below 80 percent of the highest group's, that is evidence of adverse impact worth investigating.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>applicants = {                       # group: (number screened, number advanced)
+    "men":   (1000, 300),
+    "women": (800, 160),
+}
+rates = {g: adv / n for g, (n, adv) in applicants.items()}
+best = max(rates.values())
+for g, r in rates.items():
+    print("%-6s selection rate %.2f   ratio to best %.2f%s" % (g, r, r / best, "   &lt;-- below 0.80" if r / best &lt; 0.8 else ""))</code></pre></div>
+      <strong>Mitigation:</strong> improve and rebalance data; remove protected attributes <em>and</em> their <strong>proxies</strong> (postcode, school, hobbies can encode gender or race, so test whether a model can predict the protected attribute from the remaining features); re-weight or add fairness constraints during training; adjust decision thresholds per group where lawful; use counterfactual tests (swap names or pronouns and compare outputs); keep humans in the loop for consequential decisions; and monitor continuously after launch, because a model fair at deployment can drift. Document limits in a model card.
+      <p><strong>Follow-up:</strong> Your resume-screening model advances fewer women. You removed the gender column and nothing changed. Why?</p>
+      <h3 id="q97">97. How do you protect privacy in AI systems: PII handling, GDPR, the right to be forgotten, membership inference and differential privacy?</h3>
+      <p class="aiq-level"><em>Deep dive</em></p>
+      <p>Treat privacy as a design constraint from the start:</p>
+      <ul><li><strong>Minimise and control data:</strong> collect only what is needed, redact or pseudonymise PII before it reaches prompts, logs or training data, set retention limits, encrypt, and restrict access. Check provider terms on whether prompts are stored or used for training, and use zero-retention or private deployments for sensitive data.</li><li><strong>Lawful basis and rights (GDPR, CCPA and similar):</strong> consent or another lawful basis, purpose limitation, transparency, access and deletion rights, data-protection impact assessments for risky processing, and explanation of automated decisions.</li><li><strong>Right to be forgotten:</strong> deleting a person's data from a database is easy; removing what a model has <em>learned</em> from its weights is not. Practical approaches: keep personal data <em>out</em> of training in the first place and use RAG so deletion means removing it from the index; maintain data lineage so you know which models saw what; retrain or fine-tune without the data on a schedule; apply output filters; and consult counsel, as regulators are still working out the details for model weights. Machine unlearning is active research, not a solved tool.</li><li><strong>Memorisation and leakage:</strong> models can regurgitate training data. <em>Membership-inference</em> attacks test whether a record was in the training set; <em>extraction</em> attacks recover text. Mitigate with deduplication, less overfitting, output filtering and privacy-preserving training.</li><li><strong>Differential privacy:</strong> DP-SGD clips each example's gradient and adds calibrated noise so the trained model's behaviour barely depends on any single individual, giving a provable privacy budget (epsilon). The cost is accuracy and compute; small epsilons hurt utility, so balance and report the trade-off.</li><li><strong>Re-identification:</strong> removing names is not anonymisation; combinations of quasi-identifiers (age, postcode, dates) can identify people. Use aggregation, k-anonymity checks, noise or synthetic data, and test re-identification risk.</li></ul>
+      <p><strong>Follow-up:</strong> A user demands you delete their data, but you fine-tuned on support tickets that included it. What do you do?</p>
+      <h3 id="q98">98. What is the EU AI Act, the NIST AI Risk Management Framework, and model cards? How do you make AI decisions explainable and auditable?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <strong>EU AI Act:</strong> the EU's risk-based regulation for AI. Systems are grouped into <em>prohibited</em> practices (for example social scoring), <em>high-risk</em> (hiring, credit, education, essential services, safety components, law enforcement), <em>limited-risk</em> with transparency duties (chatbots must disclose they are AI; synthetic media must be labelled) and <em>minimal-risk</em>. High-risk systems need risk management, quality data governance, technical documentation, logging, human oversight, accuracy and robustness, and conformity assessment; general-purpose model providers have their own transparency and safety obligations. Obligations are phased in over several years from 2025, so check current guidance for your case.
+      <strong>NIST AI RMF</strong> (US, voluntary) organises AI risk management into four functions: <em>Govern, Map, Measure, Manage</em>. Useful as a checklist for processes even where no law compels it. <strong>Model cards and datasheets</strong> document a model's intended use, training data, evaluation results (including per-group), limitations and risks, so downstream users can judge fitness.
+      <strong>Explainability and auditability:</strong> for high-stakes decisions (a loan denial, a moderation action) you need to give the affected person a meaningful reason and a path to <em>appeal</em>. Use inherently interpretable models where possible, or post-hoc tools (SHAP, feature importance, counterfactual explanations "you would have been approved with an income of X"); for LLMs, cite sources and record the inputs, model version, prompt version, retrieved evidence and output. Build <strong>audit trails</strong>: immutable logs of every automated decision with enough context to reproduce it months later, plus a human-review route. Without logs, an auditor's "why was this rejected in March?" is unanswerable.
+      <p><strong>Follow-up:</strong> Is your customer-support chatbot 'high-risk' under the EU AI Act? Which duties still apply?</p>
+      <h3 id="q99">99. How do you implement guardrails, content moderation and AI-content provenance, and how do you respond when an AI system causes harm?</h3>
+      <p class="aiq-level"><em>Core</em></p>
+      <strong>Guardrails</strong> are checks around the model. Layer them, because each layer has gaps:
+      <ul><li><strong>Input:</strong> authentication and rate limits; prompt-injection and jailbreak detection; PII detection and redaction; topic and scope checks (a banking bot should decline to write malware).</li><li><strong>Model and prompt:</strong> a clear system prompt with refusal policy; a safety-tuned model; least-privilege tools.</li><li><strong>Output:</strong> moderation classifiers (toxicity, self-harm, sexual content, hate, violence), schema validation, groundedness checks, PII and secret scanning, allow-lists for actions; block, rewrite or route to a human as appropriate.</li><li><strong>Domain-specific:</strong> a medical or legal bot must not present itself as a professional, must escalate emergencies (crisis resources for self-harm), and must show sources and disclaimers appropriate to the domain.</li><li><strong>Cultural context:</strong> moderation trained on one market may flag normal expressions elsewhere; evaluate and tune per locale with local reviewers, and provide appeals.</li></ul>
+      <strong>Provenance of AI-generated content:</strong> label synthetic media, attach signed metadata (C2PA content credentials), and use watermarking where available (statistical watermarks in text or invisible marks in images), while being honest that watermarks can be removed and detectors are imperfect.
+      <strong>Incident response for AI harm</strong> follows the normal playbook plus AI specifics: detect (monitoring, user reports), <em>contain</em> (kill switch, feature flag, tighten filters, roll back the model or prompt), investigate with logs and reproduce, notify affected users and regulators when required, fix the root cause, add regression tests, and hold a <strong>blameless post-mortem</strong> focused on system causes. Also plan for human factors: people over-trust confident AI output (automation bias), so design the workflow to make disagreement easy and measure how often humans override the model.
+      <p><strong>Follow-up:</strong> Your mental-health chatbot gave harmful advice to a user in crisis. What are your first 24 hours?</p>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Choose an LLM feature you know. Write its evaluation plan on one page: the metric and pass threshold, how you will build the first 100 test cases, how the judge is calibrated, three red-team attacks, one fairness check, and the rollback trigger. Then explain it aloud in two minutes as if to a sceptical director.</p></aside>
+      <h2>Sources and further reading</h2>
+      <ul><li><a href="https://arxiv.org/abs/2306.05685" rel="noopener noreferrer" target="_blank">Zheng et al., Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</a></li><li><a href="https://arxiv.org/abs/1904.09675" rel="noopener noreferrer" target="_blank">Zhang et al., BERTScore</a></li><li><a href="https://arxiv.org/abs/2107.03374" rel="noopener noreferrer" target="_blank">Chen et al., Evaluating LLMs Trained on Code (HumanEval, pass@k)</a></li><li><a href="https://arxiv.org/abs/2303.08896" rel="noopener noreferrer" target="_blank">Manakul et al., SelfCheckGPT</a></li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="noopener noreferrer" target="_blank">NIST AI Risk Management Framework</a></li><li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="noopener noreferrer" target="_blank">EU AI Act overview (European Commission)</a></li><li><a href="https://arxiv.org/abs/1810.03993" rel="noopener noreferrer" target="_blank">Mitchell et al., Model Cards for Model Reporting</a></li><li><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions" rel="noopener noreferrer" target="_blank">AI Engineering interview questions (Outcome School, Apache-2.0)</a></li></ul>
+          
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ai/interview-questions/inference-serving-llmops/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <button type="button" class="learn-complete" data-mark-complete="aiq-evaluation-safety" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+            
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=15"></script>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=4" defer></script>
+  <script src="/assets/monaco-code.js?v=21" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>
