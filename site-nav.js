@@ -293,7 +293,7 @@
     (/^\/(blog\/posts|solutions)\/[^/]+/.test(location.pathname) && document.querySelector("article.blog-article h1"));
   if (readable && !document.querySelector('script[src*="learn-tts.js"]')) {
     var tts = document.createElement("script");
-    tts.src = "/assets/learn-tts.js?v=3";
+    tts.src = "/assets/learn-tts.js?v=4";
     tts.defer = true;
     document.head.appendChild(tts);
   }

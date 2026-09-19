@@ -13,7 +13,7 @@
     "[data-auth-note], .diagram-wrap, .learn-eyebrow, .sc-tts, script, style, " +
     ".meta, .blog-cta, .chart-wrap, .blog-widget, .blog-toc, .toc, canvas, svg";
 
-  var article, bar, playBtn, rateBtn, stopBtn;
+  var article, bar, playBtn, rateBtn, stopBtn, voiceSel;
   var queue = [];
   var index = 0;
   var rateIndex = 0;
@@ -28,14 +28,62 @@
     } catch (e) {}
   }
 
-  function pickVoice() {
+  // Default voice: Microsoft's natural voices first (Edge / Windows), then other
+  // well-known female voices, then whatever the device offers. Browsers do not expose
+  // a voice's gender, so this goes by name.
+  var PREFERRED = [
+    /microsoft (aria|jenny|ava|emma|michelle|sonia|libby|natasha|neerja).*natural/i,
+    /microsoft (aria|jenny|ava|emma|michelle|sonia|libby|natasha|neerja)/i,
+    /microsoft .*natural/i,
+    /microsoft (zira|hazel|susan|heera|catherine)/i,
+    /google uk english female/i,
+    /google us english/i,
+    /^samantha\b/i,
+    /^(karen|moira|tessa|serena|fiona|veena)\b/i
+  ];
+
+  function englishVoices() {
     var voices = synth.getVoices();
-    var lang = (document.documentElement.lang || "en").toLowerCase();
-    var same = voices.filter(function (v) { return v.lang.toLowerCase().indexOf(lang.slice(0, 2)) === 0; });
-    var pool = same.length ? same : voices;
-    // Prefer the natural-sounding voices browsers ship when they are available.
-    var good = pool.filter(function (v) { return /natural|neural|google|samantha|daniel|aria|jenny/i.test(v.name); });
-    return good[0] || pool.find(function (v) { return v.default; }) || pool[0] || null;
+    var lang = (document.documentElement.lang || "en").toLowerCase().slice(0, 2);
+    var same = voices.filter(function (v) { return v.lang.toLowerCase().indexOf(lang) === 0; });
+    return same.length ? same : voices;
+  }
+
+  function savedVoiceName() {
+    try { return localStorage.getItem("sc-tts-voice") || ""; } catch (e) { return ""; }
+  }
+
+  function pickVoice() {
+    var pool = englishVoices();
+    var saved = savedVoiceName();
+    if (saved) {
+      var chosen = pool.find(function (v) { return v.name === saved; });
+      if (chosen) return chosen;
+    }
+    for (var i = 0; i < PREFERRED.length; i++) {
+      var hit = pool.find(function (v) { return PREFERRED[i].test(v.name); });
+      if (hit) return hit;
+    }
+    return pool.find(function (v) { return v.default; }) || pool[0] || null;
+  }
+
+  // Novelty voices shipped with macOS make a poor reading voice; keep them out of the menu.
+  var NOVELTY = /^(albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|fred|kathy|grandma|grandpa|rocko|eddy|reed)\b/i;
+
+  function fillVoices() {
+    if (!voiceSel) return;
+    var pool = englishVoices().filter(function (v) { return !NOVELTY.test(v.name); });
+    if (!pool.length) { voiceSel.hidden = true; return; }
+    var current = pickVoice();
+    voiceSel.innerHTML = "";
+    pool.forEach(function (v) {
+      var o = document.createElement("option");
+      o.value = v.name;
+      o.textContent = v.name.replace(/^Microsoft /, "").replace(/ Online \(Natural\)/, " (Natural)") + (v.lang ? " · " + v.lang : "");
+      if (current && v.name === current.name) o.selected = true;
+      voiceSel.appendChild(o);
+    });
+    voiceSel.hidden = false;
   }
 
   function collect() {
@@ -163,10 +211,21 @@
     bar.innerHTML =
       '<button type="button" class="sc-tts-play"></button>' +
       '<button type="button" class="sc-tts-rate" title="Reading speed" aria-label="Reading speed"></button>' +
+      '<select class="sc-tts-voice" title="Voice" aria-label="Voice" hidden></select>' +
       '<button type="button" class="sc-tts-stop" title="Stop" aria-label="Stop reading" hidden>' + ICON_STOP + "</button>";
     playBtn = bar.querySelector(".sc-tts-play");
     rateBtn = bar.querySelector(".sc-tts-rate");
     stopBtn = bar.querySelector(".sc-tts-stop");
+    voiceSel = bar.querySelector(".sc-tts-voice");
+    voiceSel.addEventListener("change", function () {
+      try { localStorage.setItem("sc-tts-voice", voiceSel.value); } catch (e) {}
+      // Switch voice from the current chunk.
+      if (state === "playing") {
+        gen++;
+        synth.cancel();
+        setTimeout(speakNext, 50);
+      }
+    });
 
     playBtn.addEventListener("click", function () {
       if (state === "playing") pause();
@@ -190,7 +249,9 @@
     render();
 
     // Voices load asynchronously in Chrome.
-    if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = function () {};
+    fillVoices();
+    if (synth.addEventListener) synth.addEventListener("voiceschanged", fillVoices);
+    else synth.onvoiceschanged = fillVoices;
     window.addEventListener("pagehide", function () {
       gen++;
       synth.cancel();
