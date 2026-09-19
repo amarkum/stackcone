@@ -350,15 +350,24 @@
 
   var MAXIMIZE_ICON = iconImg("expand");
 
+  function findRenderedDiagram(wrap) {
+    var mermaidEl = wrap.querySelector(".mermaid-pending.is-rendered");
+    if (mermaidEl && mermaidEl.querySelector("svg")) return mermaidEl;
+    var svg = wrap.querySelector(".diagram-body svg");
+    return svg ? svg.parentElement : null;
+  }
+
   function openDiagramLightbox(wrap) {
     var title =
       wrap.getAttribute("data-diagram-title") ||
       (wrap.querySelector(".diagram-caption") && wrap.querySelector(".diagram-caption").textContent.trim()) ||
       "Diagram";
-    var mermaidEl = wrap.querySelector(".mermaid-pending.is-rendered");
-    if (mermaidEl && mermaidEl.querySelector("svg")) {
+    var mermaidEl = findRenderedDiagram(wrap);
+    if (mermaidEl) {
       openLightbox(title, mermaidEl);
+      return true;
     }
+    return false;
   }
 
   function wireMaximizeButton(wrap) {
@@ -377,8 +386,13 @@
 
     if (btn.dataset.diagramWired === "true") return;
     btn.dataset.diagramWired = "true";
-    btn.addEventListener("click", function () {
-      openDiagramLightbox(wrap);
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (openDiagramLightbox(wrap)) return;
+      renderMermaidDiagrams().then(function () {
+        openDiagramLightbox(wrap);
+      });
     });
   }
 

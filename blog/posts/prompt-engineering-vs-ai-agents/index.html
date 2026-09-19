@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>Prompt Engineering vs AI Agents</title>
+  <meta name="description" content="Prompt engineering is one-shot instruction. AI agents loop with tools. You still write prompts inside agents — evals and tool design beat magic templates.">
+  <meta name="keywords" content="prompt engineering, AI agents, MCP, Claude Code, Cursor, beginners, evals">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/prompt-engineering-vs-ai-agents/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/prompt-engineering-vs-ai-agents/">
+  <meta property="og:title" content="Prompt Engineering vs AI Agents">
+  <meta property="og:description" content="Prompt engineering is one-shot instruction. AI agents loop with tools. You still write prompts inside agents — evals and tool design beat magic templates.">
+  <meta property="og:image" content="https://stackcone.com/blog/images/prompt-engineering-vs-ai-agents/mcp-logo.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Prompt Engineering vs AI Agents">
+  <meta name="twitter:description" content="Prompt engineering is one-shot instruction. AI agents loop with tools. You still write prompts inside agents — evals and tool design beat magic templates.">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/prompt-engineering-vs-ai-agents/mcp-logo.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=5">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Prompt Engineering vs AI Agents",
+    "description": "Prompt engineering is one-shot instruction. AI agents loop with tools. You still write prompts inside agents — evals and tool design beat magic templates.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-09-19",
+    "dateModified": "2026-09-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/prompt-engineering-vs-ai-agents/" },
+    "image": "https://stackcone.com/blog/images/prompt-engineering-vs-ai-agents/mcp-logo.png",
+    "keywords": ["prompt engineering", "AI agents", "MCP", "Claude Code", "Cursor", "beginners"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "Prompt engineering versus AI agents" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I still need to learn prompt engineering?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. You need to write clear tasks, examples, and constraints. You do not need a binder of secret templates. Inside agents, those skills show up as CLAUDE.md, skills, and tool descriptions." }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between a prompt and an agent?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A prompt is an instruction for one generation (or a short chat). An agent is a model allowed to call tools in a loop until a stop condition. Same underlying model; different control loop." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is ChatGPT an agent?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The chat app is usually prompt-in, text-out. Features that browse, run code, or call connectors are agent-shaped. Codex and Claude Code are agents even when the model family is the same as the chat product." }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I use Claude Code or Cursor instead of ChatGPT?",
+        "acceptedAnswer": { "@type": "Answer", "text": "When the job is a repo: multiple files, tests, git. Chat is for plans and snippets." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need MCP as a beginner?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Files and shell are enough to learn the loop. Add MCP when you need a stable connection to a live system you would otherwise wrap in one-off curl." }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do magic prompt templates stop working in agents?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Because the next action depends on tool output, not on the first paragraph. Evals and tool design fix that; a longer persona does not." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I know my agent is actually better?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Run the same golden tasks before and after the change. Log traces. Do not trust a single lucky session." }
+      },
+      {
+        "@type": "Question",
+        "name": "Will learning prompts still help if models get smarter?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Clearer specs still help smarter models — they waste fewer tokens and break fewer constraints. The unskilled part that dies first is copy-pasting viral templates. The skilled part that remains is specifying the job and checking the result." }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Prompt Engineering vs AI Agents", "item": "https://stackcone.com/blog/posts/prompt-engineering-vs-ai-agents/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Prompt Engineering vs AI Agents</h1>
+    <p class="meta">September 2026 · Published by Amar Kumar</p>
+
+    <p><strong>Do you still need to learn prompts?</strong> Yes — but not as a stack of magic templates. Prompt engineering is how you instruct a model in one shot or one chat. AI agents are models that <strong>loop</strong>: they call tools, read the result, and decide the next step. You still write prompts <em>inside</em> agents (<code>CLAUDE.md</code>, skills, tool instructions). What stopped mattering is collecting &ldquo;ultimate prompt packs.&rdquo; What started mattering is evals, tool design, and context.</p>
+    <p>This is a beginner map for that split. It is not a claim that prompt engineering is dead, and it is not a recap of every MCP server.</p>
+
+    <div class="model-logo-row" role="img" aria-label="OpenAI, Anthropic Claude, Cursor, and Model Context Protocol logos">
+      <figure>
+        <img src="../../images/prompt-engineering-vs-ai-agents/openai.png" alt="OpenAI logo" width="80" height="80">
+        <figcaption>Chat prompts</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/prompt-engineering-vs-ai-agents/claude-symbol.svg" alt="Anthropic Claude logo" width="80" height="80">
+        <figcaption>Claude Code</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/prompt-engineering-vs-ai-agents/cursor.svg" alt="Cursor app icon" width="80" height="80">
+        <figcaption>Cursor Agent</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/prompt-engineering-vs-ai-agents/mcp-logo.png" alt="Model Context Protocol logo" width="80" height="80">
+        <figcaption>MCP tools</figcaption>
+      </figure>
+    </div>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#two-jobs">Two different jobs</a></li>
+        <li><a href="#prompts">What prompt engineering actually is</a></li>
+        <li><a href="#agents">What an AI agent actually is</a></li>
+        <li><a href="#inside">You still prompt inside the agent</a></li>
+        <li><a href="#when-prompts">When a chat prompt is enough</a></li>
+        <li><a href="#when-agents">When you need an agent</a></li>
+        <li><a href="#mcp">MCP in one paragraph</a></li>
+        <li><a href="#decision">Decision tree</a></li>
+        <li><a href="#curriculum">Beginner curriculum</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="two-jobs">Two different jobs</h2>
+    <table>
+      <thead>
+        <tr><th></th><th>Prompt engineering</th><th>AI agents</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Unit of work</strong></td><td>One message, or a short chat</td><td>A loop: think → tool → observe → repeat</td></tr>
+        <tr><td><strong>What you write</strong></td><td>Instructions, examples, constraints</td><td>Those, plus tool schemas, memory files, stop conditions</td></tr>
+        <tr><td><strong>Where it lives</strong></td><td>ChatGPT, Gemini, Claude.ai, a system prompt</td><td>Claude Code, Cursor Agent, Codex, custom loops</td></tr>
+        <tr><td><strong>Failure mode</strong></td><td>Vague ask → vague answer</td><td>Bad tools / missing evals → confident wrong actions</td></tr>
+        <tr><td><strong>Skill that compounds</strong></td><td>Clear specs and few-shot examples</td><td>Tool design, traces, regression evals</td></tr>
+      </tbody>
+    </table>
+    <p>Prompt engineering did not get replaced. It got <strong>demoted from the product to a layer</strong>. The product, when the work is multi-file or operational, is the agent.</p>
+
+    <h2 id="prompts">What prompt engineering actually is</h2>
+    <p>Prompt engineering is the craft of <strong>telling a model what good looks like</strong> in language:</p>
+    <ul>
+      <li>Role and audience (&ldquo;you are reviewing a Python PR for a junior teammate&rdquo;).</li>
+      <li>Task and constraints (&ldquo;return only a unified diff; do not invent files&rdquo;).</li>
+      <li>Examples (one or two input → output pairs beat a paragraph of adjectives).</li>
+      <li>Output shape (JSON schema, markdown headings, a table).</li>
+      <li>Refusal rules (&ldquo;if the docs do not contain the answer, say you do not know&rdquo;).</li>
+    </ul>
+    <p>That is enough for a huge amount of work: brainstorming, rewriting, explaining a stack trace you paste in, drafting an email, asking ChatGPT or Gemini how a regex works.</p>
+    <p>What it is <strong>not</strong>:</p>
+    <ul>
+      <li>A secret prefix that &ldquo;unlocks&rdquo; the model.</li>
+      <li>A 2,000-word persona that you paste into every chat.</li>
+      <li>A substitute for tests, retrieval, or reading the diff.</li>
+    </ul>
+    <p>If the entire job fits in one context window and needs no side effects, a good prompt is the whole product. For how to use the consumer chat apps as coding assistants (not agents), see <a href="/blog/posts/how-to-use-chatgpt-and-gemini-for-coding/">How to use ChatGPT and Gemini for coding</a> and the product split in <a href="/blog/posts/chatgpt-vs-gemini-vs-claude/">ChatGPT vs Gemini vs Claude</a>.</p>
+
+    <h2 id="agents">What an AI agent actually is</h2>
+    <p>An agent is a model allowed to <strong>act in a loop</strong>. Typical tools:</p>
+    <ul>
+      <li>Read/write files</li>
+      <li>Run a shell (<code>pytest</code>, <code>git</code>, <code>npm test</code>)</li>
+      <li>Search the repo or the web</li>
+      <li>Call APIs, databases, or browsers</li>
+      <li>Talk to MCP servers (GitHub, Figma, Slack, your internal tools)</li>
+    </ul>
+    <p>The loop is the point. The model proposes an action, sees stdout or a file change, and continues until it hits a stop condition (tests pass, the user interrupts, a budget is spent).</p>
+    <p>That is why Claude Code, Cursor Agent, and Codex feel different from a chat box. They are not &ldquo;ChatGPT with a folder attached.&rdquo; They are a policy: <em>you may run tools until the job is done or we stop you.</em> The buyer&rsquo;s guide for those products is <a href="/blog/posts/best-ai-for-coding/">Best AI for coding</a>. Setup that actually sticks (memory files, rules) is <a href="/blog/posts/how-to-use-claude-code-effectively/">How to use Claude Code effectively</a>.</p>
+    <p><strong>RAG operations</strong> are the same shape: retrieve, generate, maybe write back, maybe re-retrieve. A single prompt over a pasted PDF is not an agent. A pipeline that chunks, embeds, retrieves, and refuses when scores are low <em>is</em> — even if a human still clicks &ldquo;run.&rdquo;</p>
+
+    <h2 id="inside">You still prompt inside the agent</h2>
+    <p>Agents do not remove prompts. They <strong>multiply</strong> them, and they hide them in files:</p>
+    <table>
+      <thead>
+        <tr><th>Prompt-shaped artifact</th><th>What it is for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CLAUDE.md</code> / <code>AGENTS.md</code></td><td>Project memory: how to build, test, and what not to touch</td></tr>
+        <tr><td>Skills (<code>SKILL.md</code>)</td><td>Playbooks the agent loads when the task matches</td></tr>
+        <tr><td>Tool descriptions</td><td>When to call a tool and what the arguments mean</td></tr>
+        <tr><td>User turn</td><td>The actual job: &ldquo;fix the failing CI on this PR&rdquo;</td></tr>
+        <tr><td>Subagent brief</td><td>Isolated context so a specialist does not inherit the whole chat</td></tr>
+      </tbody>
+    </table>
+    <p>A thin <code>CLAUDE.md</code> still beats a viral &ldquo;god prompt&rdquo;:</p>
+    <pre><code># Build
+- `python3 -m pytest tests/ -q`
+
+# Do not
+- Do not edit `blog/posts.json` unless asked.
+- Do not invent metrics.
+
+# Verify
+- Re-run tests after every non-trivial edit.</code></pre>
+    <p>The quality of that file is prompt engineering. The quality of the <strong>loop</strong> (did tests actually run? did the agent stop?) is agent engineering.</p>
+    <p>Magic templates fail here because the next step depends on <strong>tool output</strong>, not on a clever first sentence. If <code>pytest</code> failed on line 40, no &ldquo;think step by step&rdquo; preface saves you — you need the agent to read the failure and change the code. That is evals and tools, not incantations.</p>
+    <p>For how skills, MCP, and subagents divide that work, see <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs subagents</a>.</p>
+
+    <h2 id="when-prompts">When a chat prompt is enough</h2>
+    <p>Stay in ChatGPT, Gemini, or Claude.ai when:</p>
+    <ul>
+      <li>You can paste the whole problem (a function, an error, a one-page spec).</li>
+      <li>There is no repo to keep consistent.</li>
+      <li>You want a draft, an explanation, or a plan — a human will apply it.</li>
+      <li>Side effects would be dangerous (you do not want the model to <code>rm</code> or push).</li>
+      <li>You are learning: a Socratic chat is cheaper than an agent burning tokens on a clean tree.</li>
+    </ul>
+    <p>Examples: &ldquo;Explain this SQL plan,&rdquo; &ldquo;Rewrite this paragraph for a hiring manager,&rdquo; &ldquo;Sketch a FastAPI handler for this schema,&rdquo; &ldquo;What is wrong with this 40-line snippet?&rdquo;</p>
+    <p>If you find yourself pasting file after file, you have already outgrown the chat. That is the signal to open an agent, not to invent a longer prompt.</p>
+    <table>
+      <thead>
+        <tr><th>Job</th><th>Chat prompt is enough</th><th>You are kidding yourself</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Explain a 40-line function</td><td>Yes</td><td>—</td></tr>
+        <tr><td>Draft a design doc from bullets</td><td>Yes</td><td>—</td></tr>
+        <tr><td>Rename a type across 30 files</td><td>No</td><td>Pasting each file into chat</td></tr>
+        <tr><td>&ldquo;Make CI green&rdquo;</td><td>No</td><td>Screenshotting logs one at a time</td></tr>
+        <tr><td>Answer from a 12-page PDF you uploaded</td><td>Often yes</td><td>—</td></tr>
+        <tr><td>Answer from a 4,000-page wiki that changes weekly</td><td>No</td><td>That is RAG + an agent or pipeline</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="when-agents">When you need an agent</h2>
+    <p>Reach for an agent when the work <strong>spans files, commands, or live systems</strong>:</p>
+    <ul>
+      <li>Multi-file coding: rename a type, update callers, run tests, fix what broke.</li>
+      <li>Refactors that need <code>grep</code> and judgment, not a single gist.</li>
+      <li>RAG ops: ingest, chunk, retrieve, judge, maybe re-index.</li>
+      <li>CI diagnosis: logs, bisect, patch, re-run.</li>
+      <li>Anything you would otherwise do as ten copy-paste rounds in chat.</li>
+    </ul>
+    <p>Cost and risk go up with the loop. An agent can delete the wrong file, push to the wrong branch, or &ldquo;fix&rdquo; tests by deleting them. That is why <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI agent testing and evaluation strategies</a> is the adult version of prompt engineering: golden tasks, tool unit tests, trace replay, and a gate that fails the build when the agent regresses.</p>
+    <p>A tiny eval is more valuable than a prettier system prompt:</p>
+    <pre><code><span class="kw">def</span> <span class="fn">test_agent_does_not_delete_tests</span>(run_agent):
+    before = <span class="fn">set</span>(<span class="fn">Path</span>(<span class="str">"tests"</span>).rglob(<span class="str">"test_*.py"</span>))
+    <span class="fn">run_agent</span>(<span class="str">"make the suite faster"</span>)
+    after = <span class="fn">set</span>(<span class="fn">Path</span>(<span class="str">"tests"</span>).rglob(<span class="str">"test_*.py"</span>))
+    <span class="kw">assert</span> after &gt;= before</code></pre>
+    <p>You still <em>prompt</em> that agent (&ldquo;do not delete tests&rdquo;). You <strong>measure</strong> whether it obeyed. Measurement is the part template-collectors skip.</p>
+    <p>Will this eat software jobs? Agents change what juniors are hired to do; they do not remove ownership. See <a href="/blog/posts/will-ai-replace-software-engineers/">Will AI replace software engineers?</a></p>
+
+    <h2 id="mcp">MCP in one paragraph</h2>
+    <figure class="blog-figure blog-figure--logo">
+      <img src="../../images/prompt-engineering-vs-ai-agents/mcp-logo.png" alt="Model Context Protocol logo" width="96" height="96" loading="lazy">
+      <figcaption>MCP is the connector layer — tools and resources, not a second brain.</figcaption>
+    </figure>
+    <p><strong>MCP (Model Context Protocol)</strong> is how an agent gets a <strong>stable tool surface</strong> to an external system: GitHub, Postgres, Figma, your internal API. It is plumbing — tools, resources, optional prompt templates — not a second brain. You still need a skill or <code>CLAUDE.md</code> to say <em>when</em> to use those tools. You still need evals to see if the agent called the right one. Do not start a beginner project by &ldquo;adding MCP.&rdquo; Start with clear instructions, then local tools (files + shell), then MCP when curl-every-session is the pain. The full split: <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs subagents</a>.</p>
+
+    <h2 id="decision">Decision tree</h2>
+    <div class="diagram-wrap" data-diagram-title="Prompt engineering vs AI agents">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TD
+  classDef q fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef p fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef a fill:#fce7f3,stroke:#db2777,color:#9f1239
+  Start["What are you trying to do?"]:::q
+  Start --> Chat{"Fits in one chat with no side effects?"}
+  Chat -->|Yes| Prompt["ChatGPT / Gemini / Claude chat\nClear instructions + examples"]:::p
+  Chat -->|No| Multi{"Multi-file repo, shell, or live systems?"}
+  Multi -->|Yes| Agent["Coding / ops agent\nClaude Code, Cursor, Codex"]:::a
+  Multi -->|No| Loop{"Need tools in a loop: APIs, RAG, tickets?"}
+  Loop -->|Yes| Agent
+  Loop -->|No| Prompt
+  Agent --> Evals["Add evals and tool tests\nbefore you add MCP"]:::q</div>
+      </div>
+      <p class="diagram-caption">Start from the job. Chat prompts win when there are no side effects. Agents win when files, shell, or live systems are in the loop — then add evals before MCP.</p>
+    </div>
+    <p>If you already pay for one coding tool, use that agent until a specific job (Workspace chat, terminal loop, Tab complete) forces a second bill. Product shopping: <a href="/blog/posts/best-ai-for-coding/">Best AI for coding</a>.</p>
+
+    <h2 id="curriculum">Beginner curriculum</h2>
+    <p>Learn in this order. Skipping to &ldquo;I built 12 MCP servers&rdquo; is how people get impressive architecture diagrams and a model that still cannot follow a README.</p>
+    <ol>
+      <li><strong>Clear instructions</strong> — Task, constraints, output shape, when to refuse. Practice in a chat app. No tools.</li>
+      <li><strong>Examples</strong> — One or two input → output pairs. Prefer examples over adjectives (&ldquo;be concise&rdquo;).</li>
+      <li><strong>Tools / agents</strong> — Give the model files and a shell. Write a short <code>CLAUDE.md</code>. Run one real task (fix a test, add a flag). Read the trace.</li>
+      <li><strong>Evals</strong> — Three golden tasks you re-run after every prompt or tool change. Then, and only then, MCP or extra skills.</li>
+    </ol>
+    <table>
+      <thead>
+        <tr><th>Week</th><th>Practice</th><th>Done when</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Chat prompts with a fixed output schema</td><td>You can get JSON that parses without begging</td></tr>
+        <tr><td>2</td><td>Few-shot on your actual docs, not Twitter templates</td><td>The model copies <em>your</em> style, not a generic blog voice</td></tr>
+        <tr><td>3</td><td>Agent on a toy repo with tests</td><td>Tests pass without you pasting files</td></tr>
+        <tr><td>4</td><td>One eval harness (even 5 cases)</td><td>You can tell if a prompt change helped</td></tr>
+        <tr><td>later</td><td>MCP for one daily system (GitHub is common)</td><td>The tool call is boring and logged</td></tr>
+      </tbody>
+    </table>
+    <p>Prompt courses that stop at step 2 are not useless — they are incomplete. Agent courses that skip steps 1–2 produce people who wire tools the model never calls correctly.</p>
+    <p><strong>Common beginner mistakes</strong></p>
+    <ul>
+      <li>Collecting 50 ChatGPT templates and never measuring a single task twice.</li>
+      <li>Adding MCP before the agent can run <code>pytest</code> on a local repo.</li>
+      <li>One giant <code>CLAUDE.md</code> that the model learns to skip.</li>
+      <li>Treating a lucky session as proof the prompt is &ldquo;done.&rdquo;</li>
+      <li>Asking the agent to &ldquo;be careful&rdquo; instead of putting the rule in a test.</li>
+    </ul>
+    <p>The career version of this skill is the same as hiring: people who check the work outlast people who generate the first draft. That is also why <a href="/blog/posts/will-ai-replace-software-engineers/">Will AI replace software engineers?</a> is a process question, not a slogan.</p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Do I still need to learn prompt engineering?</h3>
+    <p>Yes. You need to write clear tasks, examples, and constraints. You do not need a binder of secret templates. Inside agents, those skills show up as <code>CLAUDE.md</code>, skills, and tool descriptions.</p>
+    <h3>What is the difference between a prompt and an agent?</h3>
+    <p>A prompt is an instruction for one generation (or a short chat). An agent is a model allowed to call tools in a loop until a stop condition. Same underlying model; different control loop.</p>
+    <h3>Is ChatGPT an agent?</h3>
+    <p>The chat app is usually prompt-in, text-out. Features that browse, run code, or call connectors are agent-shaped. Codex and Claude Code are agents even when the model family is the same as the chat product.</p>
+    <h3>When should I use Claude Code or Cursor instead of ChatGPT?</h3>
+    <p>When the job is a repo: multiple files, tests, git. Chat is for plans and snippets. Details: <a href="/blog/posts/how-to-use-claude-code-effectively/">How to use Claude Code effectively</a> and <a href="/blog/posts/best-ai-for-coding/">Best AI for coding</a>.</p>
+    <h3>Do I need MCP as a beginner?</h3>
+    <p>No. Files and shell are enough to learn the loop. Add MCP when you need a stable connection to a live system you would otherwise wrap in one-off curl. See <a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs subagents</a>.</p>
+    <h3>Why do magic prompt templates stop working in agents?</h3>
+    <p>Because the next action depends on tool output, not on the first paragraph. Evals and tool design fix that; a longer persona does not.</p>
+    <h3>How do I know my agent is actually better?</h3>
+    <p>Run the same golden tasks before and after the change. Log traces. Do not trust a single lucky session. See <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI agent testing and evaluation strategies</a>.</p>
+    <h3>Will learning prompts still help if models get &ldquo;smarter&rdquo;?</h3>
+    <p>Clearer specs still help smarter models — they waste fewer tokens and break fewer constraints. The unskilled part that dies first is copy-pasting viral templates. The skilled part that remains is specifying the job and checking the result.</p>
+
+    <aside class="blog-related">
+      <h2>Related guides</h2>
+      <ul>
+        <li><a href="/blog/posts/skills-vs-mcp-vs-subagents/">Skills vs MCP vs Subagents</a></li>
+        <li><a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively</a></li>
+        <li><a href="/blog/posts/how-to-use-chatgpt-and-gemini-for-coding/">How to Use ChatGPT and Gemini for Coding</a></li>
+        <li><a href="/blog/posts/best-ai-for-coding/">Best AI for Coding</a></li>
+        <li><a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI Agent Testing and Evaluation Strategies</a></li>
+        <li><a href="/blog/posts/chatgpt-vs-gemini-vs-claude/">ChatGPT vs Gemini vs Claude</a></li>
+        <li><a href="/blog/posts/will-ai-replace-software-engineers/">Will AI Replace Software Engineers?</a></li>
+      </ul>
+    </aside>
+    <p class="closing">You still need prompts. You do not need a pack of magic ones. Instruct clearly, give the model tools only when the job loops, and measure whether it obeyed.</p>
+
+    <aside class="blog-cta">
+      <h2>Building agent workflows for your team?</h2>
+      <p>stackcone designs MCP integrations, agent skills, and production RAG systems that stay maintainable.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="/contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=14"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js?v=2" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785" crossorigin="anonymous"></script>
+</body>
+</html>

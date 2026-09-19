@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>How to Use ChatGPT and Gemini for Coding</title>
+  <meta name="description" content="Use ChatGPT and Gemini to write, debug, and test code: accounts, paste vs files, prompt recipes, and when to graduate to Cursor or Claude Code.">
+  <meta name="keywords" content="how to use ChatGPT, Gemini AI, ChatGPT for coding, Gemini for coding, coding prompts, beginners, Custom GPTs, Gems">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/how-to-use-chatgpt-and-gemini-for-coding/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/how-to-use-chatgpt-and-gemini-for-coding/">
+  <meta property="og:title" content="How to Use ChatGPT and Gemini for Coding">
+  <meta property="og:description" content="Use ChatGPT and Gemini to write, debug, and test code: accounts, paste vs files, prompt recipes, and when to graduate to Cursor or Claude Code.">
+  <meta property="og:image" content="https://stackcone.com/blog/images/how-to-use-chatgpt-and-gemini-for-coding/openai.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Use ChatGPT and Gemini for Coding">
+  <meta name="twitter:description" content="Beginner how-to: ChatGPT and Gemini accounts, first coding prompts, debug loops, tests, and when Cursor or Claude Code is next.">
+  <meta name="twitter:image" content="https://stackcone.com/blog/images/how-to-use-chatgpt-and-gemini-for-coding/openai.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../styles.css">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=5">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Use ChatGPT and Gemini for Coding",
+    "description": "Use ChatGPT and Gemini to write, debug, and test code: accounts, paste vs files, prompt recipes, and when to graduate to Cursor or Claude Code.",
+    "author": { "@type": "Person", "name": "Amar Kumar" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png" }
+    },
+    "datePublished": "2026-09-19",
+    "dateModified": "2026-09-19",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/how-to-use-chatgpt-and-gemini-for-coding/" },
+    "image": "https://stackcone.com/blog/images/how-to-use-chatgpt-and-gemini-for-coding/openai.png",
+    "keywords": ["ChatGPT", "Gemini", "coding", "beginners", "prompts", "how to use ChatGPT"],
+    "articleSection": "Platform",
+    "about": { "@type": "Thing", "name": "Using ChatGPT and Gemini chat apps to write and debug code" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to use ChatGPT and Gemini for coding",
+    "description": "Create accounts, send a first coding prompt, paste or attach files, debug with a local run loop, write tests, review diffs, and know when to move to Cursor or Claude Code.",
+    "step": [
+      { "@type": "HowToStep", "name": "Create an account", "text": "Sign up at chatgpt.com and gemini.google.com. Stay on Free until daily work hits usage caps. In India, USD plans bill in INR plus GST." },
+      { "@type": "HowToStep", "name": "Send a first coding prompt", "text": "State language, goal, constraints, and any code you already have. Ask for one function and tests, not a whole app." },
+      { "@type": "HowToStep", "name": "Paste or attach the relevant files", "text": "Paste the smallest slice that reproduces the bug. Attach a file when the file is the unit. Never attach secrets or a whole repo." },
+      { "@type": "HowToStep", "name": "Run a debug loop", "text": "Apply a small change, run locally, paste the full traceback, and refuse unrelated rewrites." },
+      { "@type": "HowToStep", "name": "Write tests and review the diff", "text": "Ask for tests before a rewrite. Keep only changes you can read. Then graduate to Cursor or Claude Code when paste-debug is the bottleneck." }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can I learn to code only with ChatGPT or Gemini?",
+        "acceptedAnswer": { "@type": "Answer", "text": "You can learn faster with them. You cannot skip running code, reading errors, and writing a few lines without autocomplete. Use the model to explain and draft; use your runtime to tell the truth." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the free plan enough for coding?",
+        "acceptedAnswer": { "@type": "Answer", "text": "For an evening of exercises, often yes. For daily debugging of real files, free tiers hit limits fast. Try Free for a week of actual homework before paying." }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use ChatGPT or Gemini as a beginner?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Use the one you will actually open. If you already live in Gmail and Docs, start with Gemini. If your friends already share ChatGPT threads and GPTs, start there. Keep a free account on the other for jobs the first tool fumbles." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need ChatGPT Plus to code?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Plus helps when Free cuts you off or you want expanded GPT-5.6, deep research, Custom GPTs, and Codex usage. It is not a beginner requirement. Same idea for Google AI Pro versus free Gemini." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I keep the model from rewriting my whole file?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Say so: smallest change, unified diff, do not rename functions. Paste only the function. If it still rewrites everything, start a new chat." }
+      },
+      {
+        "@type": "Question",
+        "name": "When should I move to Claude Code or Cursor?",
+        "acceptedAnswer": { "@type": "Answer", "text": "When paste-debug is the bottleneck — multi-file changes, test runs, PR-sized work. Read How to use Claude Code effectively next, then Claude Code vs Cursor vs Copilot." }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Use ChatGPT and Gemini for Coding", "item": "https://stackcone.com/blog/posts/how-to-use-chatgpt-and-gemini-for-coding/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How to Use ChatGPT and Gemini for Coding</h1>
+    <p class="meta">September 2026 · Published by Amar Kumar</p>
+
+    <p>ChatGPT and Gemini will write a function that looks finished. Then you paste it into your file, run it, and the traceback points at a line the model invented. The gap is not &ldquo;you need a better model.&rdquo; It is that a chat box is a rubber duck with a keyboard &mdash; useful if you give it the right slice of code, useless if you treat it like an IDE that already knows your repo.</p>
+    <p>This is a beginner how-to for people who want to <strong>write, debug, and test code in ChatGPT or Gemini</strong>, not a tour of coding agents. You will create an account, send a first coding prompt, learn when to paste versus attach files, run a debug loop, write tests, and review diffs before you keep anything. You will also learn what <strong>not</strong> to paste, when ChatGPT is the better chat, when Gemini is, and when it is time to graduate to Cursor or Claude Code.</p>
+    <p>Free tiers exist. They hit usage caps fast once you start pasting whole files. That is expected. Start free, then pay only if the cap interrupts real work. List prices and student offers move; check the vendor page before you subscribe.</p>
+
+    <div class="model-logo-row" role="img" aria-label="OpenAI ChatGPT and Google Gemini logos">
+      <figure>
+        <img src="../../images/how-to-use-chatgpt-and-gemini-for-coding/openai.png" alt="OpenAI logo" width="80" height="80">
+        <figcaption>ChatGPT</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/how-to-use-chatgpt-and-gemini-for-coding/gemini.svg" alt="Google Gemini logo" width="80" height="80">
+        <figcaption>Gemini</figcaption>
+      </figure>
+    </div>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#what-it-is">What a chat coder actually is</a></li>
+        <li><a href="#accounts">Create an account</a></li>
+        <li><a href="#first-prompt">Your first coding prompt</a></li>
+        <li><a href="#paste-vs-attach">Paste versus attach files</a></li>
+        <li><a href="#loop">The beginner coding loop</a></li>
+        <li><a href="#debug">Debug until the test fails for a real reason</a></li>
+        <li><a href="#tests">Ask it to write tests</a></li>
+        <li><a href="#diffs">Review the diff before you keep it</a></li>
+        <li><a href="#recipes">Copy-paste prompt recipes</a></li>
+        <li><a href="#chatgpt-vs-gemini">ChatGPT versus Gemini for coding</a></li>
+        <li><a href="#dont">What not to do</a></li>
+        <li><a href="#graduate">When to graduate to Cursor or Claude Code</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="what-it-is">What a chat coder actually is</h2>
+    <p>ChatGPT (OpenAI) and Gemini (Google) are <strong>chat products</strong>. You type, they reply with text. They can explain a traceback, draft a function, sketch a SQL query, or walk through a regex. They cannot see your unsaved buffer, run your test suite, or know which branch you are on unless you tell them.</p>
+    <p>That is the whole skill: <strong>you are the file system and the terminal</strong>. You copy the relevant code in, copy a suggestion out, run it locally, and send back what broke.</p>
+    <p>Do not start with Custom GPTs, Gems, Canvas, or Codex. Those are useful later. First, get a tight loop: small prompt &rarr; small change &rarr; run locally &rarr; paste the error.</p>
+    <p>If you want a product-level comparison of the three big assistants, read <a href="/blog/posts/chatgpt-vs-gemini-vs-claude/">ChatGPT vs Gemini vs Claude</a>. If you already know you will pay, the subscription comparison is <a href="/blog/posts/chatgpt-plus-vs-gemini-advanced-vs-claude-pro/">ChatGPT Plus vs Gemini Advanced vs Claude Pro</a>. This page is the keyboard-level how-to.</p>
+
+    <h2 id="accounts">Create an account</h2>
+    <p>You need two things: a browser, and an email you control. Phone OTP is common. Use a personal email for homework and side projects. Use a work email only if your employer already has a policy for these tools.</p>
+
+    <h3>ChatGPT</h3>
+    <ol>
+      <li>Open <a href="https://chatgpt.com">chatgpt.com</a> and sign up with Google, Apple, or email.</li>
+      <li>Complete the phone check if asked.</li>
+      <li>Stay on <strong>Free</strong> until you know you will use it daily.</li>
+      <li>Later, Plus is about <strong>$20/month</strong> and is the usual paid seat: expanded GPT-5.6, deep research, Custom GPTs, and Codex usage inside ChatGPT. Some markets (including India) have offered <strong>ChatGPT Go</strong> around <strong>$8/month</strong>. <strong>ChatGPT Pro</strong> is about <strong>$200/month</strong> &mdash; skip it until Plus is clearly not enough.</li>
+    </ol>
+
+    <h3>Gemini</h3>
+    <ol>
+      <li>Open <a href="https://gemini.google.com">gemini.google.com</a> while signed into a Google account.</li>
+      <li>If you already use Gmail, you already have an account. Gemini lives next to Docs, Drive, and Colab.</li>
+      <li>Free Gemini is enough to try coding prompts. Paid is <strong>Google AI Pro</strong> at <strong>$19.99/month</strong> (people still search <strong>Gemini Advanced</strong> &mdash; that was the old name). It typically includes Gemini 3.1 Pro, Deep Research, roughly <strong>1M tokens</strong> of context, Gemini in Gmail/Docs, and a large <strong>Google One</strong> storage allotment (about <strong>5TB</strong> on Pro). <strong>Ultra</strong> starts around <strong>$99.99/month</strong>.</li>
+    </ol>
+
+    <h3>India and students</h3>
+    <p>USD subscriptions billed to an Indian card usually convert to <strong>INR plus GST</strong> on digital services. The number on the checkout page is the one that matters, not a blog&rsquo;s rupee guess.</p>
+    <p>Students: GitHub <strong>Copilot Student</strong>, <strong>Gemini for Education</strong>, and occasional ChatGPT or Claude student programs exist in some regions and years. <strong>Check current student offers</strong> on the vendor site rather than assuming a discount still applies.</p>
+    <p>Do not create a second Google account &ldquo;just for Gemini&rdquo; if your school or office already gave you Workspace. You will spend the next month moving files.</p>
+
+    <h2 id="first-prompt">Your first coding prompt</h2>
+    <p>A good first prompt has four parts: language, goal, constraints, and the code you already have (even if it is empty).</p>
+    <p>Bad:</p>
+    <pre><code>write a python login page</code></pre>
+    <p>Better:</p>
+    <pre><code>I am learning Python 3. I need a function `is_valid_email(s: str) -&gt; bool`
+that returns True only for simple emails like name@domain.tld.
+Do not use a third-party library. Include 4 pytest examples.
+Explain the regex in comments. Keep it under 40 lines.</code></pre>
+    <p>Then run whatever it gives you. If you do not have pytest yet:</p>
+    <pre><code>python3 -m pip install pytest
+pytest test_email.py -q</code></pre>
+    <p>The first prompt is a <strong>contract</strong>. &ldquo;Write an app&rdquo; is not a contract. &ldquo;Write this function, in this language, with these tests, without this dependency&rdquo; is.</p>
+
+    <h2 id="paste-vs-attach">Paste versus attach files</h2>
+    <table>
+      <thead><tr><th>Situation</th><th>Do this</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>One function, one traceback</td><td>Paste into the chat</td><td>The model sees exactly the slice that failed</td></tr>
+        <tr><td>A 200-line file</td><td>Attach the file, then say which function</td><td>Less copy-paste error; still tell it where to look</td></tr>
+        <tr><td>A whole repo</td><td>Do not dump it into chat</td><td>You will hit context and privacy walls; use an IDE agent later</td></tr>
+        <tr><td>Screenshots of errors</td><td>Paste the text of the traceback</td><td>OCR misses line numbers; text search works</td></tr>
+        <tr><td>Jupyter / Colab</td><td>Gemini + Google ecosystem, or paste cells</td><td>Gemini sits closer to Drive and Colab-style notebooks</td></tr>
+        <tr><td>Secrets in <code>.env</code></td><td>Never attach the file</td><td>Redact or use dummy values</td></tr>
+      </tbody>
+    </table>
+    <p>ChatGPT: paste is the default. Attachments work for source files, logs, and screenshots. <strong>Canvas</strong> is useful when you want to iterate on one artifact (a function, a short script) without drowning in chat history. <strong>Custom GPTs</strong> help once you repeat the same instructions (style, stack, &ldquo;always write pytest&rdquo;). <strong>Codex in ChatGPT</strong> is the in-product coding agent &mdash; treat it as a later step, not day one.</p>
+    <p>Gemini: attach files or fold them into <strong>Canvas / apps</strong> when Google offers that surface. <strong>Gems</strong> are the Gemini analogue of Custom GPTs &mdash; saved instructions. The headline advantage is <strong>long context</strong> (on the order of <strong>1M tokens</strong> on paid Gemini): whole files and long logs fit when ChatGPT&rsquo;s window feels tight. If your homework already lives in Google Docs or Colab, stay in Gemini so you are not exporting every five minutes.</p>
+    <p>Rule of thumb: <strong>paste the smallest thing that still reproduces the bug</strong>. Attach when the file is the unit. Do not attach <code>node_modules</code>, build folders, or anything with credentials.</p>
+
+    <h2 id="loop">The beginner coding loop</h2>
+    <p>This is the whole method. Skip a step and you will &ldquo;feel productive&rdquo; while shipping code that never ran.</p>
+    <div class="diagram-wrap" data-diagram-title="Beginner ChatGPT and Gemini coding loop">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../../../solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef start fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef work fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef check fill:#fef3c7,stroke:#d97706,color:#92400e
+  classDef done fill:#dcfce7,stroke:#16a34a,color:#166534
+  A["State the task\nand constraints"]:::start
+  B["Paste or attach\nthe relevant files"]:::work
+  C["Ask for a small\nchange, not a rewrite"]:::work
+  D["Run the code\nor tests locally"]:::check
+  E{"Did it work?"}:::check
+  F["Paste the error\nand the failing test"]:::work
+  G["Review the diff\nbefore you keep it"]:::done
+  A --> B --> C --> D --> E
+  E -->|No| F --> C
+  E -->|Yes| G</div>
+      </div>
+      <p class="diagram-caption">Paste a small slice, change one thing, run it on your machine, then send the error back. The chat is not the runtime.</p>
+    </div>
+    <p>Stay in one chat thread for one bug. New thread = the model forgets the last traceback. When the thread gets long and the model starts contradicting itself, start a new chat and paste only: the current file, the failing test, and the last error.</p>
+
+    <h2 id="debug">Debug until the test fails for a real reason</h2>
+    <p>Debugging in chat is a loop, not a wish.</p>
+    <ol>
+      <li>Run the code. Copy the <strong>full traceback</strong>, not the last line.</li>
+      <li>Paste the function that threw, plus three lines of calling code.</li>
+      <li>Ask: &ldquo;What is the most likely cause? Propose a one-function fix. Do not rewrite the file.&rdquo;</li>
+      <li>Apply the fix locally. Run again.</li>
+      <li>If it still fails, paste the <strong>new</strong> traceback. Do not say &ldquo;it still doesn&rsquo;t work.&rdquo;</li>
+    </ol>
+    <p>Example of a useful debug paste:</p>
+    <pre><code>Python 3.12. File: invoice.py. I only want a fix for format_inr().
+
+def format_inr(paise: int) -&gt; str:
+    rupees = paise / 100
+    return f"₹{rupees:.2f}"
+
+I called format_inr("19900") and got:
+
+TypeError: unsupported operand type(s) for /: 'str' and 'int'
+  File "invoice.py", line 12, in format_inr
+    rupees = paise / 100
+
+Do not add a money library. Add a clear error if paise is not int.</code></pre>
+    <p>The model will often guess the type error immediately. Your job is to <strong>refuse extra architecture</strong>. If it suggests a whole <code>Money</code> class for a student script, say no.</p>
+    <p>When the model starts &ldquo;fixing&rdquo; unrelated functions, stop and paste a smaller slice. Chat models over-help. That is the usual failure mode, not &ldquo;too dumb.&rdquo;</p>
+
+    <h2 id="tests">Ask it to write tests</h2>
+    <p>Tests are the cheapest way to keep the model honest. Ask for tests <strong>before</strong> you ask for a rewrite.</p>
+    <pre><code>Here is `slugify` (paste). Write pytest tests for:
+- empty string
+- spaces and punctuation
+- Unicode (Hindi or accented Latin)
+- a name that is already a slug
+Do not change slugify unless a test proves a bug.
+Return only the test file.</code></pre>
+    <p>Then run:</p>
+    <pre><code>pytest test_slugify.py -q</code></pre>
+    <p>If a test fails, you have a conversation with evidence. If all tests pass and you still do not trust the function, add one example from <em>your</em> homework spec &mdash; not from the model&rsquo;s imagination.</p>
+    <p>ChatGPT is usually fine for pytest and Jest. Gemini is often convenient when the notebook already runs in Colab and you want assertions next to cells. Neither replaces reading the test. Models write tests that assert their own bugs.</p>
+
+    <h2 id="diffs">Review the diff before you keep it</h2>
+    <p>Chat will happily replace a 80-line file with a 200-line &ldquo;cleaner&rdquo; version. That is how you lose working code.</p>
+    <p>Ask for a <strong>diff-shaped</strong> answer:</p>
+    <pre><code>Show only a unified diff for auth.py. Do not reprint the whole file.
+Keep my logging. Do not add new dependencies.</code></pre>
+    <p>Then, in your editor, look at the change like a code review:</p>
+    <ul>
+      <li>Did it rename things you did not ask to rename?</li>
+      <li>Did it swallow exceptions?</li>
+      <li>Did it hard-code an API key, URL, or password &ldquo;for convenience&rdquo;?</li>
+      <li>Did it change behavior your tests do not cover?</li>
+    </ul>
+    <p>If you cannot read the diff, you cannot ship the diff. Using ChatGPT or Gemini for coding does not skip learning the language. It skips typing boilerplate. The review is the job.</p>
+
+    <h2 id="recipes">Copy-paste prompt recipes</h2>
+    <p>Reuse these. Swap the language and the names. Keep the constraints.</p>
+
+    <h3>Debug</h3>
+    <pre><code>Language: {python|javascript|java}.
+Goal: fix the failure, smallest change.
+Here is the function:
+{paste}
+
+Here is the exact error:
+{paste traceback}
+
+Here is how I called it:
+{paste}
+
+Rules: do not rewrite unrelated code. do not add dependencies.
+Explain the cause in two sentences, then show the patched function.</code></pre>
+
+    <h3>Explain</h3>
+    <pre><code>Explain this code as if I am a beginner who knows variables and loops
+but not this library. Walk through it top to bottom. Flag anything
+that looks like a bug or a security issue. Do not rewrite it unless
+I ask.
+
+{paste}</code></pre>
+
+    <h3>Refactor</h3>
+    <pre><code>Refactor only for readability. Same behavior. Same function names.
+No new files. No new packages. Keep comments that explain "why".
+Show a unified diff, not the whole file.
+
+{paste}</code></pre>
+
+    <h3>Write tests</h3>
+    <pre><code>Write {pytest|jest} tests for the code below.
+Cover: happy path, empty input, the error case in the docstring.
+Do not mock the filesystem unless the code touches disk.
+Return only the test file.
+
+{paste}</code></pre>
+
+    <h3>&ldquo;Whole file, but carefully&rdquo; (Gemini long context)</h3>
+    <pre><code>I am attaching {filename}. Use the full file as context.
+Task: {one sentence}.
+Touch only {function or class names}.
+After the change, list every function you edited.
+If you are unsure, ask me instead of guessing APIs.</code></pre>
+    <p>Save these as a Custom GPT or a Gem once you are tired of retyping the rules. Until then, paste them.</p>
+
+    <h2 id="chatgpt-vs-gemini">ChatGPT versus Gemini for coding</h2>
+    <table>
+      <thead><tr><th>Job</th><th>Lean ChatGPT</th><th>Lean Gemini</th></tr></thead>
+      <tbody>
+        <tr><td>Quick paste-debug of a function</td><td>Default: Custom GPTs, Canvas, Codex later</td><td>Fine; less plugin ecosystem</td></tr>
+        <tr><td>Whole-file / long log in one shot</td><td>Can get tight on context</td><td><strong>~1M context</strong> on paid Gemini is the reason to switch</td></tr>
+        <tr><td>Homework already in Docs / Drive / Gmail</td><td>Export, then paste</td><td>Stay in Google: Gemini in Docs, Gems</td></tr>
+        <tr><td>Notebook / Colab-ish workflow</td><td>Works, more copy-paste</td><td>Closer to Google&rsquo;s notebook and Drive world</td></tr>
+        <tr><td>Repeatable house style</td><td>Custom GPTs</td><td>Gems</td></tr>
+        <tr><td>Agent that edits the repo</td><td>Codex in ChatGPT (after you outgrow chat)</td><td>Not the beginner path; look at IDE agents</td></tr>
+        <tr><td>India checkout / UPI / Google One storage</td><td>Card, INR + GST typical</td><td>Google account billing; storage bundle on Pro</td></tr>
+      </tbody>
+    </table>
+    <p>Neither chat is &ldquo;the best AI for coding&rdquo; by itself. The buyer&rsquo;s guide across chat, tab complete, and agents is <a href="/blog/posts/best-ai-for-coding/">Best AI for Coding</a>. The paid-seat comparison is <a href="/blog/posts/chatgpt-plus-vs-gemini-advanced-vs-claude-pro/">ChatGPT Plus vs Gemini Advanced vs Claude Pro</a>. The prompt-versus-agent distinction is <a href="/blog/posts/prompt-engineering-vs-ai-agents/">Prompt engineering vs AI agents</a>.</p>
+    <p>Pick ChatGPT if you already live in that app, want Custom GPTs, or will eventually turn on Codex. Pick Gemini if your files already sit in Google and you keep pasting 1,000-line logs. Switch only when the other tool clearly wins a <strong>specific job</strong>, not because a screenshot said so.</p>
+
+    <h2 id="dont">What not to do</h2>
+    <ul>
+      <li><strong>Paste secrets.</strong> API keys, <code>.env</code>, JWT secrets, database URLs, customer PII, internal hostnames. Replace with <code>sk-REDACTED</code> and fictional data. Assume chats can be retained according to each product&rsquo;s current privacy toggle.</li>
+      <li><strong>Blindly paste the reply into production.</strong> Run it. Read it. Then commit.</li>
+      <li><strong>Ask for a whole app in one shot.</strong> You will get a pile of files you cannot debug. One function, then the next.</li>
+      <li><strong>Trust invented APIs.</strong> Models fabricate package names and parameters. If you did not see it in docs, search before <code>pip install</code>.</li>
+      <li><strong>Upload the company repo to a personal free account.</strong> That is an employer policy question, not a prompting trick.</li>
+      <li><strong>Argue with the model for ten turns.</strong> After two failed fixes, simplify the prompt or write the next three lines yourself.</li>
+      <li><strong>Use chat as your only copy of the code.</strong> The source of truth is git (or at least a file on disk).</li>
+    </ul>
+    <p>Free ChatGPT and free Gemini will throttle you mid-debug. That is the product telling you the session is over, not a personal failure. Take a break, or try the other free product, or pay for the one you already use.</p>
+
+    <h2 id="graduate">When to graduate to Cursor or Claude Code</h2>
+    <p>Stay in ChatGPT or Gemini while:</p>
+    <ul>
+      <li>you are learning syntax and reading other people&rsquo;s code</li>
+      <li>the unit of work is one file or one function</li>
+      <li>you are willing to copy, run, and paste errors</li>
+    </ul>
+    <p>Graduate when:</p>
+    <ul>
+      <li>you are tired of pasting the same three files</li>
+      <li>the change spans many paths (rename a type, update tests, fix imports)</li>
+      <li>you want the tool to <strong>run the tests</strong>, not just suggest them</li>
+      <li>review in a real diff UI would be faster than scrolling a chat</li>
+    </ul>
+    <p>Then the next step is an <strong>agent in the repo</strong>, not a smarter chat:</p>
+    <ul>
+      <li><a href="/blog/posts/how-to-use-claude-code-effectively/">How to use Claude Code effectively</a> &mdash; project memory, <code>CLAUDE.md</code>, verification loops. This is the usual next article after this one.</li>
+      <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot</a> &mdash; terminal agent versus AI IDE versus GitHub extension.</li>
+    </ul>
+    <p>You do not need all of them. Chat plus one editor agent is plenty. Paying for ChatGPT Plus <em>and</em> Claude Pro <em>and</em> Cursor in the first month is how you learn nothing about any of them.</p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Can I learn to code only with ChatGPT or Gemini?</h3>
+    <p>You can learn faster with them. You cannot skip running code, reading errors, and writing a few lines without autocomplete. Use the model to explain and to draft; use your runtime to tell the truth.</p>
+    <h3>Is the free plan enough for coding?</h3>
+    <p>For an evening of exercises, often yes. For daily debugging of real files, free tiers <strong>hit limits fast</strong>. That is the main reason people upgrade, not a mysterious quality jump. Try Free for a week of actual homework before paying.</p>
+    <h3>Should I use ChatGPT or Gemini as a beginner?</h3>
+    <p>Use the one you will actually open. If you already live in Gmail and Docs, start with Gemini. If your friends already share ChatGPT threads and GPTs, start there. You can keep a free account on the other one for the jobs the first tool fumbles (long files on Gemini, Custom GPTs / Codex path on ChatGPT).</p>
+    <h3>Do I need ChatGPT Plus to code?</h3>
+    <p>No. Plus helps when Free cuts you off or you want expanded GPT-5.6, deep research, Custom GPTs, and Codex usage. It is not a beginner requirement. Same idea for Google AI Pro versus free Gemini.</p>
+    <h3>How do I keep the model from rewriting my whole file?</h3>
+    <p>Say so. &ldquo;Smallest change. Unified diff. Do not rename functions.&rdquo; Paste only the function. If it still rewrites everything, start a new chat.</p>
+    <h3>When should I move to Claude Code or Cursor?</h3>
+    <p>When paste-debug is the bottleneck &mdash; multi-file changes, test runs, PR-sized work. Read <a href="/blog/posts/how-to-use-claude-code-effectively/">How to use Claude Code effectively</a> next, then the <a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot</a> comparison.</p>
+
+    <aside class="blog-related">
+      <h2>Related guides</h2>
+      <ul>
+        <li><a href="/blog/posts/how-to-use-claude-code-effectively/">How to use Claude Code effectively</a></li>
+        <li><a href="/blog/posts/chatgpt-vs-gemini-vs-claude/">ChatGPT vs Gemini vs Claude</a></li>
+        <li><a href="/blog/posts/best-ai-for-coding/">Best AI for Coding</a></li>
+        <li><a href="/blog/posts/chatgpt-plus-vs-gemini-advanced-vs-claude-pro/">ChatGPT Plus vs Gemini Advanced vs Claude Pro</a></li>
+        <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Cursor vs Copilot</a></li>
+        <li><a href="/blog/posts/prompt-engineering-vs-ai-agents/">Prompt engineering vs AI agents</a></li>
+      </ul>
+    </aside>
+    <p class="closing">ChatGPT and Gemini will not run your tests for you. They will draft the next function if you paste the last error. Start there &mdash; then move to an agent when copying files is the slow part.</p>
+
+    <aside class="blog-cta">
+      <h2>Need a coding workflow for the team, not just a chat window?</h2>
+      <p>stackcone helps teams pick ChatGPT, Gemini, and agent tools, set review habits, and keep secrets out of prompts.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="/contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../../../solutions/diagrams.js?v=14"></script>
+  <script src="/site-nav.js" defer></script>
+  <script src="/script.js?v=2" defer></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785" crossorigin="anonymous"></script>
+</body>
+</html>
