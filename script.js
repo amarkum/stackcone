@@ -146,7 +146,7 @@ function initTestimonials(testimonials) {
           : '<div class="testimonial-avatar" aria-hidden="true">' + escapeHtml(t.initial || 'C') + '</div>') +
         '<div class="testimonial-who">' +
           '<cite class="testimonial-name">' + escapeHtml(t.client) + '</cite>' +
-          '<span class="testimonial-source"><img src="/assets/icons/upwork.svg" alt="" width="14" height="14" loading="lazy">Verified on Upwork</span>' +
+          '<span class="testimonial-source">Verified on Upwork</span>' +
         '</div>' +
       '</footer>';
     return article;
