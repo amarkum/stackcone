@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=27">
   <link rel="stylesheet" href="/blog/blog.css?v=10">
-  <link rel="stylesheet" href="/learn/learn.css?v=35">
+  <link rel="stylesheet" href="/learn/learn.css?v=36">
   <link rel="stylesheet" href="/assets/auth.css?v=50">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=17">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
@@ -101,7 +101,7 @@
       <h2>The 11 questions in this lesson</h2>
       <ol class="aiq-toc" start="100"><li><a href="#q100">Design a production RAG assistant over millions of documents with per-user permissions. What are the main components and failure modes?</a></li><li><a href="#q101">Design a real-time voice AI agent (phone or app). Budget the latency and compare cascaded ASR+LLM+TTS with speech-to-speech models.</a></li><li><a href="#q102">Design an AI coding agent (IDE or CLI). What matters more: the model or the harness?</a></li><li><a href="#q103">What are multimodal AI models? How do vision-language models and CLIP-style embeddings work?</a></li><li><a href="#q104">Explain diffusion models for image generation at a high level. How do you speed them up and control them?</a></li><li><a href="#q105">What is FlashAttention, and why does it matter for long-context training and serving?</a></li><li><a href="#q106">API-hosted LLM versus self-hosting an open-source model: how do you decide?</a></li><li><a href="#q107">How do you measure ROI of an AI feature, and how do you choose between latency and quality?</a></li><li><a href="#q108">What is the Turing Test, and how is modern AI evaluation different from it?</a></li><li><a href="#q109">Explain a confusion matrix and when accuracy is the wrong headline metric.</a></li><li><a href="#q110">Your PM wants to ship an AI feature with a known 15% hallucination rate on edge cases. How do you respond?</a></li></ol>
       <h3 id="q100">100. Design a production RAG assistant over millions of documents with per-user permissions. What are the main components and failure modes?</h3>
-      <p class="aiq-level"><em>System design</em></p>
+      <p class="aiq-level"><span class="learn-badge">System design</span></p>
       <p>Start with requirements: query types, freshness, languages, citation needs, p95 latency, and who may see which documents. Then draw the pipeline and call out auth early — retrieval without ACLs is a security bug.</p>
       <div class="diagram-wrap" data-diagram-title="Enterprise RAG with permissions">
         <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
@@ -124,7 +124,7 @@
       <p>Failure modes interviewers expect: wrong chunking, stale indexes after deletes, ACL leaks, lost-in-the-middle, citation fabrication, and cost blow-ups from huge contexts. Mitigate with hybrid search, reranking, permission tests, freshness jobs, and context budgets.</p>
       <p><strong>Follow-up:</strong> How would you prove a user cannot retrieve a document they are not allowed to see?</p>
       <h3 id="q101">101. Design a real-time voice AI agent (phone or app). Budget the latency and compare cascaded ASR+LLM+TTS with speech-to-speech models.</h3>
-      <p class="aiq-level"><em>System design</em></p>
+      <p class="aiq-level"><span class="learn-badge">System design</span></p>
       <p>A usable voice agent needs barge-in, low time-to-first-audio, and clear turn-taking. Cascaded stacks are still the common production path.</p>
       <div class="diagram-wrap" data-diagram-title="Cascaded real-time voice agent">
         <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
@@ -148,7 +148,7 @@
       <p>Always design for barge-in (cancel TTS on new speech), timeouts, and a fallback to hold music or a human queue when any stage fails.</p>
       <p><strong>Follow-up:</strong> Where would you spend engineering time first if users complain the bot talks over them?</p>
       <h3 id="q102">102. Design an AI coding agent (IDE or CLI). What matters more: the model or the harness?</h3>
-      <p class="aiq-level"><em>System design</em></p>
+      <p class="aiq-level"><span class="learn-badge">System design</span></p>
       <p>A coding agent is a model plus a <strong>harness</strong>: tools (read/write files, shell, tests, search), a loop with budgets, context packing, and safety rails. In interviews, strong candidates argue that harness quality often dominates raw model IQ for shipping patches.</p>
       <div class="diagram-wrap" data-diagram-title="Coding agent loop">
         <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
@@ -167,7 +167,7 @@
       <p>Trade-off line to say aloud: a weaker model in a great harness (good retrieval, tight tools, strong tests) often beats a frontier model with a naive chat loop.</p>
       <p><strong>Follow-up:</strong> How would you stop the agent from looping on the same failing edit?</p>
       <h3 id="q103">103. What are multimodal AI models? How do vision-language models and CLIP-style embeddings work?</h3>
-      <p class="aiq-level"><em>Core</em></p>
+      <p class="aiq-level"><span class="learn-badge">Core</span></p>
       <p>Multimodal models handle more than text: images, audio, video, documents. A <strong>vision-language model (VLM)</strong> typically encodes images into tokens or embeddings that live in the same space the language model can attend over.</p>
       <div class="diagram-wrap" data-diagram-title="Typical VLM path">
         <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button>
@@ -185,25 +185,25 @@
       <p>Failure mode: the model ignores the image and answers from prior text bias. Fix with prompts that force visual grounding, better image resolution, and eval sets that change only the image.</p>
       <p><strong>Follow-up:</strong> How would you build search that finds products by a photo and a text constraint together?</p>
       <h3 id="q104">104. Explain diffusion models for image generation at a high level. How do you speed them up and control them?</h3>
-      <p class="aiq-level"><em>Core</em></p>
+      <p class="aiq-level"><span class="learn-badge">Core</span></p>
       <p>Diffusion models learn to reverse a gradual noising process: start from noise, iteratively denoising toward an image that matches a text condition (and optional controls).</p>
       <ul><li><strong>Sampling steps:</strong> more steps → usually better quality, higher latency/cost. Distilled or consistency-style samplers cut steps dramatically for production.</li><li><strong>Guidance:</strong> classifier-free guidance strength trades adherence to the prompt against diversity; too high looks oversaturated or brittle.</li><li><strong>Control:</strong> ControlNet, reference images, IP-adapters, inpainting masks and structured layouts improve precision when plain text is underspecified.</li><li><strong>Ops:</strong> batch on GPUs, cache text encoders, offer size presets, moderate inputs/outputs, and watermark or label synthetic media where required.</li></ul>
       <p>Interview soundbite: diffusion is iterative denoising guided by text embeddings; production is mostly about step count, guidance, caching and safety filters.</p>
       <p><strong>Follow-up:</strong> A user says the model ignores 'put the logo top-right'. What knobs do you change first?</p>
       <h3 id="q105">105. What is FlashAttention, and why does it matter for long-context training and serving?</h3>
-      <p class="aiq-level"><em>Deep dive</em></p>
+      <p class="aiq-level"><span class="learn-badge">Deep dive</span></p>
       <p>Standard attention materialises a full <em>N×N</em> score matrix, which is heavy on GPU memory bandwidth. <strong>FlashAttention</strong> computes attention in tiles that stay in fast on-chip memory, reducing HBM reads/writes without changing the math (exact attention, not an approximation).</p>
       <ul><li><strong>Why it matters:</strong> longer sequences become feasible; training and prefills use less memory and often run faster.</li><li><strong>What it does not fix alone:</strong> decode is still dominated by reading weights and the KV cache; you still need GQA/MQA, PagedAttention, quantisation and batching for serving.</li><li><strong>Related ideas:</strong> FlashAttention-2/3 improve parallelism; other kernels fuse ops similarly across vendors.</li></ul>
       <p>Say clearly: FlashAttention is an IO-aware implementation of attention, not a different model architecture.</p>
       <p><strong>Follow-up:</strong> If decode is still slow after enabling FlashAttention, what do you profile next?</p>
       <h3 id="q106">106. API-hosted LLM versus self-hosting an open-source model: how do you decide?</h3>
-      <p class="aiq-level"><em>Scenario</em></p>
+      <p class="aiq-level"><span class="learn-badge">Scenario</span></p>
       <p>Frame it as a decision table, not a religion.</p>
       <table><thead><tr><th>Factor</th><th>Prefer API</th><th>Prefer self-host</th></tr></thead><tbody><tr><td>Time to market</td><td>Days; no GPU ops</td><td>Weeks+ for serving, scaling, on-call</td></tr><tr><td>Data sensitivity</td><td>If vendor zero-retention and DPA fit</td><td>Strict residency, air-gapped, or regulated workloads</td></tr><tr><td>Traffic shape</td><td>Spiky or unknown demand</td><td>Steady high volume where GPUs amortise</td></tr><tr><td>Customisation</td><td>Prompting, light fine-tunes via vendor</td><td>Heavy LoRA/domain models, custom kernels</td></tr><tr><td>Latency control</td><td>Good enough regional endpoints</td><td>Need tight p95 on your VPC</td></tr><tr><td>Cost at scale</td><td>Pay per token; fine early</td><td>Often cheaper past a high, stable QPS</td></tr></tbody></table>
       <p>Hybrid is common: API for peak and hard tasks, self-host a smaller model for easy classification or rewrite. Revisit the choice when volume, risk or latency SLOs change.</p>
       <p><strong>Follow-up:</strong> What numbers would you collect in a two-week spike to decide?</p>
       <h3 id="q107">107. How do you measure ROI of an AI feature, and how do you choose between latency and quality?</h3>
-      <p class="aiq-level"><em>Scenario</em></p>
+      <p class="aiq-level"><span class="learn-badge">Scenario</span></p>
       <p>ROI needs a baseline and a decision metric tied to money or time: containment rate in support, minutes saved per ticket, conversion lift, engineer-hours automated, fraud dollars avoided. Subtract incremental model cost, review cost and incident risk.</p>
       <ol><li><strong>Define the counterfactual:</strong> what happens without the feature (human-only, rules, previous model).</li><li><strong>Instrument:</strong> online metric + guardrails (safety rate, escalation rate, latency, cost per success).</li><li><strong>Run an A/B or phased rollout</strong> with a pre-registered success threshold.</li><li><strong>Include failure cost:</strong> one bad medical/legal answer can wipe months of savings.</li></ol>
       <p>Latency vs quality: fix the user-visible SLA first (for example p95 TTFT &lt; 2 s for chat). Then use cascading: small/fast model or cache for easy cases, larger model for hard ones; stream tokens so perceived latency drops even if total time is similar.</p>
@@ -216,13 +216,13 @@
 print(monthly_roi(8000, 4.0, 1200, 40, 50))</code></pre></div>
       <p><strong>Follow-up:</strong> Your offline quality rose 4% but p95 latency doubled. Ship, cascade, or roll back?</p>
       <h3 id="q108">108. What is the Turing Test, and how is modern AI evaluation different from it?</h3>
-      <p class="aiq-level"><em>Warm-up</em></p>
+      <p class="aiq-level"><span class="learn-badge">Warm-up</span></p>
       <p>The <strong>Turing Test</strong> (imitation game, 1950) asks whether a machine's text behaviour is indistinguishable from a human's in conversation. It is a historical landmark, not a production acceptance test.</p>
       <p>Modern evaluation is task-centred and quantitative: exact-match and F1 for extraction, pass@k for code, faithfulness for RAG, human or LLM-as-judge rubrics for open-ended chat, plus online A/B metrics. Passing as "human-like" can even be undesirable when you need calibrated uncertainty, citations and refusals.</p>
       <p>Bridge line for interviews: the Turing Test asked about indistinguishability; we ship systems measured on usefulness, safety and reliability under explicit SLOs.</p>
       <p><strong>Follow-up:</strong> Why can a model that "sounds human" still fail a customer-support eval?</p>
       <h3 id="q109">109. Explain a confusion matrix and when accuracy is the wrong headline metric.</h3>
-      <p class="aiq-level"><em>Warm-up</em></p>
+      <p class="aiq-level"><span class="learn-badge">Warm-up</span></p>
       <p>For binary classification, the confusion matrix counts true positives (TP), false positives (FP), true negatives (TN) and false negatives (FN).</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code># Fraud detection toy example: 980 legit, 20 fraud
 TP, FP, FN, TN = 16, 30, 4, 950
@@ -236,7 +236,7 @@ print("accuracy looks fine while missing 20% of fraud (FN=4)")</code></pre></div
       <p>Accuracy fails on imbalanced data because predicting the majority class scores high while missing the rare class that matters.</p>
       <p><strong>Follow-up:</strong> In medical screening, would you rather raise precision or recall first, and why?</p>
       <h3 id="q110">110. Your PM wants to ship an AI feature with a known 15% hallucination rate on edge cases. How do you respond?</h3>
-      <p class="aiq-level"><em>Behavioral</em></p>
+      <p class="aiq-level"><span class="learn-badge">Behavioral</span></p>
       <p>Do not block with vibes — reframe as risk, users and mitigations.</p>
       <ol><li><strong>Clarify the edge cases:</strong> how often do they appear in production traffic? 15% of 0.5% traffic differs from 15% of all sessions.</li><li><strong>Map harm:</strong> wrong tone vs wrong medical/legal/financial advice. Severity drives whether you need a hard gate.</li><li><strong>Propose controls:</strong> refuse when retrieval is weak, show citations, human review for high-risk intents, feature flag, shadow mode, kill switch.</li><li><strong>Agree a metric and date:</strong> for example "ship behind a flag to 5% users if faithfulness ≥ 95% on the golden set and zero critical red-team findings".</li><li><strong>Write it down:</strong> short risk note for stakeholders so the trade-off is explicit.</li></ol>
       <p>Tone: partner, not blocker. Offer a safer path that still learns from real traffic.</p>
