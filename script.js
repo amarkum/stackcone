@@ -136,7 +136,9 @@ function initTestimonials(testimonials) {
       '<div class="testimonial-stars" aria-hidden="true">★★★★★</div>' +
       '<p class="testimonial-text">' + escapeHtml(t.review) + '</p>' +
       '<footer class="testimonial-footer">' +
-        '<div class="testimonial-avatar" aria-hidden="true">' + escapeHtml(t.initial || 'C') + '</div>' +
+        (t.logo
+          ? '<div class="testimonial-avatar testimonial-avatar--logo" aria-hidden="true"><img src="' + escapeHtml(t.logo) + '" alt="" width="40" height="40" loading="lazy"></div>'
+          : '<div class="testimonial-avatar" aria-hidden="true">' + escapeHtml(t.initial || 'C') + '</div>') +
         '<div class="testimonial-who">' +
           '<cite class="testimonial-name">' + escapeHtml(t.client) + '</cite>' +
           '<span class="testimonial-source"><img src="/assets/icons/upwork.svg" alt="" width="14" height="14" loading="lazy">Verified on Upwork</span>' +
@@ -234,7 +236,7 @@ function loadTestimonials() {
 
   var staticCount = grid.querySelectorAll('.testimonial-card').length;
 
-  fetch(assetPrefix() + 'data/testimonials.json')
+  fetch(assetPrefix() + 'data/testimonials.json?v=2')
     .then(function (r) { return r.json(); })
     .then(function (data) {
       var list = Array.isArray(data) ? data : testimonialsFallback;
