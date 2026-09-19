@@ -9,7 +9,7 @@ This is a one-page buyer’s guide covering **Claude Code, Cursor, Copilot, Code
 JetBrains’ May–July 2026 survey of more than 15,000 professional developers is the adoption map underneath the recommendations. Agents are no longer an experiment: **90% use an AI coding agent at work at least weekly, 68% daily, and about 70% run two to four tools.** Plan for a stack, not a trophy.
 
 ![Anthropic Claude logo](../images/best-ai-for-coding/claude-symbol.svg)
-![Cursor logo](../images/best-ai-for-coding/cursor.svg)
+![Cursor logo](../images/best-ai-for-coding/cursor.png)
 ![OpenAI logo](../images/best-ai-for-coding/openai.png)
 ![Google Gemini logo](../images/best-ai-for-coding/gemini.svg)
 ![GitHub logo](../images/best-ai-for-coding/github.svg)

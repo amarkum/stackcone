@@ -1190,15 +1190,22 @@ a.learn-track-card:hover {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-top: 1rem;
   padding-top: 1.25rem;
 }
 .learn-lesson-nav-end {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 0.6rem;
   margin-left: auto;
+  min-width: 0;
+}
+.learn-lesson-nav .learn-nav-btn,
+.learn-lesson-nav .learn-complete {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ============================================================
@@ -1239,6 +1246,39 @@ a.learn-track-card:hover {
   }
 
   .learn-nav-btn { justify-content: center; }
+
+  .learn-lesson-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+  .learn-lesson-nav > .learn-nav-btn {
+    flex: 0 0 auto;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  .learn-lesson-nav-end {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: nowrap;
+    margin-left: 0;
+    min-width: 0;
+    gap: 0.4rem;
+  }
+  .learn-lesson-nav-end .learn-complete,
+  .learn-lesson-nav-end .learn-nav-btn {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    justify-content: center;
+    padding: 0.55rem 0.55rem;
+    font-size: 0.8rem;
+  }
+  .learn-complete svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
 
   /* Course page: stack, with "what you will learn" first */
   .learn-course-grid { grid-template-columns: minmax(0, 1fr); }
@@ -1318,6 +1358,14 @@ a.learn-track-card:hover {
   }
 
   .learn-sidebar-lessons { grid-template-columns: minmax(0, 1fr); }
+
+  .learn-complete:not(.is-done) [data-mark-label] {
+    font-size: 0;
+  }
+  .learn-complete:not(.is-done) [data-mark-label]::after {
+    content: "Complete";
+    font-size: 0.8rem;
+  }
 }
 
 .blog-article .learn-progress-note { margin: 0.8rem 0 0; font-size: 0.82rem; color: var(--l-muted); }

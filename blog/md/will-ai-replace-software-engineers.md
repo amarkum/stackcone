@@ -9,7 +9,7 @@ It is not another recap of GPT-1 through Copilot. The short career answer is unc
 ![OpenAI logo](../images/will-ai-replace-software-engineers/openai.png)
 ![Anthropic logo](../images/will-ai-replace-software-engineers/anthropic.png)
 ![GitHub logo](../images/will-ai-replace-software-engineers/github.svg)
-![Cursor logo](../images/will-ai-replace-software-engineers/cursor.svg)
+![Cursor logo](../images/will-ai-replace-software-engineers/cursor.png)
 
 ## Table of contents
 
