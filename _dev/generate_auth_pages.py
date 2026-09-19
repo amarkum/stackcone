@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """Generate /login/ and /signup/ (static pages; Firebase Auth runs in the browser)."""
 from pathlib import Path
-import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_learn import LESSONS, TRACKS  # noqa: E402  (counts shown on the brand panel)
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -12,16 +8,14 @@ PAGES = {
     "login": {
         "title": "Log in",
         "heading": "Welcome back",
-        "lede": "Log in to pick up your courses where you left off, on any device.",
+        "lede": "Log in to your stackcone account.",
         "switch": 'New to stackcone? <a href="/signup/" data-keep-next>Create a free account</a>',
-        "pitch": "Pick up exactly where you left off.",
     },
     "signup": {
         "title": "Sign up",
         "heading": "Create your account",
-        "lede": "Free. Save your lesson progress and continue on any device.",
+        "lede": "Free, and takes one click.",
         "switch": 'Already have an account? <a href="/login/" data-keep-next>Log in</a>',
-        "pitch": "Learn to build real software, one lesson at a time.",
     },
 }
 
@@ -70,13 +64,18 @@ SCRIPT = """
   </script>"""
 
 
-CHECK = ('<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="currentColor" opacity=".18"/>'
-         '<path d="M6 10.5l2.5 2.5 5.5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+def _icon(path: str) -> str:
+    return (f'<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" '
+            f'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{path}</svg>')
+
+
+ICON_LEARN = _icon('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>')
+ICON_READ = _icon('<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5M9 8h6M9 12h6"/>')
+ICON_BUILD = _icon('<path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/>')
+ICON_LOCK = _icon('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/>')
 
 
 def page(key: str, p: dict) -> str:
-    lessons = len(LESSONS) // 10 * 10
-    courses = len(TRACKS)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,7 +90,7 @@ def page(key: str, p: dict) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/assets/auth.css?v=3">
+  <link rel="stylesheet" href="/assets/auth.css?v=4">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -109,25 +108,21 @@ def page(key: str, p: dict) -> str:
 
   <main class="auth-main">
     <div class="auth-shell">
-      <section class="auth-brand" aria-label="Why sign in">
-        <p class="auth-kicker">stackcone Learn</p>
-        <p class="auth-pitch">{p["pitch"]}</p>
-        <ul class="auth-perks">
-          <li>{CHECK}<span><strong>Progress on every device</strong>Finish a lesson on your laptop, continue on your phone.</span></li>
-          <li>{CHECK}<span><strong>{lessons}+ hands-on lessons</strong>Python, Java, JavaScript, SQL, React, AI and more, with code you can run.</span></li>
-          <li>{CHECK}<span><strong>Free, no card</strong>One click with Google. We never post or email on your behalf.</span></li>
+      <section class="auth-brand" aria-label="About stackcone">
+        <img src="/logo/stackcone.png" alt="" class="auth-brand-logo" width="140" height="30">
+        <p class="auth-pitch">One account for everything on stackcone.</p>
+        <p class="auth-sub">Whether you are here to learn, to read, or to build something with us, you are welcome.</p>
+        <ul class="auth-tiles">
+          <li><span class="auth-tile-icon">{ICON_LEARN}</span><span><strong>Learn</strong>Free lessons with code you can run. Your progress follows you.</span></li>
+          <li><span class="auth-tile-icon">{ICON_READ}</span><span><strong>Read</strong>Practical guides on AI, cloud and software engineering.</span></li>
+          <li><span class="auth-tile-icon">{ICON_BUILD}</span><span><strong>Build</strong>Work with our team on AI and software products.</span></li>
         </ul>
-        <div class="auth-preview" aria-hidden="true">
-          <div class="auth-preview-row"><span>Python</span><i style="--w:80%"></i><b>80%</b></div>
-          <div class="auth-preview-row"><span>SQL</span><i style="--w:45%"></i><b>45%</b></div>
-          <div class="auth-preview-row"><span>React</span><i style="--w:20%"></i><b>20%</b></div>
-        </div>
-        <p class="auth-stats"><strong>{courses}</strong> courses <span>·</span> <strong>{lessons}+</strong> lessons <span>·</span> <strong>Free</strong></p>
+        <p class="auth-trust">{ICON_LOCK} We only use your name and email. No spam, no posting.</p>
       </section>
       <section class="auth-card">
         <h1>{p["heading"]}</h1>
         <p class="auth-lede">{p["lede"]}</p>
-{GOOGLE_BUTTON}        <p class="auth-fine">By continuing you agree to our <a href="/privacy/">Privacy Policy</a>. We only use your name and email to save your progress.</p>
+{GOOGLE_BUTTON}        <p class="auth-fine">By continuing you agree to our <a href="/privacy/">Privacy Policy</a>.</p>
         <p class="auth-switch">{p["switch"]}</p>
       </section>
     </div>
