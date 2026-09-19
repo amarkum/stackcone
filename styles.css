@@ -3229,3 +3229,55 @@ body.landing-page main > section:not(.hero) {
     background: #f1f5f9;
   }
 }
+
+/* ---- Homepage revamp ---- */
+.nav .nav-cta { background: var(--accent); color: #fff !important; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+.nav .nav-cta:hover { background: var(--accent-strong); }
+
+body.landing-page .hero.hero--lead { min-height: min(78vh, 680px); }
+.hero--lead .hero-copy { max-width: 46rem; margin: 0 auto; }
+.hero--lead .hero-trust { display: inline-flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font-size: 0.85rem;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px 5px 10px; margin-bottom: 1.25rem; }
+.hero-dot { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; box-shadow: 0 0 0 4px rgba(22,163,74,.15); }
+.hero--lead .hero-title { font-size: clamp(2.2rem, 5.5vw, 3.75rem); line-height: 1.06; letter-spacing: -0.03em; }
+.hero-title-soft { display: block; color: var(--text-dim); }
+.hero--lead .hero-desc { max-width: 38rem; }
+.hero-points { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 20px; font-size: 0.9rem; color: var(--text-mid); }
+.hero-points li::before { content: "✓"; margin-right: 6px; color: #16a34a; font-weight: 700; }
+body.landing-page .hero-points { opacity: 0; transform: translate3d(0, var(--reveal-distance), 0);
+  animation: heroReveal var(--reveal-duration) var(--ease-out-expo) 0.62s forwards; }
+@media (prefers-reduced-motion: reduce) { body.landing-page .hero-points { animation: none; opacity: 1; transform: none; } }
+
+.stack-strip { max-width: var(--container-max); margin: 0 auto; padding: 1.25rem var(--container-padding); display: flex; flex-wrap: wrap;
+  justify-content: center; gap: 10px 28px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  font-weight: 600; font-size: 0.95rem; color: var(--text-dim); letter-spacing: -0.01em; }
+
+.eyebrow { text-align: center; text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 700; color: var(--text-dim); margin: 0 0 .5rem; }
+.offers { max-width: var(--container-max); margin: 0 auto; padding: var(--section-padding-y) var(--container-padding); }
+.offers .section-title, .offers .section-intro { text-align: center; margin-left: auto; margin-right: auto; }
+.offers .section-intro { max-width: 40rem; }
+.offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 2rem; }
+.offer-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 26px; display: flex; flex-direction: column;
+  transition: transform .25s var(--ease-smooth), box-shadow .25s var(--ease-smooth); }
+.offer-card:hover { transform: translateY(-4px); box-shadow: 0 18px 36px -18px rgba(0,0,0,.2); }
+.offer-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.offer-num { font-weight: 700; font-size: .85rem; color: var(--text-dim); }
+.offer-time { font-size: .78rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--bg-soft); color: var(--text-mid); }
+.offer-card h3 { margin: 0 0 8px; font-size: 1.25rem; color: var(--text-bright); letter-spacing: -0.01em; }
+.offer-card p { margin: 0 0 16px; color: var(--text-mid); font-size: .95rem; line-height: 1.55; }
+.offer-card ul { list-style: none; padding: 16px 0 0; margin: 0 0 20px; border-top: 1px solid var(--border); display: grid; gap: 8px; font-size: .9rem; color: var(--text-mid); }
+.offer-card li::before { content: "✓"; margin-right: 8px; font-weight: 700; color: var(--text-bright); }
+.offer-link { margin-top: auto; font-weight: 600; font-size: .92rem; color: var(--text-bright); text-decoration: none; }
+.offer-link:hover { text-decoration: underline; }
+.offer-card--featured { background: var(--surface-dark); border-color: var(--surface-dark); }
+.offer-card--featured h3, .offer-card--featured .offer-link, .offer-card--featured li::before { color: #fff; }
+.offer-card--featured p, .offer-card--featured ul { color: #c9c9c9; border-color: #333; }
+.offer-card--featured .offer-num { color: #8a8a8a; }
+.offer-card--featured .offer-time { background: #2a2a2a; color: #e5e5e5; }
+@media (max-width: 900px) { .offer-grid { grid-template-columns: 1fr; } }
+/* mobile menu: Hire on Upwork matches the Log in button */
+@media (max-width: 992px) {
+  .nav .nav-cta { display: block; width: calc(100% - 0.5rem); box-sizing: border-box; margin: 1rem 0.25rem 0; padding: 0.7rem 1rem; border: 1px solid #0a0a0a; border-radius: 10px;
+    background: #0a0a0a; color: #fff !important; font: 600 0.95rem/1.2 "DM Sans", system-ui, sans-serif; text-align: center; letter-spacing: 0; }
+  .nav .nav-cta:hover { background: #262626; }
+}

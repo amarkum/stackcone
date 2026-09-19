@@ -166,7 +166,8 @@
   var nav = document.getElementById("main-nav");
   if (!nav) return;
 
-  nav.innerHTML = NAV_ITEMS.map(renderItem).join("");
+  nav.innerHTML = NAV_ITEMS.map(renderItem).join("") +
+    '<a class="nav-cta" href="https://upwork.com/freelancers/amarkumar" target="_blank" rel="noopener">Hire on Upwork</a>';
 
   var path = window.location.pathname.replace(/\/index\.html$/, "/").replace(/\/$/, "") || "/";
 

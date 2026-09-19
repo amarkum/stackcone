@@ -6,12 +6,12 @@
   var PROJECT_ORDER = [
     'cabinetsense',
     'internal-copilot',
+    'rag-knowledge-base',
     'ai-invoice-bot',
     'llm-training-review',
     'gcp-dataflow-bq',
     'rest-api-partners',
     'aadhya-self-drive',
-    'rag-knowledge-base',
     'hadoop-gcp-migration',
     'ml-feature-pipeline',
     'pipeline-dashboard',

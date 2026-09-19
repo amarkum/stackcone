@@ -59,7 +59,7 @@
       revealObserver.observe(section);
     });
 
-    if (hero) {
+    if (hero && !hero.classList.contains("hero--split")) {
       var ticking = false;
       window.addEventListener(
         "scroll",

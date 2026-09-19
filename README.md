@@ -1,6 +1,6 @@
 # stackcone
 
-**Hire AI developers & Python full stack** — agentic AI, AI automation for business, production RAG, FastAPI / Django web apps, Flutter mobile, data engineering, and cloud DevOps. Remote-first worldwide with fixed scope, handover, and privacy-aware delivery.
+**Production RAG chatbots & AI agents** — grounded answers with citations, LangGraph / MCP agents, eval gates and monitoring. Also Python full stack, data engineering, and Flutter. Founded by [Amar Kumar](https://www.linkedin.com/in/amarkumar-in/).
 
 **Live site:** [stackcone.com](https://stackcone.com/) · **Contact:** [hello@stackcone.com](mailto:hello@stackcone.com)
 
@@ -9,9 +9,7 @@
 [stackcone](https://stackcone.com/) is a full-stack software and AI engineering studio. We design, build, and deploy production systems — from discovery to handover — with clear scope, documentation, and on-time delivery.
 
 - 10+ years experience
-- 30+ projects delivered
-- 100% job success on [Upwork](https://www.upwork.com/agencies/2022687811186513260/)
-- Expert-vetted · All 5-star rated
+- Reviews on [Upwork](https://upwork.com/freelancers/amarkumar)
 
 ## Services
 
@@ -72,10 +70,6 @@ This repo is the source for [stackcone.com](https://stackcone.com/), deployed vi
 python3 -m http.server 8080
 # Open http://localhost:8080
 ```
-
-## Keywords
-
-custom software development company, AI development company, RAG chatbot development, LLM integration services, AI agent development, full-stack development agency, Flutter mobile app development, hire software developers, remote software development, data engineering services, cloud DevOps, MVP development
 
 ---
 
