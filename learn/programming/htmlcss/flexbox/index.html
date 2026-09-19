@@ -62,6 +62,12 @@
             <ul><li>Use flex containers</li><li>Align and space items</li><li>Build a nav bar and cards row</li></ul>
           </div>
       <p><strong>Flexbox</strong> lays items out along one axis (a row or a column) and makes alignment, spacing and distributing free space easy. It replaced hacks with floats and is the right tool for nav bars, toolbars, card rows and centering.</p>
+      <h2>Layout used to be painful</h2>
+      <p>For years developers used hacks to place things side by side or centre them. <strong>Flexbox</strong> solved the everyday cases: it lays children out in a row or column, spaces them, aligns them and lets them share space. You switch it on with one line on the <em>parent</em>, and the children obey.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.row {
+  display: flex;   /* children now sit in a row */
+  gap: 16px;
+}</code></pre></div>
       <h2>The basics</h2>
       <p>Set <code>display: flex</code> on the <em>container</em>. Its direct children become <em>flex items</em>.</p>
       <div class="learn-code-wrap" data-lang="css"><pre><code>.row {
@@ -107,6 +113,40 @@
 }
 .nav .logo { margin-right: auto; }   /* pushes everything after it to the right */</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake</p><p class="learn-callout-body">Applying flex properties to the wrong element. <code>justify-content</code> and <code>align-items</code> go on the container; <code>flex</code> and <code>align-self</code> go on the children.</p></aside>
+      <h2>Two axes, two properties</h2>
+      <p>Flexbox has a <strong>main axis</strong> (the direction items flow, a row by default) and a <strong>cross axis</strong> (the perpendicular direction). <code>justify-content</code> distributes items along the main axis; <code>align-items</code> aligns them on the cross axis. Memorise that pair and most layouts fall out.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.nav {
+  display: flex;
+  justify-content: space-between;  /* logo left, links right */
+  align-items: center;             /* vertically centred */
+  padding: 12px 24px;
+}</code></pre></div>
+      <h2>The famous centring trick</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.hero {
+  display: flex;
+  justify-content: center;   /* horizontal */
+  align-items: center;       /* vertical */
+  min-height: 100vh;
+}</code></pre></div>
+      <h2>A card row that wraps on small screens</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;div class=&quot;cards&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;One&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;Two&lt;/div&gt;
+  &lt;div class=&quot;card&quot;&gt;Three&lt;/div&gt;
+&lt;/div&gt;</code></pre></div>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.cards {
+  display: flex;
+  flex-wrap: wrap;   /* move to a new line when out of space */
+  gap: 16px;
+}
+.card {
+  flex: 1 1 240px;   /* grow, shrink, start at 240px wide */
+}</code></pre></div>
+      <p>The <code>flex</code> shorthand means "grow to share extra space, shrink if needed, start at this size." With wrapping, the cards form three columns on a laptop, two on a tablet and one on a phone, with no media query.</p>
+      <h2>Common flexbox questions</h2>
+      <ul><li><strong>Items will not wrap</strong>: add <code>flex-wrap: wrap</code>.</li><li><strong>Want a column instead of a row</strong>: <code>flex-direction: column</code>; the axes swap, so <code>justify-content</code> now works vertically.</li><li><strong>One item pushed to the far end</strong>: give it <code>margin-left: auto</code>.</li><li><strong>Does nothing</strong>: <code>display: flex</code> must be on the <em>parent</em>, not the items.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Put <code>display: flex</code> on the parent to lay its children out in a row.</li><li><code>justify-content</code> works along the main axis; <code>align-items</code> works across it.</li><li><code>gap</code> spaces items; <code>flex-wrap</code> lets them flow onto new lines; <code>flex: 1</code> shares space.</li><li>Flexbox is for one dimension (a row or a column); use Grid for two.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a header with a logo on the left and three links on the right, vertically centered. Then make a footer with three columns of equal width.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="css" data-solution="header { display: flex; align-items: center; gap: 1rem; padding: 1rem; }
 header .logo { margin-right: auto; }

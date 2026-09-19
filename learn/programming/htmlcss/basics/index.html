@@ -62,6 +62,13 @@
             <ul><li>Write selectors</li><li>Explain specificity</li><li>Use the box model</li></ul>
           </div>
       <p><strong>CSS</strong> (Cascading Style Sheets) controls how HTML looks: colors, fonts, spacing and layout. A rule has a <em>selector</em> (what to style) and <em>declarations</em> (how to style it).</p>
+      <h2>What CSS does</h2>
+      <p>HTML says <em>what</em> content is; <strong>CSS</strong> (Cascading Style Sheets) says <em>how it looks</em>: colours, fonts, spacing, layout. The same HTML can look like a plain document or a polished app depending on the stylesheet attached. Keeping them separate is the big idea: one CSS file can restyle a thousand pages.</p>
+      <p>A CSS rule has two parts: a <strong>selector</strong> that says <em>which elements</em>, and a block of <strong>declarations</strong> that say <em>what to change</em>.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>h1 {                  /* selector: every &lt;h1&gt; */
+  color: navy;         /* property: value; */
+  font-size: 2rem;
+}</code></pre></div>
       <div class="learn-code-wrap" data-lang="css"><pre><code>h1 {
   color: #0a0a0a;
   font-size: 2rem;
@@ -116,6 +123,45 @@ h1 { font-weight: 700; letter-spacing: -0.02em; }</code></pre></div>
 }
 .button:hover { filter: brightness(1.1); }</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>DevTools</p><p class="learn-callout-body">Right-click an element and choose Inspect. You can see which rules apply, which are overridden, and edit values live. It is the fastest way to learn CSS.</p></aside>
+      <h2>Connecting CSS to HTML</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;head&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1 class=&quot;title&quot;&gt;Hello&lt;/h1&gt;
+  &lt;p class=&quot;lead&quot;&gt;Welcome to my page.&lt;/p&gt;
+  &lt;p&gt;A normal paragraph.&lt;/p&gt;
+&lt;/body&gt;</code></pre></div>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* styles.css */
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.title {              /* a class selector starts with a dot */
+  color: #0f766e;
+}
+
+.lead {
+  font-size: 1.25rem;
+  color: #475569;
+}</code></pre></div>
+      <h2>The box model: everything is a box</h2>
+      <p>Every element is a rectangle made of four layers. From the inside out: the <strong>content</strong>, <strong>padding</strong> (space inside the border), the <strong>border</strong> and <strong>margin</strong> (space outside, separating it from neighbours). Once you can see these boxes in your head, layout stops being mysterious.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.card {
+  width: 300px;
+  padding: 16px;          /* inside space */
+  border: 1px solid #cbd5e1;
+  margin: 24px auto;      /* outside space; auto centres horizontally */
+  border-radius: 12px;
+  box-sizing: border-box; /* width includes padding and border: much easier to reason about */
+}</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Use DevTools</p><p class="learn-callout-body">Right-click any element and choose <em>Inspect</em>. The browser shows the box model diagram, every rule that applies, and lets you edit values live. It is the fastest way to learn and debug CSS.</p></aside>
+      <h2>Why is my rule not working?</h2>
+      <ul><li><strong>Specificity</strong>: an ID selector beats a class, which beats an element selector. A more specific rule wins regardless of order.</li><li><strong>Order</strong>: when two rules are equally specific, the later one wins.</li><li><strong>Typos</strong>: an unknown property or a missing semicolon silently makes the browser skip the rule.</li><li><strong>Inspect</strong> the element: struck-through declarations show which rule lost.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>A rule is a selector plus declarations: <code>selector { property: value; }</code>.</li><li>Select by element, <code>.class</code> or <code>#id</code>; prefer classes.</li><li>Every element is a box: content, padding, border, margin; use <code>box-sizing: border-box</code>.</li><li>Use DevTools to see which rules apply and to experiment live.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Style a card: a white background, 1rem padding, a subtle border, rounded corners and a hover effect that lifts it with a shadow.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="css" data-solution=".card {
   background: #fff;

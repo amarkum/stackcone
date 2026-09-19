@@ -62,6 +62,8 @@
             <ul><li>Build an accessible form</li><li>Use built-in validation</li><li>Structure with header/nav/main/footer</li></ul>
           </div>
       <p>Forms collect input, and <strong>semantic</strong> elements tell browsers, search engines and assistive technology what each part of a page <em>is</em>. Getting both right makes your site usable by everyone.</p>
+      <h2>Structure with meaning</h2>
+      <p>You could build every page from generic boxes, but browsers, search engines and assistive technology cannot tell a navigation menu from a footer if everything is a box. <strong>Semantic</strong> elements such as <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;article&gt;</code> and <code>&lt;footer&gt;</code> describe the role of each region. They cost nothing and make pages more accessible, easier to maintain and better for search.</p>
       <h2>Semantic layout</h2>
       <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;body&gt;
   &lt;header&gt;
@@ -111,6 +113,62 @@
       <p>Inside a form a <code>&lt;button&gt;</code> submits by default. Use <code>type="button"</code> for buttons that should not submit. Use a <code>&lt;button&gt;</code> for actions and an <code>&lt;a&gt;</code> for navigation.</p>
       <h2>Accessibility quick wins</h2>
       <ul><li>Everything usable with a keyboard: tab through your page.</li><li>Sufficient color contrast (aim for 4.5:1 for body text).</li><li>Meaningful link text: "Read the pricing guide", not "click here".</li></ul>
+      <h2>A whole page laid out semantically</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;body&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Bean Counter Coffee&lt;/h1&gt;
+    &lt;nav&gt;
+      &lt;a href=&quot;/menu&quot;&gt;Menu&lt;/a&gt;
+      &lt;a href=&quot;/about&quot;&gt;About&lt;/a&gt;
+      &lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;h2&gt;Our new espresso&lt;/h2&gt;
+      &lt;p&gt;Rich, chocolatey and roasted this week.&lt;/p&gt;
+    &lt;/article&gt;
+    &lt;aside&gt;
+      &lt;h2&gt;Opening hours&lt;/h2&gt;
+      &lt;p&gt;Mon-Fri 7am to 5pm&lt;/p&gt;
+    &lt;/aside&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;&lt;p&gt;&amp;copy; 2026 Bean Counter&lt;/p&gt;&lt;/footer&gt;
+&lt;/body&gt;</code></pre></div>
+      <h2>How a form works</h2>
+      <p>A form collects what a user types and sends it somewhere. Every field needs a <code>name</code> (the label the data is sent under) and a visible <code>&lt;label&gt;</code>. Clicking a label focuses its field, which also helps screen readers and makes small targets easier to hit on a phone.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;form action=&quot;/subscribe&quot; method=&quot;post&quot;&gt;
+  &lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
+  &lt;input id=&quot;email&quot; name=&quot;email&quot; type=&quot;email&quot; required&gt;
+
+  &lt;label for=&quot;plan&quot;&gt;Plan&lt;/label&gt;
+  &lt;select id=&quot;plan&quot; name=&quot;plan&quot;&gt;
+    &lt;option value=&quot;free&quot;&gt;Free&lt;/option&gt;
+    &lt;option value=&quot;pro&quot;&gt;Pro&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label&gt;
+    &lt;input type=&quot;checkbox&quot; name=&quot;terms&quot; required&gt;
+    I agree to the terms
+  &lt;/label&gt;
+
+  &lt;button type=&quot;submit&quot;&gt;Subscribe&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+      <ul><li><code>for="email"</code> on the label matches <code>id="email"</code> on the input.</li><li><code>type="email"</code> makes phones show an email keyboard and the browser check the format.</li><li><code>required</code> blocks submitting an empty field, with no JavaScript needed.</li><li><code>method="post"</code> sends the data in the request body; <code>get</code> puts it in the URL (good for searches, wrong for passwords).</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Client-side checks are not security</p><p class="learn-callout-body">HTML validation is only a convenience. Anyone can bypass it, so a real server must always validate the data again.</p></aside>
+      <h2>Choosing the right input type</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;input type=&quot;text&quot;&gt;      &lt;!-- free text --&gt;
+&lt;input type=&quot;number&quot; min=&quot;1&quot; max=&quot;10&quot;&gt;
+&lt;input type=&quot;date&quot;&gt;
+&lt;input type=&quot;password&quot;&gt;
+&lt;input type=&quot;tel&quot;&gt;
+&lt;input type=&quot;url&quot;&gt;
+&lt;input type=&quot;range&quot; min=&quot;0&quot; max=&quot;100&quot;&gt;
+&lt;textarea name=&quot;message&quot; rows=&quot;4&quot;&gt;&lt;/textarea&gt;</code></pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Use semantic elements (<code>header</code>, <code>nav</code>, <code>main</code>, <code>article</code>, <code>footer</code>) instead of anonymous boxes.</li><li>Every form field needs a <code>name</code> and a properly linked <code>&lt;label&gt;</code>.</li><li>Pick the input <code>type</code> that matches the data; the browser then helps for free.</li><li>Always re-validate form data on the server.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a contact form with name, email, a topic dropdown, a message box and a submit button. Every field needs a label and the email and message must be required.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="html" data-solution="&lt;form action=&quot;/contact&quot; method=&quot;post&quot;&gt;
   &lt;label for=&quot;n&quot;&gt;Name&lt;/label&gt;&lt;input id=&quot;n&quot; name=&quot;name&quot; required&gt;

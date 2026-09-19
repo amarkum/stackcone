@@ -62,6 +62,13 @@
             <ul><li>Build a grid layout</li><li>Write media queries</li><li>Use clamp and custom properties</li></ul>
           </div>
       <p><strong>CSS Grid</strong> lays out content in rows <em>and</em> columns at the same time. Use Flexbox for one-dimensional alignment and Grid for whole-page or gallery layouts. Combined with media queries, it lets one page adapt to any screen.</p>
+      <h2>Rows and columns at once</h2>
+      <p>Flexbox arranges items in one line. <strong>CSS Grid</strong> arranges them in a two-dimensional grid of rows <em>and</em> columns, which is what page layouts, galleries and dashboards need. You describe the columns on the parent and the browser places the children into the cells.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* three equal columns */
+  gap: 16px;
+}</code></pre></div>
       <h2>A basic grid</h2>
       <div class="learn-code-wrap" data-lang="css"><pre><code>.grid {
   display: grid;
@@ -113,6 +120,47 @@ footer  { grid-area: footer; }</code></pre></div>
 }
 body { background: var(--bg); color: var(--text); }</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Test it</p><p class="learn-callout-body">Use your browser's device toolbar to try phone widths. Do not design only for your own screen.</p></aside>
+      <h2>What responsive means and why it matters</h2>
+      <p>More than half of web traffic is on phones. A <strong>responsive</strong> page adapts to the screen: one column on a phone, more on a desktop. Start with the small-screen layout, then add rules for wider screens; this is called <em>mobile-first</em>. Always include this tag in your <code>&lt;head&gt;</code> or phones will zoom out to a fake desktop width:</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;</code></pre></div>
+      <h2>A grid that adapts without media queries</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}</code></pre></div>
+      <p>Read it as: "make as many columns as fit, each at least 220px wide, sharing leftover space equally." On a phone you get one column, on a laptop maybe four.</p>
+      <h2>Media queries: change rules at a screen width</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.layout {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;          /* phone: stacked */
+}
+
+@media (min-width: 768px) {
+  .layout {
+    grid-template-columns: 240px 1fr;  /* tablet and up: sidebar + content */
+  }
+}</code></pre></div>
+      <h2>A full page layout with named areas</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.page {
+  display: grid;
+  grid-template-areas:
+    &quot;header header&quot;
+    &quot;sidebar main&quot;
+    &quot;footer footer&quot;;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+header  { grid-area: header; }
+aside   { grid-area: sidebar; }
+main    { grid-area: main; }
+footer  { grid-area: footer; }</code></pre></div>
+      <p>The <code>grid-template-areas</code> block is literally a picture of the page. Rearranging the layout for a phone is just a matter of writing a different picture inside a media query.</p>
+      <h2>Testing responsiveness</h2>
+      <ul><li>Open DevTools and toggle the <em>device toolbar</em> to preview phone and tablet sizes.</li><li>Drag the window narrower and watch for text that overflows or buttons too small to tap.</li><li>Aim for tap targets of at least 44 by 44 pixels and body text of at least 16px.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>Grid lays out rows and columns together; Flexbox handles a single row or column.</li><li><code>repeat(auto-fit, minmax(220px, 1fr))</code> gives a responsive gallery with no media queries.</li><li>Design mobile-first and add <code>@media (min-width: ...)</code> rules for larger screens.</li><li>Always include the viewport meta tag.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Make a three-column card gallery that collapses to two columns under 900px and one column under 600px, using media queries with <code>max-width</code>.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="css" data-solution=".gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 @media (max-width: 900px) { .gallery { grid-template-columns: repeat(2, 1fr); } }

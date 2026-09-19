@@ -62,6 +62,22 @@
             <ul><li>Write a valid HTML5 page</li><li>Use links and images with alt text</li><li>Choose semantic elements</li></ul>
           </div>
       <p><strong>HTML</strong> (HyperText Markup Language) describes the <em>structure and meaning</em> of a web page: what is a heading, a paragraph, a link, an image. It does not control appearance (that is CSS) or behavior (that is JavaScript). Every web page you have ever seen starts as HTML.</p>
+      <h2>What is HTML?</h2>
+      <p>Every web page you have ever seen, from a simple blog to a huge web app, is built from <strong>HTML</strong>: HyperText Markup Language. HTML does not make things pretty or interactive; it describes what things <em>are</em>. This is a heading, this is a paragraph, this is a link, this is an image. The browser reads that description and draws the page. CSS then styles it and JavaScript makes it behave.</p>
+      <p>The good news: HTML is not a programming language, so there are no variables or loops to learn. It is a set of labels you attach to content. You can be productive within an hour.</p>
+      <h2>Your first page in two minutes</h2>
+      <p>You need only a text editor (Notepad, TextEdit in plain-text mode, or VS Code) and a browser. Create a file called <code>index.html</code>, paste the code below, save it and double-click the file. The browser opens it.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;My first page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello, web!&lt;/h1&gt;
+    &lt;p&gt;This is my &lt;strong&gt;first&lt;/strong&gt; page.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
       <h2>Elements and attributes</h2>
       <p>An <strong>element</strong> is a pair of tags around content: <code>&lt;p&gt;Hello&lt;/p&gt;</code>. The opening tag can carry <strong>attributes</strong>, name/value pairs that configure it. A few elements are <em>void</em> and have no closing tag, such as <code>&lt;img&gt;</code> and <code>&lt;br&gt;</code>.</p>
       <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;a href=&quot;https://stackcone.com&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Visit stackcone&lt;/a&gt;
@@ -109,6 +125,39 @@
 &lt;/table&gt;</code></pre></div>
       <p>Tables are for tabular data only, never for page layout.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Validate</p><p class="learn-callout-body">Paste your page into validator.w3.org to catch unclosed tags and other mistakes. Browsers forgive errors silently, which hides bugs.</p></aside>
+      <h2>Reading that page, line by line</h2>
+      <ul><li><code>&lt;!DOCTYPE html&gt;</code> tells the browser to use modern HTML.</li><li><code>&lt;html lang="en"&gt;</code> wraps everything and declares the language (helps screen readers and translation).</li><li><code>&lt;head&gt;</code> holds information <em>about</em> the page that is not shown in the window: the title in the browser tab, the character set, links to stylesheets.</li><li><code>&lt;body&gt;</code> holds everything visible.</li><li><code>&lt;h1&gt;</code> is the main heading, <code>&lt;p&gt;</code> a paragraph and <code>&lt;strong&gt;</code> marks important text (shown bold).</li></ul>
+      <h2>Tags come in pairs</h2>
+      <p>Most elements have an opening tag, some content and a closing tag with a slash: <code>&lt;p&gt;text&lt;/p&gt;</code>. A few elements have no content and no closing tag, such as <code>&lt;img&gt;</code> and <code>&lt;br&gt;</code>. Elements nest like boxes inside boxes, so always close the innermost one first.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!-- correct nesting --&gt;
+&lt;p&gt;This is &lt;em&gt;very &lt;strong&gt;important&lt;/strong&gt;&lt;/em&gt; text.&lt;/p&gt;
+
+&lt;!-- wrong: tags overlap --&gt;
+&lt;p&gt;This is &lt;em&gt;very &lt;strong&gt;important&lt;/em&gt;&lt;/strong&gt; text.&lt;/p&gt;</code></pre></div>
+      <h2>Headings create an outline</h2>
+      <p>Use <code>&lt;h1&gt;</code> once for the page title, then <code>&lt;h2&gt;</code> for main sections and <code>&lt;h3&gt;</code> for subsections beneath them. Do not pick a heading because of its size; pick it for its <em>meaning</em>. Search engines and screen-reader users navigate by this outline, and you can restyle sizes with CSS later.</p>
+      <h2>Links and images, the two things that make it the Web</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;p&gt;Read the &lt;a href=&quot;https://developer.mozilla.org/&quot;&gt;MDN docs&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;about.html&quot;&gt;About us&lt;/a&gt; (another page in the same folder)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;#contact&quot;&gt;Jump to the contact section&lt;/a&gt;&lt;/p&gt;
+
+&lt;img src=&quot;cat.jpg&quot; alt=&quot;A grey cat asleep on a sofa&quot; width=&quot;300&quot;&gt;</code></pre></div>
+      <p>The <code>href</code> attribute says where a link goes; <code>src</code> says where an image lives; <code>alt</code> describes the image for people who cannot see it and appears if it fails to load. Never leave <code>alt</code> out.</p>
+      <h2>Lists: the workhorse of page structure</h2>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;ul&gt;          &lt;!-- unordered: bullet points --&gt;
+  &lt;li&gt;Milk&lt;/li&gt;
+  &lt;li&gt;Eggs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;          &lt;!-- ordered: numbered steps --&gt;
+  &lt;li&gt;Open the file&lt;/li&gt;
+  &lt;li&gt;Edit it&lt;/li&gt;
+  &lt;li&gt;Save it&lt;/li&gt;
+&lt;/ol&gt;</code></pre></div>
+      <h2>Troubleshooting checklist</h2>
+      <ul><li>Nothing changes when you refresh? Make sure you saved the file, and that you edited the file the browser has open.</li><li>Text looks wrong or shows odd symbols? Add <code>&lt;meta charset="UTF-8"&gt;</code> in the <code>&lt;head&gt;</code>.</li><li>Image is missing? Check the spelling and case of the file name and that the path matches where the file really is.</li><li>Right-click the page and choose <em>Inspect</em> to see exactly how the browser understood your HTML.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li>HTML labels what content <em>is</em>; CSS styles it; JavaScript adds behaviour.</li><li>A page has a <code>&lt;head&gt;</code> (information about the page) and a <code>&lt;body&gt;</code> (what people see).</li><li>Elements nest; attributes such as <code>href</code>, <code>src</code> and <code>alt</code> add details.</li><li>Choose headings by meaning, and always write useful <code>alt</code> text.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a page about yourself with a title, a photo (with alt text), a list of three skills and a link to a site you like.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="html" data-solution="&lt;!DOCTYPE html&gt;
 &lt;html lang=&quot;en&quot;&gt;
