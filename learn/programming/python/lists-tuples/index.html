@@ -72,6 +72,8 @@
             <ul><li>Create and slice lists</li><li>Use list methods append/pop</li><li>Know when tuples beat lists</li></ul>
           </div>
       <p>Lists and tuples are <strong>ordered sequences</strong>: they keep items in the order you put them in and let you fetch any item by its position. The difference is mutability. A list can be changed after creation; a tuple cannot.</p>
+      <h2>Why we need collections</h2>
+      <p>So far each variable held one value. Real data comes in groups: a list of prices, the days of the week, the pixels of an image. A <strong>list</strong> is a numbered row of boxes you can look through, add to and rearrange. Picture a shopping list on paper: items in order, you can cross one out, add another at the bottom, or read the third item.</p>
       <h2>Lists</h2>
       <p>Create a list with square brackets. Indexes start at 0, and negative indexes count from the end, so <code>nums[-1]</code> is the last item. Slicing with <code>nums[start:stop]</code> returns a new list that includes <code>start</code> and excludes <code>stop</code>.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>nums = [10, 20, 30]
@@ -103,6 +105,63 @@ print(x, y, point[0])
 # point[0] = 9      # TypeError: tuples are immutable</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3 4 3</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Copies share data</p><p class="learn-callout-body"><code>b = a</code> does not copy a list; both names point at the same list. Use <code>b = a.copy()</code> or <code>b = a[:]</code> when you want an independent copy.</p></aside>
+      <h2>Looping over a list</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;]
+
+for fruit in fruits:
+    print(fruit.upper())
+
+print(len(fruits), &quot;fruits&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>APPLE
+BANANA
+CHERRY
+3 fruits</pre></div>
+      <h2>Adding, removing and searching</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>todo = [&quot;email&quot;, &quot;gym&quot;]
+todo.append(&quot;read&quot;)        # add at the end
+todo.insert(1, &quot;coffee&quot;)   # add at position 1
+todo.remove(&quot;gym&quot;)         # remove by value
+print(todo)
+print(&quot;read&quot; in todo)
+print(todo.index(&quot;read&quot;))
+print(sorted(todo))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;email&#x27;, &#x27;coffee&#x27;, &#x27;read&#x27;]
+True
+2
+[&#x27;coffee&#x27;, &#x27;email&#x27;, &#x27;read&#x27;]</pre></div>
+      <h2>Lists are shared, not copied</h2>
+      <p>This trips up almost everyone. Assigning a list to another name does <em>not</em> copy it; both names label the same list. Change it through one name and the other sees the change. Use <code>.copy()</code> or a slice <code>[:]</code> for a real copy.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>a = [1, 2, 3]
+b = a            # same list!
+b.append(4)
+print(a)
+
+c = a.copy()     # independent copy
+c.append(5)
+print(a, c)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 2, 3, 4]
+[1, 2, 3, 4] [1, 2, 3, 4, 5]</pre></div>
+      <h2>Useful built-ins for numbers</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>scores = [72, 88, 95, 61]
+print(sum(scores), min(scores), max(scores))
+print(sum(scores) / len(scores))
+scores.sort(reverse=True)
+print(scores)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>316 61 95
+79.0
+[95, 88, 72, 61]</pre></div>
+      <h2>When to choose a tuple</h2>
+      <p>A tuple is a list you promise not to change. Use it for things that belong together as one fixed record, like a coordinate <code>(x, y)</code> or an RGB colour <code>(255, 0, 0)</code>. Because it cannot change, it is safe to use as a dictionary key, which a list is not.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>point = (3, 4)
+x, y = point        # unpacking
+print(x, y)
+
+visited = {(0, 0): &quot;start&quot;, (1, 2): &quot;shop&quot;}
+print(visited[(1, 2)])</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3 4
+shop</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A list is an ordered, changeable collection; a tuple is ordered and fixed.</li><li>Indexes start at 0; negative indexes count from the end; slices take ranges.</li><li><code>append</code>, <code>insert</code>, <code>remove</code>, <code>pop</code>, <code>sort</code> change a list in place.</li><li>Assignment shares a list; use <code>.copy()</code> when you need a separate one.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given <code>scores = [88, 92, 75, 95]</code>, print the highest score without using <code>max()</code>. Then build a list of the scores that are 90 or above using a comprehension.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="scores = [88, 92, 75, 95]
 best = scores[0]

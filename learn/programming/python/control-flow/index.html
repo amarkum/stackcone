@@ -72,6 +72,9 @@
             <ul><li>Branch with if/elif/else</li><li>Iterate with for and range()</li><li>Use while with a clear exit</li></ul>
           </div>
       <p>Programs get interesting when they can make decisions and repeat work. <strong>Control flow</strong> statements do both. Python marks the body of each one with <em>indentation</em> (four spaces by convention) instead of braces, so consistent indentation is part of the syntax.</p>
+      <h2>Think in decisions and repetition</h2>
+      <p>Every program you use is built from just two ideas beyond simple steps. <strong>Decisions</strong>: "if the password is wrong, show an error; otherwise let the user in." <strong>Repetition</strong>: "for every item in the cart, add up the price." Control flow is how you express those two ideas in code.</p>
+      <p>Before writing any code, get used to describing the logic in words. If you can say it as "if this, do that, otherwise do something else", the code is only a translation.</p>
       <h2>Conditionals</h2>
       <p><code>if</code> runs a block when its condition is true. Add <code>elif</code> for extra cases and <code>else</code> for the fallback. Python checks them in order and runs only the first block that matches. Conditions use comparison operators (<code>== != &lt; &gt; &lt;= &gt;=</code>) and the logical words <code>and</code>, <code>or</code>, <code>not</code>.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>score = 87
@@ -107,8 +110,63 @@ print(&quot;liftoff&quot;)</code></pre></div>
 2
 1
 liftoff</pre></div>
+      <h2>Combining conditions</h2>
+      <p>Join tests with <code>and</code> (both must be true), <code>or</code> (at least one) and <code>not</code> (flip the answer). Python also lets you chain comparisons the way you would in maths: <code>18 &lt;= age &lt; 65</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>age = 30
+has_ticket = True
+
+if age &gt;= 18 and has_ticket:
+    print(&quot;Welcome in&quot;)
+
+if not has_ticket or age &lt; 18:
+    print(&quot;Sorry, no entry&quot;)
+
+print(18 &lt;= age &lt; 65)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Welcome in
+True</pre></div>
+      <h2>Controlling a loop: break, continue and else</h2>
+      <p><code>break</code> leaves the loop immediately. <code>continue</code> skips the rest of this round and jumps to the next one. Use them to stop as soon as you find what you want, or to ignore items you do not care about.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>for n in range(1, 10):
+    if n == 3:
+        continue      # skip 3
+    if n == 6:
+        break         # stop completely
+    print(n)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1
+2
+4
+5</pre></div>
+      <h2>Nested loops: a multiplication table</h2>
+      <p>A loop inside another loop runs the inner one completely for each turn of the outer one. Think of a clock: the minute hand does a full circle for every single step of the hour hand.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>for row in range(1, 4):
+    for col in range(1, 4):
+        print(row * col, end=&quot;\t&quot;)
+    print()</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1	2	3	
+2	4	6	
+3	6	9	</pre></div>
+      <h2>Worked example: guess the number (logic only)</h2>
+      <p>Here is a complete mini-program that combines a loop, a decision and a counter. Trace it by hand with the values shown, writing down the value of each variable after every line. Tracing on paper is the single best way to understand loops.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>secret = 7
+guesses = [3, 9, 7, 2]
+attempts = 0
+
+for guess in guesses:
+    attempts += 1
+    if guess &lt; secret:
+        print(guess, &quot;is too low&quot;)
+    elif guess &gt; secret:
+        print(guess, &quot;is too high&quot;)
+    else:
+        print(guess, &quot;is correct after&quot;, attempts, &quot;attempts&quot;)
+        break</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3 is too low
+9 is too high
+7 is correct after 3 attempts</pre></div>
       <h2>Common mistakes</h2>
       <ul><li>Using <code>=</code> (assign) where you meant <code>==</code> (compare).</li><li>Forgetting the colon at the end of <code>if</code>, <code>for</code> or <code>while</code> lines.</li><li>Mixing tabs and spaces, which causes <code>IndentationError</code>.</li><li>Off-by-one errors: <code>range(5)</code> stops at 4, not 5.</li></ul>
+      <h2>Key takeaways</h2>
+      <ul><li><code>if</code>/<code>elif</code>/<code>else</code> choose one branch; combine tests with <code>and</code>, <code>or</code>, <code>not</code>.</li><li><code>for</code> walks a known sequence; <code>while</code> repeats until a condition changes.</li><li><code>break</code> exits a loop, <code>continue</code> skips to the next round.</li><li>Indentation is syntax: it defines what belongs inside each block.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Print the even numbers from 2 to 20 using a <code>for</code> loop. Then print "FizzBuzz" style: for 1 to 15 print "Fizz" for multiples of 3, "Buzz" for multiples of 5, and the number otherwise.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="for n in range(2, 21, 2):
     print(n)

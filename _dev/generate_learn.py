@@ -296,6 +296,31 @@ for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
 
+# Extra teaching material (analogies, walkthroughs, recaps) layered onto the base lessons.
+from content_extra import EXTRA as _EXTRA
+
+
+def _apply_extra(les):
+    ex = _EXTRA.get(les["slug"])
+    if not ex:
+        return
+    secs = list(les["sections"])
+    if ex.get("intro"):  # right after the opening paragraph
+        secs[1:1] = ex["intro"]
+    mistakes = next((i for i, x in enumerate(secs) if x[0] == "h2" and x[1] == "Common mistakes"), None)
+    end = next((i for i, x in enumerate(secs) if x[0] in ("exercise", "solution")), len(secs))
+    if ex.get("more"):
+        at = mistakes if mistakes is not None else end
+        secs[at:at] = ex["more"]
+        end = next((i for i, x in enumerate(secs) if x[0] in ("exercise", "solution")), len(secs))
+    if ex.get("recap"):
+        secs[end:end] = [("h2", "Key takeaways"), ("ul", ex["recap"])]
+    les["sections"] = secs
+
+
+for _les in LESSONS:
+    _apply_extra(_les)
+
 # Teaching order for the Python course (new lessons slot in between the originals)
 _PY_ORDER = ["python-hello-world", "python-variables-and-types", "python-strings",
              "python-control-flow", "python-functions", "python-lists-tuples",

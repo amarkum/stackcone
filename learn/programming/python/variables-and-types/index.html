@@ -72,6 +72,18 @@
             <ul><li>Assign and reassign variables</li><li>Use type() to inspect values</li><li>Cast between types</li></ul>
           </div>
       <p>A <strong>variable</strong> is a name that points at a value. You create one with the assignment operator <code>=</code>. Python is <em>dynamically typed</em>: you never declare a type, because the type belongs to the value, not the name. The same name can later point at a value of a different type, although doing that on purpose is usually a sign of confusing code.</p>
+      <h2>Variables are labels, not boxes</h2>
+      <p>Many tutorials say a variable is a box that holds a value. A better picture is a <strong>sticky label</strong> attached to a value. The value lives somewhere in memory; the label lets you find it again. Writing <code>age = 28</code> creates the number 28 and sticks the label <code>age</code> on it. Later, <code>age = 29</code> simply moves the label to a different value.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>age = 28
+print(age)
+age = 29          # move the label to a new value
+print(age)
+
+other = age       # two labels on the same value
+print(other)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>28
+29
+29</pre></div>
       <h2>The core types</h2>
       <ul><li><code>int</code>: whole numbers of any size, such as <code>28</code> or <code>-5</code>.</li><li><code>float</code>: decimal numbers such as <code>19.99</code>. They are binary approximations, so <code>0.1 + 0.2</code> is not exactly <code>0.3</code>.</li><li><code>str</code>: text, written in single or double quotes.</li><li><code>bool</code>: <code>True</code> or <code>False</code> (note the capital letters).</li><li><code>None</code>: a special value that means "nothing here yet".</li></ul>
       <div class="learn-code-wrap" data-lang="python"><pre><code>age = 28
@@ -102,6 +114,45 @@ label = str(3.14)
 print(n + 1, price * 2, label + &quot;!&quot;)</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>43 39.98 3.14!</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Strings are not numbers</p><p class="learn-callout-body"><code>"2" + "2"</code> is <code>"22"</code>, because <code>+</code> joins strings. Mixing types, like <code>"2" + 2</code>, raises a <code>TypeError</code>. Convert first.</p></aside>
+      <h2>Walkthrough: a tiny shopping cart</h2>
+      <p>Let us combine everything: several variables, arithmetic, and formatted output. Read the code line by line and predict the output before you look at it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>item = &quot;notebook&quot;
+unit_price = 3.50
+quantity = 4
+
+subtotal = unit_price * quantity
+tax = subtotal * 0.08
+total = subtotal + tax
+
+print(f&quot;Item: {item}&quot;)
+print(f&quot;Subtotal: ${subtotal:.2f}&quot;)
+print(f&quot;Tax: ${tax:.2f}&quot;)
+print(f&quot;Total: ${total:.2f}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Item: notebook
+Subtotal: $14.00
+Tax: $1.12
+Total: $15.12</pre></div>
+      <p>Notice how each line uses names defined above it. A variable must exist <em>before</em> you use it; asking for one that does not exist raises a <code>NameError</code>. Also notice the <code>:.2f</code> inside the braces: it means "show two decimal places", which is how you print money.</p>
+      <h2>Checking a value&#x27;s type</h2>
+      <p>When something behaves strangely, ask Python what type it is. <code>type()</code> tells you, and <code>isinstance()</code> answers yes or no. This is the fastest way to spot a number that is secretly text.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>value = &quot;42&quot;
+print(type(value), value + value)
+
+number = int(value)
+print(type(number), number + number)
+print(isinstance(number, int))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>&lt;class &#x27;str&#x27;&gt; 4242
+&lt;class &#x27;int&#x27;&gt; 84
+True</pre></div>
+      <h2>Integer division and remainders, visually</h2>
+      <p><code>//</code> answers "how many whole times does it fit?" and <code>%</code> answers "what is left over?". Together they solve everyday problems such as converting minutes to hours and minutes.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>total_minutes = 135
+hours = total_minutes // 60
+minutes = total_minutes % 60
+print(f&quot;{total_minutes} minutes = {hours}h {minutes}m&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>135 minutes = 2h 15m</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A variable is a label attached to a value; assignment moves the label.</li><li>The core types are <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code> and <code>None</code>.</li><li>Use <code>type()</code> to inspect a value and <code>int()</code>/<code>float()</code>/<code>str()</code> to convert.</li><li><code>//</code> gives the whole-number quotient, <code>%</code> the remainder; f-strings format output.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create variables for a product title, a price and an in-stock flag. Print one summary line such as <code>Laptop costs $999.00 (in stock: True)</code> using an f-string.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="title = &quot;Laptop&quot;
 price = 999

@@ -72,6 +72,9 @@
             <ul><li>Define functions with def</li><li>Return values</li><li>Use default parameters</li></ul>
           </div>
       <p>A <strong>function</strong> is a named, reusable block of code. Functions let you avoid copy and paste, give a name to an idea, and test small pieces in isolation. You define one with <code>def</code>, list its <em>parameters</em> in parentheses, and use <code>return</code> to hand a result back to the caller.</p>
+      <h2>Why functions exist</h2>
+      <p>Imagine writing the same five lines of code in ten places. When you find a bug you must fix it ten times, and you will miss one. A function lets you write those five lines <em>once</em>, give them a name, and use that name wherever you need them. Functions are also how big programs stay understandable: each one does one clear job.</p>
+      <p>A useful mental model is a vending machine. You put something in (the <strong>arguments</strong>), the machine does its work without you watching, and something comes out (the <strong>return value</strong>). You do not need to know how it works inside to use it.</p>
       <h2>Defining and calling</h2>
       <div class="learn-code-wrap" data-lang="python"><pre><code>def area_circle(radius):
     return 3.14159 * radius ** 2
@@ -103,6 +106,53 @@ print(low, high)</code></pre></div>
       <h2>Scope</h2>
       <p>Variables created inside a function are <strong>local</strong>: they exist only while the function runs. Reading a global variable inside a function is fine, but assigning to it creates a new local one instead. Passing data in through parameters and out through <code>return</code> keeps functions predictable.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Mutable default trap</p><p class="learn-callout-body">Never use a list or dict as a default value, as in <code>def add(x, items=[])</code>. The same list is shared across every call. Use <code>items=None</code> and create the list inside the function.</p></aside>
+      <h2>The anatomy of a function, step by step</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def total_price(price, quantity, tax_rate=0.1):
+    &quot;&quot;&quot;Return the price including tax.&quot;&quot;&quot;
+    subtotal = price * quantity
+    return subtotal * (1 + tax_rate)
+
+print(total_price(20, 3))
+print(total_price(20, 3, tax_rate=0))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>66.0
+60</pre></div>
+      <ul><li><code>def</code> starts the definition; <code>total_price</code> is the name.</li><li><code>price, quantity, tax_rate=0.1</code> are the <em>parameters</em>. <code>tax_rate</code> has a default, so callers may leave it out.</li><li>The triple-quoted line is a <em>docstring</em>: a one-sentence description shown by <code>help()</code>.</li><li><code>return</code> sends the answer back and ends the function immediately.</li></ul>
+      <h2>print versus return</h2>
+      <p>Beginners often confuse these two. <code>print</code> only <em>shows</em> something on the screen; the value is then gone. <code>return</code> hands the value back to the caller so it can be stored, tested or used in more maths.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def add_print(a, b):
+    print(a + b)
+
+def add_return(a, b):
+    return a + b
+
+x = add_print(2, 3)
+y = add_return(2, 3)
+print(&quot;x is&quot;, x)
+print(&quot;y is&quot;, y * 10)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>5
+x is None
+y is 50</pre></div>
+      <h2>Functions calling functions</h2>
+      <p>Small functions are easy to test and combine. Build bigger behavior by letting one function call another.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def clean(name):
+    return name.strip().title()
+
+def greeting(name):
+    return f&quot;Welcome, {clean(name)}!&quot;
+
+print(greeting(&quot;  aDA lovelace &quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Welcome, Ada Lovelace!</pre></div>
+      <h2>*args and **kwargs (flexible arguments)</h2>
+      <p>When you do not know how many arguments a caller will pass, <code>*args</code> collects extras into a tuple and <code>**kwargs</code> collects named extras into a dict.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def describe(*args, **kwargs):
+    print(args)
+    print(kwargs)
+
+describe(1, 2, 3, color=&quot;red&quot;, size=&quot;M&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>(1, 2, 3)
+{&#x27;color&#x27;: &#x27;red&#x27;, &#x27;size&#x27;: &#x27;M&#x27;}</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A function names a reusable job: parameters in, <code>return</code> value out.</li><li><code>print</code> displays; <code>return</code> gives a value back. Prefer returning.</li><li>Defaults make arguments optional; keyword arguments make calls readable.</li><li>Keep functions small and single-purpose, and let them call each other.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>area_rect(w, h)</code> that returns width times height. Then write <code>is_even(n)</code> that returns <code>True</code> or <code>False</code>, and use it in a loop to print the even numbers below 10.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def area_rect(w, h):
     return w * h

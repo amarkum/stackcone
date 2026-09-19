@@ -72,6 +72,8 @@
             <ul><li>Define a class with __init__</li><li>Add instance methods</li><li>Understand self</li></ul>
           </div>
       <p>A <strong>class</strong> is a blueprint that bundles data (attributes) with the functions that work on it (methods). An <strong>object</strong>, or instance, is one thing built from that blueprint. Classes help when several related values travel together, such as a bank account with an owner and a balance, and when behavior belongs with that data.</p>
+      <h2>The idea behind classes</h2>
+      <p>So far you have stored data in variables and behavior in functions, kept separately. When a program models real things such as a bank account, a player, an order, you find yourself passing the same group of values around. A <strong>class</strong> bundles the data and the functions that work on it into one unit. Picture a cookie cutter: the <em>class</em> is the cutter (the blueprint); each <em>object</em> is a cookie made from it. Every cookie has the same shape but its own icing.</p>
       <h2>Your first class</h2>
       <p><code>__init__</code> runs automatically when you create an instance and sets up its starting state. The first parameter of every method is <code>self</code>, which refers to the specific object the method is being called on. You do not pass it yourself; Python does.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>class BankAccount:
@@ -115,6 +117,76 @@ s.add_interest(0.05)
 print(s.balance)</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1050.0</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>When to use a class</p><p class="learn-callout-body">If you only need to group a few values, a dictionary or a <code>dataclass</code> is simpler. Reach for a full class when behavior and data belong together.</p></aside>
+      <h2>Anatomy of a class, line by line</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Counter:
+    def __init__(self, start=0):
+        self.value = start        # data stored on this object
+
+    def increment(self):          # behavior
+        self.value += 1
+        return self.value
+
+
+a = Counter()
+b = Counter(10)
+a.increment()
+a.increment()
+b.increment()
+print(a.value, b.value)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>2 11</pre></div>
+      <ul><li><code>class Counter:</code> defines the blueprint.</li><li><code>__init__</code> runs automatically when you create an object. It sets up the starting data.</li><li><code>self</code> means "this particular object". Every method receives it first; you do not pass it yourself.</li><li><code>a</code> and <code>b</code> are separate objects, so their <code>value</code>s do not affect each other.</li></ul>
+      <h2>Keeping data valid</h2>
+      <p>A class is a good place to protect rules. Here a bank account refuses to go below zero, and every caller gets the same protection automatically.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Account:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def withdraw(self, amount):
+        if amount &gt; self.balance:
+            raise ValueError(&quot;insufficient funds&quot;)
+        self.balance -= amount
+
+acct = Account(&quot;Ada&quot;, 100)
+acct.withdraw(30)
+print(acct.balance)
+try:
+    acct.withdraw(500)
+except ValueError as err:
+    print(&quot;Error:&quot;, err)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>70
+Error: insufficient funds</pre></div>
+      <h2>Making objects print nicely</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Book:
+    def __init__(self, title, pages):
+        self.title = title
+        self.pages = pages
+
+    def __str__(self):
+        return f&quot;{self.title} ({self.pages} pages)&quot;
+
+print(Book(&quot;Dune&quot;, 412))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Dune (412 pages)</pre></div>
+      <h2>Class attributes and methods that do not need an object</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Circle:
+    PI = 3.14159            # shared by all circles
+
+    def __init__(self, r):
+        self.r = r
+
+    def area(self):
+        return Circle.PI * self.r ** 2
+
+    @staticmethod
+    def diameter(r):
+        return 2 * r
+
+print(Circle(2).area())
+print(Circle.diameter(5))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>12.56636
+10</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A class is a blueprint; an object is one thing built from it.</li><li><code>__init__</code> sets up each object; <code>self</code> refers to the current object.</li><li>Methods are functions that belong to the class and work on <code>self</code>.</li><li>Use classes to keep related data and behavior, and its rules, in one place.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>withdraw(amount)</code> method that refuses to make the balance negative. Return <code>True</code> when it works and <code>False</code> when it does not.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="class BankAccount:
     def __init__(self, owner, balance=0):

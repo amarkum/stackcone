@@ -72,6 +72,9 @@
             <ul><li>Use with open()</li><li>Read and write text</li><li>Handle missing files</li></ul>
           </div>
       <p>Real programs read configuration, process logs and save results, all of which means working with files. Python's <code>open()</code> gives you a file object, and the safest way to use it is inside a <code>with</code> block. The block guarantees the file is closed when you leave it, even if an error happens.</p>
+      <h2>Why programs need files</h2>
+      <p>Variables disappear the moment your program ends. A file is how information survives: settings, saved games, reports, logs. Reading and writing files lets your program remember things between runs, and lets it work with data created by other people and tools.</p>
+      <p>Think of a file as a notebook. To use it you <strong>open</strong> it, then <strong>read</strong> or <strong>write</strong>, then <strong>close</strong> it. Python's <code>with</code> statement does the closing for you, even when something goes wrong.</p>
       <h2>Writing a file</h2>
       <p>The second argument is the <strong>mode</strong>: <code>"w"</code> writes and <em>erases any existing content</em>, <code>"a"</code> appends, <code>"r"</code> reads (the default). Always pass <code>encoding="utf-8"</code> so text behaves the same on every operating system.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>with open(&quot;notes.txt&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
@@ -104,6 +107,54 @@ except FileNotFoundError:
     print(&quot;no file, using empty data&quot;)</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>no file, using empty data</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Watch out</p><p class="learn-callout-body">Opening with <code>"w"</code> truncates the file immediately, before you write anything. If you meant to add to a file, use <code>"a"</code>.</p></aside>
+      <h2>The three modes you need</h2>
+      <ul><li><code>"r"</code> read (the default): fails if the file does not exist.</li><li><code>"w"</code> write: creates the file, <strong>erasing</strong> anything already there.</li><li><code>"a"</code> append: adds to the end without erasing.</li></ul>
+      <h2>Write, then read back</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>with open(&quot;notes.txt&quot;, &quot;w&quot;) as f:
+    f.write(&quot;first line\n&quot;)
+    f.write(&quot;second line\n&quot;)
+
+with open(&quot;notes.txt&quot;, &quot;a&quot;) as f:
+    f.write(&quot;third line\n&quot;)
+
+with open(&quot;notes.txt&quot;) as f:
+    print(f.read())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>first line
+second line
+third line</pre></div>
+      <h2>Reading line by line</h2>
+      <p>For big files do not load everything at once. Looping over the file gives you one line at a time using very little memory. Each line ends with <code>\n</code>, so call <code>.strip()</code> to remove it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>with open(&quot;notes.txt&quot;) as f:
+    for number, line in enumerate(f, start=1):
+        print(number, line.strip())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1 first line
+2 second line
+3 third line</pre></div>
+      <h2>Worked example: total a CSV of expenses</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>with open(&quot;expenses.csv&quot;, &quot;w&quot;) as f:
+    f.write(&quot;item,amount\ncoffee,3.5\nbooks,20\ntrain,12.25\n&quot;)
+
+total = 0
+with open(&quot;expenses.csv&quot;) as f:
+    next(f)                      # skip the header row
+    for line in f:
+        item, amount = line.strip().split(&quot;,&quot;)
+        total += float(amount)
+
+print(f&quot;Total: {total:.2f}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Total: 35.75</pre></div>
+      <h2>Handling a missing file</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>try:
+    with open(&quot;does-not-exist.txt&quot;) as f:
+        data = f.read()
+except FileNotFoundError:
+    data = &quot;&quot;
+    print(&quot;No file yet, starting empty&quot;)
+print(repr(data))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>No file yet, starting empty
+&#x27;&#x27;</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Open files with <code>with open(path, mode) as f</code> so they always close.</li><li><code>r</code> reads, <code>w</code> overwrites, <code>a</code> appends.</li><li>Loop over a file to read it line by line; <code>.strip()</code> removes the newline.</li><li>Catch <code>FileNotFoundError</code> when a file might not exist yet.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a function <code>count_lines(path)</code> that returns how many lines a file contains, or <code>0</code> if the file does not exist.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def count_lines(path):
     try:

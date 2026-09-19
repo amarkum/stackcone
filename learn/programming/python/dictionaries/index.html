@@ -72,6 +72,8 @@
             <ul><li>Read and write dict keys</li><li>Iterate .items()</li><li>Use sets for uniqueness</li></ul>
           </div>
       <p>A <strong>dictionary</strong> stores data as key-value pairs. Instead of asking "what is at position 2?" you ask "what is the value for the key <code>"email"</code>?". Lookups are very fast, on average constant time no matter how large the dictionary grows. Keys must be immutable (strings, numbers, tuples); values can be anything.</p>
+      <h2>Look things up by name, not position</h2>
+      <p>A list finds items by position: "give me item 3." But often you know a <em>name</em>, not a position: "what is Ada's email?" A <strong>dictionary</strong> works like a real dictionary or a phone contact list: you look up a <em>key</em> and get its <em>value</em>. It is one of the most useful tools in the language because so much real data is "a set of named fields": a user, a product, a settings file.</p>
       <h2>Creating and reading</h2>
       <div class="learn-code-wrap" data-lang="python"><pre><code>user = {&quot;id&quot;: 1, &quot;email&quot;: &quot;dev@example.com&quot;}
 user[&quot;role&quot;] = &quot;admin&quot;      # add or update
@@ -112,6 +114,72 @@ print(len(set([1, 1, 2, 2, 3])))</code></pre></div>
 {2, 3}
 3</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Order</p><p class="learn-callout-body">Since Python 3.7 dictionaries remember insertion order. Sets do not guarantee any order, so never rely on it.</p></aside>
+      <h2>Reading, adding and safely looking up</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>user = {&quot;name&quot;: &quot;Ada&quot;, &quot;role&quot;: &quot;admin&quot;}
+
+print(user[&quot;name&quot;])
+user[&quot;email&quot;] = &quot;ada@example.com&quot;   # add a new key
+user[&quot;role&quot;] = &quot;owner&quot;              # change a value
+
+print(user.get(&quot;phone&quot;))            # missing key -&gt; None, no crash
+print(user.get(&quot;phone&quot;, &quot;n/a&quot;))     # or supply a default
+print(&quot;email&quot; in user)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada
+None
+n/a
+True</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>KeyError</p><p class="learn-callout-body">Reading a missing key with <code>user["phone"]</code> raises <code>KeyError</code>. Use <code>.get()</code> when the key might not exist.</p></aside>
+      <h2>Looping over a dictionary</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>prices = {&quot;tea&quot;: 2.5, &quot;coffee&quot;: 3.0, &quot;juice&quot;: 4.25}
+
+for item, price in prices.items():
+    print(f&quot;{item:&lt;8} ${price:.2f}&quot;)
+
+print(list(prices.keys()))
+print(sum(prices.values()))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>tea      $2.50
+coffee   $3.00
+juice    $4.25
+[&#x27;tea&#x27;, &#x27;coffee&#x27;, &#x27;juice&#x27;]
+9.75</pre></div>
+      <h2>Worked example: counting words</h2>
+      <p>Counting how often things appear is the classic dictionary job. The key is the thing being counted; the value is the running total.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>text = &quot;the cat and the hat and the bat&quot;
+counts = {}
+
+for word in text.split():
+    counts[word] = counts.get(word, 0) + 1
+
+print(counts)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;the&#x27;: 3, &#x27;cat&#x27;: 1, &#x27;and&#x27;: 2, &#x27;hat&#x27;: 1, &#x27;bat&#x27;: 1}</pre></div>
+      <h2>Nested data</h2>
+      <p>Values can be lists or other dictionaries, which is how real data such as API responses is shaped. Read it one level at a time.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>order = {
+    &quot;id&quot;: 1001,
+    &quot;customer&quot;: {&quot;name&quot;: &quot;Ada&quot;, &quot;city&quot;: &quot;London&quot;},
+    &quot;items&quot;: [{&quot;sku&quot;: &quot;A1&quot;, &quot;qty&quot;: 2}, {&quot;sku&quot;: &quot;B7&quot;, &quot;qty&quot;: 1}],
+}
+
+print(order[&quot;customer&quot;][&quot;city&quot;])
+print(order[&quot;items&quot;][0][&quot;qty&quot;])
+print(sum(i[&quot;qty&quot;] for i in order[&quot;items&quot;]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>London
+2
+3</pre></div>
+      <h2>Sets: unique items and fast membership</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>a = {&quot;python&quot;, &quot;sql&quot;, &quot;git&quot;}
+b = {&quot;git&quot;, &quot;docker&quot;, &quot;sql&quot;}
+
+print(a &amp; b)      # in both
+print(a | b)      # in either
+print(a - b)      # only in a
+print(len({1, 1, 2, 2, 3}))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;git&#x27;, &#x27;sql&#x27;}
+{&#x27;docker&#x27;, &#x27;git&#x27;, &#x27;python&#x27;, &#x27;sql&#x27;}
+{&#x27;python&#x27;}
+3</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>A dictionary maps unique keys to values; use it when data has names.</li><li>Read with <code>d[key]</code> or the safe <code>d.get(key, default)</code>.</li><li>Loop with <code>.items()</code>; counting is the classic pattern.</li><li>Sets store unique items and support union, intersection and difference.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build a word-frequency dictionary from a sentence, then print the word that appears most often.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="text = &quot;to be or not to be&quot;
 counts = {}

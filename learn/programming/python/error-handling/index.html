@@ -72,6 +72,8 @@
             <ul><li>Catch specific exceptions</li><li>Use finally for cleanup</li><li>Raise ValueError with a message</li></ul>
           </div>
       <p>Things go wrong: files are missing, users type letters where numbers belong, networks drop. When Python hits a problem it raises an <strong>exception</strong>. If nothing handles it, the program stops and prints a traceback. <strong>Error handling</strong> lets you respond gracefully instead.</p>
+      <h2>Errors will happen, so plan for them</h2>
+      <p>Users type letters where numbers are expected. Files go missing. Networks drop. A program that assumes everything goes right will crash the first time reality disagrees. <strong>Exception handling</strong> lets you say: "try this, and if a specific thing goes wrong, do this instead of crashing." It is the difference between a program that dies with a scary traceback and one that politely tells the user what to fix.</p>
       <h2>try and except</h2>
       <p>Put risky code in a <code>try</code> block and describe how to recover in <code>except</code>. Catch the <em>specific</em> exception you expect. A bare <code>except:</code> hides real bugs, including typos in your own code.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code>raw = &quot;abc&quot;
@@ -113,6 +115,71 @@ ValueError: port out of range</pre></div>
       <h2>Common exceptions</h2>
       <ul><li><code>ValueError</code>: right type, wrong value, like <code>int("x")</code>.</li><li><code>TypeError</code>: wrong type, like <code>"a" + 1</code>.</li><li><code>KeyError</code> / <code>IndexError</code>: missing dictionary key or list position.</li><li><code>FileNotFoundError</code>: the path does not exist.</li><li><code>ZeroDivisionError</code>: dividing by zero.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Fail loudly</p><p class="learn-callout-body">Only catch an exception when you can actually do something useful about it. Swallowing errors silently makes bugs very hard to find later.</p></aside>
+      <h2>try, except, else, finally: what each part is for</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def parse_age(text):
+    try:
+        age = int(text)
+    except ValueError:
+        print(&quot;not a number:&quot;, repr(text))
+        return None
+    else:
+        print(&quot;parsed fine&quot;)
+        return age
+    finally:
+        print(&quot;(always runs)&quot;)
+
+print(parse_age(&quot;42&quot;))
+print(parse_age(&quot;forty&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>parsed fine
+(always runs)
+42
+not a number: &#x27;forty&#x27;
+(always runs)
+None</pre></div>
+      <ul><li><code>try</code>: the risky code.</li><li><code>except ValueError</code>: runs only if <em>that</em> error happens. Be specific.</li><li><code>else</code>: runs only when nothing went wrong.</li><li><code>finally</code>: always runs, good for cleanup such as closing connections.</li></ul>
+      <h2>Catch specific errors, not everything</h2>
+      <p>Writing a bare <code>except:</code> hides real bugs, including typos. Catch the exact exception you expect, and let unexpected ones crash loudly so you notice them.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>data = {&quot;price&quot;: &quot;12.5&quot;}
+
+try:
+    value = float(data[&quot;price&quot;]) / int(data.get(&quot;qty&quot;, 0))
+except (KeyError, ValueError):
+    print(&quot;bad input&quot;)
+except ZeroDivisionError:
+    print(&quot;quantity was zero&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>quantity was zero</pre></div>
+      <h2>Raising your own errors</h2>
+      <p>Use <code>raise</code> when a caller gives you something invalid. A clear message saves the next developer (often you) hours of guessing.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def set_age(age):
+    if not 0 &lt;= age &lt;= 130:
+        raise ValueError(f&quot;age out of range: {age}&quot;)
+    return age
+
+try:
+    set_age(200)
+except ValueError as err:
+    print(&quot;Rejected:&quot;, err)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Rejected: age out of range: 200</pre></div>
+      <h2>Worked example: ask until valid</h2>
+      <p>A very common pattern: keep asking until the input is acceptable. Here the inputs are simulated with a list so you can run it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>answers = iter([&quot;abc&quot;, &quot;-5&quot;, &quot;27&quot;])
+
+while True:
+    text = next(answers)
+    try:
+        age = int(text)
+        if age &lt; 0:
+            raise ValueError(&quot;negative&quot;)
+    except ValueError:
+        print(f&quot;{text!r} is not valid, try again&quot;)
+        continue
+    print(&quot;Accepted&quot;, age)
+    break</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>&#x27;abc&#x27; is not valid, try again
+&#x27;-5&#x27; is not valid, try again
+Accepted 27</pre></div>
+      <h2>Key takeaways</h2>
+      <ul><li>Wrap risky code in <code>try</code>; handle expected problems in <code>except</code>.</li><li>Catch specific exceptions; never hide bugs with a bare <code>except:</code>.</li><li><code>else</code> runs on success, <code>finally</code> always runs.</li><li><code>raise</code> your own errors with clear messages.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>safe_divide(a, b)</code> that returns the result, or <code>None</code> when <code>b</code> is zero. Then wrap file reading in try/except so it returns <code>None</code> if the file is missing.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def safe_divide(a, b):
     try:

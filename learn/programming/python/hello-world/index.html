@@ -72,6 +72,11 @@
             <ul><li>Run Python from the terminal</li><li>Use print() and comments</li><li>Understand .py files</li></ul>
           </div>
       <p>Python is an <strong>interpreted</strong> language. You write plain text in a <code>.py</code> file, and the interpreter reads it top to bottom, running each statement as it goes. There is no separate compile step, so you get feedback in seconds. That fast loop is one of the main reasons Python is a popular first language and a favorite for scripting, data work and web backends.</p>
+      <h2>What is programming, really?</h2>
+      <p>A program is a list of instructions written so precisely that a computer can follow them without ever guessing. Think of a recipe: "boil two cups of water, add the pasta, wait eight minutes." A human cook can cope with vague steps, but a computer cannot, so every step has to be exact. <strong>Python</strong> is a language designed so those exact steps read almost like plain English.</p>
+      <p>You do not need any prior experience. By the end of this lesson you will have installed Python, written a program, run it, and read your first error message, which is the most important beginner skill of all.</p>
+      <h2>Where do I write Python?</h2>
+      <ul><li><strong>A text editor plus a terminal</strong>: write a file ending in <code>.py</code> and run it with <code>python3 file.py</code>. This is what the rest of the course assumes.</li><li><strong>VS Code</strong> (free): a friendly editor with a built-in terminal and a Run button. A great first choice.</li><li><strong>The REPL</strong>: type <code>python3</code> in a terminal and you get a prompt where every line runs instantly. Perfect for experiments.</li><li><strong>Right here</strong>: every editor on this site with a Run button executes real Python in your browser, so you can try things without installing anything first.</li></ul>
       <h2>Check your installation</h2>
       <p>Open a terminal and ask Python for its version. On macOS and Linux the command is usually <code>python3</code>; on Windows it is often <code>python</code> or <code>py</code>. Any version 3.9 or newer works for this course.</p>
       <div class="learn-code-wrap" data-lang="bash"><pre><code>python3 --version</code></pre></div>
@@ -90,9 +95,37 @@ print(&quot;2 + 2 =&quot;, 2 + 2)</code></pre></div>
       <p>Anything after a <code>#</code> on a line is a <strong>comment</strong>. Python ignores it, so use comments to explain <em>why</em> code does something, not <em>what</em> it does. You can also type <code>python3</code> on its own to open the interactive prompt (the REPL), which is a great place to try one-liners.</p>
       <div class="learn-code-wrap" data-lang="python"><pre><code># This line is ignored by Python
 print(&quot;visible&quot;)  # comments can follow code too</code></pre></div>
+      <h2>How a program actually runs</h2>
+      <p>When you run <code>python3 hello.py</code>, Python reads the file from the first line to the last, one statement at a time, and does what each says. It never skips ahead unless you tell it to (you will learn how in the control-flow lesson). Output from <code>print()</code> appears in the order the lines run.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>print(&quot;step 1&quot;)
+print(&quot;step 2&quot;)
+print(&quot;step 3&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>step 1
+step 2
+step 3</pre></div>
+      <p>Order matters. If you swap two lines, the output swaps too. Whenever a program surprises you, the first question to ask is: <em>which line is running right now, and what has already happened?</em></p>
+      <h2>Printing several things at once</h2>
+      <p><code>print()</code> accepts many values separated by commas and puts a space between them. Use <code>sep=</code> to change that separator and <code>end=</code> to change what comes after (the default is a new line).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>print(&quot;Python&quot;, &quot;is&quot;, &quot;fun&quot;)
+print(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep=&quot;-&quot;)
+print(&quot;loading&quot;, end=&quot;...&quot;)
+print(&quot;done&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Python is fun
+a-b-c
+loading...done</pre></div>
+      <h2>Your first error, on purpose</h2>
+      <p>Errors are not failure; they are the computer telling you exactly what it did not understand. Type the line below and you will see one. Read the last line first.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>print(&quot;Hello)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>  File &quot;hello.py&quot;, line 1
+    print(&quot;Hello)
+          ^
+SyntaxError: unterminated string literal (detected at line 1)</pre></div>
+      <p>Python points at the exact spot (the <code>^</code>) and names the problem: the string that started with a quote never closed. Add the missing <code>"</code> and the error disappears.</p>
       <h2>Common mistakes</h2>
       <ul><li><strong>Missing quotes</strong>: <code>print(Hello)</code> fails with <code>NameError</code> because Python thinks <code>Hello</code> is a variable. Write <code>print("Hello")</code>.</li><li><strong>Mismatched parentheses or quotes</strong>: every opening <code>(</code> or <code>"</code> needs a closing partner, or you get a <code>SyntaxError</code>.</li><li><strong>Wrong capitalization</strong>: Python is case sensitive. <code>Print</code> is not <code>print</code>.</li><li><strong>Running from the wrong folder</strong>: <code>No such file or directory</code> means your terminal is not in the folder that contains the file. Use <code>cd</code> to move there.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Reading errors</p><p class="learn-callout-body">When Python fails it prints a <em>traceback</em>. Read it from the bottom: the last line names the error and the line above shows which line of your file caused it.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li>A program is precise, ordered instructions; Python runs them from top to bottom.</li><li><code>print()</code> shows values; commas add spaces, <code>sep=</code> and <code>end=</code> change the layout.</li><li>Run a file with <code>python3 file.py</code>, or experiment instantly in the REPL.</li><li>Read errors from the last line upward; the message tells you what went wrong.</li></ul>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Change the program to print your name and the current year on two separate lines, then add a comment above each line explaining it.</p></aside>
       <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="# Print my name
 print(&quot;Amar&quot;)
