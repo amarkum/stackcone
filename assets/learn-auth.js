@@ -1,5 +1,5 @@
 /* stackcone Learn — accounts.
-   Google sign-in with Firebase Auth; lesson progress synced to Firestore users/{uid}.
+   Google or email/password sign-in with Firebase Auth; lesson progress synced to Firestore users/{uid}.
    Loaded as a module on every page that shows the header. Without window.SC_FIREBASE
    it does nothing and progress stays in localStorage. */
 const SDK = "https://www.gstatic.com/firebasejs/10.12.2/";
@@ -35,6 +35,14 @@ const MESSAGES = {
   "auth/too-many-requests": "Too many attempts. Wait a minute and try again.",
   "auth/configuration-not-found": "Sign-in is not enabled yet for this site.",
   "auth/operation-not-allowed": "Sign-in is not enabled yet for this site.",
+  "auth/invalid-credential": "Email or password is incorrect.",
+  "auth/wrong-password": "Email or password is incorrect.",
+  "auth/user-not-found": "No account with that email.",
+  "auth/email-already-in-use": "An account with that email already exists. Log in instead.",
+  "auth/weak-password": "Use at least 8 characters.",
+  "auth/invalid-email": "That email address looks wrong.",
+  "auth/missing-password": "Enter your password.",
+  "auth/account-exists-with-different-credential": "This email is already registered with a password. Log in with email instead.",
 };
 
 export function friendlyError(err) {
@@ -47,7 +55,24 @@ async function need() {
   return f;
 }
 
-/** One button for both sign up and log in: Google creates the account on first use. */
+export async function signUp(name, email, password) {
+  const { auth, a } = await need();
+  const cred = await auth.createUserWithEmailAndPassword(a, email, password);
+  if (name) await auth.updateProfile(cred.user, { displayName: name });
+  return cred.user;
+}
+
+export async function logIn(email, password) {
+  const { auth, a } = await need();
+  return (await auth.signInWithEmailAndPassword(a, email, password)).user;
+}
+
+export async function resetPassword(email) {
+  const { auth, a } = await need();
+  await auth.sendPasswordResetEmail(a, email);
+}
+
+/** Google creates the account on first use, so this serves both sign up and log in. */
 export async function signInWithGoogle() {
   const { auth, a } = await need();
   const provider = new auth.GoogleAuthProvider();
