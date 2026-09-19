@@ -84,11 +84,12 @@ print(round(uploads_per_sec), round(peak_per_sec), storage_per_day_tb)</code></p
       <p>Most consumer systems read far more than they write (often 100 to 1 or more). That points to caching and read replicas. Write-heavy systems (logging, metrics) suggest queues, batching and append-friendly storage.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Avoid over-engineering</p><p class="learn-callout-body">Start with the simplest thing that meets the requirements: one server and one database can carry more than beginners expect. Add complexity only when a number justifies it.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A service gets 50 million requests a day. Estimate average and peak QPS (assume peak is 5 times the average) and say whether one server handling 1,000 QPS would suffice.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>daily = 50_000_000
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="daily = 50_000_000
 avg = daily / 86_400        # ~579 QPS
 peak = avg * 5              # ~2,894 QPS
 print(round(avg), round(peak))
-# One 1,000 QPS server is not enough at peak: need at least 3-4 plus redundancy.</code></pre></div></div></details>
+# One 1,000 QPS server is not enough at peak: need at least 3-4 plus redundancy."><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/sysdesign-scaling-caching/"><span class="learn-upnext-label">Up next · Lesson 2</span><strong>Scaling and Caching</strong><small>Load balancers, horizontal scaling, caches and CDNs.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>

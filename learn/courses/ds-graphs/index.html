@@ -114,7 +114,7 @@ print(sorted(dfs(&quot;A&quot;)))</code></pre></div>
       <ul><li><strong>Dijkstra</strong>: shortest paths with weighted edges.</li><li><strong>Topological sort</strong>: order tasks so dependencies come first.</li><li><strong>Union-Find</strong>: quickly answer whether two nodes are connected.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Always mark visited</p><p class="learn-callout-body">Forgetting the <code>seen</code> set is the most common graph bug. On any graph with a cycle it causes an infinite loop.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend <code>bfs</code> to take a target and return the shortest path as a list of nodes, or <code>None</code> if unreachable.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="from collections import deque
 
 def shortest_path(start, target):
     q = deque([[start]])
@@ -130,7 +130,8 @@ def shortest_path(start, target):
                 q.append(path + [nxt])
     return None
 
-print(shortest_path(&quot;A&quot;, &quot;D&quot;))   # [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;D&#x27;]</code></pre></div></div></details>
+print(shortest_path(&quot;A&quot;, &quot;D&quot;))   # [&#x27;A&#x27;, &#x27;B&#x27;, &#x27;D&#x27;]"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/ds-big-o/"><span class="learn-upnext-label">Up next · Lesson 8</span><strong>Big O Notation</strong><small>Worst-case growth rates and comparing algorithms.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ds-hash-tables/">← Previous</a>

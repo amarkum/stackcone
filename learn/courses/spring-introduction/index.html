@@ -106,11 +106,12 @@ curl http://localhost:8080/health</code></pre></div>
       <ul><li><code>src/main/java</code>: your code.</li><li><code>src/main/resources/application.properties</code> (or <code>.yml</code>): configuration such as the port.</li><li><code>src/test/java</code>: tests.</li><li><code>pom.xml</code> / <code>build.gradle</code>: dependencies and build.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Actuator</p><p class="learn-callout-body">Add the <code>spring-boot-starter-actuator</code> dependency to get <code>/actuator/health</code> and metrics endpoints for free, which is what monitoring tools and load balancers use.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add <code>GET /time</code> that returns the current server time as a string, and change the port to 9090 in <code>application.properties</code>.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="java"><pre><code>@GetMapping(&quot;/time&quot;)
+      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="@GetMapping(&quot;/time&quot;)
 public String time() {
     return java.time.Instant.now().toString();
 }
-// application.properties:  server.port=9090</code></pre></div></div></details>
+// application.properties:  server.port=9090"><pre><code>// Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/spring-rest-controllers/"><span class="learn-upnext-label">Up next · Lesson 2</span><strong>REST Controllers and Validation</strong><small>Handle GET/POST/PUT/DELETE with DTOs, validation and error handling.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <span class="learn-nav-btn is-disabled">← Previous</span>

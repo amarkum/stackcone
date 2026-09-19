@@ -151,11 +151,12 @@ class ApiExceptionHandler {
 {&quot;title&quot;:&quot;title is required&quot;}</pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not expose entities</p><p class="learn-callout-body">Returning database entities directly couples your API to your schema and can leak fields. Map to response DTOs, as above.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>priority</code> field to <code>CreateTaskRequest</code> that must be between 1 and 5, and confirm a request with priority 9 returns HTTP 400.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="java"><pre><code>public record CreateTaskRequest(
+      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="public record CreateTaskRequest(
     @NotBlank String title,
     boolean done,
     @Min(1) @Max(5) int priority
-) {}</code></pre></div></div></details>
+) {}"><pre><code>// Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/spring-dependency-injection/"><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Dependency Injection and Layers</strong><small>Beans, services, repositories and constructor injection.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/spring-introduction/">← Previous</a>

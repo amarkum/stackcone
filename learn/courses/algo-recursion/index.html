@@ -116,12 +116,13 @@ print(fib(50))</code></pre></div>
       <p>Anything recursive can be written with a loop and an explicit stack. Prefer a loop when depth could be large or the loop is just as clear; prefer recursion when it mirrors the structure of the problem.</p>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Debugging tip</p><p class="learn-callout-body">Write the base case first, then check that every recursive call moves strictly closer to it. Print the arguments at the top of the function to watch the stack build.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a recursive <code>is_palindrome(s)</code> that returns True if a string reads the same backward.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>def is_palindrome(s):
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def is_palindrome(s):
     if len(s) &lt;= 1:
         return True
     return s[0] == s[-1] and is_palindrome(s[1:-1])
 
-print(is_palindrome(&quot;level&quot;), is_palindrome(&quot;stack&quot;))</code></pre></div></div></details>
+print(is_palindrome(&quot;level&quot;), is_palindrome(&quot;stack&quot;))"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/algo-greedy/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Greedy Algorithms</strong><small>Make the locally best choice at each step, and know when that is enough.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/algo-sorting/">← Previous</a>

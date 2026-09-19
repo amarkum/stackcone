@@ -340,6 +340,19 @@ def esc(s: str) -> str:
     return html.escape(s, quote=True)
 
 
+_HASH_LANGS = {"python", "py", "bash", "sh", "shell", "yaml", "yml", "ruby", "dockerfile"}
+
+
+def starter_for(lang: str) -> str:
+    """Empty editor scaffold so the learner writes the answer themselves."""
+    lang = lang.lower()
+    if lang in _HASH_LANGS:
+        return "# Write your solution here\n"
+    if lang == "sql":
+        return "-- Write your solution here\n"
+    return "// Write your solution here\n"
+
+
 def render_section(item: tuple, title: str | None = None) -> str:
     kind, *rest = item
     if kind == "p":
@@ -363,15 +376,10 @@ def render_section(item: tuple, title: str | None = None) -> str:
                 f'<span class="learn-output-label">{ICON_OUTPUT}Output</span>'
                 f'<pre>{esc(rest[0])}</pre></div>')
     if kind == "solution":
-        return (f'      <details class="learn-solution">'
-                f'<summary class="learn-solution-toggle">'
-                f'<span class="learn-solution-text">'
-                f'<span class="when-closed">Show solution</span>'
-                f'<span class="when-open">Hide solution</span></span>'
-                f'{ICON_CHEVRON}</summary>'
-                f'<div class="learn-solution-body">'
-                f'<div class="learn-code-wrap" data-lang="{esc(rest[0])}">'
-                f'<pre><code>{esc(rest[1])}</code></pre></div></div></details>')
+        lang, code = rest
+        return (f'      <div class="learn-code-wrap learn-practice" data-lang="{esc(lang)}" '
+                f'data-solution="{esc(code)}">'
+                f'<pre><code>{esc(starter_for(lang))}</code></pre></div>')
     if kind == "exercise":
         return (f'      <aside class="learn-callout learn-exercise">'
                 f'<p class="learn-callout-label">{ICON_EXERCISE}Try it yourself</p>'

@@ -123,13 +123,14 @@ function Counter() {
       <ul><li>Enable <code>allowJs</code> and rename files from <code>.js</code> to <code>.ts</code> one at a time.</li><li>Start with the shared models and utility functions, then the leaves.</li><li>Use <code>// @ts-expect-error</code> with a comment for known issues instead of <code>any</code> everywhere.</li><li>Run <code>tsc --noEmit</code> in CI so type errors fail the build.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Declaration files</p><p class="learn-callout-body">Libraries without built-in types have community ones: <code>npm install --save-dev @types/node</code> gives you types for Node.js.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a zod schema for a <code>Todo</code> (<code>id</code>, <code>title</code>, <code>done</code>), derive its type and write a typed <code>fetchTodos()</code> returning <code>Todo[]</code>.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="typescript"><pre><code>const TodoSchema = z.object({ id: z.number(), title: z.string(), done: z.boolean() });
+      <div class="learn-code-wrap learn-practice" data-lang="typescript" data-solution="const TodoSchema = z.object({ id: z.number(), title: z.string(), done: z.boolean() });
 type Todo = z.infer&lt;typeof TodoSchema&gt;;
 
 async function fetchTodos(): Promise&lt;Todo[]&gt; {
   const res = await fetch(&quot;/api/todos&quot;);
   return z.array(TodoSchema).parse(await res.json());
-}</code></pre></div></div></details>
+}"><pre><code>// Write your solution here
+</code></pre></div>
           <a class="learn-upnext learn-upnext--done" href="/learn/typescript/"><span class="learn-upnext-label">Course complete</span><strong>You finished TypeScript</strong><small>Review the full course or pick your next one.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/ts-generics-utility/">← Previous</a>

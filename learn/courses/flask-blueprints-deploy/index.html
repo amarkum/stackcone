@@ -146,7 +146,7 @@ CMD [&quot;gunicorn&quot;, &quot;-w&quot;, &quot;4&quot;, &quot;-b&quot;, &quot;
       <ul><li><code>DEBUG</code> off; a strong <code>SECRET_KEY</code> read from an environment variable.</li><li>A real database (PostgreSQL) with migrations applied.</li><li>HTTPS, secure cookies (<code>SESSION_COOKIE_SECURE</code>) and CSRF protection on forms.</li><li>Structured logging and error monitoring (for example Sentry).</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Next steps</p><p class="learn-callout-body">Add Flask-Login for user sessions, Flask-WTF for forms, and Flask-Smorest or Flask-RESTX if you want OpenAPI docs for a JSON API.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Split a small app into an app factory plus an <code>api</code> blueprint at <code>/api</code> with a <code>/ping</code> route, and write a pytest test that checks it returns 200.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code># api.py
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="# api.py
 bp = Blueprint(&quot;api&quot;, __name__, url_prefix=&quot;/api&quot;)
 @bp.route(&quot;/ping&quot;)
 def ping():
@@ -155,7 +155,8 @@ def ping():
 # factory: app.register_blueprint(bp)
 # test
 def test_ping(client):
-    assert client.get(&quot;/api/ping&quot;).status_code == 200</code></pre></div></div></details>
+    assert client.get(&quot;/api/ping&quot;).status_code == 200"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext learn-upnext--done" href="/learn/flask/"><span class="learn-upnext-label">Course complete</span><strong>You finished Flask</strong><small>Review the full course or pick your next one.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/flask-database/">← Previous</a>

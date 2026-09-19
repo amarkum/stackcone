@@ -124,7 +124,7 @@ admin.site.register(Author)</code></pre></div>
 def dashboard(request):
     return render(request, &quot;dashboard.html&quot;)</code></pre></div>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>ContactForm</code> (a plain <code>forms.Form</code>, not tied to a model) with <code>email</code> and <code>message</code> fields, and make the view print the cleaned data on a valid submission.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>class ContactForm(forms.Form):
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="class ContactForm(forms.Form):
     email = forms.EmailField()
     message = forms.CharField(widget=forms.Textarea, min_length=10)
 
@@ -133,7 +133,8 @@ def contact(request):
     if request.method == &quot;POST&quot; and form.is_valid():
         print(form.cleaned_data)
         return redirect(&quot;blog:list&quot;)
-    return render(request, &quot;contact.html&quot;, {&quot;form&quot;: form})</code></pre></div></div></details>
+    return render(request, &quot;contact.html&quot;, {&quot;form&quot;: form})"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/django-rest-api/"><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Building a JSON API</strong><small>Return JSON from views and expose a REST API with Django REST framework.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/django-views-urls/">← Previous</a>

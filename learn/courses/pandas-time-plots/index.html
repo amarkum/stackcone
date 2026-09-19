@@ -107,11 +107,12 @@ df.to_parquet(&quot;orders.parquet&quot;)     # compact and fast for big data
 df.to_sql(&quot;orders&quot;, engine, if_exists=&quot;replace&quot;, index=False)</code></pre></div>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Big files</p><p class="learn-callout-body">For data that does not fit in memory, read in chunks (<code>chunksize=</code>), keep only the columns you need (<code>usecols=</code>), or move to Polars or DuckDB.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create 60 days of random data, compute a 7-day rolling mean and the best week, and save a line chart to a PNG file.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="python"><pre><code>idx = pd.date_range(&quot;2026-01-01&quot;, periods=60)
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="idx = pd.date_range(&quot;2026-01-01&quot;, periods=60)
 s = pd.Series(np.random.default_rng(0).normal(100, 15, 60), index=idx)
 print(s.resample(&quot;W&quot;).sum().idxmax())
 ax = pd.DataFrame({&quot;value&quot;: s, &quot;7d&quot;: s.rolling(7).mean()}).plot(title=&quot;Demo&quot;)
-ax.figure.savefig(&quot;demo.png&quot;)</code></pre></div></div></details>
+ax.figure.savefig(&quot;demo.png&quot;)"><pre><code># Write your solution here
+</code></pre></div>
           <a class="learn-upnext learn-upnext--done" href="/learn/pandas/"><span class="learn-upnext-label">Course complete</span><strong>You finished Pandas</strong><small>Review the full course or pick your next one.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/pandas-groupby-merge/">← Previous</a>

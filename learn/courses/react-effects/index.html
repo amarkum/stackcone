@@ -105,7 +105,7 @@ function Title({ name }) {
       <ul><li>Computing a value from props or state: do it during render, no effect needed.</li><li>Responding to a click or submit: put the logic in the event handler.</li><li>Resetting state when a prop changes: give the component a different <code>key</code>.</li></ul>
       <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Infinite loop</p><p class="learn-callout-body">An effect that sets state, with that same state in its dependency array, can loop forever. Also, an object or function created inline changes identity on every render, so listing it as a dependency re-runs the effect each time.</p></aside>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a <code>useWindowWidth</code>-style effect: track <code>window.innerWidth</code> in state, update it on the <code>resize</code> event and remove the listener on cleanup.</p></aside>
-      <details class="learn-solution"><summary class="learn-solution-toggle"><span class="learn-solution-text"><span class="when-closed">Show solution</span><span class="when-open">Hide solution</span></span><svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true" focusable="false"><path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><div class="learn-solution-body"><div class="learn-code-wrap" data-lang="javascript"><pre><code>function Width() {
+      <div class="learn-code-wrap learn-practice" data-lang="javascript" data-solution="function Width() {
   const [w, setW] = useState(window.innerWidth);
   useEffect(() =&gt; {
     const onResize = () =&gt; setW(window.innerWidth);
@@ -113,7 +113,8 @@ function Title({ name }) {
     return () =&gt; window.removeEventListener(&quot;resize&quot;, onResize);
   }, []);
   return &lt;p&gt;{w}px&lt;/p&gt;;
-}</code></pre></div></div></details>
+}"><pre><code>// Write your solution here
+</code></pre></div>
           <a class="learn-upnext" href="/learn/courses/react-hooks-context/"><span class="learn-upnext-label">Up next · Lesson 6</span><strong>Custom Hooks, Refs and Context</strong><small>Reuse logic with custom hooks and share data with context.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/courses/react-events-forms/">← Previous</a>
