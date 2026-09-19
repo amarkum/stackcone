@@ -586,7 +586,8 @@ LEVEL_ORDER = {"Beginner": 0, "Intermediate": 1, "Advanced": 2}
 
 
 def track_url(track_id: str) -> str:
-    return f"/learn/{track_id}/"
+    """Courses have no intro page: every course link goes straight to lesson 1."""
+    return first_lesson_url(track_id)
 
 
 def fmt_minutes(total: int) -> str:
@@ -726,66 +727,24 @@ def category_html(cat_id: str) -> str:
 
 
 def track_html(track_id: str) -> str:
-    """Course overview: what the course covers and its full syllabus."""
+    """/learn/{track}/ and /learn/courses/{track}/ redirect straight into lesson 1."""
     track = TRACKS[track_id]
-    lessons = by_track[track_id]
-    cat_id, cat_label = category_of(track_id)
-    total = sum(l["minutes"] for l in lessons)
-
-    rows = []
-    for les in lessons:
-        rows.append(f"""
-          <li>
-            <a class="learn-syllabus-row" href="/learn/courses/{les["slug"]}/">
-              <span class="learn-syllabus-num">{les["lesson_num"]}</span>
-              <span class="learn-syllabus-text">
-                <strong>{esc(les["title"])}</strong>
-                <small>{esc(les["summary"])}</small>
-              </span>
-              <span class="learn-syllabus-meta">{les["minutes"]} min</span>
-            </a>
-          </li>""")
-
-    body = f"""  <main class="learn-main">
-    <div class="learn-main-inner learn-course">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/{cat_id}/">{esc(cat_label)}</a> / {esc(track["label"])}</p>
-      <header class="learn-course-hero">
-        <p class="learn-eyebrow">{esc(cat_label)}</p>
-        <h1>{esc(track["label"])}</h1>
-        <p class="learn-hero-desc">{esc(track["description"])}</p>
-        <ul class="learn-facts">
-          <li><strong>{len(lessons)}</strong> lessons</li>
-          <li><strong>{fmt_minutes(total)}</strong> of reading</li>
-          <li><strong>{esc(level_range(lessons))}</strong></li>
-        </ul>
-        <a class="learn-btn learn-btn--primary" href="{first_lesson_url(track_id)}">Start course →</a>
-      </header>
-      <div class="learn-course-grid">
-        <section class="learn-course-body">
-          <h2 class="learn-section-title">Course content</h2>
-          <ol class="learn-syllabus">
-{"".join(rows)}
-          </ol>
-        </section>
-        <aside class="learn-course-aside">
-          <div class="learn-panel">
-            <h2 class="learn-panel-title">What you will learn</h2>
-            {checklist(course_highlights(lessons))}
-          </div>
-          <div class="learn-panel learn-panel--quiet">
-            <h2 class="learn-panel-title">How it works</h2>
-            <p>Every lesson explains the idea in plain language, shows small runnable examples with their output, and ends with an exercise and a worked solution.</p>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </main>"""
-    return _page_shell(
-        f'{esc(track["label"])} Course — {len(lessons)} Lessons | stackcone Learn',
-        f'{esc(track["description"])} {len(lessons)} free lessons with runnable examples and exercises.',
-        f"https://stackcone.com{track_url(track_id)}",
-        body,
-    )
+    dest = first_lesson_url(track_id)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url={dest}">
+  <link rel="canonical" href="https://stackcone.com{dest}">
+  <title>Redirecting...</title>
+  <script>window.location.replace('{dest}');</script>
+</head>
+<body>
+  <p>Redirecting to <a href="{dest}">{esc(track["label"])}</a>...</p>
+</body>
+</html>
+"""
 
 
 def courses_json() -> dict:
@@ -821,6 +780,10 @@ def main() -> None:
         out = LEARN / track_id / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(track_html(track_id), encoding="utf-8")
+        if track_id not in {l["slug"] for l in LESSONS}:
+            alias = LEARN / "courses" / track_id / "index.html"
+            alias.parent.mkdir(parents=True, exist_ok=True)
+            alias.write_text(track_html(track_id), encoding="utf-8")
     for les in LESSONS:
         out = LEARN / "courses" / les["slug"] / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
