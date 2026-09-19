@@ -300,9 +300,15 @@ from content_frameworks import META as _M3, CONTENT as _C3
 from content_web_tools import META as _M4, CONTENT as _C4
 from content_more import META as _M5, CONTENT as _C5
 from content_batch3 import META as _M6, CONTENT as _C6
-for _m in (*_MAI, *_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
+import importlib
+_MN, _CN = [], {}
+for _f in sorted(Path(__file__).resolve().parent.glob("content_n15_*.py")):  # lessons that bring each course to 15
+    _mod = importlib.import_module(_f.stem)
+    _MN += _mod.META
+    _CN.update(_mod.CONTENT)
+for _m in (*_MN, *_MAI, *_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
     LESSONS.append({**_m, "sections": []})
-_RICH = {**_CAI, **_PY, **_PY2, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
+_RICH = {**_CN, **_CAI, **_PY, **_PY2, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
 for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
@@ -365,6 +371,11 @@ ICON_CHEVRON = (
     '<svg class="learn-chevron" width="13" height="13" viewBox="0 0 13 13" fill="none" '
     'aria-hidden="true" focusable="false">'
     '<path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>'
+)
+ICON_CHECK = (
+    '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false">'
+    '<path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" '
     'stroke-linecap="round" stroke-linejoin="round"/></svg>'
 )
 ICON_NOTE = (
@@ -468,10 +479,14 @@ def lesson_html(les: dict) -> str:
     sidebar_items = []
     for t in by_track[track_slug]:
         active = " is-active" if t["slug"] == les["slug"] else ""
-        done = " is-done" if t["lesson_num"] < les["lesson_num"] else ""
+        current = ' aria-current="page"' if active else ""
+        # Completion comes from the learner's saved progress (assets/learn-progress.js), not position.
         sidebar_items.append(
-            f'          <a class="learn-sidebar-link{active}{done}" href="{lesson_url(t)}">'
-            f'<span class="learn-sidebar-num">{t["lesson_num"]}</span>{esc(t["title"])}</a>'
+            f'          <a class="learn-sidebar-link{active}" href="{lesson_url(t)}"{current} '
+            f'data-lesson="{t["slug"]}" data-minutes="{t["minutes"]}">'
+            f'<span class="learn-sidebar-num">{t["lesson_num"]}</span>'
+            f'<span class="learn-sidebar-title">{esc(t["title"])}</span>'
+            f'<span class="learn-sidebar-state" data-lesson-state aria-label="Not started">{ICON_CHECK}</span></a>'
         )
     sidebar = "\n".join(sidebar_items)
     by_slug = {l["slug"]: l for l in LESSONS}
@@ -522,7 +537,8 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=19">
+  <link rel="stylesheet" href="/learn/learn.css?v=20">
+  <link rel="stylesheet" href="/assets/auth.css?v=2">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -543,11 +559,18 @@ def lesson_html(les: dict) -> str:
     <div class="learn-main-inner">
       <p class="learn-breadcrumb"><a href="/learn/">Learn</a>{breadcrumb_track} / {esc(les["title"])}</p>
       <div class="learn-layout">
-        <aside class="learn-sidebar" aria-label="Course lessons">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="{track_slug}">
           <div class="learn-sidebar-head">
-            <p class="learn-sidebar-track"><a href="{track_url(track_slug)}">{esc(track["label"])}</a></p>
-            <p class="learn-sidebar-progress">Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="{track_url(track_slug)}">{esc(track["label"])}</a></p>
+              <p class="learn-sidebar-progress" data-progress-count>0 of {les["lesson_total"]} lessons completed</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
           </div>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
           <nav class="learn-sidebar-lessons">
 {sidebar}
           </nav>
@@ -566,10 +589,24 @@ def lesson_html(les: dict) -> str:
             <h2>What you will learn</h2>
             <ul>{objectives}</ul>
           </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your progress</h2>
+              <p><span data-progress-count>0 of {les["lesson_total"]} lessons completed</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span>Lesson</span><strong>{les["lesson_num"]} / {les["lesson_total"]}</strong></li>
+              <li><span>Completed</span><strong data-progress-done>0</strong></li>
+              <li><span>Est. time left</span><strong data-progress-left>{fmt_minutes(sum(t["minutes"] for t in by_track[track_slug]))}</strong></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+          </section>
 {sections}
           {upnext}
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             {prev_link}
+            <button type="button" class="learn-complete" data-mark-complete="{les["slug"]}" aria-pressed="false">{ICON_CHECK}<span data-mark-label>Mark as complete</span></button>
             {next_link}
           </nav>
           <aside class="blog-cta">
@@ -595,6 +632,9 @@ def lesson_html(les: dict) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
+  <script src="/assets/learn-progress.js?v=1" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=2"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
@@ -619,7 +659,8 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/learn/learn.css?v=19">
+  <link rel="stylesheet" href="/learn/learn.css?v=20">
+  <link rel="stylesheet" href="/assets/auth.css?v=2">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -646,6 +687,9 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
+  <script src="/assets/learn-progress.js?v=1" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=2"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
