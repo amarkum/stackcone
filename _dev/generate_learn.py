@@ -306,7 +306,8 @@ for _f in sorted(Path(__file__).resolve().parent.glob("content_n15_*.py")):  # l
     _mod = importlib.import_module(_f.stem)
     _MN += _mod.META
     _CN.update(_mod.CONTENT)
-for _m in (*_MN, *_MAI, *_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
+# Original track META first, then n15 extras so new lessons append as 8–15 (not 1–N).
+for _m in (*_MAI, *_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6, *_MN):
     LESSONS.append({**_m, "sections": []})
 _RICH = {**_CN, **_CAI, **_PY, **_PY2, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
 for _les in LESSONS:
