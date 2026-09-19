@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="index, follow">
   <title>URL Shortener | System Design | stackcone Learn</title>
-  <meta name="description" content="Design TinyURL / bit.ly: encoding, redirects, caching and analytics.">
+  <meta name="description" content="Design TinyURL / bit.ly end to end: encoding, redirects, caching, analytics and abuse.">
   <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/case-study/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,17 +53,17 @@
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/scaling-caching/" data-lesson="sysdesign-scaling-caching" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Scaling and Caching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/databases/" data-lesson="sysdesign-databases" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Choosing and Scaling Databases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/queues-apis/" data-lesson="sysdesign-queues-apis" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Queues, APIs and Reliability</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/unique-id/" data-lesson="sysdesign-unique-id" data-minutes="18"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Unique ID Generator</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/case-study/" aria-current="page" data-lesson="sysdesign-case-study" data-minutes="22"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">URL Shortener</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/rate-limiter/" data-lesson="sysdesign-rate-limiter" data-minutes="20"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/kv-store/" data-lesson="sysdesign-kv-store" data-minutes="22"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/news-feed/" data-lesson="sysdesign-news-feed" data-minutes="22"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">News Feed (Twitter / Instagram)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/chat/" data-lesson="sysdesign-chat" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Chat System (WhatsApp / Messenger)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/video/" data-lesson="sysdesign-video" data-minutes="22"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Video Streaming (YouTube)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/drive/" data-lesson="sysdesign-drive" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">File Storage (Dropbox / Drive)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/crawler/" data-lesson="sysdesign-crawler" data-minutes="18"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Web Crawler</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/typeahead/" data-lesson="sysdesign-typeahead" data-minutes="20"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Typeahead and Nearby Search</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/notifications/" data-lesson="sysdesign-notifications" data-minutes="20"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Notification System</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/unique-id/" data-lesson="sysdesign-unique-id" data-minutes="35"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Unique ID Generator</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/case-study/" aria-current="page" data-lesson="sysdesign-case-study" data-minutes="40"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">URL Shortener</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/rate-limiter/" data-lesson="sysdesign-rate-limiter" data-minutes="38"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/kv-store/" data-lesson="sysdesign-kv-store" data-minutes="40"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/news-feed/" data-lesson="sysdesign-news-feed" data-minutes="42"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">News Feed (Twitter / Instagram)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/chat/" data-lesson="sysdesign-chat" data-minutes="42"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Chat System (WhatsApp / Messenger)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/video/" data-lesson="sysdesign-video" data-minutes="40"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Video Streaming (YouTube)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/drive/" data-lesson="sysdesign-drive" data-minutes="38"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">File Storage (Dropbox / Drive)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/crawler/" data-lesson="sysdesign-crawler" data-minutes="36"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Web Crawler</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/typeahead/" data-lesson="sysdesign-typeahead" data-minutes="38"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Typeahead and Nearby Search</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/notifications/" data-lesson="sysdesign-notifications" data-minutes="40"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Notification System</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
@@ -75,16 +75,16 @@
             </nav>
           </div>
           <h1>URL Shortener</h1>
-          <p class="learn-summary">Design TinyURL / bit.ly: encoding, redirects, caching and analytics.</p>
+          <p class="learn-summary">Design TinyURL / bit.ly end to end: encoding, redirects, caching, analytics and abuse.</p>
           <ul class="learn-facts">
             <li><span class="learn-badge">Advanced</span></li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>22 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>40 min read</li>
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
           <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/sysdesign/unique-id/">Lesson 5: Unique ID Generator</a></p>
           <div class="learn-objectives">
             <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
-            <ul><li>Apply the framework</li><li>Choose keys and storage</li><li>Discuss 301 vs 302 and abuse</li></ul>
+            <ul><li>Estimate write/read/storage</li><li>Design encode, redirect and cache paths</li><li>Handle analytics, expiry and abuse</li></ul>
           </div>
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
@@ -95,41 +95,82 @@
             <ul class="learn-progress-stats">
               <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 15</strong></span></li>
               <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
-              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 8 hours</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
           </section>
-      <p>Design a <strong>URL shortener</strong> like TinyURL or bit.ly: users submit a long URL and get a short one; visiting the short link redirects. It is the first full product interview most people meet, and it uses IDs, caching, hashing and analytics.</p>
-<h2>1. Requirements</h2>
-<ul><li><strong>Functional</strong>: create a short URL, redirect, optional custom alias and expiry, click counts, optional user accounts.</li><li><strong>Out of scope for v1</strong> unless asked: QR codes, A/B links, full BI dashboards.</li><li><strong>Non-functional</strong>: redirect p99 under 50–100 ms, very high availability, read-heavy (often 100:1), codes not sequentially guessable, 301/302 choice explicit.</li></ul>
-<h2>2. Estimates</h2>
-<div class="learn-code-wrap" data-lang="python"><pre><code>new_urls_per_day = 100_000_000 / 30          # 100M new URLs per month
-writes_per_sec = new_urls_per_day / 86_400     # ~40/s
-read_write_ratio = 100
-reads_per_sec = writes_per_sec * read_write_ratio   # ~4,000/s
+      <p>Design a <strong>URL shortener</strong>: a user pastes a long URL and gets back something like <code>https://short.ly/3ORDSU</code>. Opening that link redirects to the original. This is the first full product in the course — it uses IDs, hashing, caching, a read-heavy path, and async analytics.</p>
+<h2>Step 1 — Clarify</h2>
+<p>Questions worth asking before you draw boxes:</p>
+<ul><li>Custom aliases (<code>/my-launch</code>) and expiry dates?</li><li>User accounts, or anonymous create?</li><li>Click analytics — count only, or country/referrer/time series?</li><li>Redirect SLA (p99)? Read/write ratio?</li><li>Must codes be unguessable? Allowed character set?</li></ul>
+<p><strong>v1 we will build:</strong> create, redirect, optional custom alias and expiry, click counts. Out of scope unless asked: QR codes, A/B links, a full BI product. <strong>Non-functional:</strong> redirect p99 under 50–100 ms, high availability, ~100:1 reads to writes, codes not sequential, we will pick 301 vs 302 on purpose.</p>
+<h2>Step 2 — Back-of-the-envelope</h2>
+<div class="learn-code-wrap" data-lang="python"><pre><code>new_urls_per_month = 100_000_000
+writes_per_sec = (new_urls_per_month / 30) / 86_400     # ~40/s
+reads_per_sec = writes_per_sec * 100                    # ~4,000/s average
+peak_reads = reads_per_sec * 3                          # ~12,000/s
 
-records_5_years = 100_000_000 * 12 * 5          # 6 billion
-bytes_per_record = 500
-storage_tb = records_5_years * bytes_per_record / 1e12
-print(round(writes_per_sec), round(reads_per_sec), round(storage_tb, 1))</code></pre></div>
-<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>39 3858 3.0</pre></div>
-<p>Forty writes/s and 4k reads/s is modest; 3 TB in five years fits one database. Caching is the main lever, not sharding on day one.</p>
-<h2>3. API and data model</h2>
-<div class="learn-code-wrap" data-lang="text"><pre><code>POST /api/v1/urls       { long_url, custom_alias?, expires_at? } -&gt; { short_url }
-GET  /{code}             -&gt; 301 or 302 Location: long_url
-GET  /api/v1/urls/{code} -&gt; metadata and click summary
+records_5y = new_urls_per_month * 12 * 5                # 6 billion
+bytes_per_row = 500
+storage_tb = records_5y * bytes_per_row / 1e12
+cache_hot = 0.20 * reads_per_sec * 200                  # 20% of QPS, 200 B values
+print(round(writes_per_sec), round(reads_per_sec), round(peak_reads), round(storage_tb, 1))</code></pre></div>
+<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>39 3858 11574 3.0</pre></div>
+<p>Forty writes/s is easy. Four thousand average redirects (12k peak) is still modest if most hit a cache. Three terabytes in five years fits one database cluster. You do <em>not</em> open with sharding; you open with Redis in front of a primary + replicas. If the interviewer 10xes traffic, then hash-shard by <code>code</code>.</p>
+<p>Code space: 62^7 ≈ 3.5 trillion seven-character base62 strings, far above 6 billion rows. Six characters (56 billion) is also enough if you are willing to handle collisions.</p>
+<h2>Step 3 — API</h2>
+<div class="learn-code-wrap" data-lang="text"><pre><code>POST /api/v1/urls
+  { &quot;long_url&quot;: &quot;https://example.com/a/very/long/path&quot;,
+    &quot;custom_alias&quot;: &quot;launch&quot;,          // optional
+    &quot;expires_at&quot;: &quot;2027-01-01T00:00:00Z&quot; }
+  -&gt; 201 { &quot;short_url&quot;: &quot;https://short.ly/launch&quot;, &quot;code&quot;: &quot;launch&quot; }
+  400 invalid URL / reserved word
+  409 alias taken
 
-table urls (
-  code        VARCHAR(10) PRIMARY KEY,
+GET  /{code}  -&gt; 302 Location: &lt;long_url&gt;
+               -&gt; 404 if missing or expired
+
+GET  /api/v1/urls/{code}  -&gt; metadata + click summary  (authz)
+
+DELETE /api/v1/urls/{code}  -&gt; 204</code></pre></div>
+<p>Version the API. Creating is authenticated or rate-limited. Redirect is public and must stay tiny — no joins, no analytics write on the request thread.</p>
+<h2>Step 4 — Data model</h2>
+<div class="learn-code-wrap" data-lang="text"><pre><code>urls (
+  code        VARCHAR(16) PRIMARY KEY,   -- base62 or alias
   long_url    TEXT NOT NULL,
-  created_at  TIMESTAMP,
-  expires_at  TIMESTAMP NULL,
-  user_id     BIGINT NULL
+  created_at  TIMESTAMPTZ NOT NULL,
+  expires_at  TIMESTAMPTZ NULL,
+  user_id     BIGINT NULL,
+  is_custom   BOOLEAN NOT NULL DEFAULT FALSE
 )
--- clicks go to a queue, not this table on the redirect path</code></pre></div>
-<h2>4. Generating the short code</h2>
-<p>Seven base62 characters give 62^7 ≈ 3.5 trillion codes, far more than 6 billion rows.</p>
-<ul><li><strong>Hash the URL</strong> (SHA-256, take 7 chars). Collisions need a retry with a salt.</li><li><strong>Counter + base62</strong>: encode a Snowflake or ticket id. No collisions; sequential codes are guessable unless you permute bits.</li><li><strong>Random 7 chars</strong> plus a unique index, retry on conflict. Simple and unguessable.</li></ul>
+-- unique(long_url) only if you want one code per URL; usually you do not
+
+-- NOT updated on redirect:
+-- clicks live in an events log / rollup tables, not on this row</code></pre></div>
+<p>Access is always by primary key <code>code</code>. That is why a relational DB or a KV store both work. Do not store click counters on this row if you care about redirect latency — every increment would contend on the hot keys.</p>
+<h2>Step 5 — High-level design</h2>
+<div class="diagram-wrap" data-diagram-title="Create and redirect"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart TB
+  subgraph write [Create]
+    C[Client] --> LB[Load balancer]
+    LB --> APP[App servers]
+    APP --> ID[ID / code service]
+    APP --> DB[(urls table)]
+  end
+  subgraph read [Redirect]
+    B[Browser] --> LB2[Load balancer]
+    LB2 --> APP2[App servers]
+    APP2 --> Redis[(Redis cache)]
+    Redis -->|miss| DB
+    APP2 -->|click event| Q[(Queue)]
+    Q --> Agg[Analytics workers]
+  end</div></div><p class="diagram-caption">Writes allocate a code and insert. Redirects hit Redis first. Clicks are fire-and-forget onto a queue so the 302 never waits on analytics.</p></div>
+<h3>Write path</h3>
+<ol><li>Validate the URL (scheme, length, block-list of malware domains).</li><li>If custom alias: reject reserved words (<code>api</code>, <code>health</code>, <code>admin</code>), check uniqueness, insert.</li><li>Else allocate a code (next section), insert, return the short URL.</li><li>Optionally seed Redis so the first redirect is a hit.</li></ol>
+<h3>Read path</h3>
+<ol><li>Lookup <code>code</code> in Redis. On hit, check <code>expires_at</code>, 302.</li><li>On miss, read DB, fill cache with a long TTL (hours to a day), 302.</li><li>Publish <code>{code, ts, country, referrer, ua}</code> to the queue <em>after</em> the response is on the wire (or at least without waiting for the consumer).</li></ol>
+<h2>Step 6 — Generating the short code</h2>
+<p>Seven base62 characters give 62^7 ≈ 3.5 trillion codes.</p>
+<ul><li><strong>Hash the long URL</strong> (SHA-256, take 42 bits, encode). Deterministic: the same URL always shortens the same way. Collisions: retry with a salt. You cannot have two codes for one URL, which some products want.</li><li><strong>Counter + base62</strong>: encode a Snowflake or ticket id. No collisions. Sequential codes are guessable — permute bits or keep this as an internal id only.</li><li><strong>Random 7 chars</strong> + unique index, retry on conflict. Simple, unguessable, slightly more inserts. This is a strong default for a public shortener.</li></ul>
 <div class="learn-code-wrap" data-lang="python"><pre><code>ALPHABET = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;
 
 def base62(n: int) -&gt; str:
@@ -141,21 +182,21 @@ def base62(n: int) -&gt; str:
         out.append(ALPHABET[r])
     return &quot;&quot;.join(reversed(out))
 
-print(base62(125), base62(3_500_000_000), len(ALPHABET) ** 7)</code></pre></div>
+print(base62(125), base62(3_500_000_000), 62 ** 7)</code></pre></div>
 <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>21 3ORDSU 3521614606208</pre></div>
-<div class="diagram-wrap" data-diagram-title="Redirect path"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart LR
-  U[Browser] --> LB[Load balancer]
-  LB --> APP[App]
-  APP --> Redis[(Redis)]
-  Redis -->|miss| DB[(Postgres / KV)]
-  APP -->|click event| Q[(Queue)]
-  Q --> Agg[Analytics workers]</div></div><p class="diagram-caption">Redirects hit Redis first. The database is the source of truth. Clicks are fire-and-forget onto a queue.</p></div>
-<h2>5. High-level design</h2>
-<ul><li>Stateless app servers behind a load balancer.</li><li>Redirect: cache-aside Redis keyed by <code>code</code>, long TTL, LRU. Hottest links never touch the DB.</li><li>Write: validate URL, allocate code, insert. Custom aliases check uniqueness and reserved words (<code>api</code>, <code>admin</code>).</li><li>Store: PostgreSQL + replicas, or DynamoDB (always get-by-key). Shard by <code>hash(code)</code> only when the cluster is full.</li><li>Analytics: publish <code>{code, ts, country, referrer}</code> to Kafka/SQS; aggregate in ClickHouse or daily rollup tables.</li></ul>
-<h2>6. Trade-offs</h2>
-<ul><li><strong>301 vs 302</strong>: 301 lets browsers cache the hop (cheaper, hides later clicks). 302 keeps every click visible. Most shorteners use 302.</li><li><strong>Abuse</strong>: rate-limit creates, malware URL scans, captcha for anonymous users.</li><li><strong>Expiry</strong>: check <code>expires_at</code> on read; a sweeper deletes old rows.</li><li><strong>Multi-region</strong>: replicate the KV globally; DNS failover. Accept brief replication lag on brand-new links.</li></ul>
-<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>How to present it</p><p class="learn-callout-body">Talk through the six steps, state assumptions aloud, sketch as you go. Clear structure beats a perfect encoding scheme.</p></aside>
-<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend the design with per-link click analytics (clicks per day, top countries) without slowing down redirects. Which components do you add, and where does each piece of data live?</p></aside><div class="learn-code-wrap learn-practice" data-lang="text" data-solution="On each redirect the server publishes {code, ts, country, referrer} to Kafka/SQS after responding. A consumer batches events into an analytics store (ClickHouse/BigQuery or Postgres tables partitioned by day). Dashboards read only aggregates. If the queue is down, buffer or drop events — never block the redirect."><pre><code>// Write your solution here
+<h2>Step 7 — Deep dives</h2>
+<h3>301 vs 302</h3>
+<p>301 (permanent) lets browsers and CDNs cache the hop — cheaper, but later clicks never reach you. 302 (or 307) keeps every click visible. Most shorteners use 302 because analytics is the product. Say this out loud.</p>
+<h3>Cache</h3>
+<p>Cache-aside Redis keyed by <code>code</code>, value = JSON of long URL + expiry. TTL of hours plus LRU. Hottest links (spam campaigns, news) never touch the DB. On delete or expiry, <code>DEL</code> the key. Add jitter to TTLs so a popular key does not stampede the DB when it expires.</p>
+<h3>Analytics</h3>
+<p>The redirect path must not <code>UPDATE urls SET clicks = clicks + 1</code>. Enqueue events; workers batch-write to a column store or daily rollup tables (<code>code, day, country, count</code>). Dashboards read rollups. If the queue is down, drop or buffer events — never fail the 302.</p>
+<h3>Abuse</h3>
+<p>Rate-limit creates per IP and per account (lesson 7). Scan destinations against a malware list asynchronously and disable bad codes. Captcha for anonymous users. Custom aliases need a reserved-word list.</p>
+<h3>Expiry and multi-region</h3>
+<p>Check <code>expires_at</code> on every read; a sweeper deletes old rows. Global: replicate the KV / DB, DNS failover. A brand-new link may 404 in the other region for a second — acceptable if you say it. For stricter create-then-immediately-open, read-your-writes from the primary or replicate the new key to Redis in both regions.</p>
+<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Structure beats a clever hash</p><p class="learn-callout-body">Walk clarify → numbers → API → schema → diagram → code generation → 301/302 and analytics. Invite them to pick the deep dive.</p></aside>
+<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add per-link analytics: clicks per day and top countries, without slowing redirects. Where does each piece of data live, and what happens if analytics is down?</p></aside><div class="learn-code-wrap learn-practice" data-lang="text" data-solution="Redirect publishes {code, ts, country, referrer} to a queue after sending 302. Workers aggregate into daily rollup tables or a column store. Dashboards never read the urls row. If the queue or workers are down, buffer locally or drop events; the 302 still succeeds. Cache is unchanged."><pre><code>// Write your solution here
 </code></pre></div>
           <a class="learn-upnext" href="/learn/ds-algo/sysdesign/rate-limiter/"><span class="learn-upnext-label">Up next · Lesson 7</span><strong>Rate Limiter</strong><small>Token bucket, sliding window, Redis counters and where to place a limiter.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
