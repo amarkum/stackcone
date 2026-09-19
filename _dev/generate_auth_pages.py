@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Generate /login/ and /signup/ (static pages; Firebase Auth runs in the browser)."""
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_learn import LESSONS, TRACKS  # noqa: E402  (counts shown on the brand panel)
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -9,20 +13,22 @@ PAGES = {
         "title": "Log in",
         "heading": "Welcome back",
         "lede": "Log in to pick up your courses where you left off, on any device.",
-        "switch": 'New to stackcone? <a href="/signup/" data-keep-next>Create an account</a>',
+        "switch": 'New to stackcone? <a href="/signup/" data-keep-next>Create a free account</a>',
+        "pitch": "Pick up exactly where you left off.",
     },
     "signup": {
         "title": "Sign up",
         "heading": "Create your account",
         "lede": "Free. Save your lesson progress and continue on any device.",
         "switch": 'Already have an account? <a href="/login/" data-keep-next>Log in</a>',
+        "pitch": "Learn to build real software, one lesson at a time.",
     },
 }
 
 # Google creates the account on first sign-in, so both pages share one button.
 GOOGLE_BUTTON = """      <button type="button" class="auth-google" data-google>
         <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        <span>Continue with Google</span>
+        <span data-label>Continue with Google</span></span>
       </button>
       <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
 """
@@ -32,6 +38,7 @@ SCRIPT = """
     import { signInWithGoogle, friendlyError } from "/assets/learn-auth.js";
     const btn = document.querySelector("[data-google]");
     const msg = document.querySelector("[data-msg]");
+    const label = btn.querySelector("[data-label]");
     // Only follow same-site paths so ?next= cannot bounce users to another origin.
     const raw = new URLSearchParams(location.search).get("next") || "/learn/";
     const next = raw.startsWith("/") && !raw.startsWith("//") ? raw : "/learn/";
@@ -41,6 +48,8 @@ SCRIPT = """
 
     btn.addEventListener("click", async () => {
       btn.disabled = true;
+      btn.classList.add("is-busy");
+      label.textContent = "Opening Google…";
       msg.textContent = "";
       msg.className = "auth-msg";
       try {
@@ -50,6 +59,8 @@ SCRIPT = """
         msg.textContent = friendlyError(err);
         msg.className = "auth-msg is-error";
         btn.disabled = false;
+        btn.classList.remove("is-busy");
+        label.textContent = "Continue with Google";
       }
     });
 
@@ -59,7 +70,13 @@ SCRIPT = """
   </script>"""
 
 
+CHECK = ('<svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="currentColor" opacity=".18"/>'
+         '<path d="M6 10.5l2.5 2.5 5.5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
 def page(key: str, p: dict) -> str:
+    lessons = len(LESSONS) // 10 * 10
+    courses = len(TRACKS)
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +91,7 @@ def page(key: str, p: dict) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/assets/auth.css?v=2">
+  <link rel="stylesheet" href="/assets/auth.css?v=3">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -91,11 +108,29 @@ def page(key: str, p: dict) -> str:
   </header>
 
   <main class="auth-main">
-    <section class="auth-card">
-      <h1>{p["heading"]}</h1>
-      <p class="auth-lede">{p["lede"]}</p>
-{GOOGLE_BUTTON}      <p class="auth-switch">{p["switch"]}</p>
-    </section>
+    <div class="auth-shell">
+      <section class="auth-brand" aria-label="Why sign in">
+        <p class="auth-kicker">stackcone Learn</p>
+        <p class="auth-pitch">{p["pitch"]}</p>
+        <ul class="auth-perks">
+          <li>{CHECK}<span><strong>Progress on every device</strong>Finish a lesson on your laptop, continue on your phone.</span></li>
+          <li>{CHECK}<span><strong>{lessons}+ hands-on lessons</strong>Python, Java, JavaScript, SQL, React, AI and more, with code you can run.</span></li>
+          <li>{CHECK}<span><strong>Free, no card</strong>One click with Google. We never post or email on your behalf.</span></li>
+        </ul>
+        <div class="auth-preview" aria-hidden="true">
+          <div class="auth-preview-row"><span>Python</span><i style="--w:80%"></i><b>80%</b></div>
+          <div class="auth-preview-row"><span>SQL</span><i style="--w:45%"></i><b>45%</b></div>
+          <div class="auth-preview-row"><span>React</span><i style="--w:20%"></i><b>20%</b></div>
+        </div>
+        <p class="auth-stats"><strong>{courses}</strong> courses <span>·</span> <strong>{lessons}+</strong> lessons <span>·</span> <strong>Free</strong></p>
+      </section>
+      <section class="auth-card">
+        <h1>{p["heading"]}</h1>
+        <p class="auth-lede">{p["lede"]}</p>
+{GOOGLE_BUTTON}        <p class="auth-fine">By continuing you agree to our <a href="/privacy/">Privacy Policy</a>. We only use your name and email to save your progress.</p>
+        <p class="auth-switch">{p["switch"]}</p>
+      </section>
+    </div>
   </main>
 
   <script src="/site-nav.js" defer></script>
