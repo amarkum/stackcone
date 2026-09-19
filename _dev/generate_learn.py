@@ -726,27 +726,6 @@ def category_html(cat_id: str) -> str:
     )
 
 
-def track_html(track_id: str) -> str:
-    """/learn/{track}/ and /learn/courses/{track}/ redirect straight into lesson 1."""
-    track = TRACKS[track_id]
-    dest = first_lesson_url(track_id)
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url={dest}">
-  <link rel="canonical" href="https://stackcone.com{dest}">
-  <title>Redirecting...</title>
-  <script>window.location.replace('{dest}');</script>
-</head>
-<body>
-  <p>Redirecting to <a href="{dest}">{esc(track["label"])}</a>...</p>
-</body>
-</html>
-"""
-
-
 def courses_json() -> dict:
     courses = []
     for les in LESSONS:
@@ -776,14 +755,6 @@ def main() -> None:
         out = LEARN / cat_id / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(category_html(cat_id), encoding="utf-8")
-    for track_id in TRACKS:
-        out = LEARN / track_id / "index.html"
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(track_html(track_id), encoding="utf-8")
-        if track_id not in {l["slug"] for l in LESSONS}:
-            alias = LEARN / "courses" / track_id / "index.html"
-            alias.parent.mkdir(parents=True, exist_ok=True)
-            alias.write_text(track_html(track_id), encoding="utf-8")
     for les in LESSONS:
         out = LEARN / "courses" / les["slug"] / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
