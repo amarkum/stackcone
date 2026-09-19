@@ -221,6 +221,10 @@
     host.className = 'monaco-code-host';
     host.setAttribute('data-language', block.hint || 'auto');
 
+    var mount = document.createElement('div');
+    mount.className = 'monaco-code-mount';
+    host.appendChild(mount);
+
     if (block.wrap) {
       block.pre.insertAdjacentElement('beforebegin', host);
       block.wrap.classList.add('monaco-ready');
@@ -280,11 +284,12 @@
   }
 
   function createEditor(monaco, host, block) {
+    var mount = host.querySelector('.monaco-code-mount') || host;
     var lang = detectLang(block.code, block.hint);
     var runnable = isRunnablePython(block, lang);
     var practice = block.solution !== null;
     var editable = runnable || practice;
-    var editor = monaco.editor.create(host, {
+    var editor = monaco.editor.create(mount, {
       value: block.code,
       language: lang,
       readOnly: !editable,

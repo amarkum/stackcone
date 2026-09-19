@@ -254,6 +254,9 @@ if (document.readyState === 'loading') {
 
 // Monaco Editor for syntax-highlighted code blocks (blog, learn, solutions)
 (function loadMonacoCode() {
+  // Keep in step with the ?v= the learn pages use (_dev/generate_learn.py).
+  var MONACO_ASSET_VERSION = '12';
+
   function boot() {
     if (window.__stackconeMonacoBooted || window.initMonacoCodeBlocks) {
       if (typeof window.initMonacoCodeBlocks === 'function' && !window.__stackconeMonacoBooted) {
@@ -274,12 +277,12 @@ if (document.readyState === 'loading') {
     if (!document.querySelector('link[href*="monaco-code.css"]')) {
       var css = document.createElement('link');
       css.rel = 'stylesheet';
-      css.href = '/assets/monaco-code.css?v=4';
+      css.href = '/assets/monaco-code.css?v=' + MONACO_ASSET_VERSION;
       document.head.appendChild(css);
     }
     if (!document.querySelector('script[src*="monaco-code.js"]')) {
       var script = document.createElement('script');
-      script.src = '/assets/monaco-code.js?v=4';
+      script.src = '/assets/monaco-code.js?v=' + MONACO_ASSET_VERSION;
       script.defer = true;
       document.body.appendChild(script);
     }

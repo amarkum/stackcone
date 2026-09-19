@@ -32,9 +32,6 @@
         { href: "/learn/ds-algo/data-structures/introduction/", label: "Data Structures", matches: ["/learn/ds-algo/data-structures"] },
         { href: "/learn/ds-algo/algorithms/searching/", label: "Algorithms", matches: ["/learn/ds-algo/algorithms"] },
         { href: "/learn/ds-algo/sysdesign/fundamentals/", label: "System Design", matches: ["/learn/ds-algo/sysdesign"] },
-        { href: "/learn/ds-algo/algorithms/sorting/", label: "Sorting" },
-        { href: "/learn/ds-algo/algorithms/recursion/", label: "Recursion" },
-        { href: "/learn/ds-algo/algorithms/dynamic-programming/", label: "Dynamic Programming" },
         { href: "/learn/ds-algo/", label: "All DS & Algo", separator: true }
       ]
     },
