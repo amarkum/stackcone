@@ -11,25 +11,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/auth.css?v=24">
+  <link rel="stylesheet" href="/assets/auth.css?v=31">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
 <body class="auth-page" data-auth="signup">
   <div class="auth-split">
-    <aside class="auth-side" aria-label="About stackcone">
-      <div class="auth-side-body">
-        <p class="auth-pitch">Everyone is welcome here.</p>
-        <p class="auth-sub">Students, career changers, engineers and teams. Learn at your own pace, in your own way.</p>
-        <ul class="auth-tiles">
-          <li><span class="auth-tile-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span><span><strong>Learn</strong>Free lessons, from your first line of code.</span></li>
-          <li><span class="auth-tile-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5M9 8h6M9 12h6"/></svg></span><span><strong>Read</strong>Plain-language guides on AI and software.</span></li>
-          <li><span class="auth-tile-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/></svg></span><span><strong>Build</strong>Work with our team on your product.</span></li>
-        </ul>
-      </div>
-      <p class="auth-trust"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg> Only your name and email. No spam, ever.</p>
-    </aside>
-
     <main class="auth-pane">
       <section class="auth-card">
         <a href="/" class="auth-form-logo" aria-label="stackcone home"><img src="/logo/stackcone.png" alt="stackcone" width="280" height="60"></a>
@@ -41,11 +28,24 @@
       <p class="auth-or"><span>or</span></p>
         <form class="auth-form" data-form>
           <label class="auth-field"><span>Full name</span>
-            <input type="text" name="name" autocomplete="name" required maxlength="60" placeholder="Ada Lovelace"></label>
+            <span class="auth-input">
+              <svg class="auth-input-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 19a7 7 0 0114 0"/></svg>
+              <input type="text" name="name" autocomplete="name" required maxlength="60" placeholder="Ada Lovelace">
+            </span></label>
           <label class="auth-field"><span>Email</span>
-            <input type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>
+            <span class="auth-input">
+              <svg class="auth-input-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              <input type="email" name="email" autocomplete="email" required placeholder="you@example.com">
+            </span></label>
           <label class="auth-field"><span>Password</span>
-            <span class="auth-pass"><input type="password" name="password" autocomplete="new-password" required minlength="8"><button type="button" class="auth-eye" data-eye aria-label="Show password">Show</button></span>
+            <span class="auth-input auth-pass">
+              <svg class="auth-input-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+              <input type="password" name="password" autocomplete="new-password" required minlength="8" placeholder="Enter your password">
+              <button type="button" class="auth-eye" data-eye aria-label="Show password">
+                <svg data-eye-off viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg data-eye-on hidden viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 10.6A3 3 0 0012 15a3 3 0 002.4-4.4M9.9 5.2A11 11 0 0112 5c6.5 0 10 7 10 7a18 18 0 01-4.2 5.1M6.1 6.1A18 18 0 002 12s3.5 7 10 7a11 11 0 004.1-.8"/></svg>
+              </button>
+            </span>
             <span class="auth-strength" data-strength aria-live="polite"><i></i><i></i><i></i><i></i><b data-strength-text>At least 8 characters</b></span></label>
           <button type="submit" class="auth-submit">Create account</button>
         </form>
@@ -57,6 +57,20 @@
         </div>
       </section>
     </main>
+
+    <aside class="auth-side" aria-label="About stackcone">
+      <img class="auth-hero" src="/assets/auth-hero.png?v=4" alt="" width="912" height="1145">
+      <div class="auth-side-body">
+        <p class="auth-pitch">Everyone is welcome here.</p>
+        <p class="auth-sub">Students, career changers, engineers and teams. Learn at your own pace.</p>
+        <ul class="auth-tiles">
+          <li><span class="auth-tile-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span><span><strong>Learn</strong>Free lessons, from your first line of code.</span></li>
+          <li><span class="auth-tile-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 19V5M9 8h6M9 12h6"/></svg></span><span><strong>Read</strong>Plain-language guides on AI and software.</span></li>
+          <li><span class="auth-tile-icon"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/></svg></span><span><strong>Build</strong>Work with our team on your product.</span></li>
+        </ul>
+      </div>
+      <p class="auth-trust"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg> Only your name and email. No spam, ever.</p>
+    </aside>
   </div>
 
   <script type="module">
@@ -129,11 +143,14 @@
     }
 
     document.querySelectorAll("[data-eye]").forEach(eye => eye.addEventListener("click", () => {
-      const input = eye.previousElementSibling;
+      const input = eye.parentElement.querySelector("input");
       const show = input.type === "password";
       input.type = show ? "text" : "password";
-      eye.textContent = show ? "Hide" : "Show";
       eye.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      const off = eye.querySelector("[data-eye-off]");
+      const on = eye.querySelector("[data-eye-on]");
+      if (off) off.hidden = show;
+      if (on) on.hidden = !show;
     }));
 
     const reset = document.querySelector("[data-reset]");
