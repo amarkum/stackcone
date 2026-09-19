@@ -13,8 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=20">
-  <link rel="stylesheet" href="/assets/auth.css?v=2">
+  <link rel="stylesheet" href="/learn/learn.css?v=21">
+  <link rel="stylesheet" href="/assets/auth.css?v=11">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -37,15 +37,17 @@
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="langchain">
           <div class="learn-sidebar-head">
+            <span class="learn-course-icon" aria-hidden="true"><img src="/assets/icons/langchain.svg" alt="" width="26" height="26" loading="lazy"></span>
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="/learn/frameworks/langchain/introduction/">LangChain</a></p>
-              <p class="learn-sidebar-progress" data-progress-count>0 of 5 lessons completed</p>
+              <p class="learn-sidebar-tagline">Learn LangChain from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
               <span data-progress-pct>0%</span>
             </div>
           </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 5 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
           <nav class="learn-sidebar-lessons">
           <a class="learn-sidebar-link" href="/learn/frameworks/langchain/introduction/" data-lesson="langchain-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">LLM Apps and LangChain Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -56,29 +58,35 @@
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <p class="learn-eyebrow"><a href="/learn/frameworks/langchain/introduction/">LangChain</a> · Lesson 2 of 5</p>
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/frameworks/langchain/introduction/">LangChain</a> · Lesson 2 of 5</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/frameworks/langchain/introduction/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/frameworks/langchain/rag/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
           <h1>Prompts, Parsers and Chains</h1>
           <p class="learn-summary">Compose prompts, models and parsers with the pipe operator.</p>
           <ul class="learn-facts">
             <li><span class="learn-badge">Beginner</span></li>
-            <li><strong>16</strong> min read</li>
-            <li>3 objectives</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
           <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/frameworks/langchain/introduction/">Lesson 1: LLM Apps and LangChain Basics</a></p>
           <div class="learn-objectives">
-            <h2>What you will learn</h2>
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
             <ul><li>Write prompt templates</li><li>Get structured output</li><li>Build a chain with LCEL</li></ul>
           </div>
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
-              <h2>Your progress</h2>
-              <p><span data-progress-count>0 of 5 lessons completed</span> <strong data-progress-pct>0%</strong></p>
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 5 lessons</span> <strong data-progress-pct>0%</strong></p>
             </div>
             <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
             <ul class="learn-progress-stats">
-              <li><span>Lesson</span><strong>2 / 5</strong></li>
-              <li><span>Completed</span><strong data-progress-done>0</strong></li>
-              <li><span>Est. time left</span><strong data-progress-left>1h 23m</strong></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 5</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 1 hour</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
           </section>
@@ -165,9 +173,9 @@ print(chain.invoke({&quot;jd&quot;: &quot;Senior Python engineer with SQL and Do
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/learn-progress.js?v=1" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
-  <script type="module" src="/assets/learn-auth.js?v=2"></script>
+  <script type="module" src="/assets/learn-auth.js?v=3"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>

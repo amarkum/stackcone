@@ -79,14 +79,12 @@
 
   /* ---------------- rendering ---------------- */
 
-  // Same format as fmt_minutes() in _dev/generate_learn.py, so the first paint doesn't jump.
+  // Same format as fmt_left() in _dev/generate_learn.py, so the first paint doesn't jump.
   function fmtMinutes(total) {
     if (total <= 0) return "Done";
-    var h = Math.floor(total / 60);
-    var m = total % 60;
-    if (h && m) return h + "h " + m + "m";
-    if (h) return h + "h";
-    return m + " min";
+    if (total < 60) return "~ " + total + " min";
+    var h = Math.round(total / 60);
+    return "~ " + h + (h === 1 ? " hour" : " hours");
   }
 
   function render() {
@@ -115,6 +113,7 @@
       el.textContent = done + " of " + total + " lessons completed";
     });
     each("[data-progress-fraction]", function (el) { el.textContent = done + " / " + total; });
+    each("[data-progress-short]", function (el) { el.textContent = done + " of " + total + " lessons"; });
     each("[data-progress-done]", function (el) { el.textContent = String(done); });
     each("[data-progress-left]", function (el) { el.textContent = fmtMinutes(minutesLeft); });
     each("[data-progress-fill]", function (el) { el.style.width = pct + "%"; });

@@ -8,19 +8,23 @@ PAGES = {
     "login": {
         "title": "Log in",
         "heading": "Welcome back",
-        "lede": "Log in to your stackcone account.",
+        "lede": "Log in to continue.",
+        "pitch": "Good to see you again.",
+        "sub": "Your progress, your account, on every device.",
         "submit": "Log in",
         "fields": """
           <label class="auth-field"><span>Email</span>
             <input type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>
           <label class="auth-field"><span class="auth-field-row">Password <button type="button" class="auth-link" data-reset>Forgot password?</button></span>
             <span class="auth-pass"><input type="password" name="password" autocomplete="current-password" required><button type="button" class="auth-eye" data-eye aria-label="Show password">Show</button></span></label>""",
-        "switch": 'New to stackcone? <a href="/signup/" data-keep-next>Create a free account</a>',
+        "switch": 'New here? <a href="/signup/" data-keep-next>Create an account</a>',
     },
     "signup": {
         "title": "Sign up",
         "heading": "Create your account",
-        "lede": "Free. Use Google, or sign up with your email.",
+        "lede": "Free, for everyone. No experience needed.",
+        "pitch": "Everyone is welcome here.",
+        "sub": "Students, career changers, engineers and teams. Learn at your own pace, in your own way.",
         "submit": "Create account",
         "fields": """
           <label class="auth-field"><span>Full name</span>
@@ -29,7 +33,7 @@ PAGES = {
             <input type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>
           <label class="auth-field"><span>Password</span>
             <span class="auth-pass"><input type="password" name="password" autocomplete="new-password" required minlength="8"><button type="button" class="auth-eye" data-eye aria-label="Show password">Show</button></span>
-            <small>At least 8 characters.</small></label>""",
+            <span class="auth-strength" data-strength aria-live="polite"><i></i><i></i><i></i><i></i><b data-strength-text>At least 8 characters</b></span></label>""",
         "switch": 'Already have an account? <a href="/login/" data-keep-next>Log in</a>',
     },
 }
@@ -44,7 +48,7 @@ GOOGLE_BUTTON = """      <button type="button" class="auth-google" data-google>
 
 SCRIPT = """
   <script type="module">
-    import { signInWithGoogle, signUp, logIn, resetPassword, friendlyError } from "/assets/learn-auth.js";
+    import { signInWithGoogle, signUp, logIn, resetPassword, friendlyError } from "/assets/learn-auth.js?v=3";
     const mode = document.body.dataset.auth;
     const google = document.querySelector("[data-google]");
     const gLabel = google.querySelector("[data-label]");
@@ -95,6 +99,23 @@ SCRIPT = """
       }
     });
 
+    const meter = document.querySelector("[data-strength]");
+    if (meter) {
+      const pw = form.password, text = meter.querySelector("[data-strength-text]");
+      const words = ["At least 8 characters", "Too short", "Fair", "Good", "Strong"];
+      pw.addEventListener("input", () => {
+        const v = pw.value;
+        let score = 0;
+        if (v.length >= 8) score++;
+        if (v.length >= 12) score++;
+        if (/[a-z]/.test(v) && /[A-Z]/.test(v)) score++;
+        if (/\\d/.test(v) && /[^A-Za-z0-9]/.test(v)) score++;
+        const level = !v ? 0 : v.length < 8 ? 1 : Math.max(2, score + 1 > 4 ? 4 : score + 1);
+        meter.dataset.level = String(level);
+        text.textContent = words[level];
+      });
+    }
+
     document.querySelectorAll("[data-eye]").forEach(eye => eye.addEventListener("click", () => {
       const input = eye.previousElementSibling;
       const show = input.type === "password";
@@ -142,36 +163,32 @@ def page(key: str, p: dict) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/assets/auth.css?v=6">
+  <link rel="stylesheet" href="/assets/auth.css?v=11">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
 <body class="auth-page" data-auth="{key}">
-  <header class="header">
-    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
-    <div class="header-inner">
-      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
-      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
-        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
-      </button>
-      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
-    </div>
-  </header>
-
-  <main class="auth-main">
-    <div class="auth-shell">
-      <section class="auth-brand" aria-label="About stackcone">
-        <img src="/logo/stackcone.png" alt="" class="auth-brand-logo" width="140" height="30">
-        <p class="auth-pitch">One account for everything on stackcone.</p>
-        <p class="auth-sub">Whether you are here to learn, to read, or to build something with us, you are welcome.</p>
+  <div class="auth-split">
+    <aside class="auth-side" aria-label="About stackcone">
+      <a href="/" class="auth-side-logo" aria-label="stackcone home"><img src="/logo/stackcone.png" alt="stackcone" width="140" height="30"></a>
+      <div class="auth-side-body">
+        <p class="auth-pitch">{p["pitch"]}</p>
+        <p class="auth-sub">{p["sub"]}</p>
         <ul class="auth-tiles">
-          <li><span class="auth-tile-icon">{ICON_LEARN}</span><span><strong>Learn</strong>Free lessons with code you can run. Your progress follows you.</span></li>
-          <li><span class="auth-tile-icon">{ICON_READ}</span><span><strong>Read</strong>Practical guides on AI, cloud and software engineering.</span></li>
-          <li><span class="auth-tile-icon">{ICON_BUILD}</span><span><strong>Build</strong>Work with our team on AI and software products.</span></li>
+          <li><span class="auth-tile-icon">{ICON_LEARN}</span><span><strong>Learn</strong>Free lessons, from your first line of code.</span></li>
+          <li><span class="auth-tile-icon">{ICON_READ}</span><span><strong>Read</strong>Plain-language guides on AI and software.</span></li>
+          <li><span class="auth-tile-icon">{ICON_BUILD}</span><span><strong>Build</strong>Work with our team on your product.</span></li>
         </ul>
-        <p class="auth-trust">{ICON_LOCK} We only use your name and email. No spam, no posting.</p>
-      </section>
+      </div>
+      <p class="auth-trust">{ICON_LOCK} Only your name and email. No spam, ever.</p>
+    </aside>
+
+    <main class="auth-pane">
+      <div class="auth-pane-top">
+        <a href="/" class="auth-mobile-logo" aria-label="stackcone home"><img src="/logo/stackcone.png" alt="stackcone" width="120" height="26"></a>
+        <a href="/" class="auth-back">&larr; Back to site</a>
+        <span class="auth-alt">{p["switch"]}</span>
+      </div>
       <section class="auth-card">
         <h1>{p["heading"]}</h1>
         <p class="auth-lede">{p["lede"]}</p>
@@ -180,13 +197,10 @@ def page(key: str, p: dict) -> str:
         </form>
         <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
         <p class="auth-fine">By continuing you agree to our <a href="/privacy/">Privacy Policy</a>.</p>
-        <p class="auth-switch">{p["switch"]}</p>
       </section>
-    </div>
-  </main>
-
-  <script src="/site-nav.js" defer></script>
-  <script src="/script.js?v=2" defer></script>{SCRIPT}
+    </main>
+  </div>
+{SCRIPT}
 </body>
 </html>
 """

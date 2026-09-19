@@ -378,6 +378,35 @@ ICON_CHECK = (
     '<path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" '
     'stroke-linecap="round" stroke-linejoin="round"/></svg>'
 )
+def _line_icon(body: str, size: int = 18) -> str:
+    return (f'<svg viewBox="0 0 24 24" width="{size}" height="{size}" aria-hidden="true" focusable="false" fill="none" '
+            f'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{body}</svg>')
+
+
+ICON_CLOCK = _line_icon('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')
+ICON_TARGET = _line_icon('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>')
+ICON_BOOK = _line_icon('<path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/>', 20)
+ICON_DONE = _line_icon('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/>', 20)
+ICON_ARROW_L = _line_icon('<path d="M19 12H5M11 6l-6 6 6 6"/>', 16)
+ICON_ARROW_R = _line_icon('<path d="M5 12h14M13 6l6 6-6 6"/>', 16)
+
+
+def course_icon(track_id: str, size: int = 28) -> str:
+    """Brand or line icon from /assets/icons/<track>.svg, in a soft tile."""
+    return (f'<span class="learn-course-icon" aria-hidden="true">'
+            f'<img src="/assets/icons/{track_id}.svg" alt="" width="{size}" height="{size}" loading="lazy"></span>')
+
+
+def fmt_left(total: int) -> str:
+    """Rounded, friendly time left; must match fmtLeft() in assets/learn-progress.js."""
+    if total <= 0:
+        return "Done"
+    if total < 60:
+        return f"~ {total} min"
+    hours = round(total / 60)
+    return f"~ {hours} hour" + ("" if hours == 1 else "s")
+
+
 ICON_NOTE = (
     '<svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" '
     'aria-hidden="true" focusable="false">'
@@ -509,6 +538,14 @@ def lesson_html(les: dict) -> str:
                   f'<small>Review the full course or pick your next one.</small></a>')
     objectives = "".join(f"<li>{esc(o)}</li>" for o in les["objectives"])
     sections = render_sections(les["sections"])
+    top_prev = (
+        f'<a class="learn-top-btn" href="{lesson_url(by_slug[les["prev"]])}">{ICON_ARROW_L}Previous</a>'
+        if les["prev"] else f'<span class="learn-top-btn is-disabled">{ICON_ARROW_L}Previous</span>'
+    )
+    top_next = (
+        f'<a class="learn-top-btn learn-top-btn--primary" href="{lesson_url(by_slug[les["next"]])}">Next{ICON_ARROW_R}</a>'
+        if les["next"] else f'<a class="learn-top-btn learn-top-btn--primary" href="{track_url(les["track"])}">Finish{ICON_ARROW_R}</a>'
+    )
     prev_link = (
         f'<a class="learn-nav-btn" href="{lesson_url(by_slug[les["prev"]])}">Previous</a>'
         if les["prev"] else '<span class="learn-nav-btn is-disabled">Previous</span>'
@@ -537,8 +574,8 @@ def lesson_html(les: dict) -> str:
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=20">
-  <link rel="stylesheet" href="/assets/auth.css?v=2">
+  <link rel="stylesheet" href="/learn/learn.css?v=21">
+  <link rel="stylesheet" href="/assets/auth.css?v=11">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -561,44 +598,52 @@ def lesson_html(les: dict) -> str:
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="{track_slug}">
           <div class="learn-sidebar-head">
+            {course_icon(track_slug, 26)}
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="{track_url(track_slug)}">{esc(track["label"])}</a></p>
-              <p class="learn-sidebar-progress" data-progress-count>0 of {les["lesson_total"]} lessons completed</p>
+              <p class="learn-sidebar-tagline">Learn {esc(track["label"])} from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
               <span data-progress-pct>0%</span>
             </div>
           </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of {les["lesson_total"]} lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
           <nav class="learn-sidebar-lessons">
 {sidebar}
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
-          <p class="learn-eyebrow"><a href="{track_url(track_slug)}">{esc(track["label"])}</a> · Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="{track_url(track_slug)}">{esc(track["label"])}</a> · Lesson {les["lesson_num"]} of {les["lesson_total"]}</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              {top_prev}
+              {top_next}
+            </nav>
+          </div>
           <h1>{esc(les["title"])}</h1>
           <p class="learn-summary">{esc(les["summary"])}</p>
           <ul class="learn-facts">
             <li><span class="learn-badge">{esc(les["level"])}</span></li>
-            <li><strong>{les["minutes"]}</strong> min read</li>
-            <li>{len(les["objectives"])} objectives</li>
+            <li>{ICON_CLOCK}{les["minutes"]} min read</li>
+            <li>{ICON_TARGET}{len(les["objectives"])} objectives</li>
           </ul>
           {prereq}
           <div class="learn-objectives">
-            <h2>What you will learn</h2>
+            <h2>{ICON_BOOK}What you will learn</h2>
             <ul>{objectives}</ul>
           </div>
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
-              <h2>Your progress</h2>
-              <p><span data-progress-count>0 of {les["lesson_total"]} lessons completed</span> <strong data-progress-pct>0%</strong></p>
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of {les["lesson_total"]} lessons</span> <strong data-progress-pct>0%</strong></p>
             </div>
             <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
             <ul class="learn-progress-stats">
-              <li><span>Lesson</span><strong>{les["lesson_num"]} / {les["lesson_total"]}</strong></li>
-              <li><span>Completed</span><strong data-progress-done>0</strong></li>
-              <li><span>Est. time left</span><strong data-progress-left>{fmt_minutes(sum(t["minutes"] for t in by_track[track_slug]))}</strong></li>
+              <li><span class="learn-stat-icon is-blue">{ICON_BOOK}</span><span><small>Lessons</small><strong data-progress-fraction>0 / {les["lesson_total"]}</strong></span></li>
+              <li><span class="learn-stat-icon is-green">{ICON_DONE}</span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue">{ICON_CLOCK}</span><span><small>Est. time left</small><strong data-progress-left>{fmt_left(sum(t["minutes"] for t in by_track[track_slug]))}</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
           </section>
@@ -632,9 +677,9 @@ def lesson_html(les: dict) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/learn-progress.js?v=1" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
-  <script type="module" src="/assets/learn-auth.js?v=2"></script>
+  <script type="module" src="/assets/learn-auth.js?v=3"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
@@ -659,8 +704,8 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/learn/learn.css?v=20">
-  <link rel="stylesheet" href="/assets/auth.css?v=2">
+  <link rel="stylesheet" href="/learn/learn.css?v=21">
+  <link rel="stylesheet" href="/assets/auth.css?v=11">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -687,9 +732,9 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
     </div>
   </footer>
   <script src="/site-nav.js" defer></script>
-  <script src="/assets/learn-progress.js?v=1" defer></script>
+  <script src="/assets/learn-progress.js?v=2" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
-  <script type="module" src="/assets/learn-auth.js?v=2"></script>
+  <script type="module" src="/assets/learn-auth.js?v=3"></script>
   <script src="/assets/pyodide-runner.js?v=3" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=1" defer></script>
@@ -781,6 +826,7 @@ def _track_cards(track_ids: list[str]) -> str:
         lessons = by_track[track_id]
         cards.append(f"""
       <a class="learn-track-card" href="{track_url(track_id)}">
+        {course_icon(track_id)}
         <h2>{esc(track["label"])}</h2>
         <p>{esc(track["description"])}</p>
         <span class="learn-track-count">{len(lessons)} lessons · {fmt_minutes(sum(l["minutes"] for l in lessons))}</span>
@@ -795,6 +841,7 @@ DS_ALGO_TRACK_ORDER = ["data-structures", "algorithms", "sysdesign"]
 def _lesson_card(les: dict, track_label: str) -> str:
     return f"""
       <a class="learn-track-card" href="{lesson_url(les)}">
+        {course_icon(les["track"])}
         <span class="learn-track-parent">{esc(track_label)}</span>
         <h2>{esc(les["title"])}</h2>
         <p>{esc(les["summary"])}</p>

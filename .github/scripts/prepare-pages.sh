@@ -16,6 +16,9 @@ PATHS=(
   solutions/md
   scripts
   README.md
+  firebase.json
+  firestore.rules
+  .firebaserc
 )
 
 for path in "${PATHS[@]}"; do

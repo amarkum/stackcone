@@ -739,6 +739,60 @@ a.learn-track-card:hover {
   outline-offset: 2px;
 }
 
+/* Course icons (brand logos or line icons from /assets/icons/<track>.svg) */
+.learn-course-icon {
+  display: grid; place-items: center; flex-shrink: 0; width: 2.75rem; height: 2.75rem;
+  border: 1px solid var(--l-line); border-radius: 12px; background: var(--l-surface);
+}
+.learn-course-icon img { display: block; width: 60%; height: 60%; object-fit: contain; }
+.learn-track-card .learn-course-icon { margin-bottom: 0.9rem; }
+.learn-sidebar-head .learn-course-icon { width: 2.5rem; height: 2.5rem; }
+.learn-sidebar-tagline { margin: 0.1rem 0 0; font-size: 0.8rem; color: var(--l-muted); }
+.learn-sidebar-head-text { flex: 1; }
+.learn-sidebar .learn-sidebar-progress { margin: 0.25rem 0 0.4rem; }
+
+/* Lesson head: eyebrow left, previous / next right */
+.learn-lesson-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.learn-lesson-top .learn-eyebrow { margin: 0; }
+.learn-top-nav { display: flex; gap: 0.5rem; }
+.learn-top-btn,
+.blog-article a.learn-top-btn {
+  display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.55rem 1rem; border-radius: 10px;
+  background: var(--l-wash); color: var(--l-muted); font-size: 0.875rem; font-weight: 600; text-decoration: none;
+  transition: background var(--l-ease), color var(--l-ease);
+}
+.learn-top-btn:hover,
+.blog-article a.learn-top-btn:hover { background: var(--l-line); color: var(--l-ink); }
+.learn-top-btn--primary,
+.blog-article a.learn-top-btn--primary { background: var(--l-ink); color: #fff; }
+.learn-top-btn--primary:hover,
+.blog-article a.learn-top-btn--primary:hover { background: #1e293b; color: #fff; }
+.learn-top-btn.is-disabled { opacity: 0.55; cursor: default; }
+
+/* Facts row with icons */
+.learn-facts { align-items: center; }
+.learn-facts li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.learn-facts svg { color: var(--l-faint); }
+
+/* What you will learn: book icon, filled check circles */
+.learn-objectives { border-left-width: 1px; }
+.learn-objectives h2 { display: flex; align-items: center; gap: 0.6rem; font-size: 0.8rem !important; }
+.learn-objectives h2 svg { color: var(--l-green); }
+.learn-objectives li { padding-left: 2rem; margin-bottom: 0.65rem; color: var(--l-text); }
+.learn-objectives li::before {
+  top: 0.12em; width: 1.3rem; height: 1.3rem; border-radius: 999px;
+  background: var(--l-green-line) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4.5 8.3l2.3 2.3L11.5 5.8' stroke='%23059669' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 72% no-repeat;
+}
+
+/* Progress stat cards with icon circles */
+.learn-progress-stats li { flex-direction: row; align-items: center; gap: 0.85rem; padding: 0.9rem 1rem; background: var(--l-surface); }
+.learn-progress-stats li > span:last-child { display: flex; flex-direction: column; gap: 0.1rem; }
+.learn-progress-stats small { font-size: 0.78rem; color: var(--l-muted); }
+.learn-progress-stats strong { font-size: 1.1rem; }
+.learn-stat-icon { display: grid; place-items: center; flex-shrink: 0; width: 2.6rem; height: 2.6rem; border-radius: 999px; }
+.learn-stat-icon.is-blue { background: var(--l-blue-bg); color: var(--l-blue); box-shadow: inset 0 0 0 1px var(--l-blue-line); }
+.learn-stat-icon.is-green { background: var(--l-green-bg); color: var(--l-green); box-shadow: inset 0 0 0 1px var(--l-green-line); }
+
 /* Account slot in the header; assets/learn-auth.js fills it (styles in assets/auth.css) */
 .learn-account { position: relative; flex-shrink: 0; }
 .learn-account:empty { display: none; }

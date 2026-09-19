@@ -219,5 +219,28 @@
     }
   });
 
+  // Log in / avatar in the header on every page: load the styles and the auth module once.
+  // The module URL matches the lesson pages and /login/, so it only ever runs one instance.
+  if (!document.querySelector('script[src*="learn-auth.js"]')) {
+    if (!document.querySelector('link[href*="auth.css"]')) {
+      var css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = "/assets/auth.css?v=11";
+      document.head.appendChild(css);
+    }
+    var auth = document.createElement("script");
+    auth.type = "module";
+    auth.src = "/assets/learn-auth.js?v=3";
+    document.head.appendChild(auth);
+  }
+
+  // Lesson search box in the header on Learn pages.
+  if (/^\/learn(\/|$)/.test(location.pathname) && !document.querySelector('script[src*="learn-search.js"]')) {
+    var search = document.createElement("script");
+    search.src = "/assets/learn-search.js?v=1";
+    search.defer = true;
+    document.head.appendChild(search);
+  }
+
   document.dispatchEvent(new CustomEvent("site-nav-ready", { detail: { nav: nav } }));
 })();
