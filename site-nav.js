@@ -224,7 +224,7 @@
     if (!document.querySelector('link[href*="auth.css"]')) {
       var css = document.createElement("link");
       css.rel = "stylesheet";
-      css.href = "/assets/auth.css?v=17";
+      css.href = "/assets/auth.css?v=18";
       document.head.appendChild(css);
     }
     var auth = document.createElement("script");

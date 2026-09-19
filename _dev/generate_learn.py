@@ -391,12 +391,6 @@ ICON_ARROW_L = _line_icon('<path d="M19 12H5M11 6l-6 6 6 6"/>', 16)
 ICON_ARROW_R = _line_icon('<path d="M5 12h14M13 6l6 6-6 6"/>', 16)
 
 
-def course_icon(track_id: str, size: int = 28) -> str:
-    """Brand or line icon from /assets/icons/<track>.svg, in a soft tile."""
-    return (f'<span class="learn-course-icon" aria-hidden="true">'
-            f'<img src="/assets/icons/{track_id}.svg" alt="" width="{size}" height="{size}" loading="lazy"></span>')
-
-
 def fmt_left(total: int) -> str:
     """Rounded, friendly time left; must match fmtLeft() in assets/learn-progress.js."""
     if total <= 0:
@@ -572,10 +566,10 @@ def lesson_html(les: dict) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/styles.css?v=3">
   <link rel="stylesheet" href="/blog/blog.css?v=4">
-  <link rel="stylesheet" href="/learn/learn.css?v=25">
-  <link rel="stylesheet" href="/assets/auth.css?v=17">
+  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
@@ -598,7 +592,6 @@ def lesson_html(les: dict) -> str:
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="{track_slug}">
           <div class="learn-sidebar-head">
-            {course_icon(track_slug, 26)}
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="{track_url(track_slug)}">{esc(track["label"])}</a></p>
               <p class="learn-sidebar-tagline">Learn {esc(track["label"])} from scratch</p>
@@ -705,9 +698,9 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=2">
-  <link rel="stylesheet" href="/learn/learn.css?v=25">
-  <link rel="stylesheet" href="/assets/auth.css?v=17">
+  <link rel="stylesheet" href="/styles.css?v=3">
+  <link rel="stylesheet" href="/learn/learn.css?v=27">
+  <link rel="stylesheet" href="/assets/auth.css?v=18">
   <link rel="stylesheet" href="/assets/monaco-code.css?v=15">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
