@@ -3294,3 +3294,8 @@ body.landing-page .hero.hero--lead { min-height: min(78vh, 680px); }
 .stack-strip { gap: 14px 32px; }
 .stack-item { display: inline-flex; align-items: center; gap: 8px; color: var(--text-mid); }
 .stack-item img { width: 22px; height: 22px; object-fit: contain; }
+/* tools strip: one line, scales down, scrolls sideways when it can't fit */
+.stack-strip { flex-wrap: nowrap; justify-content: safe center; gap: 0 clamp(14px, 2.2vw, 32px); overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.stack-strip::-webkit-scrollbar { display: none; }
+.stack-item { flex: 0 0 auto; white-space: nowrap; font-size: clamp(0.82rem, 1.3vw, 0.95rem); gap: clamp(5px, 0.7vw, 8px); }
+.stack-item img { width: clamp(18px, 2vw, 22px); height: clamp(18px, 2vw, 22px); }
