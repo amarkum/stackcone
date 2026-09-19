@@ -163,7 +163,7 @@ def page(key: str, p: dict) -> str:
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/auth.css?v=11">
+  <link rel="stylesheet" href="/assets/auth.css?v=12">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
 </head>
@@ -186,7 +186,7 @@ def page(key: str, p: dict) -> str:
     <main class="auth-pane">
       <div class="auth-pane-top">
         <a href="/" class="auth-mobile-logo" aria-label="stackcone home"><img src="/logo/stackcone.png" alt="stackcone" width="120" height="26"></a>
-        <a href="/" class="auth-back">&larr; Back to site</a>
+        <a href="/" class="auth-back">Back to site</a>
         <span class="auth-alt">{p["switch"]}</span>
       </div>
       <section class="auth-card">

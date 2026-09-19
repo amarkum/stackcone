@@ -225,7 +225,7 @@
     if (!document.querySelector('link[href*="auth.css"]')) {
       var css = document.createElement("link");
       css.rel = "stylesheet";
-      css.href = "/assets/auth.css?v=11";
+      css.href = "/assets/auth.css?v=12";
       document.head.appendChild(css);
     }
     var auth = document.createElement("script");
@@ -237,7 +237,7 @@
   // Lesson search box in the header on Learn pages.
   if (/^\/learn(\/|$)/.test(location.pathname) && !document.querySelector('script[src*="learn-search.js"]')) {
     var search = document.createElement("script");
-    search.src = "/assets/learn-search.js?v=1";
+    search.src = "/assets/learn-search.js?v=2";
     search.defer = true;
     document.head.appendChild(search);
   }

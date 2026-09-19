@@ -1,10 +1,10 @@
-/* stackcone Learn — "Search lessons…" box in the header on /learn/ pages.
+/* stackcone Learn — "Search lessons…" box, in the breadcrumb row on /learn/ pages.
    Loaded by site-nav.js. Searches learn/courses.json in the browser; no server. */
 (function () {
   "use strict";
 
-  var host = document.querySelector(".header-inner");
-  if (!host || document.querySelector(".sc-search")) return;
+  var inner = document.querySelector(".learn-main-inner");
+  if (!inner || document.querySelector(".sc-search")) return;
 
   var ICON =
     '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" ' +
@@ -19,9 +19,20 @@
     'role="combobox" aria-expanded="false" aria-controls="sc-search-results" aria-autocomplete="list">' +
     '<ul class="sc-search-results" id="sc-search-results" role="listbox" hidden></ul>';
 
-  // Before the account button when it exists, otherwise at the end of the header.
-  var account = document.getElementById("sc-account");
-  host.insertBefore(box, account || null);
+  // Sit on the right of the breadcrumb line; catalog pages have none, so use the top of the page.
+  var crumb = inner.querySelector(".learn-breadcrumb");
+  if (crumb) {
+    var row = document.createElement("div");
+    row.className = "learn-toolbar";
+    crumb.parentNode.insertBefore(row, crumb);
+    row.appendChild(crumb);
+    row.appendChild(box);
+  } else {
+    var bar = document.createElement("div");
+    bar.className = "learn-toolbar learn-toolbar--end";
+    bar.appendChild(box);
+    inner.insertBefore(bar, inner.firstChild);
+  }
 
   var input = box.querySelector("input");
   var list = box.querySelector("ul");
