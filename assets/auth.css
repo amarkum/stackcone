@@ -80,14 +80,14 @@
   padding: 2.75rem 2.25rem 1.75rem 2.75rem; color: #a3a3a3; background: #0a0a0a;
 }
 .auth-hero {
-  position: absolute; right: -6%; bottom: 0; z-index: 0;
-  height: 86%; width: auto; max-width: 72%;
+  position: absolute; right: 0; bottom: 0; z-index: 0;
+  height: 92%; width: auto;
+  /* As big as fits: never wider than the space right of the copy column (text ends at ~19.75rem),
+     counting on the 10% bleed off the right edge. */
+  max-width: calc((100% - 21.25rem) / 0.575);
+  transform: translateX(10%);
   object-fit: contain; object-position: right bottom;
   pointer-events: none; user-select: none;
-}
-.auth-side::after {
-  content: ""; position: absolute; inset: 0 36% 0 0; pointer-events: none; z-index: 0;
-  background: linear-gradient(90deg, #0a0a0a 0%, #0a0a0a 40%, transparent 100%);
 }
 .auth-side-body {
   position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center;
@@ -174,7 +174,7 @@
 .auth-fine a { color: #737373; }
 
 @media (max-width: 1200px) {
-  .auth-hero { max-width: 50%; }
+  .auth-hero { max-width: calc((100% - 18.75rem) / 0.575); }
   .auth-points { font-size: 0.95rem; max-width: 14.5rem; }
 }
 @media (max-width: 1100px) {
@@ -243,9 +243,6 @@
 /* Right panel flips to light so dark mode still has a clear two-tone split */
 [data-theme="dark"] .auth-side {
   color: #525252; background: #f5f5f5; border-left: 1px solid #e5e5e5; border-right: 0;
-}
-[data-theme="dark"] .auth-side::after {
-  background: linear-gradient(90deg, #f5f5f5 0%, #f5f5f5 40%, transparent 100%);
 }
 [data-theme="dark"] .auth-pitch { color: #0a0a0a; }
 [data-theme="dark"] .auth-sub { color: #525252; }
