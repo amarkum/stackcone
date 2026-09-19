@@ -223,7 +223,7 @@
   if (!document.querySelector('link[href*="auth.css"]')) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
-    css.href = "/assets/auth.css?v=39";
+    css.href = "/assets/auth.css?v=40";
     document.head.appendChild(css);
   }
   (function paintCachedAccount() {
