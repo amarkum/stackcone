@@ -1,6 +1,6 @@
 # stackcone
 
-**Production RAG chatbots & AI agents** — grounded answers with citations, LangGraph / MCP agents, eval gates and monitoring. Also Python full stack, data engineering, and Flutter. Founded by [Amar Kumar](https://www.linkedin.com/in/amarkumar-in/).
+**Production RAG chatbots & AI agents** — grounded answers with citations, LangGraph / MCP agents, eval gates and monitoring. Also Python full stack, data engineering, and Flutter. Founded by Amar Kumar.
 
 **Live site:** [stackcone.com](https://stackcone.com/) · **Contact:** [hello@stackcone.com](mailto:hello@stackcone.com)
 
@@ -9,7 +9,7 @@
 [stackcone](https://stackcone.com/) is a full-stack software and AI engineering studio. We design, build, and deploy production systems — from discovery to handover — with clear scope, documentation, and on-time delivery.
 
 - 10+ years experience
-- Reviews on [Upwork](https://upwork.com/freelancers/amarkumar)
+- Reviews on [Upwork](https://www.upwork.com/agencies/2022687811186513260/)
 
 ## Services
 

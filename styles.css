@@ -3231,8 +3231,27 @@ body.landing-page main > section:not(.hero) {
 }
 
 /* ---- Homepage revamp ---- */
-.nav .nav-cta { background: var(--accent); color: #fff !important; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
-.nav .nav-cta:hover { background: var(--accent-strong); }
+/* Header CTAs: same box as Log in (also mirrored in auth.css for pages that load it last) */
+.nav .nav-cta {
+  display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;
+  height: 36px; padding: 0 16px; border: 1px solid #0a0a0a; border-radius: 999px; background: #0a0a0a;
+  font: 600 0.875rem/1 "DM Sans", system-ui, sans-serif; letter-spacing: 0; color: #fff !important; text-decoration: none;
+  white-space: nowrap;
+}
+.nav .nav-cta:hover { background: #262626; border-color: #262626; }
+@media (max-width: 992px) {
+  .nav .nav-cta {
+    display: block; width: calc(100% - 0.5rem); height: auto; margin: 1rem 0.25rem 0; padding: 0.7rem 1rem;
+    border-radius: 10px; font: 600 0.95rem/1.2 "DM Sans", system-ui, sans-serif; text-align: center;
+  }
+}
+.sc-account-login {
+  display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;
+  height: 36px; padding: 0 16px; border: 1px solid #0a0a0a; border-radius: 999px; background: #0a0a0a;
+  font: 600 0.875rem/1 "DM Sans", system-ui, sans-serif; letter-spacing: 0; color: #fff; text-decoration: none;
+  white-space: nowrap;
+}
+.sc-account-login:hover { border-color: #262626; background: #262626; color: #fff; }
 
 body.landing-page .hero.hero--lead { min-height: min(78vh, 680px); }
 .hero--lead .hero-copy { max-width: 46rem; margin: 0 auto; }
@@ -3270,15 +3289,4 @@ body.landing-page .hero.hero--lead { min-height: min(78vh, 680px); }
 .offer-card--featured .offer-num { color: #8a8a8a; }
 .offer-card--featured .offer-time { background: #2a2a2a; color: #e5e5e5; }
 @media (max-width: 900px) { .offer-grid { grid-template-columns: 1fr; } }
-/* mobile menu: Hire on Upwork matches the Log in button */
-@media (max-width: 992px) {
-  .nav .nav-cta { display: block; width: calc(100% - 0.5rem); box-sizing: border-box; margin: 1rem 0.25rem 0; padding: 0.7rem 1rem; border: 1px solid #0a0a0a; border-radius: 10px;
-    background: #0a0a0a; color: #fff !important; font: 600 0.95rem/1.2 "DM Sans", system-ui, sans-serif; text-align: center; letter-spacing: 0; }
-  .nav .nav-cta:hover { background: #262626; }
-}
-/* desktop header: Hire on Upwork and Log in share one height and type */
-@media (min-width: 993px) {
-  .nav .nav-cta, .sc-account-login { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 36px; padding: 0 16px;
-    font: 600 0.875rem/1 "DM Sans", system-ui, sans-serif; letter-spacing: 0; border-radius: 999px; border: 1px solid #0a0a0a; background: #0a0a0a; }
-  .nav .nav-cta { color: #fff !important; }
-}
+

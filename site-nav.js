@@ -167,7 +167,7 @@
   if (!nav) return;
 
   nav.innerHTML = NAV_ITEMS.map(renderItem).join("") +
-    '<a class="nav-cta" href="https://upwork.com/freelancers/amarkumar" target="_blank" rel="noopener">Hire on Upwork</a>';
+    '<a class="nav-cta" href="https://www.upwork.com/agencies/2022687811186513260/" target="_blank" rel="noopener noreferrer">Hire on Upwork</a>';
 
   var path = window.location.pathname.replace(/\/index\.html$/, "/").replace(/\/$/, "") || "/";
 
@@ -223,7 +223,7 @@
   if (!document.querySelector('link[href*="auth.css"]')) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
-    css.href = "/assets/auth.css?v=19";
+    css.href = "/assets/auth.css?v=20";
     document.head.appendChild(css);
   }
   (function paintCachedAccount() {
