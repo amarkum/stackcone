@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <title>Working with Strings | Python | stackcone Learn</title>
+  <meta name="description" content="Indexing, slicing, the everyday string methods and clean formatting with f-strings.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/python/strings/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=2">
+  <link rel="stylesheet" href="/blog/blog.css?v=4">
+  <link rel="stylesheet" href="/learn/learn.css?v=16">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=9">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / Working with Strings</p>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons">
+          <div class="learn-sidebar-head">
+            <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
+            <p class="learn-sidebar-progress">Lesson 3 of 15</p>
+          </div>
+          <nav class="learn-sidebar-lessons">
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/hello-world/"><span class="learn-sidebar-num">1</span>Hello, Python</a>
+          <a class="learn-sidebar-link is-done" href="/learn/programming/python/variables-and-types/"><span class="learn-sidebar-num">2</span>Variables and Types</a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/strings/"><span class="learn-sidebar-num">3</span>Working with Strings</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/control-flow/"><span class="learn-sidebar-num">4</span>Control Flow</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/functions/"><span class="learn-sidebar-num">5</span>Functions</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/lists-tuples/"><span class="learn-sidebar-num">6</span>Lists and Tuples</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/dictionaries/"><span class="learn-sidebar-num">7</span>Dictionaries and Sets</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/comprehensions/"><span class="learn-sidebar-num">8</span>Comprehensions and Iteration</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/"><span class="learn-sidebar-num">9</span>Classes and Objects</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/"><span class="learn-sidebar-num">10</span>Inheritance and Special Methods</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/file-handling/"><span class="learn-sidebar-num">11</span>File Handling</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/"><span class="learn-sidebar-num">12</span>Error Handling</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/"><span class="learn-sidebar-num">13</span>Modules, Packages and pip</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/"><span class="learn-sidebar-num">14</span>JSON, Dates and the Standard Library</a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/"><span class="learn-sidebar-num">15</span>Testing and Debugging</a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 3 of 15</p>
+          <h1>Working with Strings</h1>
+          <p class="learn-summary">Indexing, slicing, the everyday string methods and clean formatting with f-strings.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><strong>14</strong> min read</li>
+            <li>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/variables-and-types/">Lesson 2: Variables and Types</a></p>
+          <div class="learn-objectives">
+            <h2>What you will learn</h2>
+            <ul><li>Slice and index text</li><li>Use split, join, strip and replace</li><li>Format numbers with f-strings</li></ul>
+          </div>
+      <p>Text is everywhere in real programs: names, emails, log lines, file paths, API responses. A Python <code>str</code> is an <strong>immutable sequence of characters</strong>. Sequence means you can index and slice it like a list. Immutable means no operation changes a string in place; every method returns a <em>new</em> string and leaves the original alone.</p>
+      <h2>Creating strings</h2>
+      <p>Use single or double quotes, whichever avoids escaping. Triple quotes span several lines. A backslash starts an <em>escape sequence</em> such as <code>\n</code> (new line) or <code>\t</code> (tab). Prefix a string with <code>r</code> to keep backslashes literal, which is handy for Windows paths and regular expressions.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>single = &#x27;It is fine&#x27;
+double = &quot;She said \&quot;hi\&quot;&quot;
+poem = &quot;&quot;&quot;Roses are red,
+Violets are blue&quot;&quot;&quot;
+path = r&quot;C:\new\table&quot;
+
+print(single)
+print(double)
+print(poem)
+print(path)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>It is fine
+She said &quot;hi&quot;
+Roses are red,
+Violets are blue
+C:\new\table</pre></div>
+      <h2>Indexing and slicing</h2>
+      <p>Each character has a position starting at <code>0</code>. Negative positions count from the end, so <code>-1</code> is the last character. A slice <code>text[start:stop]</code> takes characters from <code>start</code> up to but <em>not including</em> <code>stop</code>. Leave either side empty to go to that end, and add a third number as the step.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>word = &quot;stackcone&quot;
+print(word[0], word[-1])
+print(word[0:5])
+print(word[5:])
+print(word[::-1])
+print(word[::2])
+print(len(word))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>s e
+stack
+cone
+enockcats
+sakoe
+9</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Slices never crash</p><p class="learn-callout-body">Indexing outside the string, like <code>word[99]</code>, raises an <code>IndexError</code>. A slice like <code>word[99:]</code> quietly returns an empty string instead.</p></aside>
+      <h2>Everyday string methods</h2>
+      <p>Methods are functions attached to a value, called with a dot. The ones you will use constantly clean up text (<code>strip</code>, <code>lower</code>), search it (<code>startswith</code>, <code>find</code>, <code>in</code>) and rewrite it (<code>replace</code>).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>raw = &quot;   Hello, World!  &quot;
+clean = raw.strip()
+
+print(clean)
+print(clean.lower(), clean.upper())
+print(clean.replace(&quot;World&quot;, &quot;Python&quot;))
+print(clean.startswith(&quot;Hello&quot;), clean.endswith(&quot;?&quot;))
+print(&quot;World&quot; in clean)
+print(clean.find(&quot;o&quot;), clean.count(&quot;l&quot;))
+print(raw)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, World!
+hello, world! HELLO, WORLD!
+Hello, Python!
+True False
+True
+4 3
+   Hello, World!  </pre></div>
+      <p>Notice the last line: <code>raw</code> is unchanged, because <code>strip()</code> returned a new string.</p>
+      <h2>Splitting and joining</h2>
+      <p><code>split()</code> turns a string into a list of pieces, and <code>join()</code> glues a list back into one string. Together they handle most text-processing chores, such as reading comma-separated values or building a sentence. Note the odd-looking order of <code>join</code>: you call it on the <em>separator</em>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>line = &quot;ada,grace,linus&quot;
+names = line.split(&quot;,&quot;)
+print(names)
+
+print(&quot; &amp; &quot;.join(names))
+print(&quot;one two  three&quot;.split())
+print(&quot;-&quot;.join([&quot;2026&quot;, &quot;01&quot;, &quot;15&quot;]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;ada&#x27;, &#x27;grace&#x27;, &#x27;linus&#x27;]
+ada &amp; grace &amp; linus
+[&#x27;one&#x27;, &#x27;two&#x27;, &#x27;three&#x27;]
+2026-01-15</pre></div>
+      <h2>Formatting with f-strings</h2>
+      <p>An f-string embeds expressions inside braces. After a colon you can control the format: number of decimals, thousands separators, alignment and padding. This is the modern, readable replacement for <code>+</code> concatenation and <code>%</code> formatting.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>name = &quot;Ada&quot;
+score = 93.456
+big = 1234567
+
+print(f&quot;{name} scored {score:.1f}&quot;)
+print(f&quot;Population: {big:,}&quot;)
+print(f&quot;{name:&gt;8}|{name:&lt;8}|{name:^8}|&quot;)
+print(f&quot;{7:03d}&quot;)
+print(f&quot;{0.256:.0%}&quot;)
+print(f&quot;{name!r}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada scored 93.5
+Population: 1,234,567
+     Ada|Ada     |  Ada   |
+007
+26%
+&#x27;Ada&#x27;</pre></div>
+      <h2>Checking what a string contains</h2>
+      <p>Methods such as <code>isdigit()</code>, <code>isalpha()</code> and <code>isspace()</code> answer yes/no questions about the characters, which is a cheap way to validate input before converting it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>for text in [&quot;2026&quot;, &quot;abc&quot;, &quot;12a&quot;, &quot;&quot;]:
+    print(repr(text), text.isdigit(), text.isalpha())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>&#x27;2026&#x27; True False
+&#x27;abc&#x27; False True
+&#x27;12a&#x27; False False
+&#x27;&#x27; False False</pre></div>
+      <h2>Common mistakes</h2>
+      <ul><li><strong>Expecting in-place changes</strong>: <code>s.upper()</code> on its own does nothing useful. Assign the result: <code>s = s.upper()</code>.</li><li><strong>Assigning to an index</strong>: <code>s[0] = "X"</code> raises <code>TypeError</code> because strings are immutable. Build a new string with slicing or <code>replace</code>.</li><li><strong>Joining non-strings</strong>: <code>",".join([1, 2])</code> fails. Convert first: <code>",".join(str(n) for n in nums)</code>.</li><li><strong>Off-by-one slices</strong>: the stop index is excluded, so <code>s[0:3]</code> has three characters, not four.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given <code>email = "  Ada.Lovelace@Example.com "</code>, print the cleaned lowercase address, then print just the part before the <code>@</code> with the dot replaced by a space and each word capitalized (use <code>.title()</code>).</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="email = &quot;  Ada.Lovelace@Example.com &quot;
+clean = email.strip().lower()
+print(clean)
+
+user = clean.split(&quot;@&quot;)[0]
+print(user.replace(&quot;.&quot;, &quot; &quot;).title())"><pre><code># Write your solution here
+</code></pre></div>
+          <a class="learn-upnext" href="/learn/programming/python/control-flow/"><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Control Flow</strong><small>if/elif/else, for loops, while loops, and when to use each.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/variables-and-types/">← Previous</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/control-flow/">Next lesson →</a>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js" defer></script>
+  <script src="/assets/pyodide-runner.js" defer></script>
+  <script src="/assets/monaco-code.js?v=8" defer></script>
+  <script src="/script.js" defer></script>
+</body>
+</html>

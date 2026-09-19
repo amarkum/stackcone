@@ -280,6 +280,7 @@ LESSONS = [
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from content_python import CONTENT as _PY
+from content_python_more import META as _MPY, CONTENT as _PY2
 from content_java import CONTENT as _JAVA
 from content_ds import CONTENT as _DS
 from content_js_sql import META as _M1, CONTENT as _C1
@@ -288,12 +289,24 @@ from content_frameworks import META as _M3, CONTENT as _C3
 from content_web_tools import META as _M4, CONTENT as _C4
 from content_more import META as _M5, CONTENT as _C5
 from content_batch3 import META as _M6, CONTENT as _C6
-for _m in (*_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
+for _m in (*_MPY, *_M1, *_M2, *_M3, *_M4, *_M5, *_M6):
     LESSONS.append({**_m, "sections": []})
-_RICH = {**_PY, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
+_RICH = {**_PY, **_PY2, **_JAVA, **_DS, **_C1, **_C2, **_C3, **_C4, **_C5, **_C6}
 for _les in LESSONS:
     if _les["slug"] in _RICH:
         _les["sections"] = _RICH[_les["slug"]]
+
+# Teaching order for the Python course (new lessons slot in between the originals)
+_PY_ORDER = ["python-hello-world", "python-variables-and-types", "python-strings",
+             "python-control-flow", "python-functions", "python-lists-tuples",
+             "python-dictionaries", "python-comprehensions", "python-oop-classes",
+             "python-inheritance", "python-file-handling", "python-error-handling",
+             "python-modules-packages", "python-json-datetime", "python-testing-debugging"]
+_rank = {slug: i for i, slug in enumerate(_PY_ORDER)}
+_first_py = next(i for i, l in enumerate(LESSONS) if l["track"] == "python")
+_py_lessons = sorted((l for l in LESSONS if l["track"] == "python"), key=lambda l: _rank[l["slug"]])
+LESSONS[:] = [l for l in LESSONS if l["track"] != "python"]
+LESSONS[_first_py:_first_py] = _py_lessons
 
 # wire prev/next per track
 by_track: dict[str, list] = {}
@@ -526,7 +539,7 @@ def lesson_html(les: dict) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=7" defer></script>
+  <script src="/assets/monaco-code.js?v=8" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>
@@ -575,7 +588,7 @@ def _page_shell(title: str, description: str, canonical: str, body: str) -> str:
   </footer>
   <script src="/site-nav.js" defer></script>
   <script src="/assets/pyodide-runner.js" defer></script>
-  <script src="/assets/monaco-code.js?v=7" defer></script>
+  <script src="/assets/monaco-code.js?v=8" defer></script>
   <script src="/script.js" defer></script>
 </body>
 </html>

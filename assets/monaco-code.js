@@ -9,6 +9,7 @@
   var LANG_MAP = {
     python: 'python',
     py: 'python',
+    pyfile: 'python',
     javascript: 'javascript',
     js: 'javascript',
     typescript: 'typescript',
@@ -110,6 +111,7 @@
     return (
       block.wrap &&
       document.body.classList.contains('learn-page') &&
+      block.hint !== 'pyfile' &&
       lang === 'python'
     );
   }
