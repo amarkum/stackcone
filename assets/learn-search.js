@@ -1,4 +1,4 @@
-/* stackcone Learn — "Search lessons…" box, in the breadcrumb row on /learn/ pages.
+/* stackcone Learn — "Search lessons…" box, in the category nav (catalog) or breadcrumb (lessons).
    Loaded by site-nav.js. Searches learn/courses.json in the browser; no server. */
 (function () {
   "use strict";
@@ -20,12 +20,36 @@
     '<ul class="sc-search-results" id="sc-search-results" role="listbox" hidden></ul>';
 
   // Sit on the right of the breadcrumb line; catalog pages have none, so use the top of the page.
-  var crumb = inner.querySelector(".learn-breadcrumb");
-  if (crumb) {
+  var CATS = [
+    { href: "/learn/programming/", label: "Programming" },
+    { href: "/learn/ds-algo/", label: "DS & Algo" },
+    { href: "/learn/ai/", label: "AI" },
+    { href: "/learn/frameworks/", label: "Frameworks" }
+  ];
+
+  function categoryNav() {
+    var existing = inner.querySelector(".learn-cat-nav");
+    if (existing) return existing;
+    if (!inner.classList.contains("learn-catalog")) return null;
+    var path = location.pathname.replace(/\/index\.html$/, "/");
+    if (path.charAt(path.length - 1) !== "/") path += "/";
+    var nav = document.createElement("nav");
+    nav.className = "learn-cat-nav";
+    nav.setAttribute("aria-label", "Learn categories");
+    nav.innerHTML = CATS.map(function (c) {
+      var on = path === c.href || path.indexOf(c.href) === 0;
+      return '<a href="' + c.href + '"' + (on ? ' aria-current="page"' : "") + ">" + c.label + "</a>";
+    }).join("");
+    inner.insertBefore(nav, inner.firstChild);
+    return nav;
+  }
+
+  var lead = categoryNav() || inner.querySelector(".learn-breadcrumb");
+  if (lead) {
     var row = document.createElement("div");
     row.className = "learn-toolbar";
-    crumb.parentNode.insertBefore(row, crumb);
-    row.appendChild(crumb);
+    lead.parentNode.insertBefore(row, lead);
+    row.appendChild(lead);
     row.appendChild(box);
   } else {
     var bar = document.createElement("div");

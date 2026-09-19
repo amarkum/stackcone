@@ -4,7 +4,6 @@
     '<path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   var NAV_ITEMS = [
-    { href: "/", label: "Home" },
     { href: "/work/", label: "Portfolio" },
     { href: "/solutions/", label: "Solutions" },
     {
@@ -57,7 +56,7 @@
       href: "/learn/ai/",
       children: [
         { href: "/learn/ai/one-course/what-is-an-llm/", label: "AI: One Course", matches: ["/learn/ai/one-course"] },
-        { href: "/learn/ai/", label: "All AI lessons", separator: true }
+        { href: "/learn/ai/", label: "All AI", separator: true }
       ]
     },
     { href: "/blog/", label: "Blog" },
@@ -225,7 +224,7 @@
     if (!document.querySelector('link[href*="auth.css"]')) {
       var css = document.createElement("link");
       css.rel = "stylesheet";
-      css.href = "/assets/auth.css?v=16";
+      css.href = "/assets/auth.css?v=17";
       document.head.appendChild(css);
     }
     var auth = document.createElement("script");
@@ -237,7 +236,7 @@
   // Lesson search box in the header on Learn pages.
   if (/^\/learn(\/|$)/.test(location.pathname) && !document.querySelector('script[src*="learn-search.js"]')) {
     var search = document.createElement("script");
-    search.src = "/assets/learn-search.js?v=2";
+    search.src = "/assets/learn-search.js?v=3";
     search.defer = true;
     document.head.appendChild(search);
   }
