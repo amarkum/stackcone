@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Stackcone Mono";
+  src: url("assets/fonts/StackconeMono-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* stackcone — Hostinger parked-domain style */
 
 :root {
@@ -30,6 +38,7 @@
   --radius: 6px;
   --radius-lg: 8px;
   --font: "DM Sans", system-ui, sans-serif;
+  --font-mono: "Stackcone Mono", ui-monospace, monospace;
   --container-max: 1100px;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -3500,3 +3509,10 @@ body.landing-page .hero.hero--lead { min-height: min(78vh, 680px); }
 
 /* Wellfound wordmark is black: use the white version on the dark theme */
 [data-theme="dark"] .find-us-brand--wellfound img { content: url("/assets/icons/wellfound-dark.png"); }
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}

@@ -560,7 +560,7 @@
       lineNumbersMinChars: 3,
       fontSize: 13,
       lineHeight: 20,
-      fontFamily: "'Source Code Pro', ui-monospace, monospace",
+      fontFamily: "'Stackcone Mono', ui-monospace, monospace",
       theme: siteMonacoTheme(),
       wordWrap: 'off',
       automaticLayout: true,
