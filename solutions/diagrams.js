@@ -193,32 +193,60 @@
   }
 
   function getSvgDimensions(svg) {
-    svg.removeAttribute("style");
-    var bbox = svg.getBBox();
-    var w = bbox.width;
-    var h = bbox.height;
-    if (!w || !h) {
-      var rect = svg.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
+    var vb = svg.viewBox && svg.viewBox.baseVal;
+    if (vb && vb.width && vb.height) {
+      return { w: vb.width, h: vb.height };
     }
-    return { w: w, h: h };
+    var attrW = parseFloat(svg.getAttribute("width"));
+    var attrH = parseFloat(svg.getAttribute("height"));
+    if (attrW > 0 && attrH > 0 && svg.getAttribute("width").indexOf("%") === -1) {
+      return { w: attrW, h: attrH };
+    }
+    try {
+      var bbox = svg.getBBox();
+      if (bbox.width && bbox.height) return { w: bbox.width, h: bbox.height };
+    } catch (err) { /* SVG not in DOM yet */ }
+    var rect = svg.getBoundingClientRect();
+    return { w: rect.width, h: rect.height };
+  }
+
+  function prepareLightboxCanvas(canvas) {
+    var mermaidEl = canvas.querySelector(".mermaid-pending") || canvas.firstElementChild;
+    if (!mermaidEl) return null;
+    mermaidEl.style.width = "";
+    mermaidEl.style.height = "";
+    mermaidEl.style.maxWidth = "none";
+    mermaidEl.style.margin = "0";
+
+    var svg = mermaidEl.querySelector("svg") || canvas.querySelector("svg");
+    if (!svg) return null;
+
+    svg.removeAttribute("style");
+    svg.style.maxWidth = "none";
+    svg.style.width = "";
+    svg.style.height = "";
+
+    var dims = getSvgDimensions(svg);
+    if (!dims.w || !dims.h) return null;
+
+    svg.setAttribute("width", String(dims.w));
+    svg.setAttribute("height", String(dims.h));
+    mermaidEl.style.width = dims.w + "px";
+    mermaidEl.style.height = dims.h + "px";
+    return dims;
   }
 
   function fitLightboxToScreen() {
     var els = getLightboxEls();
     if (!els || !lightboxState) return;
 
-    var svg = els.canvas.querySelector("svg");
-    if (!svg) return;
+    var dims = prepareLightboxCanvas(els.canvas);
+    if (!dims) return;
 
-    var dims = getSvgDimensions(svg);
-    if (!dims.w || !dims.h) return;
-
-    var pad = 40;
+    var pad = 16;
     var vw = els.stage.clientWidth - pad;
     var vh = els.stage.clientHeight - pad;
-    if (!vw || !vh) return;
+    if (vw < 1 || vh < 1) return;
 
     var scale = Math.min(vw / dims.w, vh / dims.h);
     lightboxState.baseW = dims.w;
@@ -312,8 +340,10 @@
 
     els.lb.hidden = false;
     document.body.style.overflow = "hidden";
+    prepareLightboxCanvas(els.canvas);
 
     requestAnimationFrame(function () {
+      fitLightboxToScreen();
       requestAnimationFrame(fitLightboxToScreen);
     });
   }
@@ -427,7 +457,11 @@
     });
     if (!window.__stackconeDiagramResizeBound) {
       window.__stackconeDiagramResizeBound = true;
-      window.addEventListener("resize", fitAllDiagrams);
+      window.addEventListener("resize", function () {
+        fitAllDiagrams();
+        var lb = document.getElementById(LIGHTBOX_ID);
+        if (lb && !lb.hidden) fitLightboxToScreen();
+      });
     }
   }
 
