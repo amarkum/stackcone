@@ -1,7 +1,11 @@
 (function () {
   var CHEERPJ_LOADER = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
   var ECJ_PATH = '/app/assets/vendor/ecj.jar';
-  var ECJ_MAIN = 'org.eclipse.jdt.internal.compiler.batch.Main';
+  // CheerpJ's 11 and 17 images ship without lib/jrt-fs.jar, which ecj needs to
+  // read a modular JDK, so it refuses them ("invalid location for system
+  // libraries"). Its Java 8 image has a real rt.jar, so compile against that.
+  var JAVA_LEVEL = '8';
+  var BOOT_CLASSPATH = '/lt/8/jre/lib/rt.jar';
 
   function loadCheerpjScript() {
     return new Promise(function (resolve, reject) {
@@ -53,8 +57,9 @@
           version: 17,
           status: 'none'
         }).then(function () {
-          window.cheerpjCreateDisplay(64, 64, document.getElementById('stackcone-java-display'));
-          return window.cheerpjRunLibrary('');
+          // No cheerpjCreateDisplay: an AWT display wedges library-mode calls,
+          // and output now comes from the compiler's writer and stdout.txt.
+          return window.cheerpjRunLibrary(ECJ_PATH);
         }).then(function (lib) {
           window.__stackconeCjLib = lib;
         });
@@ -176,11 +181,13 @@
     var path = sourcePath(prepared.source, prepared.name);
     var lib = window.__stackconeCjLib;
     if (!lib) return Promise.reject(new Error('CheerpJ filesystem is not available.'));
-    return lib.java.io.File.then(function (File) {
+    // CheerpJ class handles are bare thenables: their .then() runs the callback
+    // but returns undefined, so wrap them before chaining.
+    return Promise.resolve(lib.java.io.File).then(function (File) {
       return new File(path).then(function (file) {
         return Promise.resolve(file.getParentFile()).then(function (parent) {
           return Promise.resolve(parent ? parent.mkdirs() : null).then(function () {
-            return lib.java.io.FileWriter.then(function (FileWriter) {
+            return Promise.resolve(lib.java.io.FileWriter).then(function (FileWriter) {
               return new FileWriter(file).then(function (writer) {
                 return Promise.resolve(writer.write(prepared.source)).then(function () {
                   return Promise.resolve(writer.close());
@@ -195,27 +202,43 @@
     });
   }
 
+  /* Calls ecj in-process so its diagnostics can be captured; running it through
+     cheerpjRunMain only yields an exit code, with the errors lost. */
   function compile(path) {
-    return window.cheerpjRunMain(
-      ECJ_MAIN,
-      ECJ_PATH + ':/files/',
-      '-d',
-      '/files/',
-      '-classpath',
-      '/files/',
-      '-sourcepath',
-      '/files/',
-      '-source',
-      '17',
-      '-target',
-      '17',
+    var lib = window.__stackconeCjLib;
+    if (!lib) return Promise.reject(new Error('CheerpJ filesystem is not available.'));
+    var args = [
+      '-d', '/files/',
+      '-classpath', '/files/',
+      '-sourcepath', '/files/',
+      '-source', JAVA_LEVEL,
+      '-target', JAVA_LEVEL,
+      '-bootclasspath', BOOT_CLASSPATH,
       '-proc:none',
       '-nowarn',
       path
-    );
+    ].join(' ');
+
+    return Promise.resolve(lib.org.eclipse.jdt.internal.compiler.batch.Main).then(function (Main) {
+      return Promise.resolve(lib.java.io.StringWriter).then(function (StringWriter) {
+        return Promise.resolve(lib.java.io.PrintWriter).then(function (PrintWriter) {
+          return new StringWriter().then(function (sink) {
+            return new PrintWriter(sink).then(function (writer) {
+              return Promise.resolve(Main.compile(args, writer, writer)).then(function (ok) {
+                return Promise.resolve(writer.flush()).then(function () {
+                  return Promise.resolve(sink.toString()).then(function (log) {
+                    return { ok: !!ok, log: String(log == null ? '' : log).trim() };
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
   }
 
-  function compileFailed(exit) {
+  function runFailed(exit) {
     return typeof exit === 'number' && exit !== 0;
   }
 
@@ -277,15 +300,14 @@
         return writeSource(prepared);
       })
       .then(function (path) {
-        return compile(path).then(function (exit) {
-          var log = readConsole();
-          if (compileFailed(exit)) {
-            outputEl.textContent = log || 'Compilation failed.';
+        return compile(path).then(function (result) {
+          if (!result.ok) {
+            outputEl.textContent = result.log || 'Compilation failed.';
             outputEl.classList.add('is-error');
             return;
           }
           if (!prepared.run) {
-            outputEl.textContent = log || '(compiled)';
+            outputEl.textContent = result.log || '(compiled)';
             outputEl.classList.remove('is-error');
             return;
           }
@@ -293,24 +315,24 @@
           clearConsole();
           var harness = { name: '__SCRun', source: harnessSource(prepared.fqn) };
           return writeSource(harness).then(function (harnessPath) {
-            return compile(harnessPath).then(function (harnessExit) {
-              if (compileFailed(harnessExit)) {
+            return compile(harnessPath).then(function (harnessResult) {
+              if (!harnessResult.ok) {
                 return window.cheerpjRunMain(prepared.fqn, '/files/').then(function (runExit) {
                   var out = readConsole();
-                  outputEl.textContent = out || (compileFailed(runExit) ? 'Program exited with code ' + runExit : '(no output)');
-                  outputEl.classList.toggle('is-error', compileFailed(runExit));
+                  outputEl.textContent = out || (runFailed(runExit) ? 'Program exited with code ' + runExit : '(no output)');
+                  outputEl.classList.toggle('is-error', runFailed(runExit));
                 });
               }
               return window.cheerpjRunMain('__SCRun', '/files/').then(function (runExit) {
                 return readStdoutFile().then(function (fileOut) {
                   var out = (fileOut || '').replace(/\s+$/, '') || readConsole();
-                  if (compileFailed(runExit) && !out) {
+                  if (runFailed(runExit) && !out) {
                     outputEl.textContent = 'Program exited with code ' + runExit;
                     outputEl.classList.add('is-error');
                     return;
                   }
                   outputEl.textContent = out || '(no output)';
-                  outputEl.classList.toggle('is-error', compileFailed(runExit));
+                  outputEl.classList.toggle('is-error', runFailed(runExit));
                 });
               });
             });
