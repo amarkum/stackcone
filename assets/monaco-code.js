@@ -22,6 +22,7 @@
     shell: 'shell',
     zsh: 'shell',
     sql: 'sql',
+    sqlfile: 'sql',
     json: 'json',
     yaml: 'yaml',
     yml: 'yaml',
@@ -208,13 +209,17 @@
   var RUNNERS = {
     python: { hint: 'pyfile', run: function () { return window.stackconeRunPython; } },
     javascript: { hint: 'jsfile', run: function () { return window.stackconeRunJs; } },
-    java: { hint: 'javafile', run: function () { return window.stackconeRunJava; } }
+    java: { hint: 'javafile', run: function () { return window.stackconeRunJava; } },
+    sql: { hint: 'sqlfile', run: function () { return window.stackconeRunSql; } }
   };
 
   // Web frameworks and LLM libraries cannot run in the in-browser runtime.
   var PYODIDE_PAGE_BLOCK = /\/(flask|django|fastapi|langchain)(\/|-)/;
   var JS_PAGE_BLOCK = /\/(react|express|nextjs)(\/|-)/;
   var JAVA_PAGE_BLOCK = /\/(spring)(\/|-)/;
+  // SQL runs against the lesson database seeded by sql-runner.js, so the Run button
+  // is only offered on the SQL course, where the snippets match that schema.
+  var SQL_PAGE_ALLOW = /\/sql\//;
 
   var PY_STDLIB = {
     __future__: 1, abc: 1, argparse: 1, array: 1, ast: 1, asyncio: 1, atexit: 1,
@@ -313,6 +318,7 @@
     if (lang === 'python' && !pythonCanRunInPyodide(block.code)) return null;
     if (lang === 'javascript' && !jsCanRunInBrowser(block.code)) return null;
     if (lang === 'java' && !javaCanRunInBrowser(block.code)) return null;
+    if (lang === 'sql' && !SQL_PAGE_ALLOW.test(location.pathname || '')) return null;
     return r;
   }
 

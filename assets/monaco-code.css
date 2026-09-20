@@ -229,3 +229,42 @@
   opacity: 0.6;
   cursor: default;
 }
+
+/* SQL results render as a real table instead of preformatted text. */
+.learn-code-output .sql-result-table {
+  width: auto;
+  min-width: min(100%, 18rem);
+  border-collapse: collapse;
+  margin: 0 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+.learn-code-output .sql-result-table:last-child { margin-bottom: 0; }
+
+.learn-code-output .sql-result-table th,
+.learn-code-output .sql-result-table td {
+  padding: 0.3rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--code-line);
+}
+
+.learn-code-output .sql-result-table th {
+  font-weight: 600;
+  color: var(--code-out-text);
+  opacity: 0.75;
+  border-bottom-width: 2px;
+}
+
+.learn-code-output .sql-result-table tr:last-child td { border-bottom: none; }
+.learn-code-output .sql-result-table td.is-num { text-align: right; font-variant-numeric: tabular-nums; }
+.learn-code-output .sql-result-table td.is-null { opacity: 0.5; font-style: italic; }
+
+.learn-code-output .sql-result-note { opacity: 0.75; }
+
+/* The output box scrolls sideways when a result is wider than the lesson column. */
+.learn-code-wrap.monaco-runnable[data-language="sql"] .learn-code-output,
+.learn-code-wrap[data-lang="sql"] .learn-code-output {
+  overflow-x: auto;
+}
