@@ -4,6 +4,7 @@
 (function () {
   var KEY = "sc-theme";
   var root = document.documentElement;
+  root.classList.add("js");
   var media = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 
   function saved() {
@@ -65,5 +66,5 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
   else mount();
 
-  window.stackconeTheme = { get: current, toggle: toggle };
+  window.stackconeTheme = { get: current, toggle: toggle, mount: mount };
 })();

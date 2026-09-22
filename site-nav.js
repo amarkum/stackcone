@@ -224,7 +224,7 @@
   if (!document.querySelector('link[href*="auth.css"]')) {
     var css = document.createElement("link");
     css.rel = "stylesheet";
-    css.href = "/assets/auth.css?v=50";
+    css.href = "/assets/auth.css?v=51";
     document.head.appendChild(css);
   }
   (function paintCachedAccount() {
@@ -237,7 +237,6 @@
         snap = JSON.parse(raw);
       }
     } catch (e) { /* private mode */ }
-    if (!known) return;
     var host = document.querySelector("[data-account]") || document.querySelector(".header-inner");
     if (!host) return;
     var box = document.getElementById("sc-account");
@@ -253,7 +252,7 @@
       });
     }
     var next = encodeURIComponent(location.pathname + location.search);
-    if (!snap) {
+    if (!known || !snap) {
       box.setAttribute("data-uid", "");
       box.innerHTML = '<a class="sc-account-login" href="/login/?next=' + next + '">Log in</a>';
       return;
@@ -271,6 +270,12 @@
       '<button type="button" data-logout>Log out</button>' +
       "</div>";
   })();
+
+  if (window.stackconeTheme && typeof window.stackconeTheme.mount === "function") {
+    window.stackconeTheme.mount();
+  }
+
+  nav.classList.add("is-ready");
 
   // Log in / avatar in the header on every page: load the auth module once.
   // The module URL matches the lesson pages and /login/, so it only ever runs one instance.
