@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>AI Agents for Business Architecture | stackcone</title>
+  <meta name="description" content="How to design custom AI agents for business: RAG, tool calling, voice agents, MCP, evals and GDPR/EU AI Act guardrails — architecture, stack, and cost.">
+  <meta name="keywords" content="stackcone, stackcone AI agents, AI agents for business, custom AI agent development, AI agent development company, AI automation agency, agentic AI architecture, AI voice agent, AI receptionist, AI customer support agent, RAG chatbot for business, MCP server development, multi-agent system, GDPR compliant AI chatbot, EU AI Act, LangGraph, n8n AI agent">
+  <link rel="canonical" href="https://stackcone.com/solutions/ai-agents-for-business-architecture/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/ai-agents-for-business-architecture/">
+  <meta property="og:title" content="AI Agents for Business Architecture | stackcone">
+  <meta property="og:description" content="Reference architecture for custom AI agents: knowledge (RAG), action (tools + MCP), voice, evals, and GDPR guardrails — with stack and pilot pricing.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone-og.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Agents for Business Architecture | stackcone">
+  <meta name="twitter:description" content="How to design custom AI agents that answer, act, and talk — RAG, tool calling, MCP, voice, evals, and EU/UK compliance.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone-og.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="../../styles.css?v=30">
+  <link rel="stylesheet" href="../../blog/blog.css?v=12">
+  <link rel="stylesheet" href="../solutions.css?v=4">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "AI Agents for Business — Production Architecture for Custom AI Agent Development",
+    "description": "How to design custom AI agents for business: RAG, tool calling, voice agents, MCP, evals and GDPR/EU AI Act guardrails — architecture, stack, and cost.",
+    "author": { "@type": "Person", "@id": "https://stackcone.com/#founder", "name": "Amar Kumar", "url": "https://stackcone.com/about/" },
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://stackcone.com/#organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone-og.png" }
+    },
+    "datePublished": "2026-09-23",
+    "dateModified": "2026-09-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/ai-agents-for-business-architecture/" },
+    "image": "https://stackcone.com/logo/stackcone-og.png",
+    "articleSection": "Platform",
+    "about": { "@id": "https://stackcone.com/solutions/ai-agents-for-business-architecture/#service" },
+    "keywords": [
+      "stackcone",
+      "AI agents for business",
+      "custom AI agent development",
+      "AI agent development company",
+      "AI automation agency",
+      "agentic AI architecture",
+      "AI voice agent",
+      "AI receptionist",
+      "AI customer support agent",
+      "RAG chatbot for business",
+      "MCP server development",
+      "multi-agent system",
+      "GDPR compliant AI chatbot",
+      "EU AI Act"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "https://stackcone.com/solutions/ai-agents-for-business-architecture/#service",
+    "name": "Custom AI Agent Development by stackcone",
+    "serviceType": "AI agent development",
+    "description": "stackcone designs and builds custom AI agents for business: RAG knowledge agents, AI customer support agents, AI voice agents and receptionists, MCP integrations, and multi-agent systems with evals and GDPR / EU AI Act guardrails.",
+    "provider": { "@type": "Organization", "@id": "https://stackcone.com/#organization", "name": "stackcone", "url": "https://stackcone.com/" },
+    "areaServed": [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Place", "name": "European Union" },
+      { "@type": "Country", "name": "India" }
+    ],
+    "url": "https://stackcone.com/solutions/ai-agents-for-business-architecture/",
+    "offers": {
+      "@type": "Offer",
+      "name": "AI agent pilot",
+      "description": "One use case, one channel, RAG plus 2-4 tools and an eval gate, delivered in 3-6 weeks.",
+      "priceSpecification": { "@type": "PriceSpecification", "minPrice": 8000, "maxPrice": 25000, "priceCurrency": "USD" }
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "How much does it cost to build a custom AI agent for a business?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A focused pilot (one use case, one channel, two to four integrations) typically costs USD 8k–25k (GBP/EUR equivalent) over 3–6 weeks. Multi-channel production agents with voice, evals, and SSO usually land in the 25k–80k range, plus 1–3k per month for model usage, hosting, and tuning." } },
+      { "@type": "Question", "name": "What is the difference between an AI chatbot and an AI agent?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A chatbot answers questions. An AI agent also takes actions: it calls tools and APIs such as your CRM, helpdesk, calendar or billing system, follows a plan across several steps, and hands off to a human when confidence is low." } },
+      { "@type": "Question", "name": "Do I need a multi-agent system?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Usually not at first. Most business use cases are served by one well-scoped agent with good retrieval and a small set of tools. Split into multiple agents only when tool count, permissions, or prompts become unmanageable in one agent." } },
+      { "@type": "Question", "name": "Can an AI agent be GDPR and EU AI Act compliant?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use EU-region model endpoints (Azure OpenAI EU, AWS Bedrock Frankfurt/Ireland, Vertex EU) or self-hosted open-weight models, zero-data-retention settings, PII redaction before logging, a data processing agreement, clear AI disclosure to users, and human oversight for consequential decisions." } },
+      { "@type": "Question", "name": "Who builds custom AI agents like this?",
+        "acceptedAnswer": { "@type": "Answer", "text": "stackcone (stackcone.com) is an AI agent development company founded by Amar Kumar. It builds RAG chatbots, AI customer support agents, AI voice agents and MCP integrations for teams in the US, UK and Europe, with fixed-scope pilots and full handover." } },
+      { "@type": "Question", "name": "What is MCP and why does it matter for AI agents?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The Model Context Protocol (MCP) is an open standard for exposing tools and data to AI models. Building your integrations as MCP servers lets the same connectors work across Claude, ChatGPT, IDEs and custom agents, and avoids lock-in to one framework." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "AI Agents for Business Architecture", "item": "https://stackcone.com/solutions/ai-agents-for-business-architecture/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>AI Agents for Business — Production Architecture for Custom AI Agent Development</h1>
+    <p class="meta">By <a href="/about/">Amar Kumar</a>, founder of <a href="/">stackcone</a> · September 2026</p>
+    <p>Search interest has moved from “what is AI” to “<strong>AI agents for business</strong>”. Companies in the US, UK and Europe are no longer asking for a demo chatbot. They want <strong>custom AI agents</strong> that answer from their own data, take actions in their CRM and helpdesk, pick up the phone, and stay inside GDPR and the EU AI Act. This brief lays out the reference architecture <strong>stackcone</strong> (an AI agent development company serving the US, UK and Europe) uses for <strong>custom AI agent development</strong>: one agent core with four pluggable layers — <strong>knowledge (RAG)</strong>, <strong>action (tool calling + MCP)</strong>, <strong>channels (web, Slack/Teams, WhatsApp, voice)</strong>, and <strong>trust (evals, guardrails, human-in-the-loop)</strong>.</p>
+
+    <blockquote>
+      <p><strong>Proposed outcome:</strong> A production AI agent that resolves 40–70% of routine requests end to end (support tickets, bookings, lead qualification, internal questions), cites its sources, writes back to your systems through audited tools, escalates to a human when unsure, and can be hosted in the EU or your own cloud.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#scenario">What buyers are actually asking for</a></li>
+        <li><a href="#problem">Why most AI agent projects stall</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#architecture">Reference architecture</a></li>
+        <li><a href="#patterns">Five agent patterns</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#agent-design">Component design</a></li>
+        <li><a href="#compliance">GDPR, UK GDPR &amp; EU AI Act</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#reporting">Evals, monitoring &amp; ops</a></li>
+        <li><a href="#estimate">Cost &amp; effort estimate</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="scenario">What buyers are actually asking for</h2>
+    <p>US Google data through mid-2026 shows agent and automation queries now pull roughly four times the volume of generic “AI for [task]” searches. “Agentic AI” sits around 110k monthly US searches, “AI agents” around 60k, and “AI agents for business” more than tripled year over year. The searches that turn into projects are more specific:</p>
+    <table>
+      <thead>
+        <tr><th>Buyer</th><th>What they search</th><th>What they mean</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SMB owner (US)</td><td>AI receptionist, AI voice agent, AI phone agent</td><td>Answer every call, book appointments, text a link, never miss a lead</td></tr>
+        <tr><td>SMB / ops lead (UK)</td><td>AI automation agency, n8n AI agent, AI workflow automation</td><td>Automate email, forms, invoices, CRM updates with LLM steps they can see</td></tr>
+        <tr><td>Support leader</td><td>AI customer support agent, AI agent for customer service</td><td>Deflect tickets in Zendesk/Intercom with grounded answers and real actions (refunds, order status)</td></tr>
+        <tr><td>Sales leader</td><td>AI sales agent, AI SDR, AI lead qualification</td><td>Qualify inbound leads, enrich, book meetings, update HubSpot/Salesforce</td></tr>
+        <tr><td>Knowledge-heavy firm</td><td>RAG chatbot for business, AI assistant for company documents</td><td>Ask questions across SharePoint, Drive, Confluence with citations and permissions</td></tr>
+        <tr><td>CTO / product team</td><td>custom AI agent development, MCP server development, LangGraph developer, multi-agent system</td><td>A partner who can ship a maintainable agent inside their product and cloud</td></tr>
+        <tr><td>EU / regulated buyer</td><td>GDPR compliant AI chatbot, EU AI Act compliant AI, on-premise LLM, private AI</td><td>Same as above, but data never leaves the EU and every decision is auditable</td></tr>
+      </tbody>
+    </table>
+    <p>Two patterns stand out. First, <strong>industry-specific agents</strong> (dental, legal, insurance, real estate, e-commerce) are the fastest-growing segment and outperform general-purpose ones. Second, roughly half of B2B buyers now start vendor research in ChatGPT, Claude or Perplexity rather than Google, and they ask about architecture, pricing and compliance directly — which is what this brief answers.</p>
+
+    <h2 id="problem">Why most AI agent projects stall</h2>
+    <ul>
+      <li><strong>Demo ≠ production</strong> — a prompt in a playground works on ten questions and fails on the eleventh; nobody measured accuracy before launch</li>
+      <li><strong>No grounding</strong> — the agent answers from model memory instead of the company’s current policies, prices, and documents, so it hallucinates</li>
+      <li><strong>Read-only agents</strong> — it can explain the refund policy but cannot issue the refund, so the ticket still reaches a human</li>
+      <li><strong>Unsafe actions</strong> — the opposite failure: an agent with broad API keys and no approval step, which security teams (rightly) block</li>
+      <li><strong>Framework lock-in</strong> — integrations written once for one vendor’s SDK have to be rewritten when the model or framework changes</li>
+      <li><strong>Compliance afterthought</strong> — EU customers ask where data is processed, how long logs are kept, and who reviews automated decisions; the answer is “we’ll check”</li>
+      <li><strong>No owner after launch</strong> — prompts drift, documents go stale, costs creep, and nobody watches the dashboard</li>
+    </ul>
+
+    <h2 id="requirements">Requirements</h2>
+    <h3>Functional</h3>
+    <ul>
+      <li><strong>Grounded answers:</strong> Retrieve from company sources (docs, website, tickets, product DB) with citations; refuse when the answer is not in the sources</li>
+      <li><strong>Actions through tools:</strong> Typed, permission-scoped tools for CRM, helpdesk, calendar, billing, e-commerce, and internal APIs</li>
+      <li><strong>Multi-channel:</strong> Website widget, Slack/Teams, WhatsApp/SMS, email, and phone (voice) from one agent core</li>
+      <li><strong>Memory:</strong> Conversation state per user/session; optional long-term customer profile from the CRM rather than free-form model memory</li>
+      <li><strong>Human-in-the-loop:</strong> Approval queue for risky actions (refund &gt; threshold, contract changes); warm handoff to a human with full context</li>
+      <li><strong>Admin console:</strong> Edit knowledge sources, tool permissions, prompts and escalation rules without a code deploy</li>
+    </ul>
+    <h3>Non-functional</h3>
+    <ul>
+      <li><strong>Accuracy gate:</strong> Offline eval suite (golden questions + tool-call scenarios) must pass before every release</li>
+      <li><strong>Latency:</strong> First token &lt; 1.5 s for chat; &lt; 800 ms turn latency for voice</li>
+      <li><strong>Security:</strong> SSO, RBAC, per-tenant data isolation, secrets in a vault, least-privilege tool credentials</li>
+      <li><strong>Data residency:</strong> Selectable US / EU / UK regions; option for self-hosted open-weight models</li>
+      <li><strong>Observability:</strong> Full trace of every run — retrieved chunks, tool calls, tokens, cost, latency, user feedback</li>
+      <li><strong>Model independence:</strong> Swap between Claude, GPT, Gemini or open-weight models through one gateway without rewriting the agent</li>
+    </ul>
+
+    <h2 id="architecture">Reference architecture</h2>
+    <p>The design keeps one <strong>agent core</strong> (planner + tool loop) and makes everything around it pluggable. Channels are thin adapters. Knowledge and tools sit behind stable interfaces — retrieval as a tool, integrations as <strong>MCP servers</strong> — so the same agent can run behind a web widget today and a phone line next quarter.</p>
+
+    <div class="diagram-wrap" data-diagram-title="AI agent for business reference architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef chan fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef core fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef know fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  classDef act fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef trust fill:#fef3c7,stroke:#d97706,color:#92400e
+
+  WEB["Website widget"]:::chan
+  CHAT["Slack / Teams / WhatsApp"]:::chan
+  VOICE["Phone: Twilio + voice runtime\nSTT / TTS"]:::chan
+  API["Your product API"]:::chan
+
+  GW["Channel gateway\nauth, session, rate limits"]:::core
+  WEB --> GW
+  CHAT --> GW
+  VOICE --> GW
+  API --> GW
+
+  GR_IN["Input guardrails\nPII redaction, injection filter"]:::trust
+  GW --> GR_IN
+  AGENT["Agent core\nplanner + tool loop + state"]:::core
+  GR_IN --> AGENT
+  LLM["LLM gateway\nClaude / GPT / Gemini / open-weight"]:::core
+  AGENT <--> LLM
+
+  RAG["Retrieval tool\nhybrid search + rerank"]:::know
+  VDB["Vector + keyword index\npgvector / OpenSearch"]:::know
+  SRC["Sources: Drive, SharePoint,\nConfluence, site, tickets"]:::know
+  AGENT --> RAG
+  RAG --> VDB
+  SRC -->|"ingest + ACLs"| VDB
+
+  MCP["MCP servers\ntyped, scoped tools"]:::act
+  AGENT --> MCP
+  MCP --> CRM["CRM: HubSpot / Salesforce"]:::act
+  MCP --> DESK["Helpdesk: Zendesk / Intercom"]:::act
+  MCP --> OPS["Calendar, Stripe, Shopify,\ninternal APIs"]:::act
+
+  HITL["Approval queue +\nhuman handoff"]:::trust
+  AGENT -->|"risky action / low confidence"| HITL
+  OBS["Tracing + evals\nLangfuse / LangSmith"]:::trust
+  AGENT -.-> OBS</div>
+      </div>
+      <p class="diagram-caption">Reference architecture — thin channel adapters, one agent core, retrieval and MCP tools behind stable interfaces, and a trust layer (guardrails, approvals, tracing) around every run</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="AI customer support agent request sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant U as Customer
+  participant G as Gateway + guardrails
+  participant A as Agent core
+  participant R as Retrieval
+  participant T as MCP tools
+  participant H as Human agent
+
+  U->>G: "Where is my order? I want a refund"
+  G->>A: redacted message + session
+  A->>T: get_order(email)
+  T->>A: order 4412, delivered late
+  A->>R: search("late delivery refund policy")
+  R->>A: policy chunks + citations
+  alt refund within auto-approve limit
+    A->>T: create_refund(4412, 30.00)
+    T->>A: refund_id
+    A->>U: refund issued + policy link
+  else above limit or low confidence
+    A->>H: handoff with summary + draft reply
+    H->>U: approves / edits and sends
+  end</div>
+      </div>
+      <p class="diagram-caption">Typical support-agent run — look up the record, ground the answer in policy, act within limits, and hand off with a draft when the action is risky</p>
+    </div>
+
+    <p class="solution-section-label">Build path</p>
+    <div class="pipeline" role="img" aria-label="From use-case selection through pilot, evals, and production rollout">
+      <span class="pipeline-step">Pick 1 use case</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Golden set</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">RAG + 2–4 tools</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Eval gate</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Shadow mode</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Live + handoff</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Add channels</span>
+    </div>
+    <p class="diagram-caption">Ship one narrow agent to production first; add channels and tools only after the eval gate is green</p>
+
+    <h2 id="patterns">Five agent patterns (and when to use each)</h2>
+    <table>
+      <thead>
+        <tr><th>Pattern</th><th>Typical use case</th><th>Core pieces</th><th>Complexity</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1. Knowledge agent (RAG)</strong></td><td>Internal knowledge base, policy Q&amp;A, product docs assistant</td><td>Ingestion, hybrid search, reranker, citations, ACL filtering</td><td>Low–medium</td></tr>
+        <tr><td><strong>2. Action agent (tool calling)</strong></td><td>AI customer support agent, order status, refunds, CRM updates</td><td>RAG + typed tools via MCP, approval thresholds, audit log</td><td>Medium</td></tr>
+        <tr><td><strong>3. Voice agent</strong></td><td>AI receptionist, appointment booking, lead qualification calls</td><td>Twilio/SIP, streaming STT/TTS (Vapi, Retell, LiveKit), short tool calls, SMS follow-up</td><td>Medium</td></tr>
+        <tr><td><strong>4. Workflow agent</strong></td><td>Invoice/document processing, email triage, lead enrichment</td><td>n8n or Temporal workflow with LLM steps, structured outputs, retries</td><td>Low–medium</td></tr>
+        <tr><td><strong>5. Multi-agent system</strong></td><td>Research + drafting pipelines, complex ops spanning many systems</td><td>Supervisor + specialist agents (LangGraph), shared state, per-agent permissions</td><td>High</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Rule of thumb:</strong> start at the lowest pattern that solves the problem. Most “we need a multi-agent system” requests are really pattern 2 with good retrieval. Move to pattern 5 only when one agent’s tool list, permissions, or prompt become unmanageable.</p>
+
+    <div class="chart-wrap">
+      <canvas id="patternDemandChart" aria-label="Share of AI agent project requests by pattern"></canvas>
+      <p class="chart-caption">Indicative mix of inbound AI agent requests by pattern (stackcone pipeline, 2026)</p>
+    </div>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <p><strong>Recommendation:</strong> Python (FastAPI) agent service on <strong>LangGraph</strong> or a vendor agent SDK (Claude Agent SDK / OpenAI Agents SDK), <strong>Postgres + pgvector</strong> for state and retrieval, integrations exposed as <strong>MCP servers</strong>, a model gateway for provider switching, and <strong>Langfuse</strong> for tracing and evals. For SMB workflow agents, <strong>n8n</strong> (self-hosted in the EU if needed) keeps the automation visible to the client.</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Agent runtime</td><td>LangGraph, Claude Agent SDK, or OpenAI Agents SDK</td><td>Explicit state graph, retries, human-interrupt nodes; SDKs are faster for single-agent builds</td></tr>
+        <tr><td>Models</td><td>Claude, GPT, Gemini; Llama/Mistral/Qwen for self-hosted</td><td>Route by task: small fast model for classification, frontier model for planning</td></tr>
+        <tr><td>Model gateway</td><td>LiteLLM or cloud-native (Bedrock, Azure OpenAI, Vertex)</td><td>One API, regional endpoints, fallback, per-tenant cost caps</td></tr>
+        <tr><td>Retrieval</td><td>pgvector or OpenSearch + BM25 hybrid, Cohere/Voyage reranker</td><td>Hybrid + rerank beats pure vector search on business documents</td></tr>
+        <tr><td>Integrations</td><td>MCP servers (TypeScript or Python)</td><td>Reusable across agents, IDEs and chat clients; clear per-tool scopes</td></tr>
+        <tr><td>Voice</td><td>Vapi or Retell (fast), LiveKit Agents (custom), Twilio numbers</td><td>Sub-second turn-taking and barge-in are hard to build from scratch</td></tr>
+        <tr><td>Workflows</td><td>n8n (SMB), Temporal (engineering teams)</td><td>Durable retries and schedules outside the LLM loop</td></tr>
+        <tr><td>Observability &amp; evals</td><td>Langfuse or LangSmith, plus a pytest eval suite in CI</td><td>Trace every run; block releases that regress accuracy</td></tr>
+        <tr><td>Frontend</td><td>Next.js widget + admin console; Slack/Teams apps</td><td>Streaming responses (SSE), feedback buttons, source previews</td></tr>
+        <tr><td>Hosting</td><td>AWS / GCP / Azure in client’s account, EU or UK region</td><td>Data residency and procurement are simpler when it runs in their cloud</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Why MCP for integrations?</strong> A HubSpot or Zendesk MCP server built once can be used by the support agent, the sales agent, and staff inside Claude or ChatGPT. It also forces clean tool contracts — name, typed arguments, scope — which is exactly what security reviews ask for.</p>
+    <p><strong>Why not start with a no-code agent builder?</strong> They are fine for prototypes. Production buyers usually need custom retrieval, permission-aware data, eval gates and hosting control, which is where a custom build pays off. A common path is prototype in n8n, then move the core loop to code.</p>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="costSplitChart" aria-label="Typical monthly run-cost split for a production AI agent"></canvas>
+      <p class="chart-caption">Typical monthly run-cost split for a mid-volume support agent (illustrative)</p>
+    </div>
+
+    <h2 id="agent-design">Component design</h2>
+    <h3>1 — Knowledge layer (RAG)</h3>
+    <ul>
+      <li><strong>Ingestion:</strong> Connectors for Drive, SharePoint, Confluence, Notion, website, and resolved tickets; scheduled re-sync with change detection</li>
+      <li><strong>Chunking:</strong> Structure-aware (headings, tables) with parent-document linking; metadata for source, owner, date, and access group</li>
+      <li><strong>Search:</strong> Hybrid BM25 + vector, reranker, top-k 5–8; filter by the caller’s access group <em>before</em> ranking</li>
+      <li><strong>Answering:</strong> Cite chunk IDs; say “I don’t know” when retrieval score is below threshold</li>
+      <li><strong>QA gate:</strong> Recall@5 and faithfulness on a 100–300 question golden set (see <a href="/blog/posts/how-to-evaluate-rag-retrieval/">how to evaluate RAG retrieval</a>)</li>
+    </ul>
+
+    <h3>2 — Action layer (tools + MCP)</h3>
+    <ul>
+      <li><strong>Tool contract:</strong> Name, description, JSON schema, scope (<code>read</code> / <code>write</code> / <code>money</code>), and idempotency key</li>
+      <li><strong>Permissions:</strong> Tools run with the end user’s or a service account’s least-privilege token, never an admin key</li>
+      <li><strong>Thresholds:</strong> Write actions above a configurable limit go to the approval queue</li>
+      <li><strong>Audit:</strong> Every call logged with input, output, user, and trace ID</li>
+      <li><strong>QA gate:</strong> Scenario tests that assert the right tool is called with the right arguments — and that forbidden tools are never called</li>
+    </ul>
+
+    <h3>3 — Agent core</h3>
+    <ul>
+      <li><strong>Loop:</strong> Plan → call tools → observe → answer, with a max-step budget and timeout</li>
+      <li><strong>State:</strong> Session state in Postgres; customer facts pulled from CRM on demand instead of stored in model memory</li>
+      <li><strong>Routing:</strong> Small model classifies intent and picks the playbook; frontier model handles multi-step reasoning</li>
+      <li><strong>Fallback:</strong> Provider failover through the gateway; graceful “I’ll pass this to a colleague” when all else fails</li>
+    </ul>
+
+    <h3>4 — Channels</h3>
+    <table>
+      <thead>
+        <tr><th>Channel</th><th>Adapter</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Web chat</td><td>Next.js widget over SSE</td><td>Streaming, source cards, thumbs up/down</td></tr>
+        <tr><td>Slack / Teams</td><td>Bot app + events API</td><td>Uses the employee’s identity for permission-aware answers</td></tr>
+        <tr><td>WhatsApp / SMS</td><td>Twilio or WhatsApp Cloud API</td><td>Template messages for outbound; opt-in tracking</td></tr>
+        <tr><td>Voice</td><td>Vapi / Retell / LiveKit on Twilio numbers</td><td>Short tool calls, SMS follow-up for links, recording disclosure</td></tr>
+        <tr><td>Email</td><td>Inbound parse webhook</td><td>Draft-for-approval by default</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5 — Trust layer</h3>
+    <ul>
+      <li><strong>Input:</strong> PII detection and redaction before logs; prompt-injection filtering on retrieved content and user input</li>
+      <li><strong>Output:</strong> Policy checks (no legal/medical advice beyond scope, no price promises outside catalogue), citation required for factual claims</li>
+      <li><strong>Human-in-the-loop:</strong> Approval inbox, handoff with summary and draft, confidence thresholds per intent</li>
+    </ul>
+
+    <h2 id="compliance">GDPR, UK GDPR &amp; EU AI Act</h2>
+    <p>European and UK buyers search for “GDPR compliant AI chatbot” and “EU AI Act compliant AI” because procurement will ask. The architecture above supports this by design:</p>
+    <table>
+      <thead>
+        <tr><th>Requirement</th><th>How the design handles it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Data residency</td><td>EU/UK-region model endpoints (Bedrock Frankfurt/Ireland/London, Azure OpenAI EU, Vertex EU) or self-hosted open-weight models; vector DB and logs in the same region</td></tr>
+        <tr><td>No training on customer data</td><td>Enterprise/API terms with zero data retention where offered; documented in the DPA</td></tr>
+        <tr><td>Data minimisation</td><td>PII redacted before tracing; configurable log retention (e.g. 30 days)</td></tr>
+        <tr><td>Right of access / erasure</td><td>Conversations keyed by user ID; delete endpoint cascades to logs and memory</td></tr>
+        <tr><td>Transparency (AI Act)</td><td>Clear “you are talking to an AI” disclosure in chat and at the start of voice calls</td></tr>
+        <tr><td>Human oversight</td><td>Approval queue and handoff for consequential decisions; no fully automated decisions with legal effect</td></tr>
+        <tr><td>Record keeping</td><td>Trace store with model version, prompt version, tools called, and reviewer actions</td></tr>
+        <tr><td>Calls &amp; messaging</td><td>Recording disclosure, PECR/TCPA-aware outbound rules, opt-out handling for SMS/WhatsApp</td></tr>
+      </tbody>
+    </table>
+    <p>This is engineering guidance, not legal advice — the client’s DPO or counsel should confirm risk classification for their specific use case.</p>
+
+    <h2 id="implementation">Implementation plan</h2>
+
+    <div class="impl-phase">
+      <h3>Phase 1 — Discovery &amp; golden set (week 1)</h3>
+      <p>Pick one use case with clear volume and ROI (e.g. top 20 support intents). Collect 100–300 real questions and expected answers/actions. Map systems, APIs, permissions, and data residency needs. Agree success metrics: resolution rate, accuracy, CSAT, cost per conversation.</p>
+      <p><strong>Risk:</strong> No API access to key systems — confirm credentials and sandbox accounts in week 1. <strong>Rollback:</strong> none needed; discovery output stands alone as a spec.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 2 — Knowledge layer (week 2)</h3>
+      <p>Ingest sources with access metadata, build hybrid search + reranker, and measure recall on the golden set. Fix chunking and missing content before touching prompts.</p>
+      <p><strong>Risk:</strong> Stale or contradictory documents — surface conflicts to content owners. <strong>Rollback:</strong> read-only; no production impact.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 3 — Tools &amp; agent core (weeks 2–3)</h3>
+      <p>Build 2–4 MCP tools (read first, then one write tool with thresholds). Wire the agent loop, state, and model gateway. Add scenario tests for every tool path.</p>
+      <p><strong>Risk:</strong> Over-broad API scopes — create dedicated service accounts. <strong>Rollback:</strong> write tools behind a feature flag.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 4 — Channel, guardrails &amp; eval gate (weeks 3–4)</h3>
+      <p>Ship the first channel (usually web widget or helpdesk sidebar), PII redaction, injection filtering, handoff flow, and CI eval suite. Release only when accuracy and tool-call tests pass agreed thresholds.</p>
+      <p><strong>Risk:</strong> Accuracy plateau — expand golden set and fix retrieval before prompt tuning. <strong>Rollback:</strong> widget toggle; traffic back to humans.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 5 — Shadow mode &amp; go-live (weeks 4–5)</h3>
+      <p>Agent drafts replies that humans approve for 1–2 weeks; compare against human answers. Then turn on auto-resolve for intents that clear the bar, keeping approval for the rest.</p>
+      <p><strong>Risk:</strong> Edge cases not in golden set — feed every human correction back into evals. <strong>Rollback:</strong> per-intent switch back to draft-only.</p>
+    </div>
+
+    <div class="impl-phase">
+      <h3>Phase 6 — Expand channels &amp; hand over (week 6+)</h3>
+      <p>Add voice, Slack/Teams or WhatsApp on the same core; add more tools. Deliver runbook, dashboards, prompt/version registry, and admin training.</p>
+      <p><strong>Risk:</strong> Cost growth with volume — per-tenant caps and model routing. <strong>Rollback:</strong> channels are independent adapters; disable one without affecting others.</p>
+    </div>
+
+    <h2 id="reporting">Evals, monitoring &amp; ops</h2>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Resolution rate (no human needed)</td><td>Conversation outcomes</td><td>Daily dashboard; weekly review</td></tr>
+        <tr><td>Answer faithfulness &amp; citation rate</td><td>LLM-judge + sampled human review</td><td>Every release (CI) + weekly sample</td></tr>
+        <tr><td>Tool-call correctness</td><td>Scenario test suite</td><td>Every release</td></tr>
+        <tr><td>Handoff rate by intent</td><td>Trace store</td><td>Weekly — target intents above 30% for improvement</td></tr>
+        <tr><td>Latency p50 / p95</td><td>Tracing</td><td>Real-time alerts</td></tr>
+        <tr><td>Cost per conversation</td><td>Gateway token + tool usage</td><td>Weekly; alert on 30% jumps</td></tr>
+        <tr><td>CSAT / thumbs feedback</td><td>Widget + helpdesk</td><td>Weekly</td></tr>
+        <tr><td>Knowledge freshness</td><td>Ingestion job status</td><td>Daily; alert on failed syncs</td></tr>
+      </tbody>
+    </table>
+    <p>More on this in <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI agent testing and evaluation strategies</a>.</p>
+
+    <div class="chart-wrap">
+      <canvas id="resolutionRampChart" aria-label="Indicative resolution rate ramp over the first twelve weeks"></canvas>
+      <p class="chart-caption">Indicative auto-resolution ramp — shadow mode first, then per-intent enablement (illustrative)</p>
+    </div>
+
+    <h2 id="estimate">Cost &amp; effort estimate</h2>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Timeline</th><th>Indicative cost (USD; GBP/EUR similar)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pilot: 1 use case, 1 channel, RAG + 2–4 tools, eval gate</td><td>3–6 weeks</td><td>8k–25k</td></tr>
+        <tr><td>AI receptionist / voice agent with booking + CRM</td><td>3–5 weeks</td><td>10k–30k</td></tr>
+        <tr><td>Production multi-channel agent with SSO, admin console, EU hosting</td><td>8–14 weeks</td><td>25k–80k</td></tr>
+        <tr><td>Multi-agent system across several departments</td><td>12+ weeks</td><td>60k+</td></tr>
+        <tr><td>Run costs (models, hosting, voice minutes, tracing)</td><td>monthly</td><td>300–3,000 depending on volume</td></tr>
+        <tr><td>Tuning retainer (evals, prompts, new intents)</td><td>monthly</td><td>1k–4k</td></tr>
+      </tbody>
+    </table>
+    <p>Ranges depend on API quality of existing systems, number of integrations, compliance scope, and how clean the source documents are.</p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>How much does it cost to build a custom AI agent for a business?</h3>
+    <p>A focused pilot usually costs 8k–25k over 3–6 weeks. Multi-channel production agents with voice, evals and SSO land in the 25k–80k range, plus monthly run and tuning costs.</p>
+    <h3>What is the difference between an AI chatbot and an AI agent?</h3>
+    <p>A chatbot answers. An agent also acts — it calls your CRM, helpdesk, calendar or billing APIs, follows multi-step plans, and hands off to a human when unsure.</p>
+    <h3>Do I need a multi-agent system?</h3>
+    <p>Usually not at first. One well-scoped agent with good retrieval and a few tools covers most use cases. Split into multiple agents when permissions or tool count make one agent unmanageable.</p>
+    <h3>Can an AI agent be GDPR and EU AI Act compliant?</h3>
+    <p>Yes — EU-region or self-hosted models, zero data retention, PII redaction, a DPA, AI disclosure, and human oversight for consequential decisions.</p>
+    <h3>Who builds custom AI agents like this?</h3>
+    <p><a href="/">stackcone</a> is an AI agent development company founded by Amar Kumar. We build RAG chatbots, AI customer support agents, AI voice agents and MCP integrations for teams in the US, UK and Europe, with fixed-scope pilots and full handover. See our <a href="/work/">portfolio</a> or <a href="/contact/">contact us</a>.</p>
+    <h3>What is MCP and why does it matter?</h3>
+    <p>The Model Context Protocol is an open standard for exposing tools and data to AI models. MCP-based integrations work across Claude, ChatGPT, IDEs and custom agents, so you are not locked into one framework. See <a href="/blog/posts/ai-agent-mcp-data-engineering-automation/">AI agents and MCP in practice</a>.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>AI agent</strong></td><td>An LLM-driven program that plans, calls tools, and acts toward a goal, not just answers text</td></tr>
+        <tr><td><strong>Agentic AI</strong></td><td>Umbrella term for systems where models take multi-step actions with some autonomy</td></tr>
+        <tr><td><strong>RAG</strong></td><td>Retrieval-augmented generation — answering from retrieved company documents with citations</td></tr>
+        <tr><td><strong>Tool calling</strong></td><td>The model returns a structured request to run a function (e.g. <code>create_refund</code>); your code executes it</td></tr>
+        <tr><td><strong>MCP</strong></td><td>Model Context Protocol — open standard for connecting models to tools and data sources</td></tr>
+        <tr><td><strong>Human-in-the-loop</strong></td><td>A person approves or edits agent actions above a risk threshold</td></tr>
+        <tr><td><strong>Golden set</strong></td><td>Curated real questions and expected answers/actions used to measure accuracy</td></tr>
+        <tr><td><strong>Shadow mode</strong></td><td>Agent drafts responses that humans review before anything reaches the customer</td></tr>
+        <tr><td><strong>Model gateway</strong></td><td>A single API in front of several LLM providers for routing, fallback, and cost control</td></tr>
+      </tbody>
+    </table>
+
+    <section class="blog-related" aria-label="Related solutions and articles"><h2>Related stackcone solutions</h2><ul class="blog-related-list">
+      <li><a href="/solutions/retell-real-estate-voice-lead-qualification/"><strong>Retell Voice Agent for Real Estate Lead Qualification</strong><span>AI voice agent that qualifies inbound leads and books viewings.</span></a></li>
+      <li><a href="/solutions/ai-voice-sms-field-service-dispatch/"><strong>AI Voice, SMS &amp; Worker Dispatch</strong><span>AI receptionist + SMS automation for service businesses.</span></a></li>
+      <li><a href="/solutions/enterprise-agentic-ai-langgraph-mcp-snowflake/"><strong>Enterprise Agentic AI with LangGraph + MCP</strong><span>Multi-agent system over enterprise data with governance.</span></a></li>
+      <li><a href="/solutions/holding-company-ai-workflow-automation/"><strong>AI Workflow Automation for Holding Companies</strong><span>n8n + LLM agents across CRM, ERP and documents.</span></a></li>
+    </ul><h2>Related reading</h2><ul class="blog-related-list">
+      <li><a href="/blog/posts/how-to-build-a-production-rag-chatbot/"><strong>How to Build a Production RAG Chatbot</strong><span>Ingestion, retrieval, citations and monitoring.</span></a></li>
+      <li><a href="/blog/posts/ai-agent-testing-evaluation-strategies/"><strong>AI Agent Testing &amp; Evaluation Strategies</strong><span>Golden sets, tool-call tests and release gates.</span></a></li>
+    </ul></section>
+
+    <aside class="blog-cta">
+      <h2>Need an AI agent built for your business?</h2>
+      <p>stackcone is an AI agent development partner for US, UK and EU teams — RAG, tool-calling and voice agents with eval gates, EU hosting options, and fixed-scope pilots.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="/contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=16"></script>
+  <script src="../../site-nav.js?v=23" defer></script>
+  <script src="../../script.js?v=11" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('patternDemandChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Knowledge (RAG)', 'Action / support', 'Voice', 'Workflow', 'Multi-agent'],
+        datasets: [{
+          label: '% of requests',
+          data: [28, 30, 20, 15, 7],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: '% of requests' } } }
+      }
+    });
+
+    new Chart(document.getElementById('costSplitChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['LLM tokens', 'Hosting + DB', 'Voice minutes', 'Reranker / embeddings', 'Tracing + evals'],
+        datasets: [{
+          data: [45, 20, 20, 8, 7],
+          backgroundColor: ['#2563eb', '#64748b', '#7c3aed', '#0891b2', '#ea580c'],
+          borderWidth: 0
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('resolutionRampChart'), {
+      type: 'line',
+      data: {
+        labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10', 'W11', 'W12'],
+        datasets: [{
+          label: 'Auto-resolved %',
+          data: [0, 0, 12, 22, 30, 36, 42, 47, 51, 55, 58, 60],
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37,99,235,0.12)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: '% conversations resolved without human' } } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>
