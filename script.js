@@ -29,25 +29,36 @@ function initNavDropdowns() {
   if (!nav) return;
 
   var wraps = nav.querySelectorAll('.nav-dd-wrap');
+  var openWrap = null; // the one dropdown allowed to be open at a time
+
+  function setWrapOpen(wrap, trigger, open) {
+    clearTimeout(wrap._ddCloseTimer);
+    wrap.classList.toggle('is-open', open);
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    openWrap = open ? wrap : (openWrap === wrap ? null : openWrap);
+  }
+
   wraps.forEach(function (wrap) {
     if (wrap.dataset.ddBound) return;
     wrap.dataset.ddBound = "1";
     var trigger = wrap.querySelector('.nav-link--dd');
     if (!trigger) return;
-    var closeTimer = null;
 
     wrap.addEventListener('mouseenter', function () {
       if (window.innerWidth <= 992) return;
-      clearTimeout(closeTimer);
-      wrap.classList.add('is-open');
-      trigger.setAttribute('aria-expanded', 'true');
+      // Close whatever else is open right now instead of leaving it to its
+      // own delayed timer — that let two panels show at once while the
+      // mouse moved from one trigger straight to the next.
+      if (openWrap && openWrap !== wrap) {
+        setWrapOpen(openWrap, openWrap.querySelector('.nav-link--dd'), false);
+      }
+      setWrapOpen(wrap, trigger, true);
     });
 
     wrap.addEventListener('mouseleave', function () {
       if (window.innerWidth <= 992) return;
-      closeTimer = setTimeout(function () {
-        wrap.classList.remove('is-open');
-        trigger.setAttribute('aria-expanded', 'false');
+      wrap._ddCloseTimer = setTimeout(function () {
+        setWrapOpen(wrap, trigger, false);
       }, 180);
     });
 
@@ -60,6 +71,7 @@ function initNavDropdowns() {
         if (other !== wrap) other.classList.remove('is-open');
       });
       trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      openWrap = isOpen ? wrap : null;
     });
   });
 }
@@ -68,25 +80,35 @@ function initNavDropdowns() {
 // the section's own page stays reachable via the "All ..." row inside it.
 function initNavSubmenus() {
   var links = document.querySelectorAll('#main-nav .nav-dd-item--sub');
+  var openSub = null; // the one submenu allowed to be open at a time (they all live in one panel)
+
+  function setSubOpen(sub, link, open) {
+    clearTimeout(sub._subCloseTimer);
+    sub.classList.toggle('is-open', open);
+    link.setAttribute('aria-expanded', open ? 'true' : 'false');
+    openSub = open ? sub : (openSub === sub ? null : openSub);
+  }
+
   links.forEach(function (link) {
     if (link.dataset.subBound) return;
     link.dataset.subBound = '1';
     link.setAttribute('aria-expanded', 'false');
     var sub = link.parentElement;
-    var closeTimer = null;
 
     sub.addEventListener('mouseenter', function () {
       if (window.innerWidth <= 992) return;
-      clearTimeout(closeTimer);
-      sub.classList.add('is-open');
-      link.setAttribute('aria-expanded', 'true');
+      // Same fix as the top-level dropdowns: close the previously hovered
+      // submenu right away instead of letting its own timer linger.
+      if (openSub && openSub !== sub) {
+        setSubOpen(openSub, openSub.querySelector('.nav-dd-item--sub'), false);
+      }
+      setSubOpen(sub, link, true);
     });
 
     sub.addEventListener('mouseleave', function () {
       if (window.innerWidth <= 992) return;
-      closeTimer = setTimeout(function () {
-        sub.classList.remove('is-open');
-        link.setAttribute('aria-expanded', 'false');
+      sub._subCloseTimer = setTimeout(function () {
+        setSubOpen(sub, link, false);
       }, 160);
     });
 
@@ -98,6 +120,7 @@ function initNavSubmenus() {
         other.parentElement.classList.remove('is-open');
         other.setAttribute('aria-expanded', 'false');
       });
+      openSub = willOpen ? sub : null;
       if (willOpen) {
         sub.classList.add('is-open');
         link.setAttribute('aria-expanded', 'true');
