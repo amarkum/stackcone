@@ -30,6 +30,8 @@ function initNavDropdowns() {
 
   var wraps = nav.querySelectorAll('.nav-dd-wrap');
   wraps.forEach(function (wrap) {
+    if (wrap.dataset.ddBound) return;
+    wrap.dataset.ddBound = "1";
     var trigger = wrap.querySelector('.nav-link--dd');
     if (!trigger) return;
     var closeTimer = null;
@@ -70,10 +72,27 @@ function initNavSubmenus() {
     if (link.dataset.subBound) return;
     link.dataset.subBound = '1';
     link.setAttribute('aria-expanded', 'false');
+    var sub = link.parentElement;
+    var closeTimer = null;
+
+    sub.addEventListener('mouseenter', function () {
+      if (window.innerWidth <= 992) return;
+      clearTimeout(closeTimer);
+      sub.classList.add('is-open');
+      link.setAttribute('aria-expanded', 'true');
+    });
+
+    sub.addEventListener('mouseleave', function () {
+      if (window.innerWidth <= 992) return;
+      closeTimer = setTimeout(function () {
+        sub.classList.remove('is-open');
+        link.setAttribute('aria-expanded', 'false');
+      }, 160);
+    });
+
     link.addEventListener('click', function (e) {
       if (window.innerWidth > 992) return;
       e.preventDefault();
-      var sub = link.parentElement;
       var willOpen = !sub.classList.contains('is-open');
       links.forEach(function (other) {
         other.parentElement.classList.remove('is-open');
@@ -142,7 +161,7 @@ function initTestimonials(testimonials) {
       '<p class="testimonial-text">' + escapeHtml(t.review) + '</p>' +
       '<footer class="testimonial-footer">' +
         (t.logo
-          ? '<div class="testimonial-avatar testimonial-avatar--logo" aria-hidden="true"><img src="' + escapeHtml(t.logo) + '" alt="" width="40" height="40" loading="lazy"></div>'
+          ? '<div class="testimonial-avatar testimonial-avatar--logo"><img src="' + escapeHtml(t.logo) + '" alt="' + escapeHtml(t.client) + ' logo" width="40" height="40" loading="lazy"></div>'
           : '<div class="testimonial-avatar" aria-hidden="true">' + escapeHtml(t.initial || 'C') + '</div>') +
         '<div class="testimonial-who">' +
           '<cite class="testimonial-name">' + escapeHtml(t.client) + '</cite>' +
@@ -241,7 +260,7 @@ function loadTestimonials() {
 
   var staticCount = grid.querySelectorAll('.testimonial-card').length;
 
-  fetch(assetPrefix() + 'data/testimonials.json?v=2')
+  fetch(assetPrefix() + 'data/testimonials.json?v=3')
     .then(function (r) { return r.json(); })
     .then(function (data) {
       var list = Array.isArray(data) ? data : testimonialsFallback;

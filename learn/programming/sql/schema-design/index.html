@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="/assets/theme.js?v=1"></script>
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
   <meta name="robots" content="index, follow">
   <title>Creating Tables and Design | SQL Tutorial | stackcone</title>
   <meta name="description" content="Data types, constraints, foreign keys and normalization. Free SQL lesson 14 of 17 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/sql/schema-design/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/styles.css?v=29">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
   <link rel="stylesheet" href="/learn/learn.css?v=37">
-  <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <link rel="stylesheet" href="/assets/auth.css?v=51">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
   <!-- sc:seo -->
@@ -190,16 +190,20 @@ CREATE TABLE enrollments (
 );</code></pre></div>
       <h2>Key takeaways</h2>
       <ul><li>Each kind of thing gets its own table; relationships use foreign keys.</li><li>Constraints (<code>NOT NULL</code>, <code>UNIQUE</code>, <code>REFERENCES</code>, <code>CHECK</code>) reject bad data automatically.</li><li>Many-to-many relationships need a bridge table.</li><li>Store each fact once; that is the heart of normalization.</li></ul>
-      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a <code>reviews</code> table where each row points at a customer, carries a rating between 1 and 5, and cannot exist without a body. Then insert one valid review and read it back.</p></aside>
-      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="CREATE TABLE reviews (
-  id          INTEGER PRIMARY KEY,
-  customer_id INTEGER NOT NULL REFERENCES customers(id),
-  rating      INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
-  body        TEXT NOT NULL
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Design tables for a blog: authors, posts and tags, where a post has one author and many tags. Write the CREATE TABLE statements.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+CREATE TABLE posts (
+  id INTEGER PRIMARY KEY,
+  author_id INTEGER NOT NULL REFERENCES authors(id),
+  title TEXT NOT NULL,
+  body TEXT
 );
-
-INSERT INTO reviews (customer_id, rating, body) VALUES (1, 5, &#x27;Fast delivery&#x27;);
-SELECT * FROM reviews;"><pre><code>-- Write your solution here
+CREATE TABLE tags (id INTEGER PRIMARY KEY, name TEXT UNIQUE NOT NULL);
+CREATE TABLE post_tags (
+  post_id INTEGER REFERENCES posts(id),
+  tag_id  INTEGER REFERENCES tags(id),
+  PRIMARY KEY (post_id, tag_id)
+);"><pre><code>-- Write your solution here
 </code></pre></div>
           <div class="learn-finish" data-finish>
             <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
@@ -234,15 +238,15 @@ SELECT * FROM reviews;"><pre><code>-- Write your solution here
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/site-nav.js?v=22" defer></script>
   <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/sql-runner.js?v=9" defer></script>
-  <script src="/assets/monaco-code.js?v=23" defer></script>
-  <script src="/script.js?v=2" defer></script>
+  <script src="/assets/sql-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/script.js?v=10" defer></script>
 </body>
 </html>

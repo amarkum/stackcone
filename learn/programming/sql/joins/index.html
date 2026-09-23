@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="/assets/theme.js?v=1"></script>
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
   <meta name="robots" content="index, follow">
   <title>Joins | SQL Tutorial | stackcone</title>
   <meta name="description" content="Combine tables with INNER, LEFT and self joins. Free SQL lesson 4 of 17 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/sql/joins/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/styles.css?v=29">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
   <link rel="stylesheet" href="/learn/learn.css?v=37">
-  <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <link rel="stylesheet" href="/assets/auth.css?v=51">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
   <!-- sc:seo -->
@@ -129,10 +129,9 @@
 FROM customers c
 INNER JOIN orders o ON o.customer_id = c.id;</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | order_id | total
-------+---------+------
-Ada   | 10       | 120
+Ada   | 10       | 120.0
 Ada   | 11       | 35.5
-Grace | 12       | 80</pre></div>
+Grace | 12       | 80.0</pre></div>
       <p>Linus has no orders, so he does not appear. The short names <code>c</code> and <code>o</code> are <em>table aliases</em>; they keep queries readable and disambiguate columns that share a name, like <code>id</code>.</p>
       <h2>LEFT JOIN</h2>
       <p>Keeps <strong>every row from the left table</strong>, filling the right side with NULL when there is no match. Use it to answer "who has none?" questions.</p>
@@ -145,15 +144,7 @@ SELECT c.name
 FROM customers c
 LEFT JOIN orders o ON o.customer_id = c.id
 WHERE o.id IS NULL;</code></pre></div>
-      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | order_id
-------+---------
-Ada   | 10
-Ada   | 11
-Linus | NULL
-Grace | 12
-
-name
-------
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
 Linus</pre></div>
       <h2>Join types at a glance</h2>
       <ul><li><strong>INNER</strong>: only matches.</li><li><strong>LEFT</strong>: all left rows, matches from the right.</li><li><strong>RIGHT</strong>: mirror of LEFT (rarely needed; swap the table order instead).</li><li><strong>FULL OUTER</strong>: all rows from both sides.</li><li><strong>CROSS</strong>: every combination; use with care, it multiplies row counts.</li></ul>
@@ -172,44 +163,43 @@ LEFT JOIN employees m ON e.manager_id = m.id;</code></pre></div>
       <h2>INNER JOIN: only rows that match on both sides</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, o.id AS order_id, o.total FROM customers c INNER JOIN orders o ON o.customer_id = c.id</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | order_id | total
-------+---------+------
-Ada   | 10       | 120
+------+----------+------
+Ada   | 10       | 120.0
 Ada   | 11       | 35.5
-Grace | 12       | 80</pre></div>
+Grace | 12       | 80.0</pre></div>
       <p>Linus placed no orders, so he does not appear. An inner join keeps only the pairs that have a match. The <code>ON</code> clause is the matching rule, and <code>c</code> and <code>o</code> are short aliases so we can write <code>c.name</code> and <code>o.total</code> without ambiguity.</p>
       <h2>LEFT JOIN: keep everyone from the left table</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, o.id AS order_id, o.total FROM customers c LEFT JOIN orders o ON o.customer_id = c.id</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | order_id | total
-------+---------+------
+------+----------+------
 Ada   | 11       | 35.5
-Ada   | 10       | 120
+Ada   | 10       | 120.0
 Linus | NULL     | NULL
-Grace | 12       | 80</pre></div>
+Grace | 12       | 80.0</pre></div>
       <p>Now Linus appears, with <code>NULL</code> where the order columns would be. Use a left join when you want "all customers, and their orders if they have any".</p>
       <h2>The classic use: find what is missing</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name FROM customers c LEFT JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
-------
+-----
 Linus</pre></div>
       <p>"Customers who never ordered" is a left join plus a check for <code>NULL</code> on the right side. Learn this pattern; you will use it constantly.</p>
       <h2>Joining and summarising together</h2>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name, COUNT(o.id) AS orders, COALESCE(SUM(o.total), 0) AS spent FROM customers c LEFT JOIN orders o ON o.customer_id = c.id GROUP BY c.id, c.name ORDER BY spent DESC</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | orders | spent
-------+-------+------
+------+--------+------
 Ada   | 2      | 155.5
-Grace | 1      | 80
+Grace | 1      | 80.0
 Linus | 0      | 0</pre></div>
       <p><code>COUNT(o.id)</code> counts only real orders (it ignores <code>NULL</code>), and <code>COALESCE</code> replaces a missing sum with 0. This single query is a real customer report.</p>
       <h2>Debugging a join that returns too many rows</h2>
       <ul><li><strong>Forgot the ON clause</strong>: every row pairs with every row (a cartesian product).</li><li><strong>Joining on the wrong column</strong>: check that you match a foreign key to the primary key it points at.</li><li><strong>Duplicate matches</strong>: if the right table has several matching rows, the left row repeats. That is correct, but it inflates sums, so aggregate carefully.</li></ul>
       <h2>Key takeaways</h2>
       <ul><li>Join tables on a foreign key = primary key match using <code>ON</code>.</li><li><code>INNER JOIN</code> keeps matches only; <code>LEFT JOIN</code> keeps every left row, using <code>NULL</code> when nothing matches.</li><li>Left join plus <code>IS NULL</code> finds rows with no partner.</li><li>Aliases (<code>c</code>, <code>o</code>) keep multi-table queries readable.</li></ul>
-      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Report every customer with the number of orders they placed, including the ones who never ordered (they should show 0). Mirrors LeetCode 1581 <em>Customer Who Visited but Did Not Make Any Transactions</em>.</p></aside>
-      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT c.name, COUNT(o.id) AS orders
-FROM customers c
-LEFT JOIN orders o ON o.customer_id = c.id
-GROUP BY c.id, c.name
-ORDER BY orders DESC, c.name;"><pre><code>-- Write your solution here
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">List each order's id, total and the name of the customer who placed it, but only for refunded orders.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT o.id, o.total, c.name
+FROM orders o
+JOIN customers c ON c.id = o.customer_id
+WHERE o.status = &#x27;refunded&#x27;;"><pre><code>-- Write your solution here
 </code></pre></div>
           <div class="learn-finish" data-finish>
             <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
@@ -244,15 +234,15 @@ ORDER BY orders DESC, c.name;"><pre><code>-- Write your solution here
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/site-nav.js?v=22" defer></script>
   <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/sql-runner.js?v=9" defer></script>
-  <script src="/assets/monaco-code.js?v=23" defer></script>
-  <script src="/script.js?v=2" defer></script>
+  <script src="/assets/sql-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/script.js?v=10" defer></script>
 </body>
 </html>

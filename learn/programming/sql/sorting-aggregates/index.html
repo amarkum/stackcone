@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="/assets/theme.js?v=1"></script>
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
   <meta name="robots" content="index, follow">
   <title>Sorting and Aggregates | SQL Tutorial | stackcone</title>
   <meta name="description" content="ORDER BY, LIMIT, COUNT, SUM, AVG and GROUP BY with HAVING. Free SQL lesson 3 of 17 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/sql/sorting-aggregates/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/styles.css?v=29">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
   <link rel="stylesheet" href="/learn/learn.css?v=37">
-  <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <link rel="stylesheet" href="/assets/auth.css?v=51">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
   <!-- sc:seo -->
@@ -127,7 +127,6 @@
 ORDER BY age DESC, name ASC
 LIMIT 2;</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | age
-------+----
 Grace | 45
 Ada   | 36</pre></div>
       <p><code>ORDER BY</code> sorts ascending by default; add <code>DESC</code> for descending and list several columns to break ties. <code>LIMIT n</code> keeps the first <code>n</code> rows, and <code>OFFSET</code> skips rows for pagination. Without ORDER BY, row order is <em>not guaranteed</em>.</p>
@@ -140,8 +139,7 @@ Ada   | 36</pre></div>
 FROM orders
 WHERE status = &#x27;paid&#x27;;</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>orders | revenue | average | biggest
--------+--------+--------+--------
-2      | 155.5   | 77.75   | 120</pre></div>
+2      | 155.5   | 77.75   | 120.0</pre></div>
       <p><code>COUNT(*)</code> counts rows; <code>COUNT(column)</code> counts rows where the column is not NULL; <code>COUNT(DISTINCT column)</code> counts unique values.</p>
       <h2>GROUP BY</h2>
       <p><code>GROUP BY</code> splits rows into buckets and runs the aggregates once per bucket.</p>
@@ -150,9 +148,8 @@ FROM orders
 GROUP BY customer_id
 ORDER BY spent DESC;</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>customer_id | orders | spent
-------------+-------+------
 1           | 2      | 155.5
-3           | 1      | 80</pre></div>
+3           | 1      | 80.0</pre></div>
       <p>The rule: every column in <code>SELECT</code> must either appear in <code>GROUP BY</code> or be inside an aggregate function.</p>
       <h2>HAVING versus WHERE</h2>
       <p><code>WHERE</code> filters rows <em>before</em> grouping; <code>HAVING</code> filters the groups <em>after</em> aggregation.</p>
@@ -172,27 +169,27 @@ Linus | 28</pre></div>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT id, total FROM orders ORDER BY total DESC LIMIT 2</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | total
 ---+------
-10 | 120
-12 | 80</pre></div>
+10 | 120.0
+12 | 80.0</pre></div>
       <p><code>ASC</code> (ascending) is the default. <code>LIMIT</code> keeps only the first rows after sorting, which is how you build "top 10" lists and pages of results.</p>
       <h2>Summarising with aggregate functions</h2>
       <p>An aggregate takes many rows and returns one value: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT COUNT(*) AS orders, SUM(total) AS revenue, AVG(total) AS average, MAX(total) AS biggest FROM orders</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>orders | revenue | average | biggest
--------+--------+--------+--------
-3      | 235.5   | 78.5    | 120</pre></div>
+-------+---------+---------+--------
+3      | 235.5   | 78.5    | 120.0</pre></div>
       <h2>GROUP BY: one summary per group</h2>
       <p>Without <code>GROUP BY</code> an aggregate collapses everything into a single row. Add <code>GROUP BY column</code> and you get one result row per distinct value, which is how you answer "per country", "per month" or "per customer" questions.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT status, COUNT(*) AS n, SUM(total) AS money FROM orders GROUP BY status</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>status   | n | money
----------+--+------
+---------+---+------
 paid     | 2 | 155.5
-refunded | 1 | 80</pre></div>
+refunded | 1 | 80.0</pre></div>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT customer_id, COUNT(*) AS orders, SUM(total) AS spent FROM orders GROUP BY customer_id ORDER BY spent DESC</code></pre></div>
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>customer_id | orders | spent
-------------+-------+------
+------------+--------+------
 1           | 2      | 155.5
-3           | 1      | 80</pre></div>
+3           | 1      | 80.0</pre></div>
       <h2>The order SQL actually runs things</h2>
       <p>You write <code>SELECT</code> first, but the database processes clauses in a different order. Knowing it explains most error messages.</p>
       <ul><li><code>FROM</code>: pick the table.</li><li><code>WHERE</code>: throw away rows that do not match.</li><li><code>GROUP BY</code>: bundle the remaining rows into groups.</li><li><code>HAVING</code>: throw away whole groups that do not match.</li><li><code>SELECT</code>: compute the columns to show.</li><li><code>ORDER BY</code> then <code>LIMIT</code>: sort and trim the final result.</li></ul>
@@ -204,12 +201,12 @@ refunded | 1 | 80</pre></div>
       <p><code>WHERE status = 'paid'</code> removes the refunded order <em>before</em> grouping. <code>HAVING SUM(total) &gt; 100</code> then removes customers whose paid total is too small <em>after</em> grouping. You cannot put an aggregate inside <code>WHERE</code>.</p>
       <h2>Key takeaways</h2>
       <ul><li><code>ORDER BY</code> sorts (<code>DESC</code> for descending); <code>LIMIT</code> keeps the top rows.</li><li>Aggregates (<code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>) turn many rows into one value.</li><li><code>GROUP BY</code> gives one result row per group.</li><li><code>WHERE</code> filters rows before grouping; <code>HAVING</code> filters groups after.</li></ul>
-      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">For each status, report how many orders it has and the total money, busiest status first. Then keep only statuses worth more than 100.</p></aside>
-      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT status, COUNT(*) AS orders, SUM(total) AS money
-FROM orders
-GROUP BY status
-HAVING SUM(total) &gt; 100
-ORDER BY money DESC;"><pre><code>-- Write your solution here
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Find the number of customers in each country, showing only countries with two or more customers, most first.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT country, COUNT(*) AS customers
+FROM customers
+GROUP BY country
+HAVING COUNT(*) &gt;= 2
+ORDER BY customers DESC;"><pre><code>-- Write your solution here
 </code></pre></div>
           <div class="learn-finish" data-finish>
             <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
@@ -244,15 +241,15 @@ ORDER BY money DESC;"><pre><code>-- Write your solution here
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/site-nav.js?v=22" defer></script>
   <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/sql-runner.js?v=9" defer></script>
-  <script src="/assets/monaco-code.js?v=23" defer></script>
-  <script src="/script.js?v=2" defer></script>
+  <script src="/assets/sql-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/script.js?v=10" defer></script>
 </body>
 </html>

@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="/assets/theme.js?v=1"></script>
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
   <meta name="robots" content="index, follow">
   <title>Indexes and Query Performance | SQL Tutorial | stackcone</title>
   <meta name="description" content="Why queries are slow, how indexes help and how to read EXPLAIN. Free SQL lesson 16 of 17 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/sql/indexes-performance/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/styles.css?v=29">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
   <link rel="stylesheet" href="/learn/learn.css?v=37">
-  <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <link rel="stylesheet" href="/assets/auth.css?v=51">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
   <!-- sc:seo -->
@@ -131,9 +131,8 @@ CREATE INDEX idx_orders_cust_status ON orders (customer_id, status);   -- compos
       <p><code>EXPLAIN</code> shows how the database intends to run a query. Look for a scan of the whole table versus an index search.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>EXPLAIN QUERY PLAN
 SELECT * FROM orders WHERE customer_id = 1;</code></pre></div>
-      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>detail
-------------
-SCAN orders</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>-- before index: SCAN orders
+-- after index:  SEARCH orders USING INDEX idx_orders_customer (customer_id=?)</pre></div>
       <p>In PostgreSQL use <code>EXPLAIN ANALYZE</code> to also run the query and report real timings.</p>
       <h2>The trade-off</h2>
       <ul><li>Indexes make reads faster but every INSERT, UPDATE and DELETE must also maintain them, so writes get slower.</li><li>They use disk space. Do not index everything; index columns you filter, join and sort on.</li><li>Low-selectivity columns (such as a boolean) rarely benefit.</li></ul>
@@ -154,16 +153,10 @@ SELECT * FROM customers WHERE email = &#x27;a@b.com&#x27;;</code></pre></div>
       <h2>See the difference with EXPLAIN</h2>
       <p>Databases can describe their plan for a query. Below, the same search is run before and after adding an index. The plan changes from a scan of the whole table to a direct search through the index.</p>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = &#x27;ada@example.com&#x27;</code></pre></div>
-      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>detail
------------
-SCAN users</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>SCAN users</pre></div>
       <div class="learn-code-wrap" data-lang="sql"><pre><code>CREATE INDEX idx_users_email ON users(email);
 EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = &#x27;ada@example.com&#x27;;</code></pre></div>
-      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>OK
-
-detail
----------------------------------------------------
-SEARCH users USING INDEX idx_users_email (email=?)</pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>SEARCH users USING INDEX idx_users_email (email=?)</pre></div>
       <p><code>SCAN</code> means "read everything"; <code>SEARCH ... USING INDEX</code> means "jump to the match." The words differ between databases (PostgreSQL says <em>Seq Scan</em> and <em>Index Scan</em>) but the idea is identical.</p>
       <h2>What to index</h2>
       <ul><li>Columns you filter on often in <code>WHERE</code> (email, status, created_at).</li><li>Foreign-key columns used in joins (<code>orders.customer_id</code>).</li><li>Columns you sort by frequently.</li></ul>
@@ -173,12 +166,10 @@ SEARCH users USING INDEX idx_users_email (email=?)</pre></div>
       <ul><li><strong>Measure first</strong>: find which query is actually slow (most databases have a slow-query log).</li><li><strong>Explain it</strong>: does the plan show a full scan on a big table?</li><li><strong>Fix the cause</strong>: add an index, select fewer columns, or rewrite the filter so the index can be used.</li><li><strong>Measure again</strong>: confirm the plan and the time both improved.</li></ul>
       <h2>Key takeaways</h2>
       <ul><li>Without an index the database scans every row; an index lets it jump to matches.</li><li>Use <code>EXPLAIN</code> to see whether a query scans or searches an index.</li><li>Index columns you filter, join and sort on; avoid indexing everything.</li><li>Measure before and after; guessing is not tuning.</li></ul>
-      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">The <code>transactions</code> table is filtered by country all day long. Add the index that supports it, then prove with <code>EXPLAIN QUERY PLAN</code> that the scan became a search.</p></aside>
-      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="EXPLAIN QUERY PLAN SELECT * FROM transactions WHERE country = &#x27;US&#x27;;
-
-CREATE INDEX idx_transactions_country ON transactions(country);
-
-EXPLAIN QUERY PLAN SELECT * FROM transactions WHERE country = &#x27;US&#x27;;"><pre><code>-- Write your solution here
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A query <code>SELECT * FROM orders WHERE customer_id = ? AND status = 'paid' ORDER BY created DESC</code> is slow. Propose an index and explain the column order.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="-- Equality columns first, then the sort column, so the database can
+-- read matching rows already in order without a separate sort step.
+CREATE INDEX idx_orders_lookup ON orders (customer_id, status, created DESC);"><pre><code>-- Write your solution here
 </code></pre></div>
           <div class="learn-finish" data-finish>
             <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
@@ -213,15 +204,15 @@ EXPLAIN QUERY PLAN SELECT * FROM transactions WHERE country = &#x27;US&#x27;;"><
       <p class="footer-copy">© stackcone 2026</p>
     </div>
   </footer>
-  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/site-nav.js?v=22" defer></script>
   <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
   <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/sql-runner.js?v=9" defer></script>
-  <script src="/assets/monaco-code.js?v=23" defer></script>
-  <script src="/script.js?v=2" defer></script>
+  <script src="/assets/sql-runner.js?v=1" defer></script>
+  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/script.js?v=10" defer></script>
 </body>
 </html>
