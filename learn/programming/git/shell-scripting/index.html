@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Pipes, Redirection and Shell Scripts | Git &amp; Command Line | stackcone</title>
+  <meta name="description" content="Chain commands with pipes, redirect stdout and stderr, use exit codes and write your first safe Bash shell script with variables, if and for loops.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/git/shell-scripting/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/git/shell-scripting/">
+  <meta property="og:title" content="Pipes, Redirection and Shell Scripts | Git &amp; Command Line | stackcone">
+  <meta property="og:description" content="Chain commands with pipes, redirect stdout and stderr, use exit codes and write your first safe Bash shell script with variables, if and for loops.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Pipes, Redirection and Shell Scripts | Git &amp; Command Line | stackcone">
+  <meta name="twitter:description" content="Chain commands with pipes, redirect stdout and stderr, use exit codes and write your first safe Bash shell script with variables, if and for loops.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/git/command-line/">
+  <link rel="next" href="https://stackcone.com/learn/programming/git/introduction/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Git & Command Line", "item": "https://stackcone.com/learn/programming/git/command-line/"}, {"@type": "ListItem", "position": 4, "name": "Pipes, Redirection and Shell Scripts", "item": "https://stackcone.com/learn/programming/git/shell-scripting/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Pipes, Redirection and Shell Scripts", "headline": "Pipes, Redirection and Shell Scripts", "description": "Chain commands with pipes, redirect stdout and stderr, use exit codes and write your first safe Bash shell script with variables, if and for loops.", "url": "https://stackcone.com/learn/programming/git/shell-scripting/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Combine small commands with pipes", "Redirect output and errors to files", "Read exit codes and use && and ||", "Write a small, safe Bash script"], "position": 2, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Git & Command Line Course", "url": "https://stackcone.com/learn/programming/git/command-line/", "description": "Move around the terminal and track work with Git branches and pull requests.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> / <span aria-current="page">Pipes, Redirection and Shell Scripts</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="git">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Git &amp; Command Line from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Git &amp; Command Line lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/git/command-line/" data-lesson="git-command-line" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Command Line Essentials</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/git/shell-scripting/" aria-current="page" data-lesson="git-shell-scripting" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Pipes, Redirection and Shell Scripts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/introduction/" data-lesson="git-introduction" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Git Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/config-ignore/" data-lesson="git-config-ignore" data-minutes="14"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Config, .gitignore and Aliases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/branching-merging/" data-lesson="git-branching-merging" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Branching and Merging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/merge-conflicts/" data-lesson="git-merge-conflicts" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Resolving Merge Conflicts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/rebase/" data-lesson="git-rebase" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rebase and a Clean History</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/remote-github/" data-lesson="git-remote-github" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Remotes, GitHub and Pull Requests</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/undo-workflows/" data-lesson="git-undo-workflows" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Undoing Things and Team Workflows</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/stash-tags/" data-lesson="git-stash-tags" data-minutes="14"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Stash, Tags and Releases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/advanced-recovery/" data-lesson="git-advanced-recovery" data-minutes="16"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Cherry-pick, Bisect and Reflog</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/github-actions/" data-lesson="git-github-actions" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">CI with GitHub Actions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> · Lesson 2 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/git/command-line/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="git-shell-scripting" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/git/introduction/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Pipes, Redirection and Shell Scripts</h1>
+          <p class="learn-summary">Chain commands with pipes, redirect stdout and stderr, use exit codes and write your first safe Bash shell script with variables, if and for loops.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/git/command-line/">Lesson 1: Command Line Essentials</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Combine small commands with pipes</li><li>Redirect output and errors to files</li><li>Read exit codes and use &amp;&amp; and ||</li><li>Write a small, safe Bash script</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>In the command line lesson you met <code>|</code> and <code>&gt;</code> briefly. This lesson goes deeper. The real power of the terminal is not any single command, it is <strong>combining</strong> small commands into a pipeline, and then saving that pipeline as a script so you never have to type it again.</p>
+      <p>Everything here works in Bash and Zsh on macOS and Linux, and in Git Bash or WSL on Windows. Git hooks, CI jobs and deploy steps are all shell scripts, so this is the glue for the rest of the track.</p>
+      <h2>Three streams: stdin, stdout, stderr</h2>
+      <p>Every program starts with three open channels. <strong>stdin</strong> (0) is where it reads input, <strong>stdout</strong> (1) is where normal output goes and <strong>stderr</strong> (2) is where error messages go. By default all three are your terminal, which is why errors and output look mixed together. Keeping errors on a separate stream is what lets you save clean output to a file while still seeing problems on screen.</p>
+      <h2>Pipes: one command&#x27;s output is the next one&#x27;s input</h2>
+      <p>The pipe <code>|</code> connects stdout of the left command to stdin of the right one. Each tool does one small job well. Suppose <code>app.log</code> looks like this:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>2026-09-01 INFO start
+2026-09-01 ERROR db timeout
+2026-09-02 INFO ok
+2026-09-02 ERROR db timeout
+2026-09-03 ERROR disk full</code></pre></div>
+      <p>How many errors are there, and which one is most common?</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>grep ERROR app.log | wc -l
+grep ERROR app.log | cut -d&#x27; &#x27; -f3- | sort | uniq -c | sort -rn</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>       3
+   2 db timeout
+   1 disk full</pre></div>
+      <p>Read the second line left to right: keep error lines, cut away the date and level (fields 3 onward, split on spaces), sort so duplicates sit together, count duplicates with <code>uniq -c</code>, then sort numerically in reverse. Five tiny tools, one useful report.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>uniq only sees neighbours</p><p class="learn-callout-body"><code>uniq</code> collapses <em>adjacent</em> duplicate lines only. Always <code>sort</code> before <code>uniq</code>, or you will get wrong counts.</p></aside>
+      <h2>Redirection: sending streams to files</h2>
+      <ul><li><code>cmd &gt; out.txt</code>: write stdout to a file, <strong>overwriting</strong> it.</li><li><code>cmd &gt;&gt; out.txt</code>: append stdout to the end of the file.</li><li><code>cmd 2&gt; err.txt</code>: write stderr to a file.</li><li><code>cmd &gt; all.txt 2&gt;&amp;1</code>: send both streams to the same file (order matters: redirect stdout first).</li><li><code>cmd 2&gt;/dev/null</code>: throw error messages away.</li><li><code>cmd &lt; in.txt</code>: feed a file to stdin.</li></ul>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>grep ERROR app.log &gt; errors.txt        # save the report
+date &gt;&gt; build.log                      # add a line, keep old ones
+npm test &gt; test.log 2&gt;&amp;1               # capture everything
+find / -name &#x27;*.conf&#x27; 2&gt;/dev/null      # hide &#x27;Permission denied&#x27; noise</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>&gt; wipes the file first</p><p class="learn-callout-body">The shell truncates the target before the command even runs, so <code>sort names.txt &gt; names.txt</code> leaves you with an empty file. Write to a new file, then rename it.</p></aside>
+      <h2>Exit codes, &amp;&amp; and ||</h2>
+      <p>Every command finishes with an <strong>exit code</strong>: <code>0</code> means success and anything else means failure. The special variable <code>$?</code> holds the code of the last command.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>ls nope.txt 2&gt;/dev/null; echo &quot;exit: $?&quot;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>exit: 1</pre></div>
+      <p>You rarely read <code>$?</code> by hand. Instead you chain commands on success or failure:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>npm test &amp;&amp; git push                 # push only if tests pass
+mkdir -p build || echo &quot;could not create build/&quot;
+cd project &amp;&amp; git pull &amp;&amp; npm install</code></pre></div>
+      <p><code>;</code> runs the next command no matter what, <code>&amp;&amp;</code> runs it only on success, and <code>||</code> runs it only on failure. CI systems use exactly this rule: a step fails when its script exits non-zero.</p>
+      <h2>Variables and command substitution</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>name=&quot;stackcone&quot;            # no spaces around =
+echo &quot;Hello, $name&quot;
+today=$(date +%F)          # capture a command&#x27;s output
+echo &quot;Backup for $today&quot;
+count=$(grep -c ERROR app.log)
+echo &quot;Errors: $count&quot;</code></pre></div>
+      <p>Always wrap variables in double quotes, like <code>"$file"</code>. Without quotes, a filename with a space in it is split into two words and your script breaks in confusing ways. Single quotes do not expand variables at all: <code>'$name'</code> prints the literal text.</p>
+      <h2>Your first script</h2>
+      <p>A script is just a text file of commands. Save this as <code>count.sh</code>:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>#!/usr/bin/env bash
+set -euo pipefail
+
+file=&quot;${1:-app.log}&quot;
+
+if [[ ! -f &quot;$file&quot; ]]; then
+  echo &quot;No such file: $file&quot; &gt;&amp;2
+  exit 1
+fi
+
+for level in INFO ERROR; do
+  n=$(grep -c &quot;$level&quot; &quot;$file&quot; || true)
+  echo &quot;$level: $n&quot;
+done</code></pre></div>
+      <ul><li><code>#!/usr/bin/env bash</code> (the shebang) tells the system which interpreter runs the file.</li><li><code>set -euo pipefail</code> makes the script stop on any failing command, on unset variables and on failures inside pipelines. It turns silent bugs into loud ones.</li><li><code>$1</code> is the first argument; <code>${1:-app.log}</code> means "use app.log if none was given".</li><li><code>&gt;&amp;2</code> prints the error message on stderr, and <code>exit 1</code> reports failure to the caller.</li><li><code>|| true</code> is needed because <code>grep -c</code> exits 1 when it finds zero matches, which <code>set -e</code> would treat as a crash.</li></ul>
+      <p>Make it executable once, then run it:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>chmod +x count.sh
+./count.sh
+./count.sh missing.log; echo &quot;exit: $?&quot;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>INFO: 2
+ERROR: 3
+No such file: missing.log
+exit: 1</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Check scripts with ShellCheck</p><p class="learn-callout-body">The free <code>shellcheck</code> tool (<code>brew install shellcheck</code> or <code>apt install shellcheck</code>) catches missing quotes and other classic Bash mistakes. Most editors can run it as you type.</p></aside>
+      <h2>Loops over files</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>for f in *.log; do
+  echo &quot;$f has $(wc -l &lt; &quot;$f&quot;) lines&quot;
+done
+
+# read a file line by line
+while IFS= read -r user; do
+  echo &quot;Creating home for $user&quot;
+done &lt; users.txt</code></pre></div>
+      <p>Use a glob like <code>*.log</code> rather than parsing the output of <code>ls</code>; globs handle spaces and odd characters correctly.</p>
+      <h2>Recap</h2>
+      <ul><li>Programs have stdin, stdout and stderr; pipes connect stdout to the next stdin.</li><li><code>&gt;</code> overwrites, <code>&gt;&gt;</code> appends, <code>2&gt;&amp;1</code> merges errors into output.</li><li>Exit code 0 is success; chain with <code>&amp;&amp;</code> and <code>||</code>.</li><li>Quote your variables and start scripts with a shebang and <code>set -euo pipefail</code>.</li><li>Run <code>chmod +x</code> once, then <code>./script.sh</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>backup.sh</code> that takes a folder name as its first argument, fails with a message on stderr and exit code 1 if the folder does not exist, and otherwise creates a compressed archive named like <code>notes-2026-09-23.tar.gz</code> (folder name plus today's date). Print the archive name at the end.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="#!/usr/bin/env bash
+set -euo pipefail
+
+dir=&quot;${1:-}&quot;
+
+if [[ -z &quot;$dir&quot; || ! -d &quot;$dir&quot; ]]; then
+  echo &quot;Usage: ./backup.sh &lt;existing-folder&gt;&quot; &gt;&amp;2
+  exit 1
+fi
+
+archive=&quot;$(basename &quot;$dir&quot;)-$(date +%F).tar.gz&quot;
+tar -czf &quot;$archive&quot; &quot;$dir&quot;
+echo &quot;Created $archive&quot;"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="git-shell-scripting" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/git/introduction/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Git Basics</strong><small>Repositories, commits, staging and reading history.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/git/command-line/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/git/introduction/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

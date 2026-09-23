@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/assets/theme.js?v=1"></script>
   <meta name="robots" content="index, follow">
-  <title>Strings, Numbers and Math | JavaScript | stackcone Learn</title>
-  <meta name="description" content="String methods, number quirks, parsing and the Math object.">
+  <title>Strings, Numbers and Math | JavaScript Tutorial | stackcone</title>
+  <meta name="description" content="String methods, number quirks, parsing and the Math object. Free JavaScript lesson 8 of 15 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/javascript/strings-numbers/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +14,26 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=27">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
-  <link rel="stylesheet" href="/learn/learn.css?v=36">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
   <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/javascript/strings-numbers/">
+  <meta property="og:title" content="Strings, Numbers and Math | JavaScript Tutorial | stackcone">
+  <meta property="og:description" content="String methods, number quirks, parsing and the Math object. Free JavaScript lesson 8 of 15 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Strings, Numbers and Math | JavaScript Tutorial | stackcone">
+  <meta name="twitter:description" content="String methods, number quirks, parsing and the Math object. Free JavaScript lesson 8 of 15 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/javascript/control-flow/">
+  <link rel="next" href="https://stackcone.com/learn/programming/javascript/objects-this/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "JavaScript", "item": "https://stackcone.com/learn/programming/javascript/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Strings, Numbers and Math", "item": "https://stackcone.com/learn/programming/javascript/strings-numbers/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Strings, Numbers and Math", "headline": "Strings, Numbers and Math", "description": "String methods, number quirks, parsing and the Math object. Free JavaScript lesson 8 of 15 with runnable examples and exercises.", "url": "https://stackcone.com/learn/programming/javascript/strings-numbers/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT12M", "isAccessibleForFree": true, "teaches": ["Use common string methods", "Parse and format numbers", "Handle floating-point surprises"], "position": 8, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "JavaScript Course", "url": "https://stackcone.com/learn/programming/javascript/hello-world/", "description": "The language of the web: values, functions, arrays, async code and the DOM.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
 </head>
 <body class="learn-page">
   <header class="header">
@@ -34,13 +49,13 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/javascript/hello-world/">JavaScript</a> / Strings, Numbers and Math</p>
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/javascript/hello-world/">JavaScript</a> / <span aria-current="page">Strings, Numbers and Math</span></nav>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="javascript">
           <div class="learn-sidebar-head">
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="/learn/programming/javascript/hello-world/">JavaScript</a></p>
-              <p class="learn-sidebar-tagline">Learn JavaScript from scratch</p>
+              <p class="learn-sidebar-tagline">15 lessons · Learn JavaScript from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
@@ -49,7 +64,7 @@
           </div>
           <p class="learn-sidebar-progress" data-progress-count>0 of 15 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
-          <nav class="learn-sidebar-lessons">
+          <nav class="learn-sidebar-lessons" aria-label="JavaScript lessons">
           <a class="learn-sidebar-link" href="/learn/programming/javascript/hello-world/" data-lesson="js-hello-world" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, JavaScript</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/javascript/variables-types/" data-lesson="js-variables-types" data-minutes="13"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/javascript/functions/" data-lesson="js-functions" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Functions and Scope</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -71,8 +86,9 @@
           <div class="learn-lesson-top">
             <p class="learn-eyebrow"><a href="/learn/programming/javascript/hello-world/">JavaScript</a> · Lesson 8 of 15</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <a class="learn-top-btn" href="/learn/programming/javascript/control-flow/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/javascript/objects-this/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/programming/javascript/control-flow/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="js-strings-numbers" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/javascript/objects-this/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
           <h1>Strings, Numbers and Math</h1>
@@ -99,6 +115,7 @@
               <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
           </section>
       <p>Strings and numbers look simple, but a handful of methods and one famous floating-point quirk cover most day-to-day surprises.</p>
       <h2>String methods</h2>
@@ -149,12 +166,15 @@ console.log(new Intl.NumberFormat(&quot;en-US&quot;, { style: &quot;currency&quo
       <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1,234,567.891
 $19.50</pre></div>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a function that turns "hello world" into "Hello World" (capitalise each word).</p></aside>
-          <a class="learn-upnext" href="/learn/programming/javascript/objects-this/"><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Objects, this and Prototypes</strong><small>Object literals, methods, this binding and how prototypes share behaviour.</small></a>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="js-strings-numbers" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/javascript/objects-this/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Objects, this and Prototypes</strong><small>Object literals, methods, this binding and how prototypes share behaviour.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/programming/javascript/control-flow/">Previous</a>
             <div class="learn-lesson-nav-end">
-            <button type="button" class="learn-complete" data-mark-complete="js-strings-numbers" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/javascript/objects-this/">Next lesson</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/javascript/objects-this/" data-complete-on-click>Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">
@@ -180,13 +200,13 @@ $19.50</pre></div>
     </div>
   </footer>
   <script src="/site-nav.js?v=21" defer></script>
-  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
-  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

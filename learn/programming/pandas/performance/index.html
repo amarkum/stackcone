@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Performance and Large Datasets | Pandas Tutorial | stackcone</title>
+  <meta name="description" content="Speed up pandas on large datasets: measure memory, downcast dtypes, use categories and PyArrow, read CSVs in chunks, and know when to use Polars or DuckDB.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/pandas/performance/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/pandas/performance/">
+  <meta property="og:title" content="Performance and Large Datasets | Pandas Tutorial | stackcone">
+  <meta property="og:description" content="Speed up pandas on large datasets: measure memory, downcast dtypes, use categories and PyArrow, read CSVs in chunks, and know when to use Polars or DuckDB.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Performance and Large Datasets | Pandas Tutorial | stackcone">
+  <meta name="twitter:description" content="Speed up pandas on large datasets: measure memory, downcast dtypes, use categories and PyArrow, read CSVs in chunks, and know when to use Polars or DuckDB.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/pandas/window/">
+  <link rel="next" href="https://stackcone.com/learn/programming/pandas/project/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Pandas", "item": "https://stackcone.com/learn/programming/pandas/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Performance and Large Datasets", "item": "https://stackcone.com/learn/programming/pandas/performance/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Performance and Large Datasets", "headline": "Performance and Large Datasets", "description": "Speed up pandas on large datasets: measure memory, downcast dtypes, use categories and PyArrow, read CSVs in chunks, and know when to use Polars or DuckDB.", "url": "https://stackcone.com/learn/programming/pandas/performance/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Measure a DataFrame's real memory use and find the heavy columns", "Shrink memory with smaller numeric types, categories and PyArrow-backed dtypes", "Process files larger than memory in chunks", "Recognize slow patterns and know when to reach for another tool"], "position": 11, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Pandas Course", "url": "https://stackcone.com/learn/programming/pandas/introduction/", "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/pandas/introduction/">Pandas</a> / <span aria-current="page">Performance and Large Datasets</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="pandas">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/pandas/introduction/">Pandas</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Pandas from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Pandas lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/introduction/" data-lesson="pandas-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">DataFrames and Series</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/io/" data-lesson="pandas-io" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/selecting/" data-lesson="pandas-selecting" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Selecting and Filtering: loc, iloc and query</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/cleaning/" data-lesson="pandas-cleaning" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Cleaning Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/transform/" data-lesson="pandas-transform" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Transforming Columns: vectorization, map and apply</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/text-categories/" data-lesson="pandas-text-categories" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Text and Categorical Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/groupby-merge/" data-lesson="pandas-groupby-merge" data-minutes="17"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Grouping, Merging and Pivots</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/reshape/" data-lesson="pandas-reshape" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Reshaping: melt, stack and pivot_table</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/time-plots/" data-lesson="pandas-time-plots" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates, Plots and Exporting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/window/" data-lesson="pandas-window" data-minutes="17"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Rolling, Expanding and Window Calculations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/pandas/performance/" aria-current="page" data-lesson="pandas-performance" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Performance and Large Datasets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/project/" data-lesson="pandas-project" data-minutes="25"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Project: End-to-End Sales Analysis</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/pandas/introduction/">Pandas</a> · Lesson 11 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/pandas/window/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="pandas-performance" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/pandas/project/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Performance and Large Datasets</h1>
+          <p class="learn-summary">Speed up pandas on large datasets: measure memory, downcast dtypes, use categories and PyArrow, read CSVs in chunks, and know when to use Polars or DuckDB.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/pandas/window/">Lesson 10: Rolling, Expanding and Window Calculations</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Measure a DataFrame&#x27;s real memory use and find the heavy columns</li><li>Shrink memory with smaller numeric types, categories and PyArrow-backed dtypes</li><li>Process files larger than memory in chunks</li><li>Recognize slow patterns and know when to reach for another tool</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>pandas loads your whole dataset into memory, and a DataFrame often uses several times more RAM than the file it came from. For a few hundred thousand rows nobody notices. At tens of millions of rows, your notebook crashes, or every step takes a minute. The good news is that most slowness comes from a handful of fixable habits.</p>
+      <p>This lesson follows a simple order that works in practice: <strong>measure</strong> first, then <strong>shrink</strong> the data, then <strong>stream</strong> it if it still does not fit, and finally <strong>avoid the slow patterns</strong> in your code. If all that is not enough, it is time for a different tool, and we will cover which one.</p>
+      <h2>Measure memory first</h2>
+      <p><code>df.info(memory_usage="deep")</code> and <code>df.memory_usage(deep=True)</code> report how much memory each column really uses. The <code>deep=True</code> part matters: without it, pandas does not count the actual contents of text columns and underestimates badly.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import numpy as np
+import pandas as pd
+
+n = 100_000
+rng = np.random.default_rng(0)
+df = pd.DataFrame({
+    &quot;user_id&quot;: np.arange(n),                                  # int64
+    &quot;age&quot;: rng.integers(18, 80, n),                           # int64
+    &quot;country&quot;: rng.choice([&quot;IN&quot;, &quot;US&quot;, &quot;GB&quot;, &quot;DE&quot;, &quot;BR&quot;], n), # text
+    &quot;score&quot;: rng.random(n),                                   # float64
+})
+
+mb = df.memory_usage(deep=True) / 1_000_000
+print(mb.round(2))
+print(df.dtypes)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Index      0.0
+user_id    0.8
+age        0.8
+country    1.0
+score      0.8
+dtype: float64
+user_id      int64
+age          int64
+country        str
+score      float64
+dtype: object</pre></div>
+      <p>The pattern is typical. Numbers default to 64-bit types (8 bytes per value) even when the values are small, and the repeated text column is the heaviest. In pandas 3 with PyArrow installed, text is stored compactly; on older versions or without PyArrow, that <code>country</code> column would take several times more memory. Your exact numbers may differ slightly by pandas version and platform.</p>
+      <h2>Shrink: right-sized dtypes</h2>
+      <p>An age between 18 and 80 fits in an 8-bit integer (range -128 to 127) instead of 64 bits, an eighth of the memory. <code>pd.to_numeric(..., downcast=...)</code> picks the smallest safe type for you. Low-cardinality text becomes <code>category</code>, as you saw in the text lesson. Floats can often be <code>float32</code> if you do not need 15 significant digits.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import numpy as np
+import pandas as pd
+
+n = 100_000
+rng = np.random.default_rng(0)
+df = pd.DataFrame({
+    &quot;user_id&quot;: np.arange(n),
+    &quot;age&quot;: rng.integers(18, 80, n),
+    &quot;country&quot;: rng.choice([&quot;IN&quot;, &quot;US&quot;, &quot;GB&quot;, &quot;DE&quot;, &quot;BR&quot;], n),
+    &quot;score&quot;: rng.random(n),
+})
+before = df.memory_usage(deep=True).sum()
+
+slim = df.assign(
+    user_id=pd.to_numeric(df[&quot;user_id&quot;], downcast=&quot;unsigned&quot;),
+    age=pd.to_numeric(df[&quot;age&quot;], downcast=&quot;integer&quot;),
+    country=df[&quot;country&quot;].astype(&quot;category&quot;),
+    score=df[&quot;score&quot;].astype(&quot;float32&quot;),
+)
+after = slim.memory_usage(deep=True).sum()
+
+print(slim.dtypes)
+print(f&quot;memory cut by {1 - after / before:.0%}&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>user_id      uint32
+age            int8
+country    category
+score       float32
+dtype: object
+memory cut by 71%</pre></div>
+      <p>The best place to apply these types is at read time, so the big version never exists: <code>pd.read_csv(path, dtype={"age": "int8", "country": "category"}, usecols=[...])</code>. Loading only the columns you need with <code>usecols</code> is often the single biggest win.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not downcast blindly</p><p class="learn-callout-body">Small integer types overflow silently if values grow later: <code>int8</code> wraps 127 + 1 to -128. Downcast columns whose range you know, and prefer <code>float64</code> for money or anything where rounding errors matter.</p></aside>
+      <h2>PyArrow-backed dtypes</h2>
+      <p>pandas can store columns using Apache Arrow instead of NumPy. In pandas 3, text columns already use Arrow under the hood when PyArrow is installed, which is a big part of why strings got faster and smaller. You can opt in for all columns when reading: <code>pd.read_csv(path, engine="pyarrow", dtype_backend="pyarrow")</code>. The <code>pyarrow</code> CSV engine reads in parallel and is usually several times faster than the default parser, and Arrow types support missing values in integer and boolean columns without converting them to float.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>pip install pyarrow
+
+# Fast multi-threaded CSV parsing with Arrow-backed columns
+df = pd.read_csv(&quot;events.csv&quot;, engine=&quot;pyarrow&quot;, dtype_backend=&quot;pyarrow&quot;)
+
+# Parquet keeps the types you chose, so the next load is instant and typed
+df.to_parquet(&quot;events.parquet&quot;)
+df = pd.read_parquet(&quot;events.parquet&quot;, columns=[&quot;user_id&quot;, &quot;event&quot;])</code></pre></div>
+      <h2>Stream: process a file in chunks</h2>
+      <p>If a file is bigger than your RAM, you cannot load it at once, but you usually do not need to. Pass <code>chunksize</code> to <code>read_csv</code> and you get an iterator of smaller DataFrames. Aggregate each chunk, keep only the small partial results, and combine them at the end.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+# Pretend this is a 50 GB file
+lines = [&quot;country,amount&quot;] + [f&quot;{c},{a}&quot; for c, a in
+         [(&quot;IN&quot;, 10), (&quot;US&quot;, 25), (&quot;IN&quot;, 5), (&quot;GB&quot;, 40), (&quot;US&quot;, 15), (&quot;IN&quot;, 20)] * 1000]
+big_csv = StringIO(&quot;\n&quot;.join(lines))
+
+partials = []
+for chunk in pd.read_csv(big_csv, chunksize=1_000):
+    partials.append(chunk.groupby(&quot;country&quot;)[&quot;amount&quot;].sum())
+
+totals = pd.concat(partials).groupby(level=0).sum()
+print(len(partials), &quot;chunks&quot;)
+print(totals)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>6 chunks
+country
+GB    40000
+IN    35000
+US    40000
+Name: amount, dtype: int64</pre></div>
+      <p>This works for anything that can be combined from parts: sums, counts, min and max. For a mean, sum the totals and counts separately and divide at the end. Medians and distinct counts across chunks are harder, which is a sign you may want one of the tools below.</p>
+      <h2>Avoid the slow patterns</h2>
+      <p>Once the data fits, most remaining slowness is in the code. These are the usual suspects, with their fast replacements:</p>
+      <ul><li><strong>Looping with <code>iterrows</code> or <code>apply(axis=1)</code></strong>: replace with vectorized column math, <code>np.where</code>, <code>np.select</code> or <code>merge</code>.</li><li><strong>Growing a DataFrame in a loop</strong> with <code>pd.concat</code> on every iteration: collect pieces in a list and concat once at the end.</li><li><strong>Repeated string parsing</strong>: parse dates once with <code>pd.to_datetime(..., format=...)</code>, not per row.</li><li><strong>Filtering the same big table many times</strong>: filter once early, or <code>set_index</code> and use <code>.loc</code> lookups.</li><li><strong>Re-reading CSVs</strong> on every run: convert to Parquet once.</li></ul>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import time
+import pandas as pd
+
+rows = [{&quot;id&quot;: i, &quot;value&quot;: i * 2} for i in range(3_000)]
+
+start = time.perf_counter()
+df = pd.DataFrame()
+for r in rows:                                   # slow: copies every time
+    df = pd.concat([df, pd.DataFrame([r])], ignore_index=True)
+t_loop = time.perf_counter() - start
+
+start = time.perf_counter()
+df2 = pd.DataFrame(rows)                         # fast: build once
+t_once = time.perf_counter() - start
+
+print(df.equals(df2), t_once &lt; t_loop)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True True</pre></div>
+      <p>Growing the DataFrame row by row copies all the existing data on every iteration, so the cost grows quadratically. Building from a list once is typically hundreds of times faster.</p>
+      <h2>When pandas is not the right tool</h2>
+      <p>pandas is single-threaded for most operations and needs data in memory. When your data is consistently larger than about a quarter of your RAM, or queries take minutes, these tools are well worth learning in 2026:</p>
+      <ul><li><strong>DuckDB</strong>: an in-process SQL engine that queries CSV and Parquet files (even ones larger than memory) and can read and return pandas DataFrames directly: <code>duckdb.sql("SELECT ... FROM 'events.parquet'").df()</code>.</li><li><strong>Polars</strong>: a multi-threaded DataFrame library with a lazy API that optimizes whole queries and streams large files. Its syntax differs from pandas but the concepts carry over.</li><li><strong>A database or warehouse</strong> (Postgres, BigQuery, Snowflake): push heavy aggregations to where the data lives and pull only the result, as in the I/O lesson.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Measure with <code>memory_usage(deep=True)</code> before optimizing.</li><li>Load only needed columns, use small numeric types and <code>category</code>, ideally at read time.</li><li>The PyArrow engine and Parquet files make loading much faster.</li><li>Use <code>chunksize</code> to aggregate files that do not fit in memory.</li><li>Replace row loops and repeated <code>concat</code> with vectorized code; switch to DuckDB or Polars when data outgrows RAM.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Build the DataFrame below, print its total memory in KB (deep), then reduce it: make <code>status</code> a category, downcast <code>quantity</code> to the smallest integer type, and convert <code>price</code> to <code>float32</code>. Print the new dtypes and whether the new frame uses less than half the memory.<br><code>n = 50_000</code><br><code>df = pd.DataFrame({"status": ["paid", "refunded", "pending", "paid"] * (n // 4), "quantity": [1, 2, 3, 10] * (n // 4), "price": [9.99, 19.99, 4.5, 100.0] * (n // 4)})</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import pandas as pd
+
+n = 50_000
+df = pd.DataFrame({
+    &quot;status&quot;: [&quot;paid&quot;, &quot;refunded&quot;, &quot;pending&quot;, &quot;paid&quot;] * (n // 4),
+    &quot;quantity&quot;: [1, 2, 3, 10] * (n // 4),
+    &quot;price&quot;: [9.99, 19.99, 4.5, 100.0] * (n // 4),
+})
+before = df.memory_usage(deep=True).sum()
+print(round(before / 1024), &quot;KB&quot;)
+
+slim = df.assign(
+    status=df[&quot;status&quot;].astype(&quot;category&quot;),
+    quantity=pd.to_numeric(df[&quot;quantity&quot;], downcast=&quot;integer&quot;),
+    price=df[&quot;price&quot;].astype(&quot;float32&quot;),
+)
+print(slim.dtypes)
+print(slim.memory_usage(deep=True).sum() &lt; before / 2)"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="pandas-performance" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/pandas/project/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 12</span><strong>Project: End-to-End Sales Analysis</strong><small>An end-to-end pandas sales analysis project: load raw CSV data, clean it, join lookups, then build KPIs, monthly trends, rankings and an exportable report.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/pandas/window/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/pandas/project/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

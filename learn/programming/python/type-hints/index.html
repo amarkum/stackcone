@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Type Hints and dataclasses | Python Tutorial | stackcone</title>
+  <meta name="description" content="Add Python type hints to functions and collections, check them with mypy, and replace boilerplate classes with dataclasses, TypedDict and Protocol.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/python/type-hints/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/python/type-hints/">
+  <meta property="og:title" content="Type Hints and dataclasses | Python Tutorial | stackcone">
+  <meta property="og:description" content="Add Python type hints to functions and collections, check them with mypy, and replace boilerplate classes with dataclasses, TypedDict and Protocol.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Type Hints and dataclasses | Python Tutorial | stackcone">
+  <meta name="twitter:description" content="Add Python type hints to functions and collections, check them with mypy, and replace boilerplate classes with dataclasses, TypedDict and Protocol.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/python/inheritance/">
+  <link rel="next" href="https://stackcone.com/learn/programming/python/file-handling/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Python", "item": "https://stackcone.com/learn/programming/python/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Type Hints and dataclasses", "item": "https://stackcone.com/learn/programming/python/type-hints/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Type Hints and dataclasses", "headline": "Type Hints and dataclasses", "description": "Add Python type hints to functions and collections, check them with mypy, and replace boilerplate classes with dataclasses, TypedDict and Protocol.", "url": "https://stackcone.com/learn/programming/python/type-hints/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Annotate variables, functions and collections with modern syntax", "Use Optional values, unions and generics correctly", "Check code with a static type checker like mypy", "Replace boilerplate classes with dataclasses"], "position": 13, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Python Course", "url": "https://stackcone.com/learn/programming/python/hello-world/", "description": "From your first print() to classes, files, and exceptions.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / <span aria-current="page">Type Hints and dataclasses</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="python">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
+              <p class="learn-sidebar-tagline">21 lessons · Learn Python from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 21 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Python lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/python/hello-world/" data-lesson="python-hello-world" data-minutes="8"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Python</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/variables-and-types/" data-lesson="python-variables-and-types" data-minutes="12"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/strings/" data-lesson="python-strings" data-minutes="14"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Working with Strings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/control-flow/" data-lesson="python-control-flow" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/functions/" data-lesson="python-functions" data-minutes="14"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/lists-tuples/" data-lesson="python-lists-tuples" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Lists and Tuples</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/dictionaries/" data-lesson="python-dictionaries" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Dictionaries and Sets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/comprehensions/" data-lesson="python-comprehensions" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Comprehensions and Iteration</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/decorators/" data-lesson="python-decorators" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Closures and Decorators</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/generators/" data-lesson="python-generators" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Generators, Iterators and itertools</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/" data-lesson="python-oop-classes" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/" data-lesson="python-inheritance" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Inheritance and Special Methods</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/type-hints/" aria-current="page" data-lesson="python-type-hints" data-minutes="18"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Type Hints and dataclasses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/file-handling/" data-lesson="python-file-handling" data-minutes="12"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/" data-lesson="python-error-handling" data-minutes="13"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Error Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/regex/" data-lesson="python-regex" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Regular Expressions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/" data-lesson="python-modules-packages" data-minutes="13"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Modules, Packages and pip</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/virtual-environments/" data-lesson="python-virtual-environments" data-minutes="16"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Virtual Environments and Project Setup</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/" data-lesson="python-json-datetime" data-minutes="14"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">JSON, Dates and the Standard Library</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/async/" data-lesson="python-async" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">async/await and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/" data-lesson="python-testing-debugging" data-minutes="15"><span class="learn-sidebar-num">21</span><span class="learn-sidebar-title">Testing and Debugging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 13 of 21</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/python/inheritance/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="python-type-hints" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/python/file-handling/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Type Hints and dataclasses</h1>
+          <p class="learn-summary">Add Python type hints to functions and collections, check them with mypy, and replace boilerplate classes with dataclasses, TypedDict and Protocol.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/inheritance/">Lesson 12: Inheritance and Special Methods</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Annotate variables, functions and collections with modern syntax</li><li>Use Optional values, unions and generics correctly</li><li>Check code with a static type checker like mypy</li><li>Replace boilerplate classes with dataclasses</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 21 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 21</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Python is dynamically typed: a variable can hold anything, and mistakes like passing a string where a number was expected only show up when that line runs. <strong>Type hints</strong> let you write down what you expect. Python itself ignores them at runtime, but editors and type checkers read them to catch bugs before you run anything, and teammates read them as documentation.</p>
+      <p>In the second half you will meet <code>dataclasses</code>, which use those same annotations to generate the boring parts of a class for you.</p>
+      <h2>Annotating variables and functions</h2>
+      <p>Put <code>: type</code> after a parameter or variable and <code>-&gt; type</code> after the parameter list for the return value. Hints are stored in <code>__annotations__</code> but never enforced, which is why the last call still works.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def order_total(price: float, quantity: int = 1) -&gt; float:
+    return price * quantity
+
+name: str = &quot;stackcone&quot;
+retries: int = 3
+
+print(order_total(9.99, 3))
+print(order_total.__annotations__)
+print(order_total(&quot;ab&quot;, 2))   # wrong type, but Python does not stop it</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>29.97
+{&#x27;price&#x27;: &lt;class &#x27;float&#x27;&gt;, &#x27;quantity&#x27;: &lt;class &#x27;int&#x27;&gt;, &#x27;return&#x27;: &lt;class &#x27;float&#x27;&gt;}
+abab</pre></div>
+      <h2>Collections, unions and Optional</h2>
+      <p>Since Python 3.9 you can use the built-in types directly with square brackets: <code>list[str]</code>, <code>dict[str, int]</code>, <code>tuple[int, int]</code>. Since 3.10, <code>A | B</code> means "either type". A value that may be missing is written <code>X | None</code> (older code spells this <code>Optional[X]</code> from the <code>typing</code> module).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def count_words(lines: list[str]) -&gt; dict[str, int]:
+    counts: dict[str, int] = {}
+    for line in lines:
+        for word in line.split():
+            counts[word] = counts.get(word, 0) + 1
+    return counts
+
+def find_user(users: dict[int, str], user_id: int) -&gt; str | None:
+    return users.get(user_id)
+
+def parse_id(raw: str | int) -&gt; int:
+    return int(raw)
+
+print(count_words([&quot;to be&quot;, &quot;or not to be&quot;]))
+user = find_user({1: &quot;Ada&quot;}, 2)
+if user is not None:          # narrows str | None to str
+    print(user.upper())
+else:
+    print(&quot;no user&quot;)
+print(parse_id(&quot;42&quot;) + parse_id(8))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;to&#x27;: 2, &#x27;be&#x27;: 2, &#x27;or&#x27;: 1, &#x27;not&#x27;: 1}
+no user
+50</pre></div>
+      <p>Checking <code>if user is not None</code> is not just good practice; type checkers understand it and know that inside the branch <code>user</code> is a <code>str</code>.</p>
+      <h2>Catching bugs with a type checker</h2>
+      <p>To get value from hints you run a checker. <strong>mypy</strong> is the long-standing standard, <strong>pyright</strong> powers VS Code's Pylance, and Astral's fast <strong>ty</strong> checker is gaining ground. Install one in your project's virtual environment and run it over your code, often in CI.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># shop.py
+def apply_discount(price: float, percent: int) -&gt; float:
+    return price * (1 - percent / 100)
+
+total = apply_discount(&quot;19.99&quot;, 10)
+label: int = &quot;sale&quot;</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>pip install mypy
+mypy shop.py</code></pre></div>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>shop.py:5: error: Argument 1 to &quot;apply_discount&quot; has incompatible type &quot;str&quot;; expected &quot;float&quot;  [arg-type]
+shop.py:6: error: Incompatible types in assignment (expression has type &quot;str&quot;, variable has type &quot;int&quot;)  [assignment]
+Found 2 errors in 1 file (checked 1 source file)</code></pre></div>
+      <p>Both bugs were found without running the program. You can add hints gradually: unannotated functions are skipped by default, so start with the most important modules.</p>
+      <h2>Generics, Callable and type aliases</h2>
+      <p>Sometimes a function works for any type but you want to say "the output has the same type as the input". Python 3.12 added a short syntax for this: a type parameter in square brackets after the function name. <code>Callable[[int], str]</code> describes a function that takes an int and returns a str, and the <code>type</code> statement creates a readable alias.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections.abc import Callable
+
+def first[T](items: list[T]) -&gt; T | None:
+    return items[0] if items else None
+
+type Handler = Callable[[str], str]
+
+def run(handler: Handler, value: str) -&gt; str:
+    return handler(value)
+
+print(first([3, 1, 2]))
+print(first([&quot;x&quot;, &quot;y&quot;]))
+print(first([]))
+print(run(str.title, &quot;hello stackcone&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3
+x
+None
+Hello Stackcone</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Hints are not validation</p><p class="learn-callout-body">Type hints never check data at runtime. If values come from users, JSON or an API, validate them (for example with <code>isinstance</code> checks or a library like Pydantic). Hints protect you from mistakes in <em>your own code</em>.</p></aside>
+      <h2>dataclasses: classes without boilerplate</h2>
+      <p>A class that mainly holds data needs an <code>__init__</code>, a readable <code>__repr__</code> and an <code>__eq__</code>. Writing those by hand is repetitive and easy to get wrong. The <code>@dataclass</code> decorator reads the annotated class attributes and generates all three for you.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from dataclasses import dataclass, field
+
+@dataclass
+class Order:
+    id: int
+    customer: str
+    items: list[str] = field(default_factory=list)
+    paid: bool = False
+
+    def add(self, item: str) -&gt; None:
+        self.items.append(item)
+
+a = Order(1, &quot;Ada&quot;)
+a.add(&quot;keyboard&quot;)
+b = Order(1, &quot;Ada&quot;, [&quot;keyboard&quot;])
+print(a)
+print(a == b)
+print(Order(2, &quot;Linus&quot;, paid=True))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Order(id=1, customer=&#x27;Ada&#x27;, items=[&#x27;keyboard&#x27;], paid=False)
+True
+Order(id=2, customer=&#x27;Linus&#x27;, items=[], paid=True)</pre></div>
+      <p>Note <code>field(default_factory=list)</code>: a mutable default like <code>[]</code> would be shared by every instance, so dataclasses refuse it and ask for a factory instead.</p>
+      <h2>Frozen, ordered and slotted dataclasses</h2>
+      <p>Options on the decorator change the generated class. <code>frozen=True</code> makes instances immutable (and hashable, so they can be dict keys or set members). <code>order=True</code> adds comparison operators based on field order. <code>slots=True</code> uses less memory per instance. <code>__post_init__</code> runs after the generated <code>__init__</code>, which is a good place for validation.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from dataclasses import dataclass, asdict, replace
+
+@dataclass(frozen=True, order=True, slots=True)
+class Version:
+    major: int
+    minor: int
+    patch: int = 0
+
+    def __post_init__(self):
+        if self.major &lt; 0:
+            raise ValueError(&quot;major must be &gt;= 0&quot;)
+
+v1 = Version(3, 12)
+v2 = Version(3, 14, 1)
+print(v1 &lt; v2, max(v1, v2))
+print(asdict(v2))
+print(replace(v1, minor=13))
+try:
+    v1.major = 4
+except Exception as err:
+    print(type(err).__name__)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True Version(major=3, minor=14, patch=1)
+{&#x27;major&#x27;: 3, &#x27;minor&#x27;: 14, &#x27;patch&#x27;: 1}
+Version(major=3, minor=13, patch=0)
+FrozenInstanceError</pre></div>
+      <h2>TypedDict and Protocol</h2>
+      <p>Two more tools from <code>typing</code> come up often. <code>TypedDict</code> describes the shape of a plain dict (useful for JSON data you do not want to convert into objects). <code>Protocol</code> describes behaviour: any object with the right methods matches, with no inheritance needed. This is "duck typing" that a type checker can verify.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from typing import TypedDict, Protocol
+
+class UserJSON(TypedDict):
+    id: int
+    email: str
+
+class Notifier(Protocol):
+    def send(self, to: str, message: str) -&gt; None: ...
+
+class EmailNotifier:
+    def send(self, to: str, message: str) -&gt; None:
+        print(f&quot;email to {to}: {message}&quot;)
+
+def welcome(user: UserJSON, notifier: Notifier) -&gt; None:
+    notifier.send(user[&quot;email&quot;], &quot;Welcome to stackcone!&quot;)
+
+welcome({&quot;id&quot;: 1, &quot;email&quot;: &quot;ada@example.com&quot;}, EmailNotifier())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>email to ada@example.com: Welcome to stackcone!</pre></div>
+      <h2>Recap</h2>
+      <ul><li>Type hints document intent and let tools like mypy, pyright or ty catch bugs before runtime.</li><li>Use built-in generics (<code>list[str]</code>), unions (<code>int | str</code>) and <code>X | None</code> for optional values.</li><li>Hints are not enforced at runtime; validate external data separately.</li><li><code>@dataclass</code> generates <code>__init__</code>, <code>__repr__</code> and <code>__eq__</code>; use <code>default_factory</code> for mutable defaults.</li><li><code>frozen</code>, <code>order</code> and <code>slots</code> options, plus <code>TypedDict</code> and <code>Protocol</code>, cover most modelling needs.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a frozen dataclass <code>Product</code> with <code>name: str</code>, <code>price: float</code> and <code>tags: tuple[str, ...] = ()</code>. Write a fully annotated function <code>cheapest(products: list[Product]) -&gt; Product | None</code> that returns the lowest-priced product or <code>None</code> for an empty list. Print the result for three products and for an empty list.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Product:
+    name: str
+    price: float
+    tags: tuple[str, ...] = ()
+
+def cheapest(products: list[Product]) -&gt; Product | None:
+    if not products:
+        return None
+    return min(products, key=lambda p: p.price)
+
+catalog = [
+    Product(&quot;mouse&quot;, 25.0, (&quot;usb&quot;,)),
+    Product(&quot;keyboard&quot;, 49.5),
+    Product(&quot;cable&quot;, 7.99, (&quot;usb&quot;, &quot;cheap&quot;)),
+]
+print(cheapest(catalog))
+print(cheapest([]))"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="python-type-hints" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/python/file-handling/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 14</span><strong>File Handling</strong><small>Read and write text files safely with context managers.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/inheritance/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/file-handling/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

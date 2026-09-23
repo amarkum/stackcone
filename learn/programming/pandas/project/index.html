@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Project: End-to-End Sales Analysis | Pandas Tutorial | stackcone</title>
+  <meta name="description" content="An end-to-end pandas sales analysis project: load raw CSV data, clean it, join lookups, then build KPIs, monthly trends, rankings and an exportable report.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/pandas/project/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/pandas/project/">
+  <meta property="og:title" content="Project: End-to-End Sales Analysis | Pandas Tutorial | stackcone">
+  <meta property="og:description" content="An end-to-end pandas sales analysis project: load raw CSV data, clean it, join lookups, then build KPIs, monthly trends, rankings and an exportable report.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Project: End-to-End Sales Analysis | Pandas Tutorial | stackcone">
+  <meta name="twitter:description" content="An end-to-end pandas sales analysis project: load raw CSV data, clean it, join lookups, then build KPIs, monthly trends, rankings and an exportable report.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/pandas/performance/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Pandas", "item": "https://stackcone.com/learn/programming/pandas/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Project: End-to-End Sales Analysis", "item": "https://stackcone.com/learn/programming/pandas/project/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Project: End-to-End Sales Analysis", "headline": "Project: End-to-End Sales Analysis", "description": "An end-to-end pandas sales analysis project: load raw CSV data, clean it, join lookups, then build KPIs, monthly trends, rankings and an exportable report.", "url": "https://stackcone.com/learn/programming/pandas/project/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT25M", "isAccessibleForFree": true, "teaches": ["Plan an analysis around concrete business questions", "Chain loading, cleaning, joining and feature steps into a repeatable pipeline", "Answer questions with groupby, pivot tables, windows and rankings", "Package results into a tidy report ready to export"], "position": 12, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Pandas Course", "url": "https://stackcone.com/learn/programming/pandas/introduction/", "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/pandas/introduction/">Pandas</a> / <span aria-current="page">Project: End-to-End Sales Analysis</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="pandas">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/pandas/introduction/">Pandas</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Pandas from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Pandas lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/introduction/" data-lesson="pandas-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">DataFrames and Series</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/io/" data-lesson="pandas-io" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/selecting/" data-lesson="pandas-selecting" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Selecting and Filtering: loc, iloc and query</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/cleaning/" data-lesson="pandas-cleaning" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Cleaning Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/transform/" data-lesson="pandas-transform" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Transforming Columns: vectorization, map and apply</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/text-categories/" data-lesson="pandas-text-categories" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Text and Categorical Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/groupby-merge/" data-lesson="pandas-groupby-merge" data-minutes="17"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Grouping, Merging and Pivots</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/reshape/" data-lesson="pandas-reshape" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Reshaping: melt, stack and pivot_table</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/time-plots/" data-lesson="pandas-time-plots" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates, Plots and Exporting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/window/" data-lesson="pandas-window" data-minutes="17"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Rolling, Expanding and Window Calculations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/performance/" data-lesson="pandas-performance" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Performance and Large Datasets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/pandas/project/" aria-current="page" data-lesson="pandas-project" data-minutes="25"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Project: End-to-End Sales Analysis</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/pandas/introduction/">Pandas</a> · Lesson 12 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/pandas/performance/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="pandas-project" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/" data-complete-on-click><span>Finish</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Project: End-to-End Sales Analysis</h1>
+          <p class="learn-summary">An end-to-end pandas sales analysis project: load raw CSV data, clean it, join lookups, then build KPIs, monthly trends, rankings and an exportable report.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>25 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/pandas/performance/">Lesson 11: Performance and Large Datasets</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Plan an analysis around concrete business questions</li><li>Chain loading, cleaning, joining and feature steps into a repeatable pipeline</li><li>Answer questions with groupby, pivot tables, windows and rankings</li><li>Package results into a tidy report ready to export</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>You now know the individual pieces of pandas. Real work is about stringing them together: raw data comes in messy, someone asks a handful of business questions, and you need answers you can trust and rerun next month. In this project you will analyze a small online store's orders from start to finish.</p>
+      <p>The dataset is tiny on purpose so every output fits on screen, but the steps are exactly what you would do with a million rows. Each code block below is self-contained so you can run it in the browser, which means the data setup repeats at the top. In a real project it would be one script or notebook.</p>
+      <h2>The questions</h2>
+      <p>Always start by writing down what you need to answer. It keeps the analysis focused and tells you which columns matter. The store manager wants to know:</p>
+      <ul><li>What were total revenue, order count and average order value?</li><li>How did revenue develop month by month, and how fast is it growing?</li><li>Which product categories and regions drive the most revenue?</li><li>Who are the top customers, and what share of revenue do they bring?</li></ul>
+      <h2>Step 1: load and inspect</h2>
+      <p>The raw export has the usual problems: prices as text with a currency symbol, inconsistent capitalization, a duplicated order, a missing quantity and a refund row. Load it with the right types for the columns that are already clean, then inspect.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+raw = &quot;&quot;&quot;order_id,date,customer,product_id,qty,price,status
+1001,2026-01-05,Ada,P1,2,$25.00,paid
+1002,2026-01-17,grace ,P2,1,$300.00,paid
+1003,2026-01-17,grace ,P2,1,$300.00,paid
+1004,2026-02-02,Linus,P3,,$8.00,paid
+1005,2026-02-14,Ada,P2,1,$300.00,paid
+1006,2026-02-20,Ken,P1,4,$25.00,refunded
+1007,2026-03-03,Margaret,P4,2,$150.00,paid
+1008,2026-03-09,Ada,P3,10,$8.00,paid
+1009,2026-03-21,Ken,P4,1,$150.00,paid
+1010,2026-03-28,Grace,P1,3,$25.00,paid
+&quot;&quot;&quot;
+orders = pd.read_csv(StringIO(raw), parse_dates=[&quot;date&quot;], dtype={&quot;order_id&quot;: &quot;string&quot;})
+print(orders.shape)
+print(orders.isna().sum()[lambda s: s &gt; 0])
+print(orders[&quot;status&quot;].value_counts())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>(10, 7)
+qty    1
+dtype: int64
+status
+paid        9
+refunded    1
+Name: count, dtype: int64</pre></div>
+      <h2>Step 2: clean with a pipeline</h2>
+      <p>Put the cleaning in a function so it is documented, testable and rerunnable. Each step fixes one problem: parse the price, normalize names, drop exact duplicate orders (same everything except the ID), fill the missing quantity and remove refunds.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+raw = &quot;&quot;&quot;order_id,date,customer,product_id,qty,price,status
+1001,2026-01-05,Ada,P1,2,$25.00,paid
+1002,2026-01-17,grace ,P2,1,$300.00,paid
+1003,2026-01-17,grace ,P2,1,$300.00,paid
+1004,2026-02-02,Linus,P3,,$8.00,paid
+1005,2026-02-14,Ada,P2,1,$300.00,paid
+1006,2026-02-20,Ken,P1,4,$25.00,refunded
+1007,2026-03-03,Margaret,P4,2,$150.00,paid
+1008,2026-03-09,Ada,P3,10,$8.00,paid
+1009,2026-03-21,Ken,P4,1,$150.00,paid
+1010,2026-03-28,Grace,P1,3,$25.00,paid
+&quot;&quot;&quot;
+orders = pd.read_csv(StringIO(raw), parse_dates=[&quot;date&quot;], dtype={&quot;order_id&quot;: &quot;string&quot;})
+
+def clean(df):
+    return (
+        df
+        .assign(
+            price=lambda d: d[&quot;price&quot;].str.replace(&quot;$&quot;, &quot;&quot;, regex=False).astype(float),
+            customer=lambda d: d[&quot;customer&quot;].str.strip().str.title(),
+            qty=lambda d: d[&quot;qty&quot;].fillna(1).astype(int),
+        )
+        .drop_duplicates(subset=[&quot;date&quot;, &quot;customer&quot;, &quot;product_id&quot;, &quot;qty&quot;, &quot;price&quot;])
+        .query(&quot;status == &#x27;paid&#x27;&quot;)
+        .drop(columns=&quot;status&quot;)
+        .reset_index(drop=True)
+    )
+
+clean_orders = clean(orders)
+print(clean_orders)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>  order_id       date  customer product_id  qty  price
+0     1001 2026-01-05       Ada         P1    2   25.0
+1     1002 2026-01-17     Grace         P2    1  300.0
+2     1004 2026-02-02     Linus         P3    1    8.0
+3     1005 2026-02-14       Ada         P2    1  300.0
+4     1007 2026-03-03  Margaret         P4    2  150.0
+5     1008 2026-03-09       Ada         P3   10    8.0
+6     1009 2026-03-21       Ken         P4    1  150.0
+7     1010 2026-03-28     Grace         P1    3   25.0</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Document your assumptions</p><p class="learn-callout-body">Filling the missing quantity with 1 and treating same-day identical orders as duplicates are business decisions, not facts. Write them down in comments or the report, and confirm with whoever owns the data. Silent assumptions are the most common reason two analysts get different numbers.</p></aside>
+      <h2>Step 3: enrich with a lookup</h2>
+      <p>The orders only have product IDs. A product table holds names and categories, and a customer table holds regions. Join them with <code>merge</code> and add the revenue and month columns every later question needs. <code>validate="many_to_one"</code> makes pandas raise an error if a lookup table accidentally has duplicate keys, which would silently double revenue.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+clean_orders = pd.DataFrame({
+    &quot;order_id&quot;: [&quot;1001&quot;, &quot;1002&quot;, &quot;1004&quot;, &quot;1005&quot;, &quot;1007&quot;, &quot;1008&quot;, &quot;1009&quot;, &quot;1010&quot;],
+    &quot;date&quot;: pd.to_datetime([&quot;2026-01-05&quot;, &quot;2026-01-17&quot;, &quot;2026-02-02&quot;, &quot;2026-02-14&quot;,
+                            &quot;2026-03-03&quot;, &quot;2026-03-09&quot;, &quot;2026-03-21&quot;, &quot;2026-03-28&quot;]),
+    &quot;customer&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Ada&quot;, &quot;Margaret&quot;, &quot;Ada&quot;, &quot;Ken&quot;, &quot;Grace&quot;],
+    &quot;product_id&quot;: [&quot;P1&quot;, &quot;P2&quot;, &quot;P3&quot;, &quot;P2&quot;, &quot;P4&quot;, &quot;P3&quot;, &quot;P4&quot;, &quot;P1&quot;],
+    &quot;qty&quot;: [2, 1, 1, 1, 2, 10, 1, 3],
+    &quot;price&quot;: [25.0, 300.0, 8.0, 300.0, 150.0, 8.0, 150.0, 25.0],
+})
+products = pd.DataFrame({
+    &quot;product_id&quot;: [&quot;P1&quot;, &quot;P2&quot;, &quot;P3&quot;, &quot;P4&quot;],
+    &quot;product&quot;: [&quot;Mouse&quot;, &quot;Desk&quot;, &quot;Cable&quot;, &quot;Chair&quot;],
+    &quot;category&quot;: [&quot;accessories&quot;, &quot;furniture&quot;, &quot;accessories&quot;, &quot;furniture&quot;],
+})
+customers = pd.DataFrame({
+    &quot;customer&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Margaret&quot;, &quot;Ken&quot;],
+    &quot;region&quot;: [&quot;EMEA&quot;, &quot;AMER&quot;, &quot;EMEA&quot;, &quot;AMER&quot;, &quot;APAC&quot;],
+})
+
+sales = (
+    clean_orders
+    .merge(products, on=&quot;product_id&quot;, how=&quot;left&quot;, validate=&quot;many_to_one&quot;)
+    .merge(customers, on=&quot;customer&quot;, how=&quot;left&quot;, validate=&quot;many_to_one&quot;)
+    .assign(
+        revenue=lambda d: d[&quot;qty&quot;] * d[&quot;price&quot;],
+        month=lambda d: d[&quot;date&quot;].dt.to_period(&quot;M&quot;),
+    )
+)
+print(sales[[&quot;order_id&quot;, &quot;customer&quot;, &quot;product&quot;, &quot;category&quot;, &quot;region&quot;, &quot;revenue&quot;, &quot;month&quot;]])
+print(&quot;unmatched:&quot;, sales[[&quot;product&quot;, &quot;region&quot;]].isna().sum().sum())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>  order_id  customer product     category region  revenue    month
+0     1001       Ada   Mouse  accessories   EMEA     50.0  2026-01
+1     1002     Grace    Desk    furniture   AMER    300.0  2026-01
+2     1004     Linus   Cable  accessories   EMEA      8.0  2026-02
+3     1005       Ada    Desk    furniture   EMEA    300.0  2026-02
+4     1007  Margaret   Chair    furniture   AMER    300.0  2026-03
+5     1008       Ada   Cable  accessories   EMEA     80.0  2026-03
+6     1009       Ken   Chair    furniture   APAC    150.0  2026-03
+7     1010     Grace   Mouse  accessories   AMER     75.0  2026-03
+unmatched: 0</pre></div>
+      <h2>Step 4: answer the questions</h2>
+      <p>With a clean, enriched table, each question is a few lines. Start with the headline KPIs, then the monthly trend with growth, then the breakdowns.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+sales = pd.DataFrame({
+    &quot;date&quot;: pd.to_datetime([&quot;2026-01-05&quot;, &quot;2026-01-17&quot;, &quot;2026-02-02&quot;, &quot;2026-02-14&quot;,
+                            &quot;2026-03-03&quot;, &quot;2026-03-09&quot;, &quot;2026-03-21&quot;, &quot;2026-03-28&quot;]),
+    &quot;customer&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Ada&quot;, &quot;Margaret&quot;, &quot;Ada&quot;, &quot;Ken&quot;, &quot;Grace&quot;],
+    &quot;category&quot;: [&quot;accessories&quot;, &quot;furniture&quot;, &quot;accessories&quot;, &quot;furniture&quot;,
+                 &quot;furniture&quot;, &quot;accessories&quot;, &quot;furniture&quot;, &quot;accessories&quot;],
+    &quot;region&quot;: [&quot;EMEA&quot;, &quot;AMER&quot;, &quot;EMEA&quot;, &quot;EMEA&quot;, &quot;AMER&quot;, &quot;EMEA&quot;, &quot;APAC&quot;, &quot;AMER&quot;],
+    &quot;revenue&quot;: [50.0, 300.0, 8.0, 300.0, 300.0, 80.0, 150.0, 75.0],
+})
+sales[&quot;month&quot;] = sales[&quot;date&quot;].dt.to_period(&quot;M&quot;)
+
+# 1. Headline KPIs
+print(f&quot;revenue: {sales[&#x27;revenue&#x27;].sum():.0f}, orders: {len(sales)}, &quot;
+      f&quot;avg order: {sales[&#x27;revenue&#x27;].mean():.2f}&quot;)
+
+# 2. Monthly trend with growth and running total
+monthly = sales.groupby(&quot;month&quot;)[&quot;revenue&quot;].sum().to_frame()
+monthly[&quot;growth_pct&quot;] = (monthly[&quot;revenue&quot;].pct_change() * 100).round(1)
+monthly[&quot;ytd&quot;] = monthly[&quot;revenue&quot;].cumsum()
+print(monthly)
+
+# 3. Category by region
+print(sales.pivot_table(index=&quot;category&quot;, columns=&quot;region&quot;, values=&quot;revenue&quot;,
+                        aggfunc=&quot;sum&quot;, fill_value=0, margins=True, margins_name=&quot;total&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>revenue: 1263, orders: 8, avg order: 157.88
+         revenue  growth_pct     ytd
+month                               
+2026-01    350.0         NaN   350.0
+2026-02    308.0       -12.0   658.0
+2026-03    605.0        96.4  1263.0
+region        AMER   APAC   EMEA   total
+category                                
+accessories   75.0    0.0  138.0   213.0
+furniture    600.0  150.0  300.0  1050.0
+total        675.0  150.0  438.0  1263.0</pre></div>
+      <p>February dipped 12% after the big January desk order, then March almost doubled thanks to two chair orders. One large order can swing a small store's month, so look at order counts alongside revenue. Furniture is fewer orders but most of the money, which is worth pointing out: a campaign on accessories would need a lot of volume to matter.</p>
+      <h2>Step 5: rank customers</h2>
+      <p>"Top customers" needs total revenue per customer, a rank and a cumulative share, which tells you how concentrated the business is.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+sales = pd.DataFrame({
+    &quot;customer&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Ada&quot;, &quot;Margaret&quot;, &quot;Ada&quot;, &quot;Ken&quot;, &quot;Grace&quot;],
+    &quot;revenue&quot;: [50.0, 300.0, 8.0, 300.0, 300.0, 80.0, 150.0, 75.0],
+})
+
+top = (
+    sales.groupby(&quot;customer&quot;)
+    .agg(revenue=(&quot;revenue&quot;, &quot;sum&quot;), orders=(&quot;revenue&quot;, &quot;size&quot;))
+    .sort_values(&quot;revenue&quot;, ascending=False)
+    .assign(
+        rank=lambda d: d[&quot;revenue&quot;].rank(ascending=False, method=&quot;min&quot;).astype(int),
+        share_pct=lambda d: (d[&quot;revenue&quot;] / d[&quot;revenue&quot;].sum() * 100).round(1),
+        cum_share_pct=lambda d: d[&quot;share_pct&quot;].cumsum().round(1),
+    )
+)
+print(top)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>          revenue  orders  rank  share_pct  cum_share_pct
+customer                                                 
+Ada         430.0       3     1       34.0           34.0
+Grace       375.0       2     2       29.7           63.7
+Margaret    300.0       1     3       23.8           87.5
+Ken         150.0       1     4       11.9           99.4
+Linus         8.0       1     5        0.6          100.0</pre></div>
+      <p>Two customers bring in nearly two thirds of revenue. On a real dataset you would check whether that concentration is a risk worth flagging.</p>
+      <h2>Step 6: package the report</h2>
+      <p>Finally, collect the answers into tidy tables with clear column names and export them. For people, an Excel workbook with one sheet per question works well. For downstream code or dashboards, write Parquet. Here we print a CSV to show the shape.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+monthly = pd.DataFrame({
+    &quot;month&quot;: [&quot;2026-01&quot;, &quot;2026-02&quot;, &quot;2026-03&quot;],
+    &quot;revenue&quot;: [350.0, 308.0, 605.0],
+})
+monthly[&quot;growth_pct&quot;] = (monthly[&quot;revenue&quot;].pct_change() * 100).round(1)
+
+buf = StringIO()
+monthly.to_csv(buf, index=False)
+print(buf.getvalue().strip())
+
+# In a real project:
+# with pd.ExcelWriter(&quot;sales_report.xlsx&quot;) as xl:
+#     monthly.to_excel(xl, sheet_name=&quot;monthly&quot;, index=False)
+#     top.to_excel(xl, sheet_name=&quot;customers&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>month,revenue,growth_pct
+2026-01,350.0,
+2026-02,308.0,-12.0
+2026-03,605.0,96.4</pre></div>
+      <h2>Recap</h2>
+      <ul><li>Start from written business questions; they decide which columns and steps matter.</li><li>Put cleaning in a function built from chained steps so it is repeatable and reviewable.</li><li>Use <code>merge</code> with <code>validate</code> to enrich data without silently duplicating rows.</li><li><code>groupby</code>, <code>pivot_table</code>, <code>pct_change</code>, <code>cumsum</code> and <code>rank</code> answer most business questions.</li><li>Record assumptions and export tidy, clearly named tables for your audience.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend the project. Using the <code>sales</code> table below, answer two new questions: (1) average order value per region, sorted from highest to lowest and rounded to 2 decimals; (2) for each customer, the date of their first order and the number of days between their first and last order.<br><code>sales = pd.DataFrame({"date": pd.to_datetime(["2026-01-05", "2026-01-17", "2026-02-02", "2026-02-14", "2026-03-03", "2026-03-09", "2026-03-21", "2026-03-28"]), "customer": ["Ada", "Grace", "Linus", "Ada", "Margaret", "Ada", "Ken", "Grace"], "region": ["EMEA", "AMER", "EMEA", "EMEA", "AMER", "EMEA", "APAC", "AMER"], "revenue": [50.0, 300.0, 8.0, 300.0, 300.0, 80.0, 150.0, 75.0]})</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import pandas as pd
+
+sales = pd.DataFrame({
+    &quot;date&quot;: pd.to_datetime([&quot;2026-01-05&quot;, &quot;2026-01-17&quot;, &quot;2026-02-02&quot;, &quot;2026-02-14&quot;,
+                            &quot;2026-03-03&quot;, &quot;2026-03-09&quot;, &quot;2026-03-21&quot;, &quot;2026-03-28&quot;]),
+    &quot;customer&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Ada&quot;, &quot;Margaret&quot;, &quot;Ada&quot;, &quot;Ken&quot;, &quot;Grace&quot;],
+    &quot;region&quot;: [&quot;EMEA&quot;, &quot;AMER&quot;, &quot;EMEA&quot;, &quot;EMEA&quot;, &quot;AMER&quot;, &quot;EMEA&quot;, &quot;APAC&quot;, &quot;AMER&quot;],
+    &quot;revenue&quot;: [50.0, 300.0, 8.0, 300.0, 300.0, 80.0, 150.0, 75.0],
+})
+
+aov = sales.groupby(&quot;region&quot;)[&quot;revenue&quot;].mean().sort_values(ascending=False).round(2)
+print(aov)
+
+life = sales.groupby(&quot;customer&quot;)[&quot;date&quot;].agg(first=&quot;min&quot;, last=&quot;max&quot;)
+life[&quot;active_days&quot;] = (life[&quot;last&quot;] - life[&quot;first&quot;]).dt.days
+print(life[[&quot;first&quot;, &quot;active_days&quot;]])"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="pandas-project" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext learn-upnext--done" href="/learn/programming/" data-complete-on-click><span class="learn-upnext-label">Last lesson</span><strong>Finish Pandas</strong><small>Mark this lesson complete and pick your next course.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/pandas/performance/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/" data-complete-on-click>Finish course</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

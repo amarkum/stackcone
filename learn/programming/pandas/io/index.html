@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet | stackcone</title>
+  <meta name="description" content="Load and save pandas DataFrames with read_csv, read_excel, read_json, read_sql and read_parquet, and control types, dates and missing values on the way in.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/pandas/io/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/pandas/io/">
+  <meta property="og:title" content="Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet | stackcone">
+  <meta property="og:description" content="Load and save pandas DataFrames with read_csv, read_excel, read_json, read_sql and read_parquet, and control types, dates and missing values on the way in.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet | stackcone">
+  <meta name="twitter:description" content="Load and save pandas DataFrames with read_csv, read_excel, read_json, read_sql and read_parquet, and control types, dates and missing values on the way in.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/pandas/introduction/">
+  <link rel="next" href="https://stackcone.com/learn/programming/pandas/selecting/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Pandas", "item": "https://stackcone.com/learn/programming/pandas/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet", "item": "https://stackcone.com/learn/programming/pandas/io/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet", "headline": "Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet", "description": "Load and save pandas DataFrames with read_csv, read_excel, read_json, read_sql and read_parquet, and control types, dates and missing values on the way in.", "url": "https://stackcone.com/learn/programming/pandas/io/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Read CSV files with the right separators, types, dates and missing-value markers", "Load JSON, including nested records, with read_json and json_normalize", "Query a SQL database straight into a DataFrame and write results back", "Choose between CSV, Excel and Parquet when saving data"], "position": 2, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Pandas Course", "url": "https://stackcone.com/learn/programming/pandas/introduction/", "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/pandas/introduction/">Pandas</a> / <span aria-current="page">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="pandas">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/pandas/introduction/">Pandas</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Pandas from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Pandas lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/introduction/" data-lesson="pandas-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">DataFrames and Series</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/pandas/io/" aria-current="page" data-lesson="pandas-io" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/selecting/" data-lesson="pandas-selecting" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Selecting and Filtering: loc, iloc and query</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/cleaning/" data-lesson="pandas-cleaning" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Cleaning Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/transform/" data-lesson="pandas-transform" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Transforming Columns: vectorization, map and apply</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/text-categories/" data-lesson="pandas-text-categories" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Text and Categorical Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/groupby-merge/" data-lesson="pandas-groupby-merge" data-minutes="17"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Grouping, Merging and Pivots</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/reshape/" data-lesson="pandas-reshape" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Reshaping: melt, stack and pivot_table</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/time-plots/" data-lesson="pandas-time-plots" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates, Plots and Exporting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/window/" data-lesson="pandas-window" data-minutes="17"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Rolling, Expanding and Window Calculations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/performance/" data-lesson="pandas-performance" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Performance and Large Datasets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/project/" data-lesson="pandas-project" data-minutes="25"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Project: End-to-End Sales Analysis</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/pandas/introduction/">Pandas</a> · Lesson 2 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/pandas/introduction/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="pandas-io" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/pandas/selecting/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</h1>
+          <p class="learn-summary">Load and save pandas DataFrames with read_csv, read_excel, read_json, read_sql and read_parquet, and control types, dates and missing values on the way in.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/pandas/introduction/">Lesson 1: DataFrames and Series</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Read CSV files with the right separators, types, dates and missing-value markers</li><li>Load JSON, including nested records, with read_json and json_normalize</li><li>Query a SQL database straight into a DataFrame and write results back</li><li>Choose between CSV, Excel and Parquet when saving data</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Almost every pandas session starts with the same line: load some data. In the first lesson you saw <code>pd.read_csv</code> in its simplest form. Real files are rarely that polite. They use semicolons instead of commas, store dates as text, write <code>N/A</code> or <code>-</code> for missing values, and contain ID columns that pandas helpfully turns into numbers (dropping the leading zeros you needed).</p>
+      <p>This lesson is about getting data <em>in</em> correctly and getting it <em>out</em> in the right format. Fixing a problem at read time is almost always cheaper than cleaning it up afterwards, because the reader already knows which column is which and can apply the rule in one pass.</p>
+      <p>All examples below use <code>io.StringIO</code>, which wraps a string so pandas can read it as if it were a file. That keeps every snippet runnable in your browser. In your own projects you simply replace <code>StringIO(...)</code> with a path such as <code>"orders.csv"</code> or a URL.</p>
+      <h2>read_csv: the options that matter</h2>
+      <p><code>read_csv</code> has dozens of parameters, but a handful solve 90% of real problems: <code>sep</code> for the delimiter, <code>dtype</code> to force column types, <code>parse_dates</code> to turn text into datetimes, <code>na_values</code> to declare extra missing markers, and <code>usecols</code> to load only what you need.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+raw = &quot;&quot;&quot;order_id;customer;zip;amount;ordered_at
+0001;Ada;02139;120.50;2026-03-01
+0002;Grace;-;N/A;2026-03-02
+0003;Linus;94105;80.00;2026-03-02
+&quot;&quot;&quot;
+
+df = pd.read_csv(
+    StringIO(raw),
+    sep=&quot;;&quot;,                          # semicolon-separated
+    dtype={&quot;order_id&quot;: &quot;string&quot;, &quot;zip&quot;: &quot;string&quot;},  # keep leading zeros
+    na_values=[&quot;-&quot;, &quot;N/A&quot;],           # extra markers for missing
+    parse_dates=[&quot;ordered_at&quot;],       # text -&gt; datetime64
+)
+print(df)
+print(df.dtypes)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>  order_id customer    zip  amount ordered_at
+0     0001      Ada  02139   120.5 2026-03-01
+1     0002    Grace   &lt;NA&gt;     NaN 2026-03-02
+2     0003    Linus  94105    80.0 2026-03-02
+order_id              string
+customer                 str
+zip                   string
+amount               float64
+ordered_at    datetime64[us]
+dtype: object</pre></div>
+      <p>Notice that <code>order_id</code> kept its leading zeros because we declared it as a string, and both <code>-</code> and <code>N/A</code> became proper missing values. Without <code>dtype</code>, pandas would read <code>0001</code> as the integer <code>1</code> and the ZIP code <code>02139</code> as <code>2139</code>, which is silently wrong.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>IDs are not numbers</p><p class="learn-callout-body">If you never do arithmetic on a column (order IDs, ZIP codes, phone numbers, SKUs), read it as <code>"string"</code>. Numeric parsing strips leading zeros and can turn long IDs into floats like <code>1.2e+15</code>.</p></aside>
+      <h2>Loading only what you need</h2>
+      <p>Big CSVs often have far more columns than you care about. <code>usecols</code> skips the rest at parse time, which saves memory and time. <code>nrows</code> reads just the first few rows, which is perfect for peeking at a huge file before committing to a full load.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+raw = &quot;&quot;&quot;id,name,email,country,signup,plan,notes
+1,Ada,ada@example.com,UK,2026-01-04,pro,likes math
+2,Grace,grace@example.com,US,2026-01-09,free,
+3,Linus,linus@example.com,FI,2026-02-11,pro,kernel
+&quot;&quot;&quot;
+
+slim = pd.read_csv(StringIO(raw), usecols=[&quot;id&quot;, &quot;country&quot;, &quot;plan&quot;])
+print(slim)
+
+peek = pd.read_csv(StringIO(raw), nrows=1)
+print(peek.shape)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>   id country  plan
+0   1      UK   pro
+1   2      US  free
+2   3      FI   pro
+(1, 7)</pre></div>
+      <h2>JSON: flat and nested</h2>
+      <p>APIs usually return JSON. If the JSON is a list of flat objects, <code>pd.read_json</code> handles it directly. Most API responses are nested, though, with objects inside objects. For those, parse the JSON with the standard library and flatten it with <code>pd.json_normalize</code>, which turns nested keys into dotted column names.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import json
+import pandas as pd
+from io import StringIO
+
+flat = &#x27;[{&quot;user&quot;: &quot;Ada&quot;, &quot;score&quot;: 91}, {&quot;user&quot;: &quot;Grace&quot;, &quot;score&quot;: 88}]&#x27;
+print(pd.read_json(StringIO(flat)))
+
+nested = &quot;&quot;&quot;[
+  {&quot;id&quot;: 1, &quot;user&quot;: {&quot;name&quot;: &quot;Ada&quot;, &quot;city&quot;: &quot;London&quot;}, &quot;tags&quot;: [&quot;admin&quot;]},
+  {&quot;id&quot;: 2, &quot;user&quot;: {&quot;name&quot;: &quot;Grace&quot;, &quot;city&quot;: &quot;NYC&quot;}, &quot;tags&quot;: []}
+]&quot;&quot;&quot;
+records = json.loads(nested)
+print(pd.json_normalize(records))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    user  score
+0    Ada     91
+1  Grace     88
+   id     tags user.name user.city
+0   1  [admin]       Ada    London
+1   2       []     Grace       NYC</pre></div>
+      <p>For JSON Lines files (one JSON object per line, common for logs and exports), use <code>pd.read_json(path, lines=True)</code>. Writing works the other way around: <code>df.to_json("out.json", orient="records", lines=True)</code>.</p>
+      <h2>SQL databases</h2>
+      <p>When data lives in a database, let the database do the filtering and pull only the result into pandas. <code>pd.read_sql</code> takes a query and a connection. For SQLite you can pass a standard <code>sqlite3</code> connection; for Postgres, MySQL and others, pass a SQLAlchemy engine created with <code>create_engine("postgresql+psycopg://...")</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import sqlite3
+import pandas as pd
+
+con = sqlite3.connect(&quot;:memory:&quot;)
+orders = pd.DataFrame({
+    &quot;customer&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Ada&quot;, &quot;Linus&quot;],
+    &quot;amount&quot;: [120.5, 99.0, 30.0, 80.0],
+})
+orders.to_sql(&quot;orders&quot;, con, index=False)   # write a table
+
+query = &quot;&quot;&quot;
+SELECT customer, SUM(amount) AS total
+FROM orders
+GROUP BY customer
+ORDER BY total DESC
+&quot;&quot;&quot;
+print(pd.read_sql(query, con))
+
+# Parameters keep user input out of the SQL string
+big = pd.read_sql(&quot;SELECT * FROM orders WHERE amount &gt; ?&quot;, con, params=(90,))
+print(big)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>  customer  total
+0      Ada  150.5
+1    Grace   99.0
+2    Linus   80.0
+  customer  amount
+0      Ada   120.5
+1    Grace    99.0</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Never build SQL with f-strings</p><p class="learn-callout-body">Pass values through <code>params</code> instead of formatting them into the query. It prevents SQL injection and handles quoting for you.</p></aside>
+      <h2>Excel and Parquet</h2>
+      <p>Excel and Parquet need extra libraries, and they work with real files, so the snippet below is a reference rather than something to run here. Install the engines once with <code>pip install openpyxl pyarrow</code>.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code># Excel (needs openpyxl)
+df = pd.read_excel(&quot;report.xlsx&quot;, sheet_name=&quot;Q1&quot;)          # one sheet
+sheets = pd.read_excel(&quot;report.xlsx&quot;, sheet_name=None)       # dict of all sheets
+df.to_excel(&quot;out.xlsx&quot;, sheet_name=&quot;summary&quot;, index=False)
+
+# Several sheets in one workbook
+with pd.ExcelWriter(&quot;out.xlsx&quot;) as writer:
+    sales.to_excel(writer, sheet_name=&quot;sales&quot;, index=False)
+    costs.to_excel(writer, sheet_name=&quot;costs&quot;, index=False)
+
+# Parquet (needs pyarrow)
+df.to_parquet(&quot;orders.parquet&quot;, index=False)
+df = pd.read_parquet(&quot;orders.parquet&quot;, columns=[&quot;customer&quot;, &quot;amount&quot;])</code></pre></div>
+      <p>Parquet is a columnar binary format. It stores the column types alongside the data, compresses well and reads much faster than CSV. If a file is only going to be read by code (yours or a teammate's), Parquet is usually the right default. Reach for Excel when a human needs to open the file, and CSV when you need maximum compatibility.</p>
+      <ul><li><strong>CSV</strong>: universal and human readable, but no types, so you re-declare dtypes and dates every time.</li><li><strong>Excel</strong>: great for business users, slow for large data, limited to about a million rows per sheet.</li><li><strong>JSON</strong>: natural for APIs and nested data, verbose on disk.</li><li><strong>Parquet</strong>: fast, compact, typed; the standard for analytics pipelines and data lakes.</li><li><strong>SQL</strong>: keep data in the database and pull only query results.</li></ul>
+      <h2>Writing data back out</h2>
+      <p>Every reader has a matching writer. The most common surprise is the extra unnamed column that appears when you round-trip a CSV: that is the index being written. Pass <code>index=False</code> unless the index carries real information.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+from io import StringIO
+
+df = pd.DataFrame({&quot;name&quot;: [&quot;Ada&quot;, &quot;Grace&quot;], &quot;score&quot;: [91.24, 88.5]})
+
+buf = StringIO()
+df.to_csv(buf, index=False, float_format=&quot;%.1f&quot;)
+print(buf.getvalue())
+
+print(df.to_json(orient=&quot;records&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name,score
+Ada,91.2
+Grace,88.5
+
+[{&quot;name&quot;:&quot;Ada&quot;,&quot;score&quot;:91.24},{&quot;name&quot;:&quot;Grace&quot;,&quot;score&quot;:88.5}]</pre></div>
+      <h2>Recap</h2>
+      <ul><li>Fix types at read time with <code>dtype</code>, <code>parse_dates</code> and <code>na_values</code> instead of cleaning later.</li><li>Read ID-like columns as strings so leading zeros survive.</li><li>Flatten nested API responses with <code>pd.json_normalize</code>.</li><li>Let SQL filter and aggregate, then <code>read_sql</code> the result, using <code>params</code> for values.</li><li>Prefer Parquet for data read by code, Excel for humans, and always consider <code>index=False</code> when writing.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">The CSV below uses <code>|</code> as a separator, marks missing prices as <code>?</code>, and has SKU codes with leading zeros. Read it so that <code>sku</code> is a string, <code>price</code> is a float with missing values as NaN, and <code>added</code> is a datetime. Then print the DataFrame and the average price.<br><code>sku|price|added</code><br><code>0042|9.99|2026-05-01</code><br><code>0107|?|2026-05-03</code><br><code>0311|24.50|2026-05-04</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import pandas as pd
+from io import StringIO
+
+raw = &quot;&quot;&quot;sku|price|added
+0042|9.99|2026-05-01
+0107|?|2026-05-03
+0311|24.50|2026-05-04
+&quot;&quot;&quot;
+df = pd.read_csv(
+    StringIO(raw),
+    sep=&quot;|&quot;,
+    dtype={&quot;sku&quot;: &quot;string&quot;},
+    na_values=[&quot;?&quot;],
+    parse_dates=[&quot;added&quot;],
+)
+print(df)
+print(round(df[&quot;price&quot;].mean(), 3))"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="pandas-io" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/pandas/selecting/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Selecting and Filtering: loc, iloc and query</strong><small>Master pandas selection with loc, iloc, boolean masks, isin, between and query, and learn how to update rows safely without chained assignment.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/pandas/introduction/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/pandas/selecting/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

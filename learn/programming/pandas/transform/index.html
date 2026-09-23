@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Transforming Columns: vectorization, map and apply | stackcone</title>
+  <meta name="description" content="Transform pandas columns the fast way: vectorized math, np.where and np.select, map for lookups, assign for chaining, and apply only when you must.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/pandas/transform/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/pandas/transform/">
+  <meta property="og:title" content="Transforming Columns: vectorization, map and apply | stackcone">
+  <meta property="og:description" content="Transform pandas columns the fast way: vectorized math, np.where and np.select, map for lookups, assign for chaining, and apply only when you must.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Transforming Columns: vectorization, map and apply | stackcone">
+  <meta name="twitter:description" content="Transform pandas columns the fast way: vectorized math, np.where and np.select, map for lookups, assign for chaining, and apply only when you must.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/pandas/cleaning/">
+  <link rel="next" href="https://stackcone.com/learn/programming/pandas/text-categories/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Pandas", "item": "https://stackcone.com/learn/programming/pandas/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Transforming Columns: vectorization, map and apply", "item": "https://stackcone.com/learn/programming/pandas/transform/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Transforming Columns: vectorization, map and apply", "headline": "Transforming Columns: vectorization, map and apply", "description": "Transform pandas columns the fast way: vectorized math, np.where and np.select, map for lookups, assign for chaining, and apply only when you must.", "url": "https://stackcone.com/learn/programming/pandas/transform/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Explain why vectorized operations beat Python loops", "Build conditional columns with np.where, np.select and pd.cut", "Use map for lookups and assign for readable chains", "Know when apply is the right tool and when it is a trap"], "position": 5, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Pandas Course", "url": "https://stackcone.com/learn/programming/pandas/introduction/", "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/pandas/introduction/">Pandas</a> / <span aria-current="page">Transforming Columns: vectorization, map and apply</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="pandas">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/pandas/introduction/">Pandas</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Pandas from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Pandas lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/introduction/" data-lesson="pandas-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">DataFrames and Series</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/io/" data-lesson="pandas-io" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/selecting/" data-lesson="pandas-selecting" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Selecting and Filtering: loc, iloc and query</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/cleaning/" data-lesson="pandas-cleaning" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Cleaning Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/pandas/transform/" aria-current="page" data-lesson="pandas-transform" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Transforming Columns: vectorization, map and apply</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/text-categories/" data-lesson="pandas-text-categories" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Text and Categorical Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/groupby-merge/" data-lesson="pandas-groupby-merge" data-minutes="17"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Grouping, Merging and Pivots</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/reshape/" data-lesson="pandas-reshape" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Reshaping: melt, stack and pivot_table</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/time-plots/" data-lesson="pandas-time-plots" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates, Plots and Exporting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/window/" data-lesson="pandas-window" data-minutes="17"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Rolling, Expanding and Window Calculations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/performance/" data-lesson="pandas-performance" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Performance and Large Datasets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/project/" data-lesson="pandas-project" data-minutes="25"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Project: End-to-End Sales Analysis</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/pandas/introduction/">Pandas</a> · Lesson 5 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/pandas/cleaning/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="pandas-transform" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/pandas/text-categories/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Transforming Columns: vectorization, map and apply</h1>
+          <p class="learn-summary">Transform pandas columns the fast way: vectorized math, np.where and np.select, map for lookups, assign for chaining, and apply only when you must.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/pandas/cleaning/">Lesson 4: Cleaning Data</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain why vectorized operations beat Python loops</li><li>Build conditional columns with np.where, np.select and pd.cut</li><li>Use map for lookups and assign for readable chains</li><li>Know when apply is the right tool and when it is a trap</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Most analysis work is deriving new columns: a total from price and quantity, a tier from a score, a region from a country code. pandas gives you several ways to do this, and they are not equal. Some run in optimized C code over the whole column at once; others quietly fall back to a Python loop that can be a hundred times slower.</p>
+      <p>This lesson ranks the options from fastest and most idiomatic to slowest, so you reach for the right one first. The rule of thumb: <strong>operate on whole columns, not on individual values</strong>.</p>
+      <h2>Why vectorization wins</h2>
+      <p>A Python <code>for</code> loop handles one value at a time, checking types and creating objects on every step. A vectorized expression like <code>df["price"] * df["qty"]</code> hands both columns to NumPy, which multiplies them in a tight compiled loop. The code is also shorter and says what you mean.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+orders = pd.DataFrame({
+    &quot;item&quot;: [&quot;mouse&quot;, &quot;desk&quot;, &quot;cable&quot;, &quot;chair&quot;],
+    &quot;price&quot;: [25.0, 300.0, 8.0, 150.0],
+    &quot;qty&quot;: [2, 1, 5, 2],
+})
+
+orders[&quot;total&quot;] = orders[&quot;price&quot;] * orders[&quot;qty&quot;]
+orders[&quot;total_with_tax&quot;] = (orders[&quot;total&quot;] * 1.2).round(2)
+orders[&quot;share&quot;] = (orders[&quot;total&quot;] / orders[&quot;total&quot;].sum()).round(3)
+print(orders)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    item  price  qty  total  total_with_tax  share
+0  mouse   25.0    2   50.0            60.0  0.072
+1   desk  300.0    1  300.0           360.0  0.435
+2  cable    8.0    5   40.0            48.0  0.058
+3  chair  150.0    2  300.0           360.0  0.435</pre></div>
+      <p>Arithmetic, comparisons, <code>.round()</code>, <code>.abs()</code>, <code>.clip()</code>, the <code>.str</code> and <code>.dt</code> accessors and every NumPy function (<code>np.log</code>, <code>np.sqrt</code>) are all vectorized. If you can express a transformation with them, do.</p>
+      <h2>Conditional columns: np.where and np.select</h2>
+      <p>"If this, then that, otherwise something else" is the most common reason people reach for a loop. You do not need one. <code>np.where(condition, a, b)</code> handles two outcomes. For several, <code>np.select</code> takes a list of conditions and a list of choices, and picks the first condition that is true for each row.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import numpy as np
+import pandas as pd
+
+orders = pd.DataFrame({
+    &quot;item&quot;: [&quot;mouse&quot;, &quot;desk&quot;, &quot;cable&quot;, &quot;chair&quot;],
+    &quot;total&quot;: [50.0, 300.0, 40.0, 300.0],
+})
+
+orders[&quot;shipping&quot;] = np.where(orders[&quot;total&quot;] &gt;= 100, 0, 7.5)
+
+conditions = [
+    orders[&quot;total&quot;] &gt;= 250,
+    orders[&quot;total&quot;] &gt;= 50,
+]
+choices = [&quot;large&quot;, &quot;medium&quot;]
+orders[&quot;size&quot;] = np.select(conditions, choices, default=&quot;small&quot;)
+print(orders)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    item  total  shipping    size
+0  mouse   50.0       7.5  medium
+1   desk  300.0       0.0   large
+2  cable   40.0       7.5   small
+3  chair  300.0       0.0   large</pre></div>
+      <p>For numeric ranges, <code>pd.cut</code> is even clearer: give it bin edges and labels. Note that bins are right-inclusive by default, so <code>(0, 50]</code> includes 50.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+scores = pd.Series([35, 50, 72, 88, 99], name=&quot;score&quot;)
+grades = pd.cut(scores, bins=[0, 50, 75, 90, 100], labels=[&quot;F&quot;, &quot;C&quot;, &quot;B&quot;, &quot;A&quot;])
+print(pd.DataFrame({&quot;score&quot;: scores, &quot;grade&quot;: grades}))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>   score grade
+0     35     F
+1     50     F
+2     72     C
+3     88     B
+4     99     A</pre></div>
+      <h2>map: lookups and one-to-one replacements</h2>
+      <p><code>Series.map</code> takes a dictionary (or another Series) and replaces each value with its match. It is the natural way to translate codes into labels or to attach a value from a small lookup table. Anything not found in the dictionary becomes missing, which is a handy way to spot unexpected values.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+users = pd.DataFrame({&quot;name&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Ken&quot;],
+                      &quot;country&quot;: [&quot;GB&quot;, &quot;US&quot;, &quot;FI&quot;, &quot;BR&quot;]})
+
+region = {&quot;GB&quot;: &quot;EMEA&quot;, &quot;FI&quot;: &quot;EMEA&quot;, &quot;US&quot;: &quot;AMER&quot;}
+users[&quot;region&quot;] = users[&quot;country&quot;].map(region)
+print(users)
+print(users[&quot;region&quot;].isna().sum(), &quot;unmapped&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    name country region
+0    Ada      GB   EMEA
+1  Grace      US   AMER
+2  Linus      FI   EMEA
+3    Ken      BR    NaN
+1 unmapped</pre></div>
+      <p>If you want unknown values to stay as they were, use <code>.replace(region)</code> instead, or fill afterwards with <code>.map(region).fillna("OTHER")</code>. For lookups against a larger table with several columns, a <code>merge</code> (covered in the grouping lesson) is the better tool.</p>
+      <h2>assign: transformations you can chain</h2>
+      <p><code>df.assign()</code> returns a new DataFrame with extra columns, so it fits into method chains. Passing a <code>lambda</code> lets a new column refer to one created earlier in the same call.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+orders = pd.DataFrame({&quot;price&quot;: [25.0, 300.0, 8.0], &quot;qty&quot;: [2, 1, 5]})
+
+result = (
+    orders
+    .assign(
+        total=lambda d: d[&quot;price&quot;] * d[&quot;qty&quot;],
+        is_big=lambda d: d[&quot;total&quot;] &gt; 45,
+    )
+    .sort_values(&quot;total&quot;, ascending=False)
+)
+print(result)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>   price  qty  total  is_big
+1  300.0    1  300.0    True
+0   25.0    2   50.0    True
+2    8.0    5   40.0   False</pre></div>
+      <h2>apply: the flexible last resort</h2>
+      <p><code>Series.apply(func)</code> calls a Python function on every value, and <code>df.apply(func, axis=1)</code> calls it on every row. That flexibility is useful when the logic truly cannot be vectorized, for example calling a parser from another library. But it is a Python loop in disguise, and on large data it is slow.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import time
+import numpy as np
+import pandas as pd
+
+df = pd.DataFrame({&quot;price&quot;: np.arange(200_000) % 500 + 1.0,
+                   &quot;qty&quot;: np.arange(200_000) % 7 + 1})
+
+start = time.perf_counter()
+slow = df.apply(lambda row: row[&quot;price&quot;] * row[&quot;qty&quot;], axis=1)
+t_apply = time.perf_counter() - start
+
+start = time.perf_counter()
+fast = df[&quot;price&quot;] * df[&quot;qty&quot;]
+t_vec = time.perf_counter() - start
+
+print(&quot;same result:&quot;, slow.equals(fast))
+print(&quot;vectorized is faster:&quot;, t_vec &lt; t_apply)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>same result: True
+vectorized is faster: True</pre></div>
+      <p>On a typical laptop the row-wise <code>apply</code> above takes around a second while the vectorized version takes about a millisecond. The exact numbers vary by machine, but the gap is usually two or three orders of magnitude.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Reach for apply last</p><p class="learn-callout-body">Before writing <code>apply(..., axis=1)</code>, ask: can I do this with arithmetic, <code>np.where</code>/<code>np.select</code>, <code>.str</code>/<code>.dt</code> methods, <code>map</code> or a <code>merge</code>? The answer is yes far more often than it seems.</p></aside>
+      <p>A good use of <code>apply</code> is on a <em>small</em> result, such as a grouped summary with a few dozen rows, or on a column of values that need a function from another library. Keep it off the hot path of million-row tables.</p>
+      <h2>Recap</h2>
+      <ul><li>Vectorized column expressions run in compiled code and are the default choice.</li><li>Use <code>np.where</code> for two outcomes, <code>np.select</code> for several, and <code>pd.cut</code> for numeric bins.</li><li><code>map</code> translates values with a dictionary; unmatched values become missing.</li><li><code>assign</code> with lambdas keeps multi-step transformations readable and chainable.</li><li><code>apply</code> is a Python loop; use it for small data or logic that truly cannot be vectorized.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given the DataFrame below, add three columns without using <code>apply</code> or a loop: <code>revenue</code> (price times units), <code>tier</code> which is <code>"gold"</code> when revenue is at least 1000, <code>"silver"</code> when at least 300, otherwise <code>"bronze"</code>, and <code>currency</code> mapped from <code>market</code> using <code>{"US": "USD", "IN": "INR", "DE": "EUR"}</code>. Print the result.<br><code>sales = pd.DataFrame({"market": ["US", "IN", "DE", "US"], "price": [20.0, 5.0, 80.0, 100.0], "units": [60, 40, 5, 12]})</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import numpy as np
+import pandas as pd
+
+sales = pd.DataFrame({
+    &quot;market&quot;: [&quot;US&quot;, &quot;IN&quot;, &quot;DE&quot;, &quot;US&quot;],
+    &quot;price&quot;: [20.0, 5.0, 80.0, 100.0],
+    &quot;units&quot;: [60, 40, 5, 12],
+})
+
+sales[&quot;revenue&quot;] = sales[&quot;price&quot;] * sales[&quot;units&quot;]
+sales[&quot;tier&quot;] = np.select(
+    [sales[&quot;revenue&quot;] &gt;= 1000, sales[&quot;revenue&quot;] &gt;= 300],
+    [&quot;gold&quot;, &quot;silver&quot;],
+    default=&quot;bronze&quot;,
+)
+sales[&quot;currency&quot;] = sales[&quot;market&quot;].map({&quot;US&quot;: &quot;USD&quot;, &quot;IN&quot;: &quot;INR&quot;, &quot;DE&quot;: &quot;EUR&quot;})
+print(sales)"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="pandas-transform" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/pandas/text-categories/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 6</span><strong>Text and Categorical Data</strong><small>Work with text in pandas using .str methods, regex extract and split, then save memory and set sort order with the category dtype and ordered categories.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/pandas/cleaning/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/pandas/text-categories/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

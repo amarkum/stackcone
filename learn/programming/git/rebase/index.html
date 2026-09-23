@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Rebase and a Clean History | Git &amp; Command Line | stackcone</title>
+  <meta name="description" content="Learn git rebase and interactive rebase: update a branch onto main, squash and reword commits with fixup, and follow the golden rule of rebasing safely.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/git/rebase/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/git/rebase/">
+  <meta property="og:title" content="Rebase and a Clean History | Git &amp; Command Line | stackcone">
+  <meta property="og:description" content="Learn git rebase and interactive rebase: update a branch onto main, squash and reword commits with fixup, and follow the golden rule of rebasing safely.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Rebase and a Clean History | Git &amp; Command Line | stackcone">
+  <meta name="twitter:description" content="Learn git rebase and interactive rebase: update a branch onto main, squash and reword commits with fixup, and follow the golden rule of rebasing safely.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/git/merge-conflicts/">
+  <link rel="next" href="https://stackcone.com/learn/programming/git/remote-github/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Git & Command Line", "item": "https://stackcone.com/learn/programming/git/command-line/"}, {"@type": "ListItem", "position": 4, "name": "Rebase and a Clean History", "item": "https://stackcone.com/learn/programming/git/rebase/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Rebase and a Clean History", "headline": "Rebase and a Clean History", "description": "Learn git rebase and interactive rebase: update a branch onto main, squash and reword commits with fixup, and follow the golden rule of rebasing safely.", "url": "https://stackcone.com/learn/programming/git/rebase/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Explain what rebase does to commits", "Rebase a feature branch onto main", "Squash, reword and reorder with rebase -i", "Know when rebasing is unsafe"], "position": 7, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Git & Command Line Course", "url": "https://stackcone.com/learn/programming/git/command-line/", "description": "Move around the terminal and track work with Git branches and pull requests.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> / <span aria-current="page">Rebase and a Clean History</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="git">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Git &amp; Command Line from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Git &amp; Command Line lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/git/command-line/" data-lesson="git-command-line" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Command Line Essentials</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/shell-scripting/" data-lesson="git-shell-scripting" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Pipes, Redirection and Shell Scripts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/introduction/" data-lesson="git-introduction" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Git Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/config-ignore/" data-lesson="git-config-ignore" data-minutes="14"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Config, .gitignore and Aliases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/branching-merging/" data-lesson="git-branching-merging" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Branching and Merging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/merge-conflicts/" data-lesson="git-merge-conflicts" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Resolving Merge Conflicts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/git/rebase/" aria-current="page" data-lesson="git-rebase" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rebase and a Clean History</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/remote-github/" data-lesson="git-remote-github" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Remotes, GitHub and Pull Requests</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/undo-workflows/" data-lesson="git-undo-workflows" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Undoing Things and Team Workflows</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/stash-tags/" data-lesson="git-stash-tags" data-minutes="14"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Stash, Tags and Releases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/advanced-recovery/" data-lesson="git-advanced-recovery" data-minutes="16"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Cherry-pick, Bisect and Reflog</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/github-actions/" data-lesson="git-github-actions" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">CI with GitHub Actions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> · Lesson 7 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/git/merge-conflicts/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="git-rebase" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/git/remote-github/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Rebase and a Clean History</h1>
+          <p class="learn-summary">Learn git rebase and interactive rebase: update a branch onto main, squash and reword commits with fixup, and follow the golden rule of rebasing safely.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/git/merge-conflicts/">Lesson 6: Resolving Merge Conflicts</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain what rebase does to commits</li><li>Rebase a feature branch onto main</li><li>Squash, reword and reorder with rebase -i</li><li>Know when rebasing is unsafe</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Merging keeps every commit exactly as it happened, including "fix typo" and "oops" commits and a merge commit every time you sync with <code>main</code>. Rebase is the other tool: it rewrites your branch so it looks as if you started from the latest <code>main</code> and made tidy, deliberate commits. Reviewers love it; used carelessly it confuses teammates. This lesson shows both sides.</p>
+      <h2>What rebase actually does</h2>
+      <p><code>git rebase main</code> takes the commits that are on your branch but not on <code>main</code>, sets them aside, moves your branch to the tip of <code>main</code>, and then replays each commit one by one on top. The changes are the same, but every replayed commit gets a <strong>new hash</strong>, because its parent changed. That is the key fact behind every rebase rule.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Before:                     After git rebase main:
+
+      A---B---C  feature                    A&#x27;--B&#x27;--C&#x27;  feature
+     /                                     /
+D---E---F  main              D---E---F  main</code></pre></div>
+      <h2>Updating a feature branch</h2>
+      <p>Our <code>feature</code> branch has three commits, and meanwhile someone pushed "Update footer" to <code>main</code>:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git switch feature
+git rebase main
+git log --oneline --graph --all</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Rebasing (1/3)Rebasing (2/3)Rebasing (3/3)Successfully rebased and updated refs/heads/feature.
+* aea1c3e (HEAD -&gt; feature) Style search box
+* 85d153e Fix typo
+* 473b67a Add search box
+* d72d1c1 (main) Update footer
+* 49e968f Initial commit</pre></div>
+      <p>A straight line, no merge commit. When this branch is merged, it can fast-forward. In practice most people fetch first: <code>git fetch</code> then <code>git rebase origin/main</code>, or simply <code>git pull --rebase</code>.</p>
+      <h2>Conflicts during a rebase</h2>
+      <p>Because commits are replayed one at a time, you might resolve a conflict per commit. The loop is always the same:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code># Git stops: CONFLICT in search.js
+# ...edit the file, remove markers...
+git add search.js
+git rebase --continue      # replay the next commit
+# or
+git rebase --skip          # drop this commit entirely
+git rebase --abort         # give up, branch goes back to how it was</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>ours and theirs flip</p><p class="learn-callout-body">During a rebase, <code>HEAD</code> is the branch you are rebasing <em>onto</em>, so conflict markers labelled HEAD show main's code, and the other side is your commit. It feels backwards the first time; just read the content, not the labels.</p></aside>
+      <h2>Interactive rebase: edit your own history</h2>
+      <p><code>git rebase -i</code> opens a to-do list of your commits in your editor. You change the word at the start of each line to tell Git what to do:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git rebase -i main      # or: git rebase -i HEAD~3</code></pre></div>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>pick 473b67a Add search box
+pick 85d153e Fix typo
+pick aea1c3e Style search box
+
+# Commands:
+# p, pick   = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit   = use commit, but stop for amending
+# s, squash = meld into previous commit, combine messages
+# f, fixup  = meld into previous commit, discard this message
+# d, drop   = remove commit</code></pre></div>
+      <p>"Fix typo" is noise. Change its <code>pick</code> to <code>fixup</code>, save and close the editor:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>pick 473b67a Add search box
+fixup 85d153e Fix typo
+pick aea1c3e Style search box</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Rebasing (2/3)Rebasing (3/3)Successfully rebased and updated refs/heads/feature.
+* 6cf7fab (HEAD -&gt; feature) Style search box
+* 6f97ce0 Add search box
+* d72d1c1 (main) Update footer
+* 49e968f Initial commit</pre></div>
+      <p>Two clean commits, each one meaningful on its own. You can also reorder lines to reorder commits, or delete a line to drop a commit.</p>
+      <h2>fixup commits and autosquash</h2>
+      <p>Even better: when you notice a mistake later, create the fix already labelled for its target, and let Git arrange the to-do list for you:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git commit --fixup 473b67a         # message: &quot;fixup! Add search box&quot;
+git rebase -i --autosquash main    # the fixup line is pre-placed
+
+git config --global rebase.autoSquash true   # make it the default</code></pre></div>
+      <h2>The golden rule</h2>
+      <p><strong>Never rebase commits that other people have based work on.</strong> Rebasing creates new commits and abandons the old ones. If a teammate already pulled the old ones, their history and yours now disagree, and they get duplicated commits and painful conflicts.</p>
+      <ul><li>Rebasing your own local, unpushed branch: always fine.</li><li>Rebasing your own pushed feature branch that nobody else uses: fine, then push with <code>git push --force-with-lease</code>.</li><li>Rebasing <code>main</code> or any shared branch: don't.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Use --force-with-lease, never plain --force</p><p class="learn-callout-body">After a rebase, a normal push is rejected because history changed. <code>--force-with-lease</code> overwrites the remote only if it still matches what you last fetched, so you cannot silently erase a teammate's new commit. Plain <code>--force</code> has no such check.</p></aside>
+      <h2>Merge or rebase?</h2>
+      <p>Both are valid, and many teams combine them: rebase locally to tidy and update your branch, then merge the pull request (often with GitHub's <em>Squash and merge</em> or <em>Rebase and merge</em> button). Merge commits are honest about what happened; rebased history is easier to read and to <code>git bisect</code>. Follow whatever your team has agreed, and if something goes wrong mid-rebase, <code>git reflog</code> still has your original commits.</p>
+      <h2>Recap</h2>
+      <ul><li>Rebase replays your commits on a new base; every replayed commit gets a new hash.</li><li><code>git rebase main</code> (or <code>pull --rebase</code>) keeps a feature branch current without merge commits.</li><li><code>rebase -i</code> lets you squash, fixup, reword, reorder and drop commits.</li><li><code>--continue</code>, <code>--skip</code> and <code>--abort</code> control a paused rebase.</li><li>Only rewrite history nobody else depends on, and push it with <code>--force-with-lease</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Your branch <code>login</code> has four commits: "Add login form", "wip", "Add validation", "fix validation typo". Write the interactive rebase to-do list (against <code>main</code>) that leaves two commits, "Add login form" and "Add validation", and the command to push the rewritten branch safely.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="git switch login
+git rebase -i main
+
+# In the editor, change the list to:
+# pick  1a2b3c4 Add login form
+# fixup 2b3c4d5 wip
+# pick  3c4d5e6 Add validation
+# fixup 4d5e6f7 fix validation typo
+
+git log --oneline main..login   # two commits left
+git push --force-with-lease"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="git-rebase" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/git/remote-github/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 8</span><strong>Remotes, GitHub and Pull Requests</strong><small>Push, pull, fork and review code with pull requests.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/git/merge-conflicts/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/git/remote-github/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

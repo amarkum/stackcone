@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Dynamic Programming Patterns | Algorithms Tutorial | stackcone</title>
+  <meta name="description" content="Learn the dynamic programming patterns that solve most problems: unbounded knapsack, longest increasing subsequence, interval DP and grid paths in Python.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/dp-patterns/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/dp-patterns/">
+  <meta property="og:title" content="Dynamic Programming Patterns | Algorithms Tutorial | stackcone">
+  <meta property="og:description" content="Learn the dynamic programming patterns that solve most problems: unbounded knapsack, longest increasing subsequence, interval DP and grid paths in Python.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Dynamic Programming Patterns | Algorithms Tutorial | stackcone">
+  <meta name="twitter:description" content="Learn the dynamic programming patterns that solve most problems: unbounded knapsack, longest increasing subsequence, interval DP and grid paths in Python.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/dynamic-programming/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/algorithms/bfs-dfs/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "Dynamic Programming Patterns", "item": "https://stackcone.com/learn/ds-algo/algorithms/dp-patterns/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Dynamic Programming Patterns", "headline": "Dynamic Programming Patterns", "description": "Learn the dynamic programming patterns that solve most problems: unbounded knapsack, longest increasing subsequence, interval DP and grid paths in Python.", "url": "https://stackcone.com/learn/ds-algo/algorithms/dp-patterns/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT22M", "isAccessibleForFree": true, "teaches": ["Recognise the four most common DP problem families", "Tell 0/1 knapsack from unbounded knapsack by loop direction", "Solve LIS in O(n log n) with binary search", "Write interval DP and grid DP tables and reduce their memory"], "position": 10, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">Dynamic Programming Patterns</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/two-pointers/" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/divide-conquer/" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/dp-patterns/" aria-current="page" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/shortest-paths/" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/string-matching/" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/interview-strategy/" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 10 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/dynamic-programming/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-dp-patterns" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/algorithms/bfs-dfs/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Dynamic Programming Patterns</h1>
+          <p class="learn-summary">Learn the dynamic programming patterns that solve most problems: unbounded knapsack, longest increasing subsequence, interval DP and grid paths in Python.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>22 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/dynamic-programming/">Lesson 9: Dynamic Programming</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Recognise the four most common DP problem families</li><li>Tell 0/1 knapsack from unbounded knapsack by loop direction</li><li>Solve LIS in O(n log n) with binary search</li><li>Write interval DP and grid DP tables and reduce their memory</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>The <a href="/learn/ds-algo/algorithms/dynamic-programming/">Dynamic Programming</a> lesson taught the recipe: define a state, write the transition, set base cases, fill in the right order. It applied it to stairs, coin change, 0/1 knapsack and edit distance. The good news is that most DP problems you will meet are variations on a handful of <strong>patterns</strong>. Once you recognise the family, the state and transition almost write themselves.</p>
+      <p>This lesson covers four families: <strong>knapsack</strong> (choose items under a budget), <strong>longest increasing subsequence</strong> (best chain in a sequence), <strong>interval DP</strong> (best way to split a range) and <strong>grid DP</strong> (paths through a 2D board). For each one we state the dp meaning in one sentence, because that sentence is 80% of the work.</p>
+      <h2>Pattern 1: unbounded knapsack</h2>
+      <p>In 0/1 knapsack each item is used at most once, which is why the earlier lesson looped the capacity <em>downward</em>. If each item can be used any number of times (like buying cloud instances of various sizes), loop the capacity <em>upward</em>: then <code>dp[w - weight]</code> may already include the same item, which is exactly what we want.</p>
+      <p><strong>dp[w]</strong> = the best value achievable with capacity exactly up to w.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def knapsack_01(items, cap):
+    dp = [0] * (cap + 1)
+    for weight, value in items:
+        for w in range(cap, weight - 1, -1):     # downward: each item once
+            dp[w] = max(dp[w], dp[w - weight] + value)
+    return dp[cap]
+
+def knapsack_unbounded(items, cap):
+    dp = [0] * (cap + 1)
+    for weight, value in items:
+        for w in range(weight, cap + 1):         # upward: reuse allowed
+            dp[w] = max(dp[w], dp[w - weight] + value)
+    return dp[cap]
+
+servers = [(3, 50), (4, 70), (5, 80)]     # (cpu units, requests per sec)
+print(knapsack_01(servers, 10), knapsack_unbounded(servers, 10))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>150 170</pre></div>
+      <p>With a 10-unit budget, 0/1 can only pick distinct servers (4 + 5 gives 150), while unbounded can take the 3-unit and 4-unit servers more than once (3 + 3 + 4 gives 170). <strong>Both are O(n * cap) time and O(cap) space.</strong> The same table, with <code>+</code> instead of <code>max</code>, counts combinations, as in "how many ways to make change".</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def count_ways(coins, amount):
+    dp = [1] + [0] * amount          # one way to make 0: take nothing
+    for c in coins:                  # coins outer loop = combinations
+        for a in range(c, amount + 1):
+            dp[a] += dp[a - c]
+    return dp[amount]
+
+print(count_ways([1, 2, 5], 5), count_ways([2, 5, 3, 6], 10))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4 5</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Loop order changes the answer</p><p class="learn-callout-body">In <code>count_ways</code>, putting coins in the outer loop counts <em>combinations</em> (1+2+2 and 2+1+2 are the same). Swapping the loops (amount outer, coins inner) counts <em>permutations</em>, where order matters. Both are valid problems; make sure you know which one you are solving.</p></aside>
+      <h2>Pattern 2: longest increasing subsequence</h2>
+      <p>Given daily active users over time, what is the longest stretch of days (not necessarily consecutive) where the numbers strictly grow? A <em>subsequence</em> keeps order but may skip elements. <strong>dp[i]</strong> = the length of the longest increasing subsequence that <em>ends at index i</em>. To compute it, look at every earlier j with a smaller value and extend the best one.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def lis_quadratic(nums):
+    dp = [1] * len(nums)
+    for i in range(len(nums)):
+        for j in range(i):
+            if nums[j] &lt; nums[i]:
+                dp[i] = max(dp[i], dp[j] + 1)
+    return max(dp, default=0)
+
+users = [10, 9, 2, 5, 3, 7, 101, 18]
+print(lis_quadratic(users))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4</pre></div>
+      <p>That is O(n<sup>2</sup>). A cleverer version keeps <code>tails[k]</code> = the smallest possible last value of an increasing subsequence of length k + 1. That list is always sorted, so each new number finds its place with <a href="/learn/ds-algo/algorithms/binary-search-patterns/">binary search</a>: it either extends the longest run or replaces a tail with something smaller (keeping future options open).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+users = [10, 9, 2, 5, 3, 7, 101, 18]
+
+# new code
+from bisect import bisect_left
+
+def lis_fast(nums):
+    tails = []
+    for x in nums:
+        i = bisect_left(tails, x)
+        if i == len(tails):
+            tails.append(x)          # extends the longest subsequence
+        else:
+            tails[i] = x             # better (smaller) tail for length i+1
+    return len(tails)
+
+print(lis_fast(users))
+print(lis_fast([3, 3, 3]), lis_fast(list(range(1000))))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4
+1 1000</pre></div>
+      <p><strong>Time O(n log n), space O(n).</strong> Note that <code>tails</code> is not itself a valid subsequence; only its length is meaningful. Use <code>bisect_right</code> instead if you want non-decreasing (allowing equal values). Many problems reduce to LIS: stacking boxes, nesting envelopes (sort by one dimension, LIS on the other) and scheduling chains.</p>
+      <h2>Pattern 3: interval DP</h2>
+      <p>Some problems ask for the best way to process a range <code>[i, j]</code>, where the answer depends on how you split it. <strong>dp[i][j]</strong> = the answer for the sub-range from i to j. You fill it by increasing length, so shorter ranges are ready when longer ones need them. The classic example is the longest palindromic subsequence: the characters you can keep (in order) that read the same backwards.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def longest_palindrome_subseq(s):
+    n = len(s)
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1                          # length-1 ranges
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][n - 1]
+
+for word in [&quot;bbbab&quot;, &quot;stackcone&quot;, &quot;racecar&quot;]:
+    print(word, longest_palindrome_subseq(word))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>bbbab 4
+stackcone 3
+racecar 7</pre></div>
+      <p><strong>Time O(n<sup>2</sup>), space O(n<sup>2</sup>).</strong> Harder interval problems (matrix chain multiplication, burst balloons, optimal merge of files) add an inner loop over a split point k in <code>[i, j]</code>, making them O(n<sup>3</sup>). Here is merging adjacent files where each merge costs the combined size:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from itertools import accumulate
+
+def min_merge_cost(sizes):
+    n = len(sizes)
+    prefix = [0] + list(accumulate(sizes))
+    dp = [[0] * n for _ in range(n)]
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            dp[i][j] = min(dp[i][k] + dp[k + 1][j] for k in range(i, j))
+            dp[i][j] += prefix[j + 1] - prefix[i]    # cost of the final merge
+    return dp[0][n - 1]
+
+print(min_merge_cost([40, 10, 30, 20]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>200</pre></div>
+      <h2>Pattern 4: grid DP</h2>
+      <p>A robot moves only right or down across a grid; how many routes reach the bottom-right corner, or what is the cheapest one? <strong>dp[r][c]</strong> = the answer for reaching cell (r, c). Each cell depends only on the cell above and the cell to the left.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def min_path_cost(grid):
+    rows, cols = len(grid), len(grid[0])
+    dp = [[0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            if r == 0 and c == 0:
+                dp[r][c] = grid[0][0]
+            else:
+                up = dp[r - 1][c] if r &gt; 0 else float(&quot;inf&quot;)
+                left = dp[r][c - 1] if c &gt; 0 else float(&quot;inf&quot;)
+                dp[r][c] = grid[r][c] + min(up, left)
+    return dp[-1][-1]
+
+costs = [[1, 3, 1],
+         [1, 5, 1],
+         [4, 2, 1]]
+print(min_path_cost(costs))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>7</pre></div>
+      <p>Because each row only needs the previous row, you can keep a single 1D list and update it in place. That drops space from O(rows * cols) to O(cols), a trick that applies to most 2D DP tables, including LCS and edit distance.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def unique_paths(grid):
+    # grid of &quot;.&quot; (open) and &quot;#&quot; (blocked); count right/down paths
+    cols = len(grid[0])
+    row = [0] * cols
+    row[0] = 1
+    for line in grid:
+        for c in range(cols):
+            if line[c] == &quot;#&quot;:
+                row[c] = 0
+            elif c &gt; 0:
+                row[c] += row[c - 1]      # row[c] still holds the value from above
+    return row[-1]
+
+print(unique_paths([&quot;...&quot;, &quot;...&quot;, &quot;...&quot;]))
+print(unique_paths([&quot;...&quot;, &quot;.#.&quot;, &quot;...&quot;]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>6
+2</pre></div>
+      <p><strong>Time O(rows * cols), space O(cols).</strong></p>
+      <h2>How to recognise the pattern</h2>
+      <ul><li>"Choose items with a weight/cost limit" or "make an amount": <strong>knapsack</strong>. Can items repeat? Loop upward.</li><li>"Longest / best chain in order", "subsequence": <strong>LIS-style</strong>, dp[i] ends at i.</li><li>"Best way to split, merge or remove from a range", "palindrome": <strong>interval DP</strong>, fill by length.</li><li>"Paths on a board moving right/down": <strong>grid DP</strong>, often reducible to one row.</li><li>Two strings compared position by position: the 2D table from LCS and edit distance.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Most DP problems belong to a few families; naming the family gives you the state.</li><li>0/1 knapsack loops capacity downward, unbounded loops upward; outer loop choice decides combinations vs permutations.</li><li>LIS is O(n<sup>2</sup>) with a simple table and O(n log n) with a sorted tails list and bisect.</li><li>Interval DP fills <code>dp[i][j]</code> by increasing length, often with a split point k.</li><li>Grid DP depends on up and left cells, so one rolling row is usually enough.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>max_square(grid)</code> that returns the area of the largest square containing only <code>"1"</code> cells in a grid of strings. Hint: let <code>dp[r][c]</code> be the side of the largest all-1 square whose bottom-right corner is (r, c); it is 1 plus the minimum of the up, left and up-left neighbours. Test on <code>["10100", "10111", "11111", "10010"]</code> (answer 4).</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def max_square(grid):
+    rows, cols = len(grid), len(grid[0])
+    dp = [[0] * (cols + 1) for _ in range(rows + 1)]
+    best = 0
+    for r in range(1, rows + 1):
+        for c in range(1, cols + 1):
+            if grid[r - 1][c - 1] == &quot;1&quot;:
+                dp[r][c] = 1 + min(dp[r - 1][c], dp[r][c - 1], dp[r - 1][c - 1])
+                best = max(best, dp[r][c])
+    return best * best
+
+print(max_square([&quot;10100&quot;, &quot;10111&quot;, &quot;11111&quot;, &quot;10010&quot;]))
+print(max_square([&quot;0&quot;]))"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-dp-patterns" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/bfs-dfs/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 11</span><strong>Graph Traversal: BFS and DFS</strong><small>Learn breadth-first search and depth-first search in Python: shortest paths in unweighted graphs, grid flood fill, connected components and cycle detection.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/dynamic-programming/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/bfs-dfs/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Container Security Best Practices | Docker Tutorial | stackcone</title>
+  <meta name="description" content="Harden Docker containers: run as non-root, drop Linux capabilities, use read-only filesystems, scan images for CVEs and protect the Docker socket.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/docker/security/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/docker/security/">
+  <meta property="og:title" content="Container Security Best Practices | Docker Tutorial | stackcone">
+  <meta property="og:description" content="Harden Docker containers: run as non-root, drop Linux capabilities, use read-only filesystems, scan images for CVEs and protect the Docker socket.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Container Security Best Practices | Docker Tutorial | stackcone">
+  <meta name="twitter:description" content="Harden Docker containers: run as non-root, drop Linux capabilities, use read-only filesystems, scan images for CVEs and protect the Docker socket.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/docker/debugging/">
+  <link rel="next" href="https://stackcone.com/learn/programming/docker/ci-deploy/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Docker", "item": "https://stackcone.com/learn/programming/docker/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Container Security Best Practices", "item": "https://stackcone.com/learn/programming/docker/security/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Container Security Best Practices", "headline": "Container Security Best Practices", "description": "Harden Docker containers: run as non-root, drop Linux capabilities, use read-only filesystems, scan images for CVEs and protect the Docker socket.", "url": "https://stackcone.com/learn/programming/docker/security/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Run containers as a non-root user", "Reduce privileges with capabilities, read-only filesystems and limits", "Scan images for known vulnerabilities", "Avoid the most dangerous Docker configurations"], "position": 9, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Docker Course", "url": "https://stackcone.com/learn/programming/docker/introduction/", "description": "Package apps into containers and run multi-service stacks with Compose.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/docker/introduction/">Docker</a> / <span aria-current="page">Container Security Best Practices</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="docker">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/docker/introduction/">Docker</a></p>
+              <p class="learn-sidebar-tagline">11 lessons · Learn Docker from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 11 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Docker lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/docker/introduction/" data-lesson="docker-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Containers and Docker Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/images-registries/" data-lesson="docker-images-registries" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Images, Layers and Registries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/dockerfile/" data-lesson="docker-dockerfile" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Writing a Dockerfile</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/volumes-networks/" data-lesson="docker-volumes-networks" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Volumes, Bind Mounts and Networks</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/compose/" data-lesson="docker-compose" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Docker Compose</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/multistage/" data-lesson="docker-multistage" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Multi-stage Builds and Small Images</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/config-secrets/" data-lesson="docker-config-secrets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Environment Variables, Config and Secrets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/debugging/" data-lesson="docker-debugging" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Debugging and Inspecting Containers</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/docker/security/" aria-current="page" data-lesson="docker-security" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Container Security Best Practices</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/ci-deploy/" data-lesson="docker-ci-deploy" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Build, Push and Deploy with CI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/kubernetes-intro/" data-lesson="docker-kubernetes-intro" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">From Compose to Kubernetes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/docker/introduction/">Docker</a> · Lesson 9 of 11</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/docker/debugging/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="docker-security" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/docker/ci-deploy/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Container Security Best Practices</h1>
+          <p class="learn-summary">Harden Docker containers: run as non-root, drop Linux capabilities, use read-only filesystems, scan images for CVEs and protect the Docker socket.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/docker/debugging/">Lesson 8: Debugging and Inspecting Containers</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Run containers as a non-root user</li><li>Reduce privileges with capabilities, read-only filesystems and limits</li><li>Scan images for known vulnerabilities</li><li>Avoid the most dangerous Docker configurations</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 11 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 11</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Containers isolate processes, but they are not virtual machines. Every container shares the host's Linux kernel, and by default the main process runs as <code>root</code>. If an attacker finds a bug in your app, the defaults decide how much damage they can do next: read secrets, write to the filesystem, or in the worst configurations take over the whole host.</p>
+      <p>Security here is about layers of small, cheap defaults. None of them is hard; together they turn a compromised container from a disaster into a dead end.</p>
+      <h2>Run as a non-root user</h2>
+      <p>Check who your container runs as right now:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run --rm python:3.12-slim id</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>uid=0(root) gid=0(root) groups=0(root)</pre></div>
+      <p>Root inside a container is restricted, but it is still root on files you mount in, and it is the starting point for most container escape exploits. Create a dedicated user in the Dockerfile and switch to it after installing packages:</p>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code>FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN groupadd --system app &amp;&amp; useradd --system --gid app --no-create-home app
+COPY --chown=app:app . .
+USER app
+CMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker build -t api:secure .
+docker run --rm api:secure id</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>uid=999(app) gid=999(app) groups=999(app)</pre></div>
+      <p>Many images ship a ready user: <code>node</code> in Node images, <code>nonroot</code> in distroless. Non-root processes cannot bind ports below 1024 by default, so listen on 8000 or 8080 and map the port with <code>-p 80:8080</code> if needed.</p>
+      <h2>Drop capabilities and block privilege escalation</h2>
+      <p>Linux splits root's powers into about 40 <strong>capabilities</strong> (change file ownership, bind low ports, manage the network and so on). Docker grants a default subset. A typical web app needs none of them:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run -d --name api \
+  --cap-drop ALL \
+  --security-opt no-new-privileges:true \
+  -p 8000:8000 api:secure</code></pre></div>
+      <p><code>no-new-privileges</code> stops a process from gaining more rights through setuid binaries like <code>sudo</code>. If a specific feature breaks, add back just that capability with <code>--cap-add</code>, for example <code>NET_BIND_SERVICE</code>.</p>
+      <h2>Read-only filesystem and resource limits</h2>
+      <p>If attackers cannot write files, they cannot drop tools or modify your code. Make the root filesystem read-only and give the app a small in-memory <code>/tmp</code>. Resource limits stop one container (or one attack) from starving the host:</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>services:
+  api:
+    image: ghcr.io/stackcone/api:1.4.2
+    user: &quot;999:999&quot;
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: &quot;1.0&quot;
+          memory: 512M
+    pids_limit: 200</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker compose exec api touch /app/hacked</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>touch: cannot touch &#x27;/app/hacked&#x27;: Read-only file system</pre></div>
+      <h2>Scan images for known vulnerabilities</h2>
+      <p>Your base image and dependencies contain third-party code with published CVEs. Scanners compare every package in an image against vulnerability databases. Docker Scout is built into the CLI; Trivy and Grype are popular open-source alternatives:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker scout quickview ghcr.io/stackcone/api:1.4.2</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    i New version 1.18.3 available (installed version is 1.18.1)
+    ✓ Image stored for indexing
+    ✓ Indexed 214 packages
+
+  Target               │  ghcr.io/stackcone/api:1.4.2  │    0C     2H     7M    31L
+    digest             │  9c1e4b7a2d3f                 │
+  Base image           │  python:3.12-slim             │    0C     1H     5M    29L
+  Updated base image   │  python:3.13-slim             │    0C     0H     2M    21L
+                       │                               │     
+
+What&#x27;s next:
+    View vulnerabilities → docker scout cves ghcr.io/stackcone/api:1.4.2</pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>trivy image --severity HIGH,CRITICAL --exit-code 1 ghcr.io/stackcone/api:1.4.2</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>ghcr.io/stackcone/api:1.4.2 (debian 12.11)
+
+Total: 1 (HIGH: 1, CRITICAL: 0)
+
+┌──────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┐
+│ Library  │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │
+├──────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┤
+│ libssl3  │ CVE-2025-XXXXX │ HIGH     │ fixed  │ 3.0.16-1~deb12u1  │ 3.0.17-1~deb12u1 │
+└──────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┘</pre></div>
+      <p><code>--exit-code 1</code> makes Trivy fail when it finds matching issues, so you can use it as a CI gate (next lesson). The fix is usually just rebuilding on a fresh base image. Smaller bases (slim, distroless) mean far fewer findings to triage in the first place.</p>
+      <h2>Dangerous flags to avoid</h2>
+      <ul><li><code>--privileged</code>: disables almost all isolation and gives the container access to host devices. Treat it as running directly on the host as root.</li><li><code>-v /var/run/docker.sock:/var/run/docker.sock</code>: anyone who can talk to the Docker socket can start a privileged container and own the host. Only mount it for trusted tools, and never into an internet-facing app.</li><li><code>--network host</code> and <code>--pid host</code>: remove network or process isolation.</li><li>Bind-mounting sensitive host paths like <code>/</code>, <code>/etc</code> or your home directory read-write.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The docker group is root</p><p class="learn-callout-body">Adding a user to the <code>docker</code> group lets them run containers without sudo, which is convenient but equivalent to giving them root on that machine. On shared servers, consider rootless Docker or Podman, which run the daemon itself as an unprivileged user.</p></aside>
+      <h2>Supply chain: trust what you run</h2>
+      <p>Use official or verified-publisher base images, pin versions (see the images lesson), and rebuild regularly so security patches flow in. For stronger guarantees, sign your images (for example with Sigstore <code>cosign</code>) and generate an SBOM (software bill of materials) during the build with <code>docker buildx build --sbom=true --provenance=true</code>, so you can answer "are we affected?" in minutes when the next big CVE lands.</p>
+      <h2>Recap</h2>
+      <ul><li>Containers share the host kernel, so defaults matter; do not run your app as root.</li><li>Drop all capabilities, enable <code>no-new-privileges</code>, and add back only what breaks.</li><li>Use a read-only root filesystem with a tmpfs for scratch space, plus CPU, memory and PID limits.</li><li>Scan images with Docker Scout or Trivy and rebuild on fresh base images to pick up fixes.</li><li>Avoid <code>--privileged</code> and mounting the Docker socket; membership in the docker group equals root.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a <code>docker run</code> command for the image <code>ada/orders-service:2.1.0</code> that runs it as UID 10001, with all capabilities dropped, no privilege escalation, a read-only root filesystem, a writable <code>/tmp</code> tmpfs, a 256 MB memory limit, half a CPU, and port 8080 published only on localhost.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="docker run -d --name orders \
+  --user 10001:10001 \
+  --cap-drop ALL \
+  --security-opt no-new-privileges:true \
+  --read-only \
+  --tmpfs /tmp \
+  --memory 256m \
+  --cpus 0.5 \
+  -p 127.0.0.1:8080:8080 \
+  ada/orders-service:2.1.0"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="docker-security" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/docker/ci-deploy/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 10</span><strong>Build, Push and Deploy with CI</strong><small>Automate Docker builds with GitHub Actions: build multi-platform images, tag by version and commit SHA, cache layers, scan, push to GHCR and deploy.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/docker/debugging/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/docker/ci-deploy/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

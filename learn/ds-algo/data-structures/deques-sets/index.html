@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Deques, Sets and Ordered Maps | Data Structures | stackcone</title>
+  <meta name="description" content="Use deques for fast work at both ends, sets for instant membership checks, and ordered maps for sorted keys, with Python examples and a complexity table.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/data-structures/deques-sets/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/data-structures/deques-sets/">
+  <meta property="og:title" content="Deques, Sets and Ordered Maps | Data Structures | stackcone">
+  <meta property="og:description" content="Use deques for fast work at both ends, sets for instant membership checks, and ordered maps for sorted keys, with Python examples and a complexity table.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Deques, Sets and Ordered Maps | Data Structures | stackcone">
+  <meta name="twitter:description" content="Use deques for fast work at both ends, sets for instant membership checks, and ordered maps for sorted keys, with Python examples and a complexity table.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/data-structures/stacks-queues/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/data-structures/hash-tables/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Data Structures", "item": "https://stackcone.com/learn/ds-algo/data-structures/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Deques, Sets and Ordered Maps", "item": "https://stackcone.com/learn/ds-algo/data-structures/deques-sets/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Deques, Sets and Ordered Maps", "headline": "Deques, Sets and Ordered Maps", "description": "Use deques for fast work at both ends, sets for instant membership checks, and ordered maps for sorted keys, with Python examples and a complexity table.", "url": "https://stackcone.com/learn/ds-algo/data-structures/deques-sets/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT15M", "isAccessibleForFree": true, "teaches": ["Use a deque for O(1) pushes and pops at both ends", "Apply sets and set algebra for membership and dedupe", "Understand sorted vs insertion-ordered maps", "Pick the right container from a complexity table"], "position": 7, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Data Structures Course", "url": "https://stackcone.com/learn/ds-algo/data-structures/introduction/", "description": "Arrays, lists, trees, graphs, and why Big O matters.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a> / <span aria-current="page">Deques, Sets and Ordered Maps</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="data-structures">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a></p>
+              <p class="learn-sidebar-tagline">16 lessons · Learn Data Structures from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 16 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Data Structures lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/introduction/" data-lesson="ds-introduction" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">What Are Data Structures?</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/big-o/" data-lesson="ds-big-o" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Big O Notation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/arrays/" data-lesson="ds-arrays" data-minutes="12"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/strings/" data-lesson="ds-strings" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Strings and Character Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/linked-lists/" data-lesson="ds-linked-lists" data-minutes="14"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Linked Lists</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/stacks-queues/" data-lesson="ds-stacks-queues" data-minutes="13"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Stacks and Queues</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/data-structures/deques-sets/" aria-current="page" data-lesson="ds-deques-sets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Deques, Sets and Ordered Maps</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/hash-tables/" data-lesson="ds-hash-tables" data-minutes="14"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Hash Tables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/trees/" data-lesson="ds-trees" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/bst/" data-lesson="ds-bst" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Binary Search Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/balanced-trees/" data-lesson="ds-balanced-trees" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Balanced Trees: AVL, Red-Black and B-Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/heaps/" data-lesson="ds-heaps" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Heaps and Priority Queues</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/tries/" data-lesson="ds-tries" data-minutes="15"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Tries (Prefix Trees)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/graphs/" data-lesson="ds-graphs" data-minutes="16"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Graphs</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/union-find/" data-lesson="ds-union-find" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Union-Find (Disjoint Set Union)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/segment-fenwick/" data-lesson="ds-segment-fenwick" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Segment Trees and Fenwick Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a> · Lesson 7 of 16</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/data-structures/stacks-queues/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ds-deques-sets" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/data-structures/hash-tables/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Deques, Sets and Ordered Maps</h1>
+          <p class="learn-summary">Use deques for fast work at both ends, sets for instant membership checks, and ordered maps for sorted keys, with Python examples and a complexity table.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/data-structures/stacks-queues/">Lesson 6: Stacks and Queues</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Use a deque for O(1) pushes and pops at both ends</li><li>Apply sets and set algebra for membership and dedupe</li><li>Understand sorted vs insertion-ordered maps</li><li>Pick the right container from a complexity table</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 16 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 16</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>You already know stacks, queues and hash tables. This lesson covers three close relatives that show up constantly in real code: the <strong>deque</strong> (double-ended queue), the <strong>set</strong>, and the <strong>ordered map</strong>. None of them is new magic. Each is a familiar structure with a specific promise about which operations are fast.</p>
+      <p>Knowing these promises is what lets you replace an O(n) line of code with an O(1) one, often by changing a single word.</p>
+      <h2>Why a list is a poor queue</h2>
+      <p>A Python <code>list</code> is a dynamic array. Adding or removing at the end is O(1), but removing from the front shifts every other element one slot left, which is O(n). A queue that pops from the front a million times becomes painfully slow.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import time
+from collections import deque
+
+n = 100_000
+items = list(range(n))
+start = time.perf_counter()
+while items:
+    items.pop(0)          # O(n) each time
+list_time = time.perf_counter() - start
+
+dq = deque(range(n))
+start = time.perf_counter()
+while dq:
+    dq.popleft()          # O(1) each time
+deque_time = time.perf_counter() - start
+
+print(&quot;deque is faster:&quot;, deque_time &lt; list_time)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>deque is faster: True</pre></div>
+      <h2>The deque: fast at both ends</h2>
+      <p>A <code>collections.deque</code> is built from linked blocks of slots, so it can grow and shrink at either end in O(1). Use it for queues, for breadth-first search, and for "last N items" buffers. The trade-off: indexing into the middle (<code>dq[i]</code>) is O(n), so it is not a replacement for a list when you need random access.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+
+dq = deque([&quot;b&quot;, &quot;c&quot;])
+dq.appendleft(&quot;a&quot;)
+dq.append(&quot;d&quot;)
+print(dq)
+print(dq.popleft(), dq.pop())
+dq.rotate(1)
+print(dq)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>deque([&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;d&#x27;])
+a d
+deque([&#x27;c&#x27;, &#x27;b&#x27;])</pre></div>
+      <p>Passing <code>maxlen</code> creates a bounded buffer: when it is full, adding on one side silently drops an item from the other. This is perfect for "keep the last 3 log lines" or a moving average.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import deque
+
+recent = deque(maxlen=3)
+for line in [&quot;boot&quot;, &quot;login ada&quot;, &quot;view orders&quot;, &quot;logout ada&quot;, &quot;login lin&quot;]:
+    recent.append(line)
+print(list(recent))
+
+def moving_average(values, k):
+    window, total, out = deque(), 0, []
+    for v in values:
+        window.append(v)
+        total += v
+        if len(window) &gt; k:
+            total -= window.popleft()
+        if len(window) == k:
+            out.append(total / k)
+    return out
+
+print(moving_average([10, 20, 30, 40, 50], 3))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;view orders&#x27;, &#x27;logout ada&#x27;, &#x27;login lin&#x27;]
+[20.0, 30.0, 40.0]</pre></div>
+      <h2>Sets: a hash table with only keys</h2>
+      <p>A <strong>set</strong> stores unique values with no order guarantee. Internally it is a hash table that keeps keys but no values, so <code>x in s</code>, <code>add</code> and <code>remove</code> are O(1) on average. The same check on a list is O(n).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>seen = set()
+emails = [&quot;ada@x.io&quot;, &quot;lin@x.io&quot;, &quot;ada@x.io&quot;, &quot;sam@x.io&quot;, &quot;lin@x.io&quot;]
+dupes = []
+for e in emails:
+    if e in seen:
+        dupes.append(e)
+    else:
+        seen.add(e)
+print(sorted(seen))
+print(dupes)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;ada@x.io&#x27;, &#x27;lin@x.io&#x27;, &#x27;sam@x.io&#x27;]
+[&#x27;ada@x.io&#x27;, &#x27;lin@x.io&#x27;]</pre></div>
+      <p>Sets also support set algebra, which turns many loops into one readable line.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>python_devs = {&quot;ada&quot;, &quot;lin&quot;, &quot;sam&quot;, &quot;kai&quot;}
+java_devs = {&quot;sam&quot;, &quot;kai&quot;, &quot;zoe&quot;}
+
+print(sorted(python_devs &amp; java_devs))   # intersection
+print(sorted(python_devs | java_devs))   # union
+print(sorted(python_devs - java_devs))   # difference
+print(sorted(python_devs ^ java_devs))   # in exactly one
+print({&quot;ada&quot;, &quot;lin&quot;} &lt;= python_devs)      # subset</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;kai&#x27;, &#x27;sam&#x27;]
+[&#x27;ada&#x27;, &#x27;kai&#x27;, &#x27;lin&#x27;, &#x27;sam&#x27;, &#x27;zoe&#x27;]
+[&#x27;ada&#x27;, &#x27;lin&#x27;]
+[&#x27;ada&#x27;, &#x27;lin&#x27;, &#x27;zoe&#x27;]
+True</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Only hashable values fit in a set</p><p class="learn-callout-body">Set members (and dict keys) must be immutable: numbers, strings, tuples of those. A list inside a set raises <code>TypeError: unhashable type: 'list'</code>. Convert it to a tuple first, or use <code>frozenset</code> for a set of sets. Also remember that iteration order of a set is arbitrary, so sort before printing if you need stable output.</p></aside>
+      <h2>Ordered maps: two different meanings</h2>
+      <p>"Ordered map" means two different things, and mixing them up causes bugs.</p>
+      <ul><li><strong>Insertion-ordered</strong>: keys come back in the order you added them. Python's <code>dict</code> has guaranteed this since Python 3.7, and JavaScript's <code>Map</code> does too. Lookups are still O(1) hashing.</li><li><strong>Sorted</strong>: keys always come back in sorted order, and you can ask for the smallest key, the next key after x, or all keys in a range. Java's <code>TreeMap</code> and C++'s <code>std::map</code> do this with a balanced tree, so operations are O(log n).</li></ul>
+      <p>Python's standard library has no sorted map. A common approach is to keep a sorted list of keys with the <code>bisect</code> module, which finds positions with binary search in O(log n). Inserting still shifts elements (O(n)), which is fine for thousands of keys. For large workloads, the third-party <code>sortedcontainers</code> package provides <code>SortedDict</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import bisect
+
+class SortedMap:
+    def __init__(self):
+        self.keys, self.vals = [], {}
+    def put(self, k, v):
+        if k not in self.vals:
+            bisect.insort(self.keys, k)
+        self.vals[k] = v
+    def floor(self, k):
+        &quot;&quot;&quot;Largest key &lt;= k, or None.&quot;&quot;&quot;
+        i = bisect.bisect_right(self.keys, k)
+        return self.keys[i - 1] if i else None
+    def range(self, lo, hi):
+        i = bisect.bisect_left(self.keys, lo)
+        j = bisect.bisect_right(self.keys, hi)
+        return [(k, self.vals[k]) for k in self.keys[i:j]]
+
+prices = SortedMap()
+for day, p in [(5, 110), (1, 100), (9, 130), (3, 105)]:
+    prices.put(day, p)
+print(prices.keys)
+print(prices.floor(4))
+print(prices.range(2, 6))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[1, 3, 5, 9]
+3
+[(3, 105), (5, 110)]</pre></div>
+      <p>The <code>floor</code> query ("what was the price on or before day 4?") is exactly what a hash map cannot answer quickly, because hashing scatters keys with no notion of order.</p>
+      <h2>Choosing the right container</h2>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Structure          Add/remove ends   Lookup by key/value   Middle access   Ordered?
+list (array)       end O(1), front O(n)   x in list O(n)    O(1) index      insertion
+deque              both ends O(1)     x in dq O(n)          O(n)            insertion
+set                add/remove O(1)*   x in s O(1)*          n/a             no
+dict               put/del O(1)*      d[k] O(1)*            n/a             insertion
+sorted map (tree)  put/del O(log n)   get O(log n)          floor/range O(log n)  sorted
+
+* average case; worst case O(n) with many hash collisions</code></pre></div>
+      <h2>Recap</h2>
+      <ul><li>Use <code>deque</code> whenever you add or remove at the front; <code>list.pop(0)</code> is O(n).</li><li><code>deque(maxlen=k)</code> gives a ready-made sliding buffer.</li><li>Sets give O(1) average membership tests plus union, intersection and difference.</li><li>Python dicts keep insertion order; sorted maps keep key order and support floor and range queries in O(log n).</li><li>Choose a container by the operations you perform most often.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>recent_unique(visits, k)</code> that returns the last <code>k</code> distinct pages a user visited, most recent first. Revisiting a page moves it to the front. For example, visits <code>["home", "orders", "home", "cart", "orders"]</code> with <code>k=2</code> gives <code>["orders", "cart"]</code>. Hint: a dict remembers insertion order, and deleting then re-adding a key moves it to the end.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def recent_unique(visits, k):
+    order = {}
+    for page in visits:
+        order.pop(page, None)   # remove if present
+        order[page] = True      # re-add at the end
+    return list(order)[::-1][:k]
+
+print(recent_unique([&quot;home&quot;, &quot;orders&quot;, &quot;home&quot;, &quot;cart&quot;, &quot;orders&quot;], 2))
+# [&#x27;orders&#x27;, &#x27;cart&#x27;]"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ds-deques-sets" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/data-structures/hash-tables/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 8</span><strong>Hash Tables</strong><small>Hash functions, collisions, and average O(1) lookup.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/data-structures/stacks-queues/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/data-structures/hash-tables/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

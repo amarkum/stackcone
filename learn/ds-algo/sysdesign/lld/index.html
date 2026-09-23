@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Low-Level Design: Classes, APIs and Concurrency | stackcone</title>
+  <meta name="description" content="Turn a feature into entities, interfaces, a state machine and thread-safe code. Free System Design lesson 6 of 18 with runnable examples and exercises.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/lld/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/sysdesign/lld/">
+  <meta property="og:title" content="Low-Level Design: Classes, APIs and Concurrency | stackcone">
+  <meta property="og:description" content="Turn a feature into entities, interfaces, a state machine and thread-safe code. Free System Design lesson 6 of 18 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Low-Level Design: Classes, APIs and Concurrency | stackcone">
+  <meta name="twitter:description" content="Turn a feature into entities, interfaces, a state machine and thread-safe code. Free System Design lesson 6 of 18 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/sysdesign/queues-apis/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/sysdesign/unique-id/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "System Design", "item": "https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/"}, {"@type": "ListItem", "position": 4, "name": "Low-Level Design: Classes, APIs and Concurrency", "item": "https://stackcone.com/learn/ds-algo/sysdesign/lld/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Low-Level Design: Classes, APIs and Concurrency", "headline": "Low-Level Design: Classes, APIs and Concurrency", "description": "Turn a feature into entities, interfaces, a state machine and thread-safe code. Free System Design lesson 6 of 18 with runnable examples and exercises.", "url": "https://stackcone.com/learn/ds-algo/sysdesign/lld/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT32M", "isAccessibleForFree": true, "teaches": ["Go from requirements to a class diagram", "Apply SOLID and the useful patterns", "Handle concurrency and failure in code"], "position": 6, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "System Design Course", "url": "https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/", "description": "Scalability, caching, databases, queues and how to design real systems.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> / <span aria-current="page">Low-Level Design: Classes, APIs and Concurrency</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="sysdesign">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a></p>
+              <p class="learn-sidebar-tagline">18 lessons · Learn System Design from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 18 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="System Design lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/fundamentals/" data-lesson="sysdesign-fundamentals" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">System Design Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/concepts/" data-lesson="sysdesign-concepts" data-minutes="30"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Every Term, Explained</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/scaling-caching/" data-lesson="sysdesign-scaling-caching" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Scaling and Caching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/databases/" data-lesson="sysdesign-databases" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Choosing and Scaling Databases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/queues-apis/" data-lesson="sysdesign-queues-apis" data-minutes="18"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Queues, APIs and Reliability</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/lld/" aria-current="page" data-lesson="sysdesign-lld" data-minutes="32"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Low-Level Design: Classes, APIs and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/unique-id/" data-lesson="sysdesign-unique-id" data-minutes="35"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Unique ID Generator</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/case-study/" data-lesson="sysdesign-case-study" data-minutes="40"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">URL Shortener</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/rate-limiter/" data-lesson="sysdesign-rate-limiter" data-minutes="38"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/kv-store/" data-lesson="sysdesign-kv-store" data-minutes="40"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/news-feed/" data-lesson="sysdesign-news-feed" data-minutes="42"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">News Feed (Twitter / Instagram)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/chat/" data-lesson="sysdesign-chat" data-minutes="42"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Chat System (WhatsApp / Messenger)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/video/" data-lesson="sysdesign-video" data-minutes="40"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Video Streaming (YouTube)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/drive/" data-lesson="sysdesign-drive" data-minutes="38"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Storage (Dropbox / Drive)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/crawler/" data-lesson="sysdesign-crawler" data-minutes="36"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Web Crawler</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/typeahead/" data-lesson="sysdesign-typeahead" data-minutes="38"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Typeahead and Nearby Search</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/notifications/" data-lesson="sysdesign-notifications" data-minutes="40"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Notification System</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/food-delivery/" data-lesson="sysdesign-food-delivery" data-minutes="50"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Capstone: Food Delivery (Swiggy / DoorDash)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> · Lesson 6 of 18</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/sysdesign/queues-apis/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="sysdesign-lld" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/sysdesign/unique-id/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Low-Level Design: Classes, APIs and Concurrency</h1>
+          <p class="learn-summary">Turn a feature into entities, interfaces, a state machine and thread-safe code.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>32 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/sysdesign/queues-apis/">Lesson 5: Queues, APIs and Reliability</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Go from requirements to a class diagram</li><li>Apply SOLID and the useful patterns</li><li>Handle concurrency and failure in code</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 18 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 18</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 10 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p><strong>High-level design (HLD)</strong> answers "what boxes exist and how do they talk?" — load balancers, services, databases, queues, caches. <strong>Low-level design (LLD)</strong> answers "what does the code inside one box look like?" — classes, interfaces, method signatures, state machines, locks, error paths. Companies ask both, often as separate rounds: HLD for the architecture, LLD for "design a rate limiter / parking lot / elevator / Splitwise, in code."</p>
+      <table><thead><tr><th>Question</th><th>HLD answer</th><th>LLD answer</th></tr></thead><tbody>
+      <tr><td>Scope</td><td>Whole system, many machines</td><td>One service or module, one process</td></tr>
+      <tr><td>Artifacts</td><td>Box diagram, API contract, schema, capacity math</td><td>Class diagram, interfaces, state machine, code</td></tr>
+      <tr><td>Concerns</td><td>Scale, latency, availability, consistency</td><td>Correctness, extensibility, thread safety, testability</td></tr>
+      <tr><td>Failure talk</td><td>Region down, replica lag, hot shard</td><td>Race condition, deadlock, partial failure, invalid state</td></tr>
+      <tr><td>"Good" looks like</td><td>Justified trade-offs</td><td>Adding a feature touches one class</td></tr>
+      </tbody></table>
+      <p>They meet at the seams. HLD says "an idempotent <code>POST /orders</code> behind a queue"; LLD is the <code>OrderService.place()</code> method that takes an idempotency key, holds the right lock, writes the row and the outbox event in one transaction, and returns the same response on a retry.</p>
+
+<h2>The six-step LLD process</h2>
+<ol><li><strong>Clarify and bound.</strong> Same as HLD: what is in v1, what is out. Single process or distributed? One machine or many? Who calls this — a UI, another service, a library consumer?</li><li><strong>Find the nouns (entities).</strong> Read the requirements and underline every noun. Those are your candidate classes. Then delete the ones that are really just attributes.</li><li><strong>Find the verbs (behaviours), and give each an owner.</strong> Each verb becomes a method on the class that owns the data it touches. If a verb needs data from three classes, it probably belongs in a service/coordinator class.</li><li><strong>Draw the class diagram.</strong> Relationships and cardinality. Prefer <em>composition</em> ("an Order <em>has</em> line items") over <em>inheritance</em> ("an Order <em>is a</em> ...").</li><li><strong>Define interfaces at the variation points.</strong> Anywhere the requirements say "for now" or "for example", put an interface: payment methods, notification channels, limiting algorithms, pricing rules.</li><li><strong>Then the hard parts.</strong> State machine for legal transitions, concurrency (what two threads can touch at once), error handling, and how you would unit-test it.</li></ol>
+
+<h2>SOLID, in one line each, with the LLD payoff</h2>
+<ul>
+<li><strong>S — Single responsibility.</strong> One class, one reason to change. <em>Payoff:</em> <code>Order</code> holds order data; it does not also format emails or talk to Stripe.</li>
+<li><strong>O — Open/closed.</strong> Open to extension, closed to modification. <em>Payoff:</em> a new payment method is a new class, not a new <code>elif</code> in a 300-line function.</li>
+<li><strong>L — Liskov substitution.</strong> A subtype must work anywhere its parent works. <em>Payoff:</em> if <code>ReadOnlyAccount.withdraw()</code> throws, it should not be a subclass of <code>Account</code>.</li>
+<li><strong>I — Interface segregation.</strong> Many small interfaces beat one fat one. <em>Payoff:</em> a read-only consumer does not implement six write methods it will never call.</li>
+<li><strong>D — Dependency inversion.</strong> Depend on abstractions, and inject them. <em>Payoff:</em> your test passes a <code>FakeClock</code> and an <code>InMemoryStore</code> and runs in a millisecond with no Redis.</li>
+</ul>
+<p>Also say <strong>DRY</strong> (do not duplicate knowledge), <strong>YAGNI</strong> (do not build the plugin system nobody asked for) and <strong>composition over inheritance</strong> — deep class hierarchies are the most common LLD mistake.</p>
+
+<h2>The patterns that actually come up</h2>
+<ul>
+<li><strong>Strategy</strong> — swap an algorithm at runtime behind one interface. <em>Rate limiting algorithms, pricing rules, ranking, eviction policies.</em> The single most useful LLD pattern.</li>
+<li><strong>Factory</strong> — one place that decides which concrete class to build from config or input. <em>Channel by type, parser by file format.</em></li>
+<li><strong>State</strong> — each state is an object that knows its own legal transitions. <em>Order lifecycle, ride lifecycle, elevator.</em></li>
+<li><strong>Observer / pub-sub</strong> — publishers do not know their subscribers. <em>Order placed → notify customer, restaurant, analytics.</em></li>
+<li><strong>Decorator</strong> — wrap an object to add behaviour without touching it. <em>Retry, caching, metrics, auth around a repository.</em></li>
+<li><strong>Repository</strong> — hide persistence behind an interface so the domain never mentions SQL. <em>The seam that makes unit tests possible.</em></li>
+<li><strong>Builder</strong> — construct an object with many optional fields readably.</li>
+<li><strong>Command</strong> — an action as an object, so it can be queued, logged, retried or undone.</li>
+<li><strong>Singleton</strong> — mention it, then say why you would rather inject one instance: global mutable state makes tests order-dependent.</li>
+</ul>
+<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not pattern-match for its own sake</p><p class="learn-callout-body">Naming five patterns in a design that needs one is a negative signal. The right move is: "the requirements say the limiting algorithm may change per endpoint, so that is a Strategy — here is the interface." Pattern follows requirement.</p></aside>
+
+<h2>Worked LLD: a rate limiter</h2>
+<p>This is the classic LLD prompt, and it is a good one because the algorithm is explicitly pluggable, the storage is explicitly swappable (memory now, Redis later), and it has a real concurrency question.</p>
+<h3>Step 1 — Requirements</h3>
+<p><strong>Functional:</strong> given a key (user, IP, API token) and a rule (N requests per window), allow or deny; report how many remain and when to retry. Multiple algorithms. Different rules per endpoint. <strong>Non-functional:</strong> the check adds under 1 ms, is thread-safe, and works across many app servers when backed by Redis. <strong>Out of scope for v1:</strong> the admin UI, per-tenant billing.</p>
+<h3>Step 2 — Entities and interfaces</h3>
+<div class="diagram-wrap" data-diagram-title="Rate limiter class diagram"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">classDiagram
+  class RateLimiter {
+    -RuleResolver rules
+    -StrategyFactory factory
+    +check(key, route) Decision
+  }
+  class Decision {
+    +bool allowed
+    +int remaining
+    +float retry_after
+  }
+  class Rule {
+    +string name
+    +int limit
+    +int window_seconds
+    +string algorithm
+  }
+  class LimitStrategy {
+    &lt;&lt;interface&gt;&gt;
+    +allow(key, rule, now) Decision
+  }
+  class TokenBucket
+  class SlidingWindowLog
+  class FixedWindowCounter
+  class Storage {
+    &lt;&lt;interface&gt;&gt;
+    +get(key)
+    +set(key, value, ttl)
+    +incr(key, ttl)
+  }
+  class MemoryStorage
+  class RedisStorage
+  class Clock {
+    &lt;&lt;interface&gt;&gt;
+    +now() float
+  }
+  RateLimiter --> LimitStrategy
+  RateLimiter --> Rule
+  RateLimiter --> Decision
+  LimitStrategy <|.. TokenBucket
+  LimitStrategy <|.. SlidingWindowLog
+  LimitStrategy <|.. FixedWindowCounter
+  LimitStrategy --> Storage
+  LimitStrategy --> Clock
+  Storage <|.. MemoryStorage
+  Storage <|.. RedisStorage</div></div><p class="diagram-caption">Three interfaces mark the three things the requirements said would change: the algorithm, the storage, and (for tests) the clock.</p></div>
+<h3>Step 3 — Code</h3>
+<div class="learn-code-wrap" data-lang="python"><pre><code>from abc import ABC, abstractmethod
+from dataclasses import dataclass
+import threading, time
+
+# ---------- value objects: immutable, no behaviour beyond validation ----------
+
+@dataclass(frozen=True)
+class Rule:
+    limit: int              # requests allowed
+    window_seconds: float   # per this window
+    algorithm: str = &quot;token_bucket&quot;
+
+    def __post_init__(self):
+        if self.limit &lt;= 0 or self.window_seconds &lt;= 0:
+            raise ValueError(&quot;limit and window must be positive&quot;)
+
+    @property
+    def refill_per_second(self) -&gt; float:
+        return self.limit / self.window_seconds
+
+@dataclass(frozen=True)
+class Decision:
+    allowed: bool
+    remaining: int
+    retry_after: float      # seconds the client should wait; 0 when allowed
+
+# ---------- injected dependencies (dependency inversion) ----------
+
+class Clock(ABC):
+    @abstractmethod
+    def now(self) -&gt; float: ...
+
+class SystemClock(Clock):
+    def now(self) -&gt; float:
+        return time.monotonic()      # monotonic: never jumps backwards on NTP sync
+
+class FakeClock(Clock):              # exists purely so tests control time
+    def __init__(self, t=0.0): self.t = t
+    def now(self) -&gt; float: return self.t
+    def advance(self, dt): self.t += dt
+
+# ---------- strategy: the algorithm is the thing that varies ----------
+
+class LimitStrategy(ABC):
+    @abstractmethod
+    def allow(self, key: str, rule: Rule) -&gt; Decision: ...
+
+class TokenBucket(LimitStrategy):
+    &quot;&quot;&quot;Bucket holds `limit` tokens, refills continuously, allows bursts.&quot;&quot;&quot;
+
+    def __init__(self, clock: Clock):
+        self._clock = clock
+        self._state: dict[str, tuple[float, float]] = {}   # key -&gt; (tokens, last_seen)
+        self._lock = threading.Lock()                      # guards _state
+
+    def allow(self, key: str, rule: Rule) -&gt; Decision:
+        now = self._clock.now()
+        # One critical section covering read-modify-write: without it, two threads
+        # both read 1 token, both decrement, and the limit is silently doubled.
+        with self._lock:
+            tokens, last = self._state.get(key, (float(rule.limit), now))
+            tokens = min(rule.limit, tokens + (now - last) * rule.refill_per_second)
+            if tokens &gt;= 1.0:
+                self._state[key] = (tokens - 1.0, now)
+                return Decision(True, int(tokens - 1.0), 0.0)
+            self._state[key] = (tokens, now)
+            wait = (1.0 - tokens) / rule.refill_per_second
+            return Decision(False, 0, round(wait, 3))
+
+class FixedWindowCounter(LimitStrategy):
+    &quot;&quot;&quot;Cheapest option. Allows up to 2x the limit across a window boundary.&quot;&quot;&quot;
+
+    def __init__(self, clock: Clock):
+        self._clock = clock
+        self._counts: dict[tuple[str, int], int] = {}
+        self._lock = threading.Lock()
+
+    def allow(self, key: str, rule: Rule) -&gt; Decision:
+        now = self._clock.now()
+        window = int(now // rule.window_seconds)
+        with self._lock:
+            used = self._counts.get((key, window), 0)
+            if used &lt; rule.limit:
+                self._counts[(key, window)] = used + 1
+                return Decision(True, rule.limit - used - 1, 0.0)
+        reset_at = (window + 1) * rule.window_seconds
+        return Decision(False, 0, round(reset_at - now, 3))
+
+# ---------- the façade the rest of the app calls ----------
+
+class RateLimiter:
+    def __init__(self, rules: dict[str, Rule], clock: Clock | None = None):
+        clock = clock or SystemClock()
+        self._rules = rules
+        self._default = Rule(limit=100, window_seconds=60)
+        # Factory: one place maps an algorithm name to a class.
+        self._strategies: dict[str, LimitStrategy] = {
+            &quot;token_bucket&quot;: TokenBucket(clock),
+            &quot;fixed_window&quot;: FixedWindowCounter(clock),
+        }
+
+    def check(self, key: str, route: str) -&gt; Decision:
+        rule = self._rules.get(route, self._default)
+        strategy = self._strategies[rule.algorithm]
+        return strategy.allow(f&quot;{route}:{key}&quot;, rule)   # namespaced: routes never collide
+
+
+limiter = RateLimiter(
+    rules={
+        &quot;POST /login&quot;: Rule(limit=5, window_seconds=60, algorithm=&quot;fixed_window&quot;),
+        &quot;POST /urls&quot;:  Rule(limit=3, window_seconds=10, algorithm=&quot;token_bucket&quot;),
+    },
+    clock=FakeClock(1000.0),
+)
+
+for i in range(5):
+    d = limiter.check(&quot;user:42&quot;, &quot;POST /urls&quot;)
+    print(i, &quot;allow&quot; if d.allowed else &quot;deny&quot;, &quot;remaining=&quot;, d.remaining, &quot;retry_after=&quot;, d.retry_after)</code></pre></div>
+<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>0 allow remaining= 2 retry_after= 0.0
+1 allow remaining= 1 retry_after= 0.0
+2 allow remaining= 0 retry_after= 0.0
+3 deny remaining= 0 retry_after= 3.333
+4 deny remaining= 0 retry_after= 3.333
+</pre></div>
+<h3>Step 4 — What to say about this code</h3>
+<ul><li><strong>Why an interface for the algorithm:</strong> the requirement "different algorithms per endpoint" is a variation point, so it is a Strategy. Adding a sliding-window log is a new class and one factory entry — nothing existing changes (open/closed).</li><li><strong>Why <code>Rule</code> and <code>Decision</code> are frozen dataclasses:</strong> immutable value objects cannot be mutated by a caller and are safe to share between threads.</li><li><strong>Why <code>Clock</code> is injected:</strong> otherwise testing a 60-second window takes 60 seconds. With <code>FakeClock</code> you assert refill behaviour deterministically.</li><li><strong>Where the lock is, and why:</strong> the check is a read-modify-write, so it must be atomic. Lock per key (a striped lock or a lock map) rather than one global lock, or the limiter becomes the bottleneck it was meant to prevent.</li><li><strong>The distributed version:</strong> swap the in-memory dict for Redis and make the whole read-modify-write atomic server-side with a Lua script (or <code>INCR</code> plus <code>EXPIRE</code> for fixed window). The class structure does not change — that is the point of the <code>Storage</code> interface. Lesson 9 covers the algorithms and the Redis details.</li></ul>
+
+<h2>State machines: the other half of LLD</h2>
+<p>Most real LLD questions contain a lifecycle — an order, a ride, a ticket, a document. Draw the legal transitions and put them in <em>one</em> table, then make every transition go through one method. This is how you stop a cancelled order from being delivered.</p>
+<div class="diagram-wrap" data-diagram-title="Order state machine"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">stateDiagram-v2
+  [*] --> CREATED
+  CREATED --> PAID: payment captured
+  CREATED --> CANCELLED: user cancels / payment fails
+  PAID --> ACCEPTED: restaurant accepts
+  PAID --> REFUNDED: restaurant rejects
+  ACCEPTED --> PREPARING
+  PREPARING --> READY
+  READY --> PICKED_UP: courier assigned and collects
+  PICKED_UP --> DELIVERED
+  DELIVERED --> [*]
+  CANCELLED --> [*]
+  REFUNDED --> [*]</div></div><p class="diagram-caption">Terminal states have no outgoing edges. Anything not drawn here is an error, not a special case.</p></div>
+<div class="learn-code-wrap" data-lang="python"><pre><code>from enum import Enum
+
+class State(str, Enum):
+    CREATED = &quot;CREATED&quot;;   PAID = &quot;PAID&quot;;         ACCEPTED = &quot;ACCEPTED&quot;
+    PREPARING = &quot;PREPARING&quot;; READY = &quot;READY&quot;;     PICKED_UP = &quot;PICKED_UP&quot;
+    DELIVERED = &quot;DELIVERED&quot;; CANCELLED = &quot;CANCELLED&quot;; REFUNDED = &quot;REFUNDED&quot;
+
+# The single source of truth. New rule? Edit this table, not ten if-statements.
+ALLOWED = {
+    State.CREATED:   {State.PAID, State.CANCELLED},
+    State.PAID:      {State.ACCEPTED, State.REFUNDED},
+    State.ACCEPTED:  {State.PREPARING, State.REFUNDED},
+    State.PREPARING: {State.READY},
+    State.READY:     {State.PICKED_UP},
+    State.PICKED_UP: {State.DELIVERED},
+    State.DELIVERED: set(), State.CANCELLED: set(), State.REFUNDED: set(),
+}
+
+class IllegalTransition(Exception):
+    pass
+
+class Order:
+    def __init__(self, order_id: str):
+        self.id = order_id
+        self.state = State.CREATED
+        self.history: list[tuple[State, State]] = []
+
+    def transition_to(self, target: State) -&gt; None:
+        if target not in ALLOWED[self.state]:
+            raise IllegalTransition(f&quot;{self.id}: {self.state} -&gt; {target} is not allowed&quot;)
+        self.history.append((self.state, target))
+        self.state = target
+
+o = Order(&quot;ord_1&quot;)
+for s in (State.PAID, State.ACCEPTED, State.PREPARING, State.READY):
+    o.transition_to(s)
+print(o.state, len(o.history), &quot;transitions&quot;)
+try:
+    o.transition_to(State.CANCELLED)          # too late to cancel: food is cooked
+except IllegalTransition as e:
+    print(&quot;rejected:&quot;, e)</code></pre></div>
+<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>State.READY 4 transitions
+rejected: ord_1: State.READY -&gt; State.CANCELLED is not allowed
+</pre></div>
+<p>In a distributed system, add one more thing: persist the transition with a conditional write — <code>UPDATE orders SET state='PAID' WHERE id=? AND state='CREATED'</code>. If it updates zero rows, someone else already moved it, and you must not proceed. That single line is compare-and-swap, and it is how you make a state machine safe when two servers process the same webhook.</p>
+
+<h2>Concurrency in LLD</h2>
+<ul>
+<li><strong>Name the shared mutable state.</strong> Every concurrency bug lives there. If nothing is shared and mutable, you have no problem.</li>
+<li><strong>Race condition</strong>: two threads interleave a read-modify-write and one update is lost. Fix with a lock, an atomic operation (<code>INCR</code>, <code>compareAndSet</code>), or a conditional <code>UPDATE ... WHERE version = ?</code>.</li>
+<li><strong>Keep critical sections tiny.</strong> Never hold a lock across a network call — that converts a slow dependency into a full stall.</li>
+<li><strong>Deadlock</strong>: two threads each hold what the other needs. Prevent it by always acquiring locks in a fixed global order, and using timeouts on lock acquisition.</li>
+<li><strong>Lock granularity.</strong> One global lock is correct and slow; per-key or striped locks scale. Say which you chose and why.</li>
+<li><strong>Prefer immutability and queues</strong> to shared mutable state. A single-threaded consumer reading a queue needs no locks at all.</li>
+<li><strong>Idempotency is the distributed version of a lock.</strong> You cannot lock across services reliably, so make the operation safe to repeat instead.</li>
+</ul>
+
+<h2>Designing the API layer (the HLD/LLD seam)</h2>
+<p>Whatever the round, you will write endpoints. Checklist:</p>
+<ul><li><strong>Resources, not verbs.</strong> <code>POST /orders</code>, not <code>POST /createOrder</code>. Sub-resources for relationships: <code>GET /orders/{id}/events</code>.</li><li><strong>Version it</strong> — <code>/api/v1/…</code> — from day one.</li><li><strong>Status codes that mean something.</strong> 200 ok, 201 created, 202 accepted (async work started), 204 no content, 400 malformed, 401 unauthenticated, 403 unauthorised, 404 missing, 409 conflict, 422 semantically invalid, 429 rate limited, 500 our bug, 503 try later.</li><li><strong>Idempotency on unsafe writes.</strong> <code>Idempotency-Key: &lt;uuid&gt;</code> header; store key → response.</li><li><strong>Cursor pagination</strong>, not <code>OFFSET</code>: <code>?limit=20&amp;cursor=eyJ0…</code>. Offset gets slower as it grows and skips or repeats rows when data shifts.</li><li><strong>Structured errors:</strong> <code>{"error": {"code": "ALIAS_TAKEN", "message": "...", "request_id": "..."}}</code> — a machine-readable code plus a trace id.</li><li><strong>Long operations return 202 plus a job id</strong> and a polling endpoint, rather than holding a connection open.</li><li><strong>Never trust the client:</strong> validate at the boundary, and never let the client set price, role or user id.</li></ul>
+
+<h2>How to run an LLD round</h2>
+<ol><li>Restate the problem and list v1 features (2 min).</li><li>List entities and their key fields out loud (3 min).</li><li>Name the variation points and declare the interfaces (3 min).</li><li>Draw the class diagram (5 min).</li><li>Write the one or two methods that carry the real logic — in full, compiling-quality code (10 min).</li><li>Discuss concurrency, error handling and how you would test it (5 min).</li><li>Offer one extension: "if we needed this across servers, here is the change."</li></ol>
+<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The extensibility test</p><p class="learn-callout-body">Before you stop, have the interviewer throw a change at your design — "now limits differ per subscription tier", "now we support gift cards". A good LLD absorbs it as a new class plus one line of wiring. If it means editing four existing classes, your abstraction boundary is in the wrong place, and saying so out loud is itself a strong signal.</p></aside>
+<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Add a <code>SlidingWindowLog</code> strategy to the rate limiter above: keep the timestamps of a key's requests, drop those older than the window, and allow if fewer than <code>limit</code> remain. Keep it thread-safe, and say what its memory cost is compared with the token bucket.</p></aside><div class="learn-code-wrap learn-practice" data-lang="python" data-solution="from collections import deque
+import threading
+
+class SlidingWindowLog(LimitStrategy):
+    &quot;&quot;&quot;Exact: counts requests in the trailing `window_seconds`, no boundary burst.&quot;&quot;&quot;
+
+    def __init__(self, clock: Clock):
+        self._clock = clock
+        self._log: dict[str, deque] = {}
+        self._lock = threading.Lock()
+
+    def allow(self, key: str, rule: Rule) -&gt; Decision:
+        now = self._clock.now()
+        cutoff = now - rule.window_seconds
+        with self._lock:                     # read-modify-write must be atomic
+            q = self._log.setdefault(key, deque())
+            while q and q[0] &lt;= cutoff:      # evict expired timestamps
+                q.popleft()
+            if len(q) &lt; rule.limit:
+                q.append(now)
+                return Decision(True, rule.limit - len(q), 0.0)
+            retry = round(q[0] + rule.window_seconds - now, 3)
+            return Decision(False, 0, retry)
+
+# Wire it up: one entry in the factory, nothing else changes (open/closed).
+#   self._strategies[&quot;sliding_log&quot;] = SlidingWindowLog(clock)
+
+# Memory: token bucket stores 2 floats per key — O(1), a few bytes.
+# Sliding log stores one timestamp per request in the window — O(limit) per key.
+# At 1M keys x a 1000/min limit that is ~8 GB of timestamps, so the exactness is
+# not free. Middle ground: sliding window counter (current + previous window,
+# weighted by how far into the current window you are) — O(1) memory, small error."><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="sysdesign-lld" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/sysdesign/unique-id/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 7</span><strong>Unique ID Generator</strong><small>UUIDs, Snowflake, ticket servers, clock skew and monotonic ordering at scale.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/sysdesign/queues-apis/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/sysdesign/unique-id/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=16"></script>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

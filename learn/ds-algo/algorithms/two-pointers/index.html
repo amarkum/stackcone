@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Two Pointers and Sliding Window | Algorithms Tutorial | stackcone</title>
+  <meta name="description" content="Learn the two pointers and sliding window techniques in Python to turn O(n squared) array and string problems into clean O(n) solutions.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/two-pointers/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/two-pointers/">
+  <meta property="og:title" content="Two Pointers and Sliding Window | Algorithms Tutorial | stackcone">
+  <meta property="og:description" content="Learn the two pointers and sliding window techniques in Python to turn O(n squared) array and string problems into clean O(n) solutions.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Two Pointers and Sliding Window | Algorithms Tutorial | stackcone">
+  <meta name="twitter:description" content="Learn the two pointers and sliding window techniques in Python to turn O(n squared) array and string problems into clean O(n) solutions.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/searching/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/algorithms/binary-search-patterns/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "Two Pointers and Sliding Window", "item": "https://stackcone.com/learn/ds-algo/algorithms/two-pointers/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Two Pointers and Sliding Window", "headline": "Two Pointers and Sliding Window", "description": "Learn the two pointers and sliding window techniques in Python to turn O(n squared) array and string problems into clean O(n) solutions.", "url": "https://stackcone.com/learn/ds-algo/algorithms/two-pointers/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Recognise when two pointers can replace a nested loop", "Use opposite-end pointers on sorted arrays", "Write fixed-size and variable-size sliding windows", "State the time and space cost of each pattern"], "position": 2, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">Two Pointers and Sliding Window</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/two-pointers/" aria-current="page" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/divide-conquer/" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dp-patterns/" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/shortest-paths/" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/string-matching/" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/interview-strategy/" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 2 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/searching/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-two-pointers" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Two Pointers and Sliding Window</h1>
+          <p class="learn-summary">Learn the two pointers and sliding window techniques in Python to turn O(n squared) array and string problems into clean O(n) solutions.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/searching/">Lesson 1: Searching</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Recognise when two pointers can replace a nested loop</li><li>Use opposite-end pointers on sorted arrays</li><li>Write fixed-size and variable-size sliding windows</li><li>State the time and space cost of each pattern</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Many array and string problems have an obvious brute-force answer: try every pair, or every sub-array, with two nested loops. That is O(n<sup>2</sup>), and at a million elements it means a trillion steps. <strong>Two pointers</strong> and the <strong>sliding window</strong> are two closely related tricks that walk through the data once, moving two indexes in a disciplined way, and finish in O(n).</p>
+      <p>The key idea is that each pointer only ever moves forward (or only inward). Because neither pointer goes back, the total number of moves is at most 2n. The hard part is not the code; it is convincing yourself that skipping the pairs you never look at is safe. This lesson shows the reasoning for each pattern so you can apply it to new problems.</p>
+      <h2>Pattern 1: opposite ends on a sorted array</h2>
+      <p>Classic problem: given a <strong>sorted</strong> list of prices and a budget, find two items whose prices add up to exactly the budget. Put <code>left</code> at the start and <code>right</code> at the end. If the sum is too small, the only way to grow it is to move <code>left</code> right. If it is too big, move <code>right</code> left. Every step throws away one element that cannot be part of any answer.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def pair_with_sum(prices, target):
+    left, right = 0, len(prices) - 1
+    while left &lt; right:
+        total = prices[left] + prices[right]
+        if total == target:
+            return prices[left], prices[right]
+        if total &lt; target:
+            left += 1      # need a bigger sum
+        else:
+            right -= 1     # need a smaller sum
+    return None
+
+prices = [3, 8, 11, 15, 21, 30]
+print(pair_with_sum(prices, 26))
+print(pair_with_sum(prices, 7))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>(11, 15)
+None</pre></div>
+      <p>Why is it safe to move <code>left</code> when the sum is too small? Because <code>prices[right]</code> is the largest value still in play. If even that cannot reach the target with <code>prices[left]</code>, nothing else can either, so <code>prices[left]</code> is useless. <strong>Time O(n), space O(1).</strong> Compare this with a hash set approach (also O(n) time but O(n) space) which works on unsorted data.</p>
+      <h2>Pattern 2: fast and slow pointers in one direction</h2>
+      <p>Sometimes both pointers start at the left. A <em>slow</em> pointer marks where the next "kept" element should go, and a <em>fast</em> pointer scans ahead. This lets you filter or deduplicate a list in place without allocating a new one.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def dedupe_sorted(nums):
+    if not nums:
+        return 0
+    slow = 0
+    for fast in range(1, len(nums)):
+        if nums[fast] != nums[slow]:
+            slow += 1
+            nums[slow] = nums[fast]
+    return slow + 1          # length of the unique prefix
+
+user_ids = [101, 101, 102, 105, 105, 105, 110]
+k = dedupe_sorted(user_ids)
+print(k, user_ids[:k])</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>4 [101, 102, 105, 110]</pre></div>
+      <p>The same shape solves "move all zeros to the end", "remove every occurrence of a value" and, on linked lists, cycle detection (Floyd's tortoise and hare, where fast moves two nodes per step). <strong>Time O(n), space O(1).</strong></p>
+      <h2>Pattern 3: fixed-size sliding window</h2>
+      <p>A <strong>window</strong> is a contiguous slice <code>[left, right]</code>. When the size is fixed, say the best 3-day sales total, you do not need to re-add all three numbers every time. Slide the window one step: add the element entering on the right and subtract the one leaving on the left.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def best_window_sum(values, k):
+    window = sum(values[:k])
+    best = window
+    for right in range(k, len(values)):
+        window += values[right] - values[right - k]
+        best = max(best, window)
+    return best
+
+daily_orders = [4, 2, 12, 3, 8, 9, 1, 7]
+print(best_window_sum(daily_orders, 3))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>23</pre></div>
+      <p>The naive version recomputes a k-element sum at each of n positions: O(n*k). The sliding version does O(1) work per step: <strong>time O(n), space O(1)</strong>.</p>
+      <h2>Pattern 4: variable-size sliding window</h2>
+      <p>The most useful version grows and shrinks. The recipe: move <code>right</code> forward one step at a time to <em>expand</em> the window; while the window breaks a rule, move <code>left</code> forward to <em>shrink</em> it; after that, the window is valid, so record the answer. Example: the longest substring with no repeated characters.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def longest_unique(s):
+    last_seen = {}
+    left = best = 0
+    for right, ch in enumerate(s):
+        if ch in last_seen and last_seen[ch] &gt;= left:
+            left = last_seen[ch] + 1     # jump past the duplicate
+        last_seen[ch] = right
+        best = max(best, right - left + 1)
+    return best
+
+for word in [&quot;stackcone&quot;, &quot;abcabcbb&quot;, &quot;bbbb&quot;, &quot;&quot;]:
+    print(repr(word), longest_unique(word))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>&#x27;stackcone&#x27; 5
+&#x27;abcabcbb&#x27; 3
+&#x27;bbbb&#x27; 1
+&#x27;&#x27; 0</pre></div>
+      <p>Another common one: the shortest sub-array whose sum is at least a target (all numbers positive). Expand until the sum is big enough, then shrink as far as you can while it stays big enough.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def shortest_subarray_at_least(nums, target):
+    left = total = 0
+    best = float(&quot;inf&quot;)
+    for right, x in enumerate(nums):
+        total += x
+        while total &gt;= target:
+            best = min(best, right - left + 1)
+            total -= nums[left]
+            left += 1
+    return 0 if best == float(&quot;inf&quot;) else best
+
+print(shortest_subarray_at_least([2, 3, 1, 2, 4, 3], 7))
+print(shortest_subarray_at_least([1, 1, 1], 10))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>2
+0</pre></div>
+      <p>There is a <code>while</code> inside a <code>for</code>, yet this is still O(n): <code>left</code> only moves forward and can move at most n times in total across the whole run. This "amortised" argument is worth memorising because interviewers often ask about it.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>When sliding windows break</p><p class="learn-callout-body">The shrink step assumes that making the window smaller never makes the sum bigger. That is only true when all numbers are <strong>non-negative</strong>. With negative numbers (for example "count sub-arrays summing to k"), use prefix sums and a hash map instead.</p></aside>
+      <h2>How to spot these patterns</h2>
+      <ul><li>Input is <strong>sorted</strong>, or sorting it is cheap and allowed: think opposite-end pointers.</li><li>The question says <strong>contiguous</strong> sub-array or substring: think sliding window.</li><li>You must modify a list <strong>in place</strong> with O(1) extra space: think slow/fast pointers.</li><li>The brute force is a pair of nested loops over the same array: ask whether one pointer can skip work the other already ruled out.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Two pointers replace nested loops by moving each index only one way, giving O(n) time.</li><li>Opposite-end pointers need sorted data; each step discards an element that cannot be in any answer.</li><li>Fixed windows update a running value by adding the new element and removing the old one.</li><li>Variable windows expand with <code>right</code>, shrink with <code>left</code> while invalid, then record the answer.</li><li>The <code>while</code> inside the loop is still O(n) overall because <code>left</code> never moves back.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>max_vowels(s, k)</code> that returns the largest number of vowels (a, e, i, o, u) in any substring of length exactly <code>k</code>. For example <code>max_vowels("stackconeio", 3)</code> should return <code>2</code>. Aim for O(n) time.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def max_vowels(s, k):
+    vowels = set(&quot;aeiou&quot;)
+    count = sum(1 for ch in s[:k] if ch in vowels)
+    best = count
+    for right in range(k, len(s)):
+        count += (s[right] in vowels) - (s[right - k] in vowels)
+        best = max(best, count)
+    return best
+
+print(max_vowels(&quot;stackconeio&quot;, 3))
+print(max_vowels(&quot;rhythm&quot;, 2))"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-two-pointers" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Binary Search Patterns</strong><small>Master binary search patterns in Python: lower and upper bounds, rotated sorted arrays, peak finding, 2D matrices and binary search on the answer.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/searching/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

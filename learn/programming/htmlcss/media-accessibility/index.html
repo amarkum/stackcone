@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Images, Media and Accessibility | HTML &amp; CSS Tutorial | stackcone</title>
+  <meta name="description" content="Add images, video and audio to HTML the right way, write useful alt text, and make pages accessible with landmarks, ARIA basics and keyboard support.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/htmlcss/media-accessibility/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/htmlcss/media-accessibility/">
+  <meta property="og:title" content="Images, Media and Accessibility | HTML &amp; CSS Tutorial | stackcone">
+  <meta property="og:description" content="Add images, video and audio to HTML the right way, write useful alt text, and make pages accessible with landmarks, ARIA basics and keyboard support.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Images, Media and Accessibility | HTML &amp; CSS Tutorial | stackcone">
+  <meta name="twitter:description" content="Add images, video and audio to HTML the right way, write useful alt text, and make pages accessible with landmarks, ARIA basics and keyboard support.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/htmlcss/forms-semantics/">
+  <link rel="next" href="https://stackcone.com/learn/programming/htmlcss/seo-performance/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "HTML & CSS", "item": "https://stackcone.com/learn/programming/htmlcss/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Images, Media and Accessibility", "item": "https://stackcone.com/learn/programming/htmlcss/media-accessibility/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Images, Media and Accessibility", "headline": "Images, Media and Accessibility", "description": "Add images, video and audio to HTML the right way, write useful alt text, and make pages accessible with landmarks, ARIA basics and keyboard support.", "url": "https://stackcone.com/learn/programming/htmlcss/media-accessibility/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Choose the right image format and write alt text that actually helps", "Embed video and audio with captions and sensible defaults", "Use figure, picture and lazy loading correctly", "Test a page with only the keyboard and fix common accessibility gaps"], "position": 3, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "HTML & CSS Course", "url": "https://stackcone.com/learn/programming/htmlcss/introduction/", "description": "Structure pages with HTML and style them with modern CSS, Flexbox and Grid.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> / <span aria-current="page">Images, Media and Accessibility</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="htmlcss">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a></p>
+              <p class="learn-sidebar-tagline">13 lessons · Learn HTML &amp; CSS from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 13 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="HTML &amp; CSS lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/introduction/" data-lesson="html-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">HTML Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/forms-semantics/" data-lesson="html-forms-semantics" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Forms and Semantic HTML</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/htmlcss/media-accessibility/" aria-current="page" data-lesson="html-media-accessibility" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Images, Media and Accessibility</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/seo-performance/" data-lesson="html-seo-performance" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Meta Tags, SEO and Page Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/basics/" data-lesson="css-basics" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">CSS Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/selectors-cascade/" data-lesson="css-selectors-cascade" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Selectors, Specificity and the Cascade</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/box-model-units/" data-lesson="css-box-model-units" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">The Box Model, Sizing and Units</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/typography-variables/" data-lesson="css-typography-variables" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Typography, Colors and CSS Variables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/positioning/" data-lesson="css-positioning" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Positioning, z-index and Overflow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/flexbox/" data-lesson="css-flexbox" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Flexbox Layout</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/grid-responsive/" data-lesson="css-grid-responsive" data-minutes="17"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Grid and Responsive Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/animations/" data-lesson="css-animations" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Transitions, Transforms and Animations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/layout-project/" data-lesson="css-modern-layout-project" data-minutes="25"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Project: Build a Responsive Landing Page</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> · Lesson 3 of 13</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/htmlcss/forms-semantics/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="html-media-accessibility" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/htmlcss/seo-performance/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Images, Media and Accessibility</h1>
+          <p class="learn-summary">Add images, video and audio to HTML the right way, write useful alt text, and make pages accessible with landmarks, ARIA basics and keyboard support.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/htmlcss/forms-semantics/">Lesson 2: Forms and Semantic HTML</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Choose the right image format and write alt text that actually helps</li><li>Embed video and audio with captions and sensible defaults</li><li>Use figure, picture and lazy loading correctly</li><li>Test a page with only the keyboard and fix common accessibility gaps</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 13 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 13</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>A page is more than text. Photos, diagrams, product shots, screencasts and podcasts make content easier to understand, but only if everyone can use them. Roughly one in six people lives with some form of disability, and many more use a screen reader, keyboard, zoom or captions some of the time (think of watching a video on a quiet train). <strong>Accessibility</strong> is simply making sure your page works for all of them.</p>
+      <p>The good news is that most accessibility comes for free when you use the right HTML element and fill in a few attributes. This lesson covers media elements first, then the accessibility habits that go with them.</p>
+      <h2>Images: formats and the img element</h2>
+      <p>An image needs a source, alternative text, and ideally its dimensions. Setting <code>width</code> and <code>height</code> lets the browser reserve space before the file downloads, so the text below does not jump around (this jump is called layout shift).</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;img
+  src=&quot;/images/ada-at-desk.webp&quot;
+  alt=&quot;Ada pair-programming with a teammate at a standing desk&quot;
+  width=&quot;1200&quot;
+  height=&quot;800&quot;
+  loading=&quot;lazy&quot;
+  decoding=&quot;async&quot;&gt;</code></pre></div>
+      <ul><li><strong>WebP / AVIF</strong>: modern formats for photos, much smaller than JPEG at the same quality. Supported by every current browser.</li><li><strong>JPEG</strong>: the safe fallback for photos.</li><li><strong>PNG</strong>: screenshots and images that need sharp edges or transparency.</li><li><strong>SVG</strong>: logos, icons and diagrams. It is vector, so it stays crisp at any size and is usually tiny.</li></ul>
+      <p><code>loading="lazy"</code> tells the browser to wait until the image is near the viewport before downloading it. Use it for images further down the page, but <em>not</em> for the main image at the top, which should load immediately.</p>
+      <h2>Writing alt text that helps</h2>
+      <p>The <code>alt</code> attribute is read aloud by screen readers and shown if the image fails to load. Good alt text describes what the image <em>means in context</em>, not every pixel.</p>
+      <ul><li>Informative image: describe the content. <code>alt="Bar chart: sign-ups doubled from March to June"</code>.</li><li>Image inside a link or button: describe the action. A magnifying glass icon becomes <code>alt="Search"</code>.</li><li>Decorative image (a background swirl, a divider): use an empty <code>alt=""</code> so screen readers skip it.</li><li>Never start with "Image of" or "Picture of"; the screen reader already announces that it is an image.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Missing vs empty alt</p><p class="learn-callout-body">Leaving <code>alt</code> off entirely is not the same as <code>alt=""</code>. Without the attribute, many screen readers read the file name instead, so users hear "IMG underscore 4032 dot jpeg". Always include <code>alt</code>, even if it is empty.</p></aside>
+      <h2>figure, figcaption and picture</h2>
+      <p>When an image has a visible caption, wrap both in <code>&lt;figure&gt;</code>. The caption is then linked to the image for assistive technology. <code>&lt;figure&gt;</code> works for code samples, charts and quotes too.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;figure&gt;
+  &lt;img src=&quot;/images/latency-chart.svg&quot; alt=&quot;Line chart of API latency falling from 400ms to 120ms&quot; width=&quot;800&quot; height=&quot;400&quot;&gt;
+  &lt;figcaption&gt;API latency after adding a cache layer, week 1 to week 6.&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre></div>
+      <p><code>&lt;picture&gt;</code> lets you offer several formats and let the browser pick the best one it supports. The inner <code>&lt;img&gt;</code> is required: it is the fallback and it carries the <code>alt</code> text.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;picture&gt;
+  &lt;source srcset=&quot;/images/hero.avif&quot; type=&quot;image/avif&quot;&gt;
+  &lt;source srcset=&quot;/images/hero.webp&quot; type=&quot;image/webp&quot;&gt;
+  &lt;img src=&quot;/images/hero.jpg&quot; alt=&quot;The stackcone dashboard on a laptop&quot; width=&quot;1600&quot; height=&quot;900&quot;&gt;
+&lt;/picture&gt;</code></pre></div>
+      <h2>Video and audio</h2>
+      <p>The <code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code> elements play media natively, no plugin needed. Add <code>controls</code> so users can pause and adjust volume. A <code>&lt;track&gt;</code> element adds captions from a WebVTT file, which helps deaf users, people in noisy places and non-native speakers.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;video controls width=&quot;960&quot; height=&quot;540&quot; preload=&quot;metadata&quot; poster=&quot;/video/intro-poster.jpg&quot;&gt;
+  &lt;source src=&quot;/video/intro.webm&quot; type=&quot;video/webm&quot;&gt;
+  &lt;source src=&quot;/video/intro.mp4&quot; type=&quot;video/mp4&quot;&gt;
+  &lt;track kind=&quot;captions&quot; src=&quot;/video/intro.en.vtt&quot; srclang=&quot;en&quot; label=&quot;English&quot; default&gt;
+  Your browser does not support video. &lt;a href=&quot;/video/intro.mp4&quot;&gt;Download the video&lt;/a&gt;.
+&lt;/video&gt;
+
+&lt;audio controls preload=&quot;none&quot;&gt;
+  &lt;source src=&quot;/audio/episode-12.mp3&quot; type=&quot;audio/mpeg&quot;&gt;
+&lt;/audio&gt;</code></pre></div>
+      <ul><li><code>preload="metadata"</code> fetches only duration and size, saving bandwidth until the user presses play.</li><li><code>poster</code> shows an image before playback starts.</li><li>Autoplay is blocked by browsers unless the video is also <code>muted</code>. Background videos should be <code>autoplay muted loop playsinline</code>, and should never carry important information.</li><li>For podcasts and talks, link a text transcript near the player.</li></ul>
+      <h2>Landmarks and headings</h2>
+      <p>Screen reader users navigate by jumping between landmarks and headings, much like sighted users skim. Semantic elements such as <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code> and <code>&lt;footer&gt;</code> (covered in the forms and semantics lesson) create those landmarks automatically. Two extra habits make them useful:</p>
+      <ul><li>Use exactly one <code>&lt;h1&gt;</code> per page and do not skip levels (h2 then h4) just to get a smaller font. Style size with CSS instead.</li><li>Add a "skip to content" link as the first focusable element so keyboard users can jump past the navigation.</li></ul>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;body&gt;
+  &lt;a class=&quot;skip-link&quot; href=&quot;#main&quot;&gt;Skip to content&lt;/a&gt;
+  &lt;header&gt;...&lt;/header&gt;
+  &lt;nav aria-label=&quot;Primary&quot;&gt;...&lt;/nav&gt;
+  &lt;main id=&quot;main&quot;&gt;
+    &lt;h1&gt;Pricing&lt;/h1&gt;
+    ...
+  &lt;/main&gt;
+&lt;/body&gt;</code></pre></div>
+      <h2>ARIA: the last resort</h2>
+      <p>ARIA attributes (<code>aria-label</code>, <code>aria-expanded</code>, <code>role</code> and friends) add extra meaning for assistive technology. They are powerful, but the first rule of ARIA is: <strong>if a native HTML element does the job, use it instead</strong>. A <code>&lt;button&gt;</code> is focusable, clickable with Enter and Space, and announced as a button. A <code>&lt;div onclick&gt;</code> is none of those things until you add a pile of ARIA and JavaScript.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!-- Bad: looks like a button, but keyboard and screen reader users cannot use it --&gt;
+&lt;div class=&quot;btn&quot; onclick=&quot;openMenu()&quot;&gt;Menu&lt;/div&gt;
+
+&lt;!-- Good: native button, plus state for the screen reader --&gt;
+&lt;button type=&quot;button&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;site-menu&quot;&gt;Menu&lt;/button&gt;
+
+&lt;!-- Icon-only button: give it an accessible name --&gt;
+&lt;button type=&quot;button&quot; aria-label=&quot;Close dialog&quot;&gt;
+  &lt;svg aria-hidden=&quot;true&quot; width=&quot;16&quot; height=&quot;16&quot;&gt;...&lt;/svg&gt;
+&lt;/button&gt;</code></pre></div>
+      <h2>Keyboard, focus and contrast</h2>
+      <p>Put your mouse away and press Tab through your page. You should be able to reach every link, button and form field, in a logical order, and always see where focus is. The most common bug is CSS that removes the focus ring:</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* Never do this without a replacement */
+button:focus { outline: none; }
+
+/* Do this: a clear ring for keyboard users only */
+:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}</code></pre></div>
+      <p>Also check colour contrast. WCAG 2.2 asks for at least 4.5:1 between normal text and its background (3:1 for large text). Browser DevTools shows the ratio when you inspect a colour, and Lighthouse flags failures automatically.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Quick audit</p><p class="learn-callout-body">Run Lighthouse (DevTools, Lighthouse tab, Accessibility) or the free axe DevTools extension. They catch missing alt text, low contrast and unlabeled inputs in seconds. Automated tools find roughly a third of issues, so still do the keyboard test.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Give every image an <code>alt</code> (empty for decoration) plus <code>width</code> and <code>height</code> to avoid layout shift.</li><li>Prefer WebP/AVIF for photos and SVG for icons; use <code>&lt;picture&gt;</code> for format fallbacks and <code>loading="lazy"</code> below the fold.</li><li>Video needs <code>controls</code> and captions via <code>&lt;track&gt;</code>; autoplay only works muted.</li><li>Native elements beat ARIA; use ARIA to name icon buttons and expose state.</li><li>Test with the keyboard, keep a visible <code>:focus-visible</code> style, and meet 4.5:1 contrast.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Mark up a product card for a laptop sticker pack: a WebP photo with a JPEG fallback and a visible caption, a short product video with English captions, and an icon-only "Add to favourites" button. Make it fully accessible.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="html" data-solution="&lt;article class=&quot;product&quot;&gt;
+  &lt;figure&gt;
+    &lt;picture&gt;
+      &lt;source srcset=&quot;/img/stickers.webp&quot; type=&quot;image/webp&quot;&gt;
+      &lt;img src=&quot;/img/stickers.jpg&quot; alt=&quot;Twelve stackcone laptop stickers laid out on a desk&quot; width=&quot;800&quot; height=&quot;600&quot; loading=&quot;lazy&quot;&gt;
+    &lt;/picture&gt;
+    &lt;figcaption&gt;Developer sticker pack, 12 vinyl stickers.&lt;/figcaption&gt;
+  &lt;/figure&gt;
+
+  &lt;video controls preload=&quot;metadata&quot; width=&quot;640&quot; height=&quot;360&quot; poster=&quot;/img/stickers-poster.jpg&quot;&gt;
+    &lt;source src=&quot;/video/stickers.mp4&quot; type=&quot;video/mp4&quot;&gt;
+    &lt;track kind=&quot;captions&quot; src=&quot;/video/stickers.en.vtt&quot; srclang=&quot;en&quot; label=&quot;English&quot; default&gt;
+  &lt;/video&gt;
+
+  &lt;button type=&quot;button&quot; aria-label=&quot;Add to favourites&quot; aria-pressed=&quot;false&quot;&gt;
+    &lt;svg aria-hidden=&quot;true&quot; width=&quot;20&quot; height=&quot;20&quot;&gt;&lt;use href=&quot;#icon-heart&quot;&gt;&lt;/use&gt;&lt;/svg&gt;
+  &lt;/button&gt;
+&lt;/article&gt;"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="html-media-accessibility" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/htmlcss/seo-performance/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Meta Tags, SEO and Page Performance</strong><small>Learn the HTML head tags that matter for SEO and sharing: title, meta description, canonical, Open Graph and structured data, plus Core Web Vitals basics.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/htmlcss/forms-semantics/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/htmlcss/seo-performance/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

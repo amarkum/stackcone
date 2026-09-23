@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Rolling, Expanding and Window Calculations | Pandas | stackcone</title>
+  <meta name="description" content="Compute moving averages, running totals and group windows in pandas with rolling, expanding, ewm, shift, diff and time-based windows like rolling(&#x27;7D&#x27;).">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/pandas/window/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/pandas/window/">
+  <meta property="og:title" content="Rolling, Expanding and Window Calculations | Pandas | stackcone">
+  <meta property="og:description" content="Compute moving averages, running totals and group windows in pandas with rolling, expanding, ewm, shift, diff and time-based windows like rolling(&#x27;7D&#x27;).">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Rolling, Expanding and Window Calculations | Pandas | stackcone">
+  <meta name="twitter:description" content="Compute moving averages, running totals and group windows in pandas with rolling, expanding, ewm, shift, diff and time-based windows like rolling(&#x27;7D&#x27;).">
+  <link rel="prev" href="https://stackcone.com/learn/programming/pandas/time-plots/">
+  <link rel="next" href="https://stackcone.com/learn/programming/pandas/performance/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Pandas", "item": "https://stackcone.com/learn/programming/pandas/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Rolling, Expanding and Window Calculations", "item": "https://stackcone.com/learn/programming/pandas/window/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Rolling, Expanding and Window Calculations", "headline": "Rolling, Expanding and Window Calculations", "description": "Compute moving averages, running totals and group windows in pandas with rolling, expanding, ewm, shift, diff and time-based windows like rolling('7D').", "url": "https://stackcone.com/learn/programming/pandas/window/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Use rolling windows with min_periods, center and time-based sizes", "Compute running totals and records with expanding and cumulative methods", "Smooth noisy data with exponentially weighted averages", "Apply window calculations per group without leaking across groups"], "position": 10, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Pandas Course", "url": "https://stackcone.com/learn/programming/pandas/introduction/", "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/pandas/introduction/">Pandas</a> / <span aria-current="page">Rolling, Expanding and Window Calculations</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="pandas">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/pandas/introduction/">Pandas</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Pandas from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Pandas lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/introduction/" data-lesson="pandas-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">DataFrames and Series</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/io/" data-lesson="pandas-io" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/selecting/" data-lesson="pandas-selecting" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Selecting and Filtering: loc, iloc and query</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/cleaning/" data-lesson="pandas-cleaning" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Cleaning Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/transform/" data-lesson="pandas-transform" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Transforming Columns: vectorization, map and apply</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/text-categories/" data-lesson="pandas-text-categories" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Text and Categorical Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/groupby-merge/" data-lesson="pandas-groupby-merge" data-minutes="17"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Grouping, Merging and Pivots</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/reshape/" data-lesson="pandas-reshape" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Reshaping: melt, stack and pivot_table</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/time-plots/" data-lesson="pandas-time-plots" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates, Plots and Exporting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/pandas/window/" aria-current="page" data-lesson="pandas-window" data-minutes="17"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Rolling, Expanding and Window Calculations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/performance/" data-lesson="pandas-performance" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Performance and Large Datasets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/project/" data-lesson="pandas-project" data-minutes="25"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Project: End-to-End Sales Analysis</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/pandas/introduction/">Pandas</a> · Lesson 10 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/pandas/time-plots/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="pandas-window" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/pandas/performance/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Rolling, Expanding and Window Calculations</h1>
+          <p class="learn-summary">Compute moving averages, running totals and group windows in pandas with rolling, expanding, ewm, shift, diff and time-based windows like rolling(&#x27;7D&#x27;).</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/pandas/time-plots/">Lesson 9: Dates, Plots and Exporting</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Use rolling windows with min_periods, center and time-based sizes</li><li>Compute running totals and records with expanding and cumulative methods</li><li>Smooth noisy data with exponentially weighted averages</li><li>Apply window calculations per group without leaking across groups</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>The dates lesson introduced <code>rolling(7).mean()</code> and <code>shift</code> in a few lines. Window calculations deserve a closer look, because they answer many everyday business questions: What is the 7-day average of signups? What is our running revenue for the year? How does each day compare to the same day last week? Is this value unusually high compared to recent history?</p>
+      <p>A <strong>window</strong> is a set of neighbouring rows that pandas looks at together. The three main kinds are <strong>rolling</strong> (a fixed-size window that slides along), <strong>expanding</strong> (everything from the start up to now) and <strong>exponentially weighted</strong> (all history, with recent rows counting more). All of them assume your rows are in time order, so sort first.</p>
+      <h2>Rolling windows</h2>
+      <p><code>rolling(n)</code> groups each row with the <code>n - 1</code> rows before it, then you choose an aggregation such as <code>mean</code>, <code>sum</code>, <code>max</code> or <code>std</code>. The first <code>n - 1</code> results are missing because the window is not full yet. <code>min_periods</code> lets pandas compute a result from a partial window.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+signups = pd.Series(
+    [12, 15, 9, 20, 18, 25, 30],
+    index=pd.date_range(&quot;2026-06-01&quot;, periods=7, freq=&quot;D&quot;),
+    name=&quot;signups&quot;,
+)
+
+df = signups.to_frame()
+df[&quot;avg_3&quot;] = signups.rolling(3).mean().round(1)
+df[&quot;avg_3_partial&quot;] = signups.rolling(3, min_periods=1).mean().round(1)
+df[&quot;max_3&quot;] = signups.rolling(3).max()
+print(df)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>            signups  avg_3  avg_3_partial  max_3
+2026-06-01       12    NaN           12.0    NaN
+2026-06-02       15    NaN           13.5    NaN
+2026-06-03        9   12.0           12.0   15.0
+2026-06-04       20   14.7           14.7   20.0
+2026-06-05       18   15.7           15.7   20.0
+2026-06-06       25   21.0           21.0   25.0
+2026-06-07       30   24.3           24.3   30.0</pre></div>
+      <p>By default the window is <em>trailing</em>: each value summarizes the current row and the ones before it, which is what you want for anything reported "as of" a day. <code>center=True</code> puts the current row in the middle of the window instead. That is nicer for smoothing a chart after the fact, but it peeks into the future, so never use it for features in a forecasting model.</p>
+      <h2>Time-based windows</h2>
+      <p>Real data has gaps: no orders on a holiday, a sensor that went offline. <code>rolling(3)</code> always means "3 rows", no matter how far apart they are. With a <code>DatetimeIndex</code> you can pass a duration like <code>"3D"</code> instead, and pandas includes whichever rows fall inside that span of time.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+orders = pd.Series(
+    [100, 80, 120, 90],
+    index=pd.to_datetime([&quot;2026-06-01&quot;, &quot;2026-06-02&quot;, &quot;2026-06-05&quot;, &quot;2026-06-06&quot;]),
+)
+
+out = pd.DataFrame({
+    &quot;amount&quot;: orders,
+    &quot;last_3_rows&quot;: orders.rolling(3).sum(),
+    &quot;last_3_days&quot;: orders.rolling(&quot;3D&quot;).sum(),
+})
+print(out)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>            amount  last_3_rows  last_3_days
+2026-06-01     100          NaN        100.0
+2026-06-02      80          NaN        180.0
+2026-06-05     120        300.0        120.0
+2026-06-06      90        290.0        210.0</pre></div>
+      <p>On June 5 the row-based window adds up June 1, 2 and 5 (spanning five days), while the time-based window correctly only includes June 5 itself, because June 3 and 4 had no orders. Time-based windows also compute a value from the first row onward, since they use <code>min_periods=1</code> by default.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Sort before you roll</p><p class="learn-callout-body">Window functions process rows in their current order. If your data is not sorted by time, a rolling average mixes unrelated days and gives a meaningless answer without any error. Call <code>df.sort_values("date")</code> or <code>df.sort_index()</code> first. Time-based windows go further and raise an error if the index is not monotonic.</p></aside>
+      <h2>Expanding windows and running totals</h2>
+      <p>An expanding window starts at the first row and grows by one each step, so it answers "from the beginning until now" questions. For sums and extremes there are also shortcut methods: <code>cumsum</code>, <code>cummax</code>, <code>cummin</code> and <code>cumprod</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+revenue = pd.Series([120, 90, 150, 60, 200], name=&quot;revenue&quot;,
+                    index=[&quot;mon&quot;, &quot;tue&quot;, &quot;wed&quot;, &quot;thu&quot;, &quot;fri&quot;])
+
+df = revenue.to_frame()
+df[&quot;running_total&quot;] = revenue.cumsum()
+df[&quot;running_avg&quot;] = revenue.expanding().mean().round(1)
+df[&quot;best_so_far&quot;] = revenue.cummax()
+df[&quot;is_record&quot;] = revenue == revenue.cummax()
+print(df)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>     revenue  running_total  running_avg  best_so_far  is_record
+mon      120            120        120.0          120       True
+tue       90            210        105.0          120      False
+wed      150            360        120.0          150       True
+thu       60            420        105.0          150      False
+fri      200            620        124.0          200       True</pre></div>
+      <h2>Exponentially weighted averages</h2>
+      <p>A simple rolling mean treats every day in the window equally and forgets everything outside it, which makes it jump when a big value enters or leaves. <code>ewm</code> (exponentially weighted moving) gives every past value a weight that shrinks the older it is. The <code>span</code> parameter is roughly comparable to a rolling window size. It reacts faster to recent changes while staying smooth.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+latency = pd.Series([100, 102, 98, 101, 180, 99, 100], name=&quot;ms&quot;)
+
+df = latency.to_frame()
+df[&quot;rolling_3&quot;] = latency.rolling(3).mean().round(1)
+df[&quot;ewm_3&quot;] = latency.ewm(span=3, adjust=False).mean().round(1)
+print(df)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    ms  rolling_3  ewm_3
+0  100        NaN  100.0
+1  102        NaN  101.0
+2   98      100.0   99.5
+3  101      100.3  100.2
+4  180      126.3  140.1
+5   99      126.7  119.6
+6  100      126.3  109.8</pre></div>
+      <h2>Comparing to earlier rows: shift, diff, pct_change</h2>
+      <p>Many metrics compare a value with an earlier one. <code>shift(n)</code> moves values down by <code>n</code> rows, so you can line up "today" with "n rows ago". <code>diff(n)</code> and <code>pct_change(n)</code> are shortcuts for the difference and percentage change. With daily data, <code>n=7</code> gives week-over-week comparisons that cancel out weekday effects.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+visits = pd.Series([200, 220, 210, 260, 250],
+                   index=pd.date_range(&quot;2026-06-01&quot;, periods=5, freq=&quot;D&quot;))
+
+df = pd.DataFrame({
+    &quot;visits&quot;: visits,
+    &quot;prev&quot;: visits.shift(1),
+    &quot;change&quot;: visits.diff(),
+    &quot;pct&quot;: (visits.pct_change() * 100).round(1),
+})
+print(df)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>            visits   prev  change   pct
+2026-06-01     200    NaN     NaN   NaN
+2026-06-02     220  200.0    20.0  10.0
+2026-06-03     210  220.0   -10.0  -4.5
+2026-06-04     260  210.0    50.0  23.8
+2026-06-05     250  260.0   -10.0  -3.8</pre></div>
+      <h2>Windows per group</h2>
+      <p>With several series in one long table (one row per store per day, say), a plain rolling mean would slide straight from the end of one store into the start of the next. Group first, and the window restarts for each group. <code>groupby(...).rolling(...)</code> returns a result with the group added to the index; <code>transform</code> keeps the original row order so you can assign it back as a column.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;store&quot;: [&quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B&quot;],
+    &quot;day&quot;: [1, 2, 3, 1, 2, 3],
+    &quot;sales&quot;: [10, 20, 30, 100, 200, 300],
+}).sort_values([&quot;store&quot;, &quot;day&quot;])
+
+df[&quot;avg_2&quot;] = df.groupby(&quot;store&quot;)[&quot;sales&quot;].transform(lambda s: s.rolling(2).mean())
+df[&quot;cum_sales&quot;] = df.groupby(&quot;store&quot;)[&quot;sales&quot;].cumsum()
+df[&quot;prev_day&quot;] = df.groupby(&quot;store&quot;)[&quot;sales&quot;].shift(1)
+print(df)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>  store  day  sales  avg_2  cum_sales  prev_day
+0     A    1     10    NaN         10       NaN
+1     A    2     20   15.0         30      10.0
+2     A    3     30   25.0         60      20.0
+3     B    1    100    NaN        100       NaN
+4     B    2    200  150.0        300     100.0
+5     B    3    300  250.0        600     200.0</pre></div>
+      <p>Look at the first row of store B: its <code>avg_2</code> and <code>prev_day</code> are missing instead of borrowing store A's last value. That is exactly what you want.</p>
+      <h2>Recap</h2>
+      <ul><li>Sort by time first; windows follow row order.</li><li><code>rolling(n)</code> uses the last n rows; <code>rolling("7D")</code> uses the last 7 days and handles gaps correctly.</li><li><code>expanding()</code> and <code>cumsum</code>/<code>cummax</code> answer "from the start until now" questions.</li><li><code>ewm(span=n)</code> smooths while reacting faster to recent changes; <code>shift</code>, <code>diff</code> and <code>pct_change</code> compare to earlier rows.</li><li>Use <code>groupby</code> with <code>transform</code>, <code>cumsum</code> or <code>shift</code> so windows never cross group boundaries.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">For the daily page views of two blog posts below, add these columns per post (windows must not cross posts): <code>avg_3</code> (3-day rolling mean, rounded to 1 decimal), <code>total</code> (running total) and <code>growth</code> (difference from the previous day). Print the result.<br><code>views = pd.DataFrame({"post": ["rag"] * 4 + ["mcp"] * 4, "day": [1, 2, 3, 4] * 2, "views": [50, 70, 90, 60, 10, 30, 20, 40]})</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import pandas as pd
+
+views = pd.DataFrame({
+    &quot;post&quot;: [&quot;rag&quot;] * 4 + [&quot;mcp&quot;] * 4,
+    &quot;day&quot;: [1, 2, 3, 4] * 2,
+    &quot;views&quot;: [50, 70, 90, 60, 10, 30, 20, 40],
+}).sort_values([&quot;post&quot;, &quot;day&quot;], kind=&quot;stable&quot;)
+
+g = views.groupby(&quot;post&quot;)[&quot;views&quot;]
+views[&quot;avg_3&quot;] = g.transform(lambda s: s.rolling(3).mean()).round(1)
+views[&quot;total&quot;] = g.cumsum()
+views[&quot;growth&quot;] = g.diff()
+print(views)"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="pandas-window" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/pandas/performance/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 11</span><strong>Performance and Large Datasets</strong><small>Speed up pandas on large datasets: measure memory, downcast dtypes, use categories and PyArrow, read CSVs in chunks, and know when to use Polars or DuckDB.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/pandas/time-plots/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/pandas/performance/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

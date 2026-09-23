@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Multi-stage Builds and Small Images | Docker Tutorial | stackcone</title>
+  <meta name="description" content="Shrink Docker images with multi-stage builds, slim and distroless base images, BuildKit cache mounts and smart layer ordering for faster, safer deploys.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/docker/multistage/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/docker/multistage/">
+  <meta property="og:title" content="Multi-stage Builds and Small Images | Docker Tutorial | stackcone">
+  <meta property="og:description" content="Shrink Docker images with multi-stage builds, slim and distroless base images, BuildKit cache mounts and smart layer ordering for faster, safer deploys.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Multi-stage Builds and Small Images | Docker Tutorial | stackcone">
+  <meta name="twitter:description" content="Shrink Docker images with multi-stage builds, slim and distroless base images, BuildKit cache mounts and smart layer ordering for faster, safer deploys.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/docker/compose/">
+  <link rel="next" href="https://stackcone.com/learn/programming/docker/config-secrets/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Docker", "item": "https://stackcone.com/learn/programming/docker/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Multi-stage Builds and Small Images", "item": "https://stackcone.com/learn/programming/docker/multistage/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Multi-stage Builds and Small Images", "headline": "Multi-stage Builds and Small Images", "description": "Shrink Docker images with multi-stage builds, slim and distroless base images, BuildKit cache mounts and smart layer ordering for faster, safer deploys.", "url": "https://stackcone.com/learn/programming/docker/multistage/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Explain why image size matters", "Write multi-stage builds for Go, Node and Python", "Pick between slim, alpine and distroless bases", "Speed up builds with BuildKit cache mounts"], "position": 6, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Docker Course", "url": "https://stackcone.com/learn/programming/docker/introduction/", "description": "Package apps into containers and run multi-service stacks with Compose.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/docker/introduction/">Docker</a> / <span aria-current="page">Multi-stage Builds and Small Images</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="docker">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/docker/introduction/">Docker</a></p>
+              <p class="learn-sidebar-tagline">11 lessons · Learn Docker from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 11 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Docker lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/docker/introduction/" data-lesson="docker-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Containers and Docker Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/images-registries/" data-lesson="docker-images-registries" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Images, Layers and Registries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/dockerfile/" data-lesson="docker-dockerfile" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Writing a Dockerfile</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/volumes-networks/" data-lesson="docker-volumes-networks" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Volumes, Bind Mounts and Networks</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/compose/" data-lesson="docker-compose" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Docker Compose</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/docker/multistage/" aria-current="page" data-lesson="docker-multistage" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Multi-stage Builds and Small Images</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/config-secrets/" data-lesson="docker-config-secrets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Environment Variables, Config and Secrets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/debugging/" data-lesson="docker-debugging" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Debugging and Inspecting Containers</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/security/" data-lesson="docker-security" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Container Security Best Practices</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/ci-deploy/" data-lesson="docker-ci-deploy" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Build, Push and Deploy with CI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/kubernetes-intro/" data-lesson="docker-kubernetes-intro" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">From Compose to Kubernetes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/docker/introduction/">Docker</a> · Lesson 6 of 11</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/docker/compose/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="docker-multistage" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/docker/config-secrets/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Multi-stage Builds and Small Images</h1>
+          <p class="learn-summary">Shrink Docker images with multi-stage builds, slim and distroless base images, BuildKit cache mounts and smart layer ordering for faster, safer deploys.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/docker/compose/">Lesson 5: Docker Compose</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain why image size matters</li><li>Write multi-stage builds for Go, Node and Python</li><li>Pick between slim, alpine and distroless bases</li><li>Speed up builds with BuildKit cache mounts</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 11 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 11</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>The Dockerfile lesson introduced multi-stage builds with a short example. This lesson goes deeper, because image size is one of the easiest wins in container work. A 1.2 GB image takes longer to push from CI, longer to pull on every new server, and carries hundreds of packages (compilers, shells, package managers) that attackers love and your app never uses.</p>
+      <p>The core idea: tools you need to <em>build</em> the app are not tools you need to <em>run</em> it. Build in one stage, copy only the result into a clean final stage.</p>
+      <h2>Measuring the problem</h2>
+      <p>Here is a naive Go Dockerfile. It works, but ships the entire Go toolchain:</p>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code>FROM golang:1.23
+WORKDIR /src
+COPY . .
+RUN go build -o /app ./cmd/api
+CMD [&quot;/app&quot;]</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker build -t api:naive .
+docker images api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+api          naive     8b21f0c3d9e4   12 seconds ago   912MB</pre></div>
+      <h2>A multi-stage Go build</h2>
+      <p>Go compiles to a single static binary, so the final stage can be almost empty:</p>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code># ---- build stage ----
+FROM golang:1.23 AS build
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 go build -ldflags=&quot;-s -w&quot; -o /out/api ./cmd/api
+
+# ---- runtime stage ----
+FROM gcr.io/distroless/static-debian12:nonroot
+COPY --from=build /out/api /api
+USER nonroot
+ENTRYPOINT [&quot;/api&quot;]</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker build -t api:slim .
+docker images api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+api          slim      4c7e9a1b2f30   5 seconds ago    14.8MB
+api          naive     8b21f0c3d9e4   2 minutes ago    912MB</pre></div>
+      <p>From 912 MB to under 15 MB. <code>COPY --from=build</code> is the key line: it reaches into the earlier stage and copies just one file. Everything else in the build stage is discarded. <code>CGO_ENABLED=0</code> produces a fully static binary so it runs without a C library.</p>
+      <h2>Choosing a base image</h2>
+      <ul><li><strong>Full images</strong> (<code>python:3.12</code>, <code>node:22</code>): Debian plus build tools. Good for build stages, too large for runtime.</li><li><strong>Slim</strong> (<code>python:3.12-slim</code>, <code>node:22-slim</code>): Debian with the extras removed. The safe default for runtime stages; uses glibc so prebuilt wheels and native modules just work.</li><li><strong>Alpine</strong> (<code>node:22-alpine</code>): tiny, but uses musl libc. Some Python wheels and native Node modules must compile from source or behave differently. Great for Go and static binaries, use with care for Python.</li><li><strong>Distroless / Chainguard</strong>: only the runtime and its libraries, no shell or package manager. Smallest attack surface, but you cannot <code>docker exec</code> a shell into them (the debugging lesson shows how to work around that).</li></ul>
+      <h2>Multi-stage for Python</h2>
+      <p>Python is interpreted, so you still need Python at runtime. The win comes from building wheels (which may need <code>gcc</code>) in one stage and installing only the results into a slim stage. A virtual environment makes the copy clean:</p>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code>FROM python:3.12-slim AS build
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends build-essential \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN python -m venv /venv
+ENV PATH=&quot;/venv/bin:$PATH&quot;
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+FROM python:3.12-slim
+COPY --from=build /venv /venv
+ENV PATH=&quot;/venv/bin:$PATH&quot; PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . .
+RUN useradd --create-home app
+USER app
+CMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]</code></pre></div>
+      <p><code>build-essential</code> (around 250 MB) never reaches the final image. The same shape works for Node: run <code>npm ci</code> and <code>npm run build</code> in the first stage, then in the second stage run <code>npm ci --omit=dev</code> and copy only <code>dist/</code>.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Cleanup must happen in the same RUN</p><p class="learn-callout-body">Layers are additive. <code>RUN apt-get install ...</code> followed by a separate <code>RUN rm -rf /var/lib/apt/lists/*</code> does not shrink the image: the files still exist in the earlier layer. Chain install and cleanup with <code>&&</code> in one <code>RUN</code>, or better, leave the mess behind in a build stage.</p></aside>
+      <h2>Faster builds with cache mounts</h2>
+      <p>Layer caching helps only while <code>requirements.txt</code> is unchanged. Add one dependency and pip downloads everything again. BuildKit (the default builder since Docker 23) supports <strong>cache mounts</strong>: a directory that persists between builds but is never stored in the image.</p>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code># syntax=docker/dockerfile:1
+FROM python:3.12-slim AS build
+RUN python -m venv /venv
+ENV PATH=&quot;/venv/bin:$PATH&quot;
+COPY requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r requirements.txt</code></pre></div>
+      <p>Now changing one package only downloads that package. The same trick works with <code>target=/root/.npm</code> for npm, <code>/go/pkg/mod</code> for Go, and <code>/root/.m2</code> for Maven.</p>
+      <h2>Inspecting what you built</h2>
+      <p>To see which layers are taking up space, check the history of your final image:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker history --format &quot;table {{.Size}}\t{{.CreatedBy}}&quot; api:py</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>SIZE      CREATED BY
+0B        CMD [&quot;uvicorn&quot; &quot;main:app&quot; &quot;--host&quot; &quot;0.0.0.0&quot; &quot;--port&quot;...
+0B        USER app
+412kB     RUN /bin/sh -c useradd --create-home app
+86kB      COPY . . # buildkit
+0B        WORKDIR /app
+0B        ENV PATH=/venv/bin:/usr/local/bin:... PYTHONUNBUFFERED=1
+61.3MB    COPY /venv /venv # buildkit
+...</pre></div>
+      <p>If <code>COPY . .</code> is unexpectedly large, your <code>.dockerignore</code> is missing something like <code>.git</code>, <code>node_modules</code> or a data folder. The open-source tool <code>dive</code> gives an interactive view of each layer's files if you want to dig further.</p>
+      <h2>Building a specific stage</h2>
+      <p>Stages are also handy for development and testing. <code>--target</code> stops the build at a named stage:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker build --target build -t api:build-env .
+docker run --rm api:build-env go test ./...</code></pre></div>
+      <h2>Recap</h2>
+      <ul><li>Smaller images push, pull and start faster and contain fewer vulnerable packages.</li><li>Build in a full image, then <code>COPY --from=build</code> only the artifacts into a slim or distroless runtime stage.</li><li>Prefer <code>-slim</code> for Python and Node; use alpine or distroless mainly for static binaries.</li><li>Files deleted in a later layer still count; clean up in the same <code>RUN</code> or in a discarded stage.</li><li>BuildKit cache mounts keep package downloads between builds without bloating the image.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a two-stage Dockerfile for a Node/TypeScript API. The build stage uses <code>node:22</code>, installs all dependencies with <code>npm ci</code> (using a cache mount for <code>/root/.npm</code>) and runs <code>npm run build</code> into <code>dist/</code>. The runtime stage uses <code>node:22-slim</code>, installs production dependencies only, copies <code>dist/</code>, runs as the built-in <code>node</code> user and starts <code>node dist/server.js</code>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="dockerfile" data-solution="# syntax=docker/dockerfile:1
+FROM node:22 AS build
+WORKDIR /app
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci
+COPY . .
+RUN npm run build
+
+FROM node:22-slim
+ENV NODE_ENV=production
+WORKDIR /app
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
+COPY --from=build /app/dist ./dist
+USER node
+EXPOSE 3000
+CMD [&quot;node&quot;, &quot;dist/server.js&quot;]"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="docker-multistage" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/docker/config-secrets/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 7</span><strong>Environment Variables, Config and Secrets</strong><small>Configure Docker containers with environment variables, .env files and build args,, and keep secrets safe with BuildKit secret mounts and Compose secrets.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/docker/compose/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/docker/config-secrets/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

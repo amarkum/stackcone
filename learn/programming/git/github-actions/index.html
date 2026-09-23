@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>CI with GitHub Actions | Git &amp; Command Line Tutorial | stackcone</title>
+  <meta name="description" content="Set up continuous integration with GitHub Actions: write workflow YAML that runs tests on every push and pull request, with caching, matrices and secrets.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/git/github-actions/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/git/github-actions/">
+  <meta property="og:title" content="CI with GitHub Actions | Git &amp; Command Line Tutorial | stackcone">
+  <meta property="og:description" content="Set up continuous integration with GitHub Actions: write workflow YAML that runs tests on every push and pull request, with caching, matrices and secrets.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CI with GitHub Actions | Git &amp; Command Line Tutorial | stackcone">
+  <meta name="twitter:description" content="Set up continuous integration with GitHub Actions: write workflow YAML that runs tests on every push and pull request, with caching, matrices and secrets.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/git/advanced-recovery/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Git & Command Line", "item": "https://stackcone.com/learn/programming/git/command-line/"}, {"@type": "ListItem", "position": 4, "name": "CI with GitHub Actions", "item": "https://stackcone.com/learn/programming/git/github-actions/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "CI with GitHub Actions", "headline": "CI with GitHub Actions", "description": "Set up continuous integration with GitHub Actions: write workflow YAML that runs tests on every push and pull request, with caching, matrices and secrets.", "url": "https://stackcone.com/learn/programming/git/github-actions/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Explain what CI is and why teams use it", "Write a workflow with triggers, jobs and steps", "Use a matrix, caching and secrets", "Require passing checks before merging"], "position": 12, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Git & Command Line Course", "url": "https://stackcone.com/learn/programming/git/command-line/", "description": "Move around the terminal and track work with Git branches and pull requests.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> / <span aria-current="page">CI with GitHub Actions</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="git">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Git &amp; Command Line from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Git &amp; Command Line lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/git/command-line/" data-lesson="git-command-line" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Command Line Essentials</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/shell-scripting/" data-lesson="git-shell-scripting" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Pipes, Redirection and Shell Scripts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/introduction/" data-lesson="git-introduction" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Git Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/config-ignore/" data-lesson="git-config-ignore" data-minutes="14"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Config, .gitignore and Aliases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/branching-merging/" data-lesson="git-branching-merging" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Branching and Merging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/merge-conflicts/" data-lesson="git-merge-conflicts" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Resolving Merge Conflicts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/rebase/" data-lesson="git-rebase" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rebase and a Clean History</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/remote-github/" data-lesson="git-remote-github" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Remotes, GitHub and Pull Requests</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/undo-workflows/" data-lesson="git-undo-workflows" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Undoing Things and Team Workflows</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/stash-tags/" data-lesson="git-stash-tags" data-minutes="14"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Stash, Tags and Releases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/advanced-recovery/" data-lesson="git-advanced-recovery" data-minutes="16"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Cherry-pick, Bisect and Reflog</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/git/github-actions/" aria-current="page" data-lesson="git-github-actions" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">CI with GitHub Actions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> · Lesson 12 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/git/advanced-recovery/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="git-github-actions" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/" data-complete-on-click><span>Finish</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>CI with GitHub Actions</h1>
+          <p class="learn-summary">Set up continuous integration with GitHub Actions: write workflow YAML that runs tests on every push and pull request, with caching, matrices and secrets.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/git/advanced-recovery/">Lesson 11: Cherry-pick, Bisect and Reflog</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain what CI is and why teams use it</li><li>Write a workflow with triggers, jobs and steps</li><li>Use a matrix, caching and secrets</li><li>Require passing checks before merging</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>"It works on my machine" is the oldest excuse in software. <strong>Continuous integration</strong> (CI) fixes it: every time someone pushes or opens a pull request, a fresh machine checks out the code, installs dependencies and runs the tests. If anything fails, the pull request shows a red cross before a human even starts reviewing.</p>
+      <p>GitHub Actions is GitHub's built-in CI. It is free for public repositories and includes a monthly allowance of minutes for private ones. Everything is configured with YAML files inside your repo, so CI changes go through pull requests like any other code.</p>
+      <h2>The vocabulary</h2>
+      <ul><li><strong>Workflow</strong>: a YAML file in <code>.github/workflows/</code>. A repo can have many.</li><li><strong>Event</strong> (<code>on</code>): what triggers it, such as <code>push</code>, <code>pull_request</code>, a schedule or a manual button.</li><li><strong>Job</strong>: a set of steps that runs on one fresh virtual machine (a <em>runner</em>). Jobs run in parallel unless you chain them.</li><li><strong>Step</strong>: either a shell command (<code>run</code>) or a reusable <strong>action</strong> (<code>uses</code>).</li><li><strong>Action</strong>: a packaged step from the Marketplace, like <code>actions/checkout</code>.</li></ul>
+      <h2>Your first workflow</h2>
+      <p>Create <code>.github/workflows/ci.yml</code> in a Node.js project:</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test</code></pre></div>
+      <p>Read it top to bottom: run on pushes to <code>main</code> and on every pull request; start an Ubuntu machine; check out the repo (the runner starts empty); install Node 22 with the npm cache turned on; install exact dependencies from the lock file with <code>npm ci</code>; lint; test. Each <code>run</code> step fails the job if its command exits non-zero, exactly the exit-code rule from the shell lesson.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>mkdir -p .github/workflows
+# save the YAML above as .github/workflows/ci.yml
+git add .github/workflows/ci.yml
+git commit -m &quot;Add CI workflow&quot;
+git push
+gh run list --limit 3      # see runs from the terminal
+gh run watch               # follow the latest run live</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>YAML indentation is the syntax</p><p class="learn-callout-body">YAML uses spaces, never tabs, and indentation decides structure. A step whose <code>with:</code> is indented wrongly silently becomes something else. If a workflow does not show up in the Actions tab, check indentation first; the Actions tab also shows a parse error for broken files.</p></aside>
+      <h2>A Python version</h2>
+      <p>The shape is the same for any language; only the setup step changes:</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: &quot;3.13&quot;
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest -q</code></pre></div>
+      <p>Quote version numbers like <code>"3.10"</code>: unquoted, YAML reads <code>3.10</code> as the number 3.1.</p>
+      <h2>Matrix builds</h2>
+      <p>Libraries often need to work on several versions or operating systems. A <strong>matrix</strong> runs the same job once per combination, in parallel:</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 22]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm test</code></pre></div>
+      <p>That is four jobs. <code>${{ ... }}</code> is an <em>expression</em>; here it reads values from the matrix. <code>fail-fast: false</code> lets the other combinations finish even if one fails, so you see the full picture.</p>
+      <h2>Secrets and permissions</h2>
+      <p>Never put API keys in a workflow file. Add them under the repo's Settings, Secrets and variables, Actions (or <code>gh secret set DEPLOY_TOKEN</code>), then reference them. GitHub masks secret values in logs:</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>permissions:
+  contents: read          # least privilege for the built-in GITHUB_TOKEN
+
+jobs:
+  deploy:
+    needs: test             # run only after the test job passes
+    if: github.ref == &#x27;refs/heads/main&#x27;
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./scripts/deploy.sh
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Pin and trust actions carefully</p><p class="learn-callout-body">A third-party action runs with access to your code and tokens. Prefer official or well-known actions, keep <code>permissions</code> minimal, and for sensitive repos pin actions to a full commit SHA instead of a tag like <code>@v4</code>. Secrets are not passed to workflows triggered by pull requests from forks, which is a deliberate safety feature.</p></aside>
+      <h2>Other useful triggers</h2>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>on:
+  push:
+    tags: [&quot;v*&quot;]            # release when a v1.2.0-style tag is pushed
+  schedule:
+    - cron: &quot;0 3 * * 1&quot;      # every Monday 03:00 UTC
+  workflow_dispatch:         # adds a &#x27;Run workflow&#x27; button</code></pre></div>
+      <p>Combined with the tags lesson, a tag-triggered job can build your app and run <code>gh release create ${{ github.ref_name }} --generate-notes</code> (with <code>GH_TOKEN: ${{ github.token }}</code> and <code>permissions: contents: write</code>), so releasing becomes "push a tag".</p>
+      <h2>Make CI a gate: branch protection</h2>
+      <p>CI only helps if red builds cannot be merged. In the repo settings, add a branch protection rule or ruleset for <code>main</code> and enable <em>Require status checks to pass</em>, selecting your <code>test</code> job. Now the merge button stays disabled until CI is green. Add a status badge to your README so everyone sees the health of <code>main</code>:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>![CI](https://github.com/stackcone/demo/actions/workflows/ci.yml/badge.svg)</code></pre></div>
+      <p>When a run fails, open it in the Actions tab (or <code>gh run view --log-failed</code>), find the red step, and reproduce the same command locally. Because the workflow is just shell commands, anything CI does you can run yourself.</p>
+      <h2>Recap</h2>
+      <ul><li>CI runs your checks on a clean machine for every push and pull request.</li><li>Workflows live in <code>.github/workflows/*.yml</code>: events, jobs, steps.</li><li>Use setup actions with caching, <code>npm ci</code> or pinned requirements, and matrices for multiple versions.</li><li>Keep secrets in GitHub Secrets and give <code>GITHUB_TOKEN</code> minimal permissions.</li><li>Protect <code>main</code> so only green pull requests can merge.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>.github/workflows/ci.yml</code> for a Python project that runs on pull requests and pushes to <code>main</code>, tests on Python 3.12 and 3.13 with a matrix, caches pip, runs <code>ruff check .</code> and <code>pytest</code>, and has read-only permissions. Add a manual trigger too.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="yaml" data-solution="name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [&quot;3.12&quot;, &quot;3.13&quot;]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -r requirements.txt ruff pytest
+      - run: ruff check .
+      - run: pytest -q"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="git-github-actions" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext learn-upnext--done" href="/learn/programming/" data-complete-on-click><span class="learn-upnext-label">Last lesson</span><strong>Finish Git &amp; Command Line</strong><small>Mark this lesson complete and pick your next course.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/git/advanced-recovery/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/" data-complete-on-click>Finish course</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

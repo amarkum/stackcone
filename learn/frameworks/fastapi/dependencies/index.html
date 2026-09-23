@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/assets/theme.js?v=1"></script>
   <meta name="robots" content="index, follow">
-  <title>Dependency Injection and Auth | FastAPI | stackcone Learn</title>
-  <meta name="description" content="Share logic with Depends, and protect routes with tokens.">
+  <title>Dependency Injection and Auth | FastAPI Tutorial | stackcone</title>
+  <meta name="description" content="Share logic with Depends, and protect routes with tokens. Free FastAPI lesson 4 of 15 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/frameworks/fastapi/dependencies/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +14,26 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=27">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
-  <link rel="stylesheet" href="/learn/learn.css?v=36">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
   <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/frameworks/fastapi/dependencies/">
+  <meta property="og:title" content="Dependency Injection and Auth | FastAPI Tutorial | stackcone">
+  <meta property="og:description" content="Share logic with Depends, and protect routes with tokens. Free FastAPI lesson 4 of 15 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Dependency Injection and Auth | FastAPI Tutorial | stackcone">
+  <meta name="twitter:description" content="Share logic with Depends, and protect routes with tokens. Free FastAPI lesson 4 of 15 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/frameworks/fastapi/pydantic-responses/">
+  <link rel="next" href="https://stackcone.com/learn/frameworks/fastapi/async-database/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Frameworks", "item": "https://stackcone.com/learn/frameworks/"}, {"@type": "ListItem", "position": 3, "name": "FastAPI", "item": "https://stackcone.com/learn/frameworks/fastapi/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Dependency Injection and Auth", "item": "https://stackcone.com/learn/frameworks/fastapi/dependencies/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Dependency Injection and Auth", "headline": "Dependency Injection and Auth", "description": "Share logic with Depends, and protect routes with tokens. Free FastAPI lesson 4 of 15 with runnable examples and exercises.", "url": "https://stackcone.com/learn/frameworks/fastapi/dependencies/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Write a dependency", "Inject a database session", "Protect a route"], "position": 4, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "FastAPI Course", "url": "https://stackcone.com/learn/frameworks/fastapi/introduction/", "description": "Typed, fast Python APIs with validation and automatic docs.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
 </head>
 <body class="learn-page">
   <header class="header">
@@ -34,13 +49,13 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/frameworks/fastapi/introduction/">FastAPI</a> / Dependency Injection and Auth</p>
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/frameworks/">Frameworks</a> / <a href="/learn/frameworks/fastapi/introduction/">FastAPI</a> / <span aria-current="page">Dependency Injection and Auth</span></nav>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="fastapi">
           <div class="learn-sidebar-head">
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="/learn/frameworks/fastapi/introduction/">FastAPI</a></p>
-              <p class="learn-sidebar-tagline">Learn FastAPI from scratch</p>
+              <p class="learn-sidebar-tagline">15 lessons · Learn FastAPI from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
@@ -49,7 +64,7 @@
           </div>
           <p class="learn-sidebar-progress" data-progress-count>0 of 15 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
-          <nav class="learn-sidebar-lessons">
+          <nav class="learn-sidebar-lessons" aria-label="FastAPI lessons">
           <a class="learn-sidebar-link" href="/learn/frameworks/fastapi/introduction/" data-lesson="fastapi-introduction" data-minutes="11"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Introduction and First Endpoint</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/frameworks/fastapi/parameters/" data-lesson="fastapi-parameters" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Path, Query and Body Parameters</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/frameworks/fastapi/pydantic-responses/" data-lesson="fastapi-pydantic-responses" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Models, Responses and Errors</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -71,8 +86,9 @@
           <div class="learn-lesson-top">
             <p class="learn-eyebrow"><a href="/learn/frameworks/fastapi/introduction/">FastAPI</a> · Lesson 4 of 15</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <a class="learn-top-btn" href="/learn/frameworks/fastapi/pydantic-responses/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/frameworks/fastapi/async-database/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/frameworks/fastapi/pydantic-responses/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="fastapi-dependencies" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/frameworks/fastapi/async-database/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
           <h1>Dependency Injection and Auth</h1>
@@ -99,6 +115,7 @@
               <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
           </section>
       <p>Many endpoints need the same things: a database session, the current user, pagination settings. <strong>Dependency injection</strong> lets you declare what an endpoint needs, and FastAPI provides it. You write the shared logic once with <code>Depends</code>.</p>
       <h2>A simple dependency</h2>
@@ -170,12 +187,15 @@ def require_api_key(x_api_key: str = Header(...)):
 def private():
     return {&quot;ok&quot;: True}"><pre><code># Write your solution here
 </code></pre></div>
-          <a class="learn-upnext" href="/learn/frameworks/fastapi/async-database/"><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Async, Databases and Deployment</strong><small>When to use async def, talking to a database and running in production.</small></a>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="fastapi-dependencies" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/frameworks/fastapi/async-database/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Async, Databases and Deployment</strong><small>When to use async def, talking to a database and running in production.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/frameworks/fastapi/pydantic-responses/">Previous</a>
             <div class="learn-lesson-nav-end">
-            <button type="button" class="learn-complete" data-mark-complete="fastapi-dependencies" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/frameworks/fastapi/async-database/">Next lesson</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/frameworks/fastapi/async-database/" data-complete-on-click>Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">
@@ -201,13 +221,13 @@ def private():
     </div>
   </footer>
   <script src="/site-nav.js?v=21" defer></script>
-  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
-  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

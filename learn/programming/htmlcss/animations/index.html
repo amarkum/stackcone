@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Transitions, Transforms and Animations | HTML &amp; CSS | stackcone</title>
+  <meta name="description" content="Add motion with CSS transitions, transforms and @keyframes animations: timing functions, smooth performance, loaders and prefers-reduced-motion.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/htmlcss/animations/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/htmlcss/animations/">
+  <meta property="og:title" content="Transitions, Transforms and Animations | HTML &amp; CSS | stackcone">
+  <meta property="og:description" content="Add motion with CSS transitions, transforms and @keyframes animations: timing functions, smooth performance, loaders and prefers-reduced-motion.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Transitions, Transforms and Animations | HTML &amp; CSS | stackcone">
+  <meta name="twitter:description" content="Add motion with CSS transitions, transforms and @keyframes animations: timing functions, smooth performance, loaders and prefers-reduced-motion.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/htmlcss/grid-responsive/">
+  <link rel="next" href="https://stackcone.com/learn/programming/htmlcss/layout-project/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "HTML & CSS", "item": "https://stackcone.com/learn/programming/htmlcss/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Transitions, Transforms and Animations", "item": "https://stackcone.com/learn/programming/htmlcss/animations/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Transitions, Transforms and Animations", "headline": "Transitions, Transforms and Animations", "description": "Add motion with CSS transitions, transforms and @keyframes animations: timing functions, smooth performance, loaders and prefers-reduced-motion.", "url": "https://stackcone.com/learn/programming/htmlcss/animations/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Animate state changes with transition and timing functions", "Move, scale and rotate elements with transform", "Write @keyframes animations such as spinners and fade-ins", "Keep motion smooth and respect prefers-reduced-motion"], "position": 12, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "HTML & CSS Course", "url": "https://stackcone.com/learn/programming/htmlcss/introduction/", "description": "Structure pages with HTML and style them with modern CSS, Flexbox and Grid.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> / <span aria-current="page">Transitions, Transforms and Animations</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="htmlcss">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a></p>
+              <p class="learn-sidebar-tagline">13 lessons · Learn HTML &amp; CSS from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 13 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="HTML &amp; CSS lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/introduction/" data-lesson="html-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">HTML Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/forms-semantics/" data-lesson="html-forms-semantics" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Forms and Semantic HTML</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/media-accessibility/" data-lesson="html-media-accessibility" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Images, Media and Accessibility</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/seo-performance/" data-lesson="html-seo-performance" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Meta Tags, SEO and Page Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/basics/" data-lesson="css-basics" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">CSS Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/selectors-cascade/" data-lesson="css-selectors-cascade" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Selectors, Specificity and the Cascade</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/box-model-units/" data-lesson="css-box-model-units" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">The Box Model, Sizing and Units</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/typography-variables/" data-lesson="css-typography-variables" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Typography, Colors and CSS Variables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/positioning/" data-lesson="css-positioning" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Positioning, z-index and Overflow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/flexbox/" data-lesson="css-flexbox" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Flexbox Layout</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/grid-responsive/" data-lesson="css-grid-responsive" data-minutes="17"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Grid and Responsive Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/htmlcss/animations/" aria-current="page" data-lesson="css-animations" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Transitions, Transforms and Animations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/layout-project/" data-lesson="css-modern-layout-project" data-minutes="25"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Project: Build a Responsive Landing Page</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> · Lesson 12 of 13</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/htmlcss/grid-responsive/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="css-animations" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/htmlcss/layout-project/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Transitions, Transforms and Animations</h1>
+          <p class="learn-summary">Add motion with CSS transitions, transforms and @keyframes animations: timing functions, smooth performance, loaders and prefers-reduced-motion.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/htmlcss/grid-responsive/">Lesson 11: Grid and Responsive Design</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Animate state changes with transition and timing functions</li><li>Move, scale and rotate elements with transform</li><li>Write @keyframes animations such as spinners and fade-ins</li><li>Keep motion smooth and respect prefers-reduced-motion</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 13 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 13</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Motion, used lightly, makes an interface feel responsive: a button that eases into its hover colour, a menu that slides in, a skeleton loader that pulses while data arrives. It helps users see what changed. Used carelessly, it slows people down and can make some users physically ill. CSS gives you three tools: <strong>transitions</strong> for moving between two states, <strong>transforms</strong> for moving and resizing things cheaply, and <strong>keyframe animations</strong> for anything more complex.</p>
+      <h2>Transitions</h2>
+      <p>A transition smoothly animates a property when its value changes, for example on hover or when a class is added with JavaScript. You put the transition on the <em>base</em> state, not the hover state, so it animates both in and out.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.button {
+  background: #2563eb;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+.button:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px rgb(37 99 235 / 35%);
+}
+
+/* Longhand, for reference */
+.panel {
+  transition-property: opacity;
+  transition-duration: 300ms;
+  transition-timing-function: ease-out;
+  transition-delay: 0ms;
+}</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Avoid transition: all</p><p class="learn-callout-body"><code>transition: all</code> animates every property that changes, including ones you did not intend, such as width during a responsive resize. It is also harder for the browser to optimise. List the properties explicitly.</p></aside>
+      <h2>Timing functions</h2>
+      <p>The timing function controls acceleration. Real objects do not move at a constant speed, so linear motion looks robotic.</p>
+      <ul><li><code>ease</code> (default): quick start, gentle end. Fine for most things.</li><li><code>ease-out</code>: fast then slow. Best for elements entering the screen.</li><li><code>ease-in</code>: slow then fast. Best for elements leaving.</li><li><code>linear</code>: constant speed. Use for spinners and progress bars.</li><li><code>cubic-bezier(0.34, 1.56, 0.64, 1)</code>: custom curves, like this slight overshoot "bounce".</li></ul>
+      <p>Keep UI transitions short: roughly 150-300ms. Anything over 500ms starts to feel sluggish.</p>
+      <h2>Transforms</h2>
+      <p><code>transform</code> changes how an element is drawn without affecting layout. Neighbours do not move, and the browser can hand the work to the GPU, which is why transforms animate so smoothly.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.lift:hover   { transform: translateY(-4px); }
+.grow:hover   { transform: scale(1.05); }
+.spin         { transform: rotate(45deg); }
+.combo        { transform: translateX(20px) rotate(10deg) scale(0.9); }  /* applied right to left */
+
+/* Individual transform properties: easier to combine and animate separately */
+.card {
+  translate: 0 0;
+  scale: 1;
+  transition: translate 200ms ease-out, scale 200ms ease-out;
+}
+.card:hover { translate: 0 -4px; scale: 1.02; }
+
+/* Rotate around a corner instead of the centre */
+.flag { transform-origin: top left; }</code></pre></div>
+      <p>A classic trick: <code>translate(-50%, -50%)</code> with <code>top: 50%; left: 50%</code> centres an absolutely positioned element, because percentages in translate refer to the element's own size.</p>
+      <h2>Keyframe animations</h2>
+      <p>When you need more than two states, or motion that runs on its own without a hover, define an animation with <code>@keyframes</code> and attach it with the <code>animation</code> property.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.toast {
+  animation: fade-up 300ms ease-out both;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.skeleton { background: #e2e8f0; animation: pulse 1.5s ease-in-out infinite; }</code></pre></div>
+      <p>The <code>animation</code> shorthand takes: name, duration, timing function, delay, iteration count, direction and fill mode. <code>both</code> as the fill mode applies the first keyframe during any delay and keeps the last keyframe when it finishes, so the element does not snap back.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* Staggered entrance using a custom property per item */
+.list-item {
+  animation: fade-up 400ms ease-out both;
+  animation-delay: calc(var(--i) * 60ms);
+}
+/* In HTML: &lt;li class=&quot;list-item&quot; style=&quot;--i: 0&quot;&gt;, --i: 1, --i: 2 ... */</code></pre></div>
+      <h2>Performance: animate the cheap properties</h2>
+      <p>Browsers draw a frame in stages: layout (work out sizes and positions), paint (fill in pixels) and composite (stack the layers). Animating <code>width</code>, <code>height</code>, <code>top</code> or <code>margin</code> triggers layout on every frame, which can stutter on phones. Animating <code>transform</code> and <code>opacity</code> only needs compositing, which is very cheap.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* Janky: forces layout 60 times a second */
+.drawer { left: -300px; transition: left 300ms; }
+.drawer.open { left: 0; }
+
+/* Smooth: compositor only */
+.drawer { transform: translateX(-100%); transition: transform 300ms ease-out; }
+.drawer.open { transform: translateX(0); }</code></pre></div>
+      <p><code>will-change: transform</code> hints that an element is about to animate. Apply it sparingly, only to elements that genuinely animate, because each one uses extra memory.</p>
+      <h2>Respect reduced motion</h2>
+      <p>People with vestibular disorders can get dizziness or nausea from large movement, parallax and zooming. Operating systems have a "reduce motion" setting, and CSS can read it. Keep functional feedback like colour changes, but remove or shorten big motion.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Scroll-driven animations</p><p class="learn-callout-body">Modern Chromium and Safari support <code>animation-timeline: view()</code>, which ties a keyframe animation to scroll position with no JavaScript. Firefox support was still limited in 2026, so treat it as progressive enhancement: the page must look fine without it.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Put <code>transition</code> on the base state and list specific properties; keep durations around 150-300ms.</li><li>Use <code>ease-out</code> for entering, <code>ease-in</code> for leaving and <code>linear</code> for continuous spinning.</li><li><code>transform</code> (or <code>translate</code>, <code>scale</code>, <code>rotate</code>) moves elements without affecting layout.</li><li>Use <code>@keyframes</code> with <code>animation</code> for loaders and entrances; <code>both</code> fill mode prevents snapping.</li><li>Animate only <code>transform</code> and <code>opacity</code> for smoothness, and honour <code>prefers-reduced-motion</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a notification bell: on hover the bell icon wiggles (rotates back and forth a few times), a red count badge pops in with a slight scale overshoot when it gets the class <code>.visible</code>, and all motion is disabled for users who prefer reduced motion.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="css" data-solution="@keyframes wiggle {
+  0%, 100% { rotate: 0deg; }
+  20%      { rotate: -15deg; }
+  40%      { rotate: 12deg; }
+  60%      { rotate: -8deg; }
+  80%      { rotate: 4deg; }
+}
+
+.bell {
+  position: relative;
+  display: inline-block;
+  transform-origin: top center;
+}
+
+.bell:hover .bell-icon {
+  animation: wiggle 600ms ease-in-out;
+}
+
+.bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: white;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0;
+  scale: 0;
+  transition: opacity 150ms ease-out, scale 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bell-badge.visible {
+  opacity: 1;
+  scale: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bell:hover .bell-icon { animation: none; }
+  .bell-badge { transition: none; }
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="css-animations" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/htmlcss/layout-project/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 13</span><strong>Project: Build a Responsive Landing Page</strong><small>HTML and CSS project: build a responsive, accessible landing page with semantic markup, design tokens, flexbox, grid and a mobile-first approach.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/htmlcss/grid-responsive/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/htmlcss/layout-project/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

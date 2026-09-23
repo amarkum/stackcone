@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Enums, Modules and Declaration Files | TypeScript | stackcone</title>
+  <meta name="description" content="Understand TypeScript enums vs as const, ES module imports and type-only imports, and how .d.ts declaration files and @types packages type JavaScript.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/typescript/modules-declarations/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/typescript/modules-declarations/">
+  <meta property="og:title" content="Enums, Modules and Declaration Files | TypeScript | stackcone">
+  <meta property="og:description" content="Understand TypeScript enums vs as const, ES module imports and type-only imports, and how .d.ts declaration files and @types packages type JavaScript.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Enums, Modules and Declaration Files | TypeScript | stackcone">
+  <meta name="twitter:description" content="Understand TypeScript enums vs as const, ES module imports and type-only imports, and how .d.ts declaration files and @types packages type JavaScript.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/typescript/advanced-types/">
+  <link rel="next" href="https://stackcone.com/learn/programming/typescript/async-apis/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "TypeScript", "item": "https://stackcone.com/learn/programming/typescript/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Enums, Modules and Declaration Files", "item": "https://stackcone.com/learn/programming/typescript/modules-declarations/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Enums, Modules and Declaration Files", "headline": "Enums, Modules and Declaration Files", "description": "Understand TypeScript enums vs as const, ES module imports and type-only imports, and how .d.ts declaration files and @types packages type JavaScript.", "url": "https://stackcone.com/learn/programming/typescript/modules-declarations/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Decide between enums, const enums and as const objects", "Use ES modules with import type and verbatimModuleSyntax", "Read and write .d.ts declaration files", "Type untyped packages and global variables"], "position": 8, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "TypeScript Course", "url": "https://stackcone.com/learn/programming/typescript/introduction/", "description": "Add static types to JavaScript: interfaces, generics and safer code.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/typescript/introduction/">TypeScript</a> / <span aria-current="page">Enums, Modules and Declaration Files</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="typescript">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/typescript/introduction/">TypeScript</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn TypeScript from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="TypeScript lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/introduction/" data-lesson="ts-introduction" data-minutes="12"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Why TypeScript</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/types-interfaces/" data-lesson="ts-types-interfaces" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Types, Interfaces and Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/functions/" data-lesson="ts-functions" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Typing Functions and Overloads</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/narrowing/" data-lesson="ts-narrowing" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Narrowing, Type Guards and Discriminated Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/generics-utility/" data-lesson="ts-generics-utility" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Generics and Utility Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/classes/" data-lesson="ts-classes" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Classes, Access Modifiers and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/advanced-types/" data-lesson="ts-advanced-types" data-minutes="18"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Mapped, Conditional and Template Literal Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/typescript/modules-declarations/" aria-current="page" data-lesson="ts-modules-declarations" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Enums, Modules and Declaration Files</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/async-apis/" data-lesson="ts-async-apis" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Typing Async Code, fetch and API Responses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/tsconfig-strict/" data-lesson="ts-tsconfig-strict" data-minutes="16"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">tsconfig, Strict Mode and Tooling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/react/" data-lesson="ts-react" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">TypeScript with React</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/real-world/" data-lesson="ts-real-world" data-minutes="15"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">TypeScript in Real Projects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/typescript/introduction/">TypeScript</a> · Lesson 8 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/typescript/advanced-types/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ts-modules-declarations" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/typescript/async-apis/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Enums, Modules and Declaration Files</h1>
+          <p class="learn-summary">Understand TypeScript enums vs as const, ES module imports and type-only imports, and how .d.ts declaration files and @types packages type JavaScript.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/typescript/advanced-types/">Lesson 7: Mapped, Conditional and Template Literal Types</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Decide between enums, const enums and as const objects</li><li>Use ES modules with import type and verbatimModuleSyntax</li><li>Read and write .d.ts declaration files</li><li>Type untyped packages and global variables</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Real projects are split across many files and depend on packages written by other people, often in plain JavaScript. This lesson covers how TypeScript organises code into modules, how it knows the types of JavaScript libraries (declaration files), and a feature you will see in older codebases: enums.</p>
+      <h2>Enums and what they compile to</h2>
+      <p>An enum names a fixed set of values. Unlike almost every other TypeScript feature, enums are not erased: they generate a real JavaScript object. Numeric enums even create a reverse mapping from number to name.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>enum Direction { Up, Down }             // numeric: Up = 0, Down = 1
+enum Status { Active = &quot;active&quot;, Banned = &quot;banned&quot; }  // string enum
+
+function move(d: Direction) { /* ... */ }
+move(Direction.Up);</code></pre></div>
+      <p>This JavaScript is essentially what the compiler emits, so you can see the extra runtime object:</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>var Direction;
+(function (Direction) {
+  Direction[Direction[&quot;Up&quot;] = 0] = &quot;Up&quot;;
+  Direction[Direction[&quot;Down&quot;] = 1] = &quot;Down&quot;;
+})(Direction || (Direction = {}));
+
+console.log(Direction);
+console.log(Direction.Up, Direction[0]);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{ &#x27;0&#x27;: &#x27;Up&#x27;, &#x27;1&#x27;: &#x27;Down&#x27;, Up: 0, Down: 1 }
+0 Up</pre></div>
+      <p>Numeric enums also have a loose spot: historically any number was assignable to them. That, plus the generated code, is why most 2026 style guides prefer a union of string literals, or an <code>as const</code> object when you want a named value to refer to.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>export const Status = {
+  Active: &quot;active&quot;,
+  Banned: &quot;banned&quot;,
+} as const;
+
+export type Status = (typeof Status)[keyof typeof Status];   // &quot;active&quot; | &quot;banned&quot;
+
+function setStatus(s: Status) { /* ... */ }
+setStatus(Status.Active);   // OK, reads like an enum
+setStatus(&quot;banned&quot;);        // also OK: it is just a string union</code></pre></div>
+      <p>The object and the type share a name, which is legal because values and types live in separate namespaces. You get enum-like ergonomics with zero TypeScript-only runtime code.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Enums and Node type stripping</p><p class="learn-callout-body">Node.js can now run <code>.ts</code> files directly by stripping types, but that only works for syntax that can simply be erased. Enums, <code>namespace</code> blocks with code and constructor parameter properties need real transformation, so they fail. The <code>erasableSyntaxOnly</code> compiler flag reports them early. Another reason to prefer <code>as const</code>.</p></aside>
+      <h2>ES modules</h2>
+      <p>Any file with a top-level <code>import</code> or <code>export</code> is a module: its variables are private unless exported. TypeScript uses standard ES module syntax and adds one idea on top, importing <em>only a type</em>.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>// models.ts
+export interface Order { id: string; total: number; }
+export const TAX_RATE = 0.18;
+export default function calcTax(o: Order) { return o.total * TAX_RATE; }
+
+// checkout.ts
+import calcTax, { TAX_RATE } from &quot;./models.js&quot;;   // values
+import type { Order } from &quot;./models.js&quot;;          // type only, erased from output
+import { type Order as O2, TAX_RATE as rate } from &quot;./models.js&quot;; // inline form</code></pre></div>
+      <p>Why mark type imports? When the compiler (or a fast tool like esbuild, SWC or Node's type stripper) handles one file at a time, it cannot always tell whether <code>Order</code> is a type or a value. <code>import type</code> removes the guesswork, and the <code>verbatimModuleSyntax</code> option enforces it: imports without <code>type</code> are kept, imports with it are dropped. It is on by default in a fresh <code>tsc --init</code>.</p>
+      <p>Notice the <code>.js</code> extension in the import path of a <code>.ts</code> file. With <code>"module": "nodenext"</code>, you write the path of the file that will exist <em>after</em> compilation. With a bundler (Vite, Next.js) and <code>"moduleResolution": "bundler"</code>, you can omit extensions. Newer setups can also enable <code>allowImportingTsExtensions</code> and import <code>./models.ts</code> directly.</p>
+      <h2>Declaration files (.d.ts)</h2>
+      <p>A declaration file contains only types: no implementations. It describes the shape of JavaScript code so TypeScript can check calls into it. When you compile with <code>"declaration": true</code>, TypeScript writes one next to each output file, which is how published libraries ship types.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>// dist/models.d.ts (generated by tsc)
+export interface Order {
+    id: string;
+    total: number;
+}
+export declare const TAX_RATE = 0.18;
+export default function calcTax(o: Order): number;</code></pre></div>
+      <p>The <code>declare</code> keyword means "this exists at runtime, trust me, here is its type". You rarely write whole <code>.d.ts</code> files by hand, but you will read them constantly: ctrl/cmd-clicking a library function in your editor usually opens one.</p>
+      <h2>Where library types come from</h2>
+      <ul><li><strong>Bundled</strong>: most modern packages (zod, axios, date-fns) ship their own <code>.d.ts</code>, listed under <code>"types"</code> or <code>"exports"</code> in their <code>package.json</code>. Nothing to install.</li><li><strong>DefinitelyTyped</strong>: for packages written in JavaScript without types, the community publishes <code>@types/&lt;name&gt;</code>. For example <code>npm i -D @types/express @types/node</code>.</li><li><strong>Your own</strong>: if neither exists, write a small declaration yourself.</li></ul>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>npm install express
+npm install -D @types/express @types/node</code></pre></div>
+      <p>One recent change to know: since TypeScript 6.0 a new tsconfig sets <code>"types": []</code>, so global type packages like <code>@types/node</code> are not loaded automatically. If <code>process</code> or <code>Buffer</code> is suddenly unknown, add <code>"types": ["node"]</code>.</p>
+      <h2>Typing untyped modules and globals</h2>
+      <p>When a package has no types, importing it gives an error like <em>Could not find a declaration file for module</em>. Create a <code>.d.ts</code> file inside your project (for example <code>src/types/legacy.d.ts</code>) and describe just the parts you use. The same technique types global variables injected by a script tag, and extends existing interfaces such as <code>Window</code>.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>// src/types/legacy.d.ts
+declare module &quot;legacy-slugify&quot; {
+  export default function slugify(text: string, opts?: { lower?: boolean }): string;
+}
+
+// Global injected by an analytics &lt;script&gt; tag
+declare const ANALYTICS_ID: string;
+
+// Add a property to the built-in Window interface
+interface Window {
+  stackcone?: { track(event: string): void };
+}</code></pre></div>
+      <p>Adding to <code>Window</code> works because interfaces with the same name <strong>merge</strong>. This declaration merging is also how libraries let you extend their types (for example adding a <code>user</code> property to Express's <code>Request</code>). Note that in a file that is itself a module, you must wrap such additions in <code>declare global { ... }</code>.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not reach for declare module &quot;*&quot;</p><p class="learn-callout-body">A shorthand like <code>declare module "legacy-slugify";</code> (no body) makes every import from it <code>any</code>. It silences the error but removes all checking. Use it only as a temporary step and write real signatures soon.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Enums generate runtime code; prefer string literal unions or <code>as const</code> objects in new code.</li><li>Use <code>import type</code> for type-only imports; <code>verbatimModuleSyntax</code> enforces it for single-file tools.</li><li><code>.d.ts</code> files hold types only; <code>declare</code> describes something that exists at runtime.</li><li>Library types come bundled, from <code>@types/*</code>, or from a small declaration you write yourself.</li><li>Interfaces merge, which lets you extend <code>Window</code> or library types via <code>declare global</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Replace this enum with an <code>as const</code> object and a matching type, then write a declaration for an untyped module <code>"tiny-currency"</code> whose default export is <code>format(amount: number, currency: Plan)</code> returning a string. <br><code>enum Plan { Free = "free", Pro = "pro", Team = "team" }</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="typescript" data-solution="// plan.ts
+export const Plan = { Free: &quot;free&quot;, Pro: &quot;pro&quot;, Team: &quot;team&quot; } as const;
+export type Plan = (typeof Plan)[keyof typeof Plan];   // &quot;free&quot; | &quot;pro&quot; | &quot;team&quot;
+
+// types/tiny-currency.d.ts
+declare module &quot;tiny-currency&quot; {
+  import type { Plan } from &quot;../plan.js&quot;;
+  export default function format(amount: number, currency: Plan): string;
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ts-modules-declarations" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/typescript/async-apis/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Typing Async Code, fetch and API Responses</strong><small>Type TypeScript async functions and Promises, wrap fetch in a typed API client, handle errors with Result types and validate JSON at runtime with zod.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/typescript/advanced-types/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/typescript/async-apis/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

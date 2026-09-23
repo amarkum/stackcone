@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Project: Build a Responsive Landing Page | HTML &amp; CSS | stackcone</title>
+  <meta name="description" content="HTML and CSS project: build a responsive, accessible landing page with semantic markup, design tokens, flexbox, grid and a mobile-first approach.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/htmlcss/layout-project/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/htmlcss/layout-project/">
+  <meta property="og:title" content="Project: Build a Responsive Landing Page | HTML &amp; CSS | stackcone">
+  <meta property="og:description" content="HTML and CSS project: build a responsive, accessible landing page with semantic markup, design tokens, flexbox, grid and a mobile-first approach.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Project: Build a Responsive Landing Page | HTML &amp; CSS | stackcone">
+  <meta name="twitter:description" content="HTML and CSS project: build a responsive, accessible landing page with semantic markup, design tokens, flexbox, grid and a mobile-first approach.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/htmlcss/animations/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "HTML & CSS", "item": "https://stackcone.com/learn/programming/htmlcss/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Project: Build a Responsive Landing Page", "item": "https://stackcone.com/learn/programming/htmlcss/layout-project/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Project: Build a Responsive Landing Page", "headline": "Project: Build a Responsive Landing Page", "description": "HTML and CSS project: build a responsive, accessible landing page with semantic markup, design tokens, flexbox, grid and a mobile-first approach.", "url": "https://stackcone.com/learn/programming/htmlcss/layout-project/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT25M", "isAccessibleForFree": true, "teaches": ["Plan a page as semantic HTML sections before writing CSS", "Set up tokens, a reset and base typography", "Combine flexbox and grid in a mobile-first layout", "Finish with accessibility, performance and SEO checks"], "position": 13, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "HTML & CSS Course", "url": "https://stackcone.com/learn/programming/htmlcss/introduction/", "description": "Structure pages with HTML and style them with modern CSS, Flexbox and Grid.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> / <span aria-current="page">Project: Build a Responsive Landing Page</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="htmlcss">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a></p>
+              <p class="learn-sidebar-tagline">13 lessons · Learn HTML &amp; CSS from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 13 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="HTML &amp; CSS lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/introduction/" data-lesson="html-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">HTML Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/forms-semantics/" data-lesson="html-forms-semantics" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Forms and Semantic HTML</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/media-accessibility/" data-lesson="html-media-accessibility" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Images, Media and Accessibility</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/seo-performance/" data-lesson="html-seo-performance" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Meta Tags, SEO and Page Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/basics/" data-lesson="css-basics" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">CSS Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/selectors-cascade/" data-lesson="css-selectors-cascade" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Selectors, Specificity and the Cascade</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/box-model-units/" data-lesson="css-box-model-units" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">The Box Model, Sizing and Units</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/typography-variables/" data-lesson="css-typography-variables" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Typography, Colors and CSS Variables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/positioning/" data-lesson="css-positioning" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Positioning, z-index and Overflow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/flexbox/" data-lesson="css-flexbox" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Flexbox Layout</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/grid-responsive/" data-lesson="css-grid-responsive" data-minutes="17"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Grid and Responsive Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/animations/" data-lesson="css-animations" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Transitions, Transforms and Animations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/htmlcss/layout-project/" aria-current="page" data-lesson="css-modern-layout-project" data-minutes="25"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Project: Build a Responsive Landing Page</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> · Lesson 13 of 13</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/htmlcss/animations/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="css-modern-layout-project" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/" data-complete-on-click><span>Finish</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Project: Build a Responsive Landing Page</h1>
+          <p class="learn-summary">HTML and CSS project: build a responsive, accessible landing page with semantic markup, design tokens, flexbox, grid and a mobile-first approach.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>25 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/htmlcss/animations/">Lesson 12: Transitions, Transforms and Animations</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Plan a page as semantic HTML sections before writing CSS</li><li>Set up tokens, a reset and base typography</li><li>Combine flexbox and grid in a mobile-first layout</li><li>Finish with accessibility, performance and SEO checks</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 13 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 13</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>You have learned the pieces: semantic HTML, forms, media, meta tags, selectors, the box model, typography, positioning, flexbox, grid and animation. Real projects are about combining them. In this project you will build a landing page for a fictional product, "stackcone Notes", with a sticky header, a hero, a feature grid, a pricing section, a signup form and a footer.</p>
+      <p>The workflow matters as much as the code: <strong>content and HTML first, then tokens and base styles, then layout, then polish</strong>. Work mobile first, because a single column is the simplest layout and larger screens only add to it.</p>
+      <h2>Step 1: Semantic HTML skeleton</h2>
+      <p>Write all the HTML before any CSS. If the page reads sensibly unstyled, it will work for screen readers and search engines.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;stackcone Notes: Markdown Notes for Developers&lt;/title&gt;
+  &lt;meta name=&quot;description&quot; content=&quot;Fast, searchable Markdown notes with code highlighting and Git sync. Free for individuals, simple pricing for teams.&quot;&gt;
+  &lt;link rel=&quot;canonical&quot; href=&quot;https://notes.stackcone.com/&quot;&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;/css/landing.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;a class=&quot;skip-link&quot; href=&quot;#main&quot;&gt;Skip to content&lt;/a&gt;
+
+  &lt;header class=&quot;site-header&quot;&gt;
+    &lt;div class=&quot;container header-inner&quot;&gt;
+      &lt;a class=&quot;logo&quot; href=&quot;/&quot;&gt;stackcone Notes&lt;/a&gt;
+      &lt;nav aria-label=&quot;Primary&quot;&gt;
+        &lt;ul class=&quot;nav-list&quot;&gt;
+          &lt;li&gt;&lt;a href=&quot;#features&quot;&gt;Features&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#pricing&quot;&gt;Pricing&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a class=&quot;btn btn-small&quot; href=&quot;#signup&quot;&gt;Get started&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/nav&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;main id=&quot;main&quot;&gt;
+    &lt;section class=&quot;hero&quot;&gt;
+      &lt;div class=&quot;container hero-inner&quot;&gt;
+        &lt;div class=&quot;hero-copy&quot;&gt;
+          &lt;h1&gt;Notes that think like a developer&lt;/h1&gt;
+          &lt;p class=&quot;lead&quot;&gt;Markdown, code highlighting and Git sync in one fast app.&lt;/p&gt;
+          &lt;a class=&quot;btn&quot; href=&quot;#signup&quot;&gt;Start free&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;img src=&quot;/img/app.webp&quot; alt=&quot;stackcone Notes editor showing a Python snippet&quot; width=&quot;1200&quot; height=&quot;800&quot; fetchpriority=&quot;high&quot;&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;features&quot; class=&quot;section&quot;&gt;
+      &lt;div class=&quot;container&quot;&gt;
+        &lt;h2&gt;Everything you need&lt;/h2&gt;
+        &lt;ul class=&quot;feature-grid&quot; role=&quot;list&quot;&gt;
+          &lt;li class=&quot;card&quot;&gt;&lt;h3&gt;Instant search&lt;/h3&gt;&lt;p&gt;Find any note in milliseconds.&lt;/p&gt;&lt;/li&gt;
+          &lt;li class=&quot;card&quot;&gt;&lt;h3&gt;Code blocks&lt;/h3&gt;&lt;p&gt;Syntax highlighting for 100+ languages.&lt;/p&gt;&lt;/li&gt;
+          &lt;li class=&quot;card&quot;&gt;&lt;h3&gt;Git sync&lt;/h3&gt;&lt;p&gt;Your notes are plain files in your repo.&lt;/p&gt;&lt;/li&gt;
+          &lt;li class=&quot;card&quot;&gt;&lt;h3&gt;Offline first&lt;/h3&gt;&lt;p&gt;Works on a plane, syncs when you land.&lt;/p&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;pricing&quot; class=&quot;section section-alt&quot;&gt;
+      &lt;div class=&quot;container&quot;&gt;
+        &lt;h2&gt;Simple pricing&lt;/h2&gt;
+        &lt;div class=&quot;pricing-grid&quot;&gt;
+          &lt;article class=&quot;card plan&quot;&gt;&lt;h3&gt;Free&lt;/h3&gt;&lt;p class=&quot;price&quot;&gt;$0&lt;/p&gt;&lt;p&gt;Unlimited personal notes.&lt;/p&gt;&lt;/article&gt;
+          &lt;article class=&quot;card plan plan-featured&quot;&gt;&lt;h3&gt;Team&lt;/h3&gt;&lt;p class=&quot;price&quot;&gt;$6&lt;span&gt;/user/mo&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Shared spaces and SSO.&lt;/p&gt;&lt;/article&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+
+    &lt;section id=&quot;signup&quot; class=&quot;section&quot;&gt;
+      &lt;div class=&quot;container narrow&quot;&gt;
+        &lt;h2&gt;Get early access&lt;/h2&gt;
+        &lt;form class=&quot;signup&quot; action=&quot;/subscribe&quot; method=&quot;post&quot;&gt;
+          &lt;label for=&quot;email&quot;&gt;Work email&lt;/label&gt;
+          &lt;div class=&quot;signup-row&quot;&gt;
+            &lt;input id=&quot;email&quot; name=&quot;email&quot; type=&quot;email&quot; autocomplete=&quot;email&quot; required&gt;
+            &lt;button class=&quot;btn&quot; type=&quot;submit&quot;&gt;Join&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;footer class=&quot;site-footer&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;&lt;p&gt;&amp;copy; 2026 stackcone&lt;/p&gt;&lt;/div&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+      <h2>Step 2: Tokens, reset and base styles</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@layer reset, base, layout, components, utilities;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  img { max-width: 100%; height: auto; display: block; }
+  button, input { font: inherit; color: inherit; }
+}
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+    --color-bg: oklch(99% 0.003 250);
+    --color-surface: oklch(96% 0.006 250);
+    --color-text: oklch(24% 0.03 265);
+    --color-muted: oklch(50% 0.02 260);
+    --color-accent: oklch(55% 0.2 262);
+    --color-border: oklch(90% 0.01 250);
+    --radius: 0.75rem;
+    --space-s: 0.75rem;
+    --space-m: 1.5rem;
+    --space-l: clamp(3rem, 8vw, 6rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: oklch(17% 0.02 265);
+      --color-surface: oklch(22% 0.02 265);
+      --color-text: oklch(94% 0.01 250);
+      --color-muted: oklch(72% 0.02 260);
+      --color-accent: oklch(72% 0.15 262);
+      --color-border: oklch(32% 0.02 265);
+    }
+  }
+
+  body {
+    font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif;
+    line-height: 1.6;
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+  h1, h2, h3 { line-height: 1.15; text-wrap: balance; }
+  h1 { font-size: clamp(2.25rem, 1.5rem + 3.5vw, 3.75rem); }
+  h2 { font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem); margin-bottom: var(--space-m); }
+  a { color: var(--color-accent); }
+  :focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+}</code></pre></div>
+      <h2>Step 3: Layout with containers, flexbox and grid</h2>
+      <p>Use flexbox for one-dimensional rows (header, form row) and grid for two-dimensional areas (hero, features, pricing). The mobile layout is the default; one media query and <code>auto-fit</code> handle bigger screens.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@layer layout {
+  .container { width: min(100% - 2rem, 72rem); margin-inline: auto; }
+  .narrow { max-width: 36rem; }
+  .section { padding-block: var(--space-l); }
+  .section-alt { background: var(--color-surface); }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in oklch, var(--color-bg) 85%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: var(--space-s);
+  }
+  .nav-list { display: flex; align-items: center; gap: var(--space-m); list-style: none; padding: 0; }
+
+  .hero { padding-block: var(--space-l); }
+  .hero-inner { display: grid; gap: var(--space-m); align-items: center; }
+
+  @media (min-width: 56rem) {
+    .hero-inner { grid-template-columns: 1fr 1.2fr; }
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-m);
+    list-style: none;
+    padding: 0;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-m);
+  }
+
+  .signup-row { display: flex; flex-wrap: wrap; gap: var(--space-s); margin-top: 0.25rem; }
+  .signup-row input { flex: 1 1 14rem; }
+}</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Hide nav links on phones?</p><p class="learn-callout-body">With three short links, a wrapping flex row fits even at 360px, so no hamburger menu is needed. Only add a toggle menu when links genuinely do not fit, and build it with a real <code>&lt;button aria-expanded&gt;</code>.</p></aside>
+      <h2>Step 4: Components and polish</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@layer components {
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: var(--radius);
+  }
+  .skip-link:focus { top: 1rem; }
+
+  .logo { font-weight: 700; text-decoration: none; color: var(--color-text); }
+  .lead { font-size: 1.25rem; color: var(--color-muted); margin-block: var(--space-s) var(--space-m); }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75em 1.5em;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--color-accent);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: translate 150ms ease-out, box-shadow 150ms ease-out;
+  }
+  .btn:hover { translate: 0 -2px; box-shadow: 0 6px 16px rgb(0 0 0 / 15%); }
+  .btn-small { padding: 0.4em 1em; }
+
+  .card {
+    padding: var(--space-m);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+  .card h3 { margin-bottom: 0.5rem; }
+
+  .price { font-size: 2.5rem; font-weight: 700; }
+  .price span { font-size: 1rem; color: var(--color-muted); }
+  .plan-featured { border: 2px solid var(--color-accent); }
+
+  .signup input {
+    padding: 0.75em 1em;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+  }
+  .site-footer { padding-block: var(--space-m); color: var(--color-muted); text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}</code></pre></div>
+      <h2>Step 5: Test like a professional</h2>
+      <ul><li><strong>Resize</strong>: drag the DevTools responsive view from 320px to 1600px. Nothing should overflow sideways or overlap.</li><li><strong>Keyboard</strong>: press Tab from the top. The skip link should appear first, then every link and the form, each with a visible focus ring.</li><li><strong>Dark mode</strong>: toggle the OS setting (or DevTools rendering emulation) and check contrast.</li><li><strong>Lighthouse</strong>: aim for 90+ in Performance, Accessibility, Best Practices and SEO. Fix any missing alt text, labels or contrast issues it reports.</li><li><strong>Validate</strong>: run the HTML through the W3C validator to catch unclosed tags and duplicate IDs.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Start with semantic HTML that makes sense unstyled, including a skip link, landmarks and a labelled form.</li><li>Centralise decisions in custom properties and organise CSS with <code>@layer</code>.</li><li>Build mobile first: flexbox for rows, grid with <code>auto-fit</code> and <code>minmax()</code> for cards, one media query for the hero.</li><li>Add polish with small transitions on transform, and respect reduced motion and dark mode.</li><li>Finish with resize, keyboard, Lighthouse and validator checks before shipping.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Extend the landing page with a testimonials section: three quotes, each with the person's name and role and a small round avatar. Show one column on phones and three on wide screens, and use semantic markup for the quotes.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="html" data-solution="&lt;section id=&quot;testimonials&quot; class=&quot;section&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;h2&gt;Loved by developers&lt;/h2&gt;
+    &lt;ul class=&quot;testimonial-grid&quot; role=&quot;list&quot;&gt;
+      &lt;li class=&quot;card&quot;&gt;
+        &lt;figure class=&quot;testimonial&quot;&gt;
+          &lt;blockquote&gt;&lt;p&gt;Finally a notes app that treats code as a first-class citizen.&lt;/p&gt;&lt;/blockquote&gt;
+          &lt;figcaption&gt;
+            &lt;img src=&quot;/img/ada.webp&quot; alt=&quot;&quot; width=&quot;48&quot; height=&quot;48&quot; loading=&quot;lazy&quot;&gt;
+            &lt;span&gt;&lt;strong&gt;Ada Lovelace&lt;/strong&gt;&lt;br&gt;Backend engineer&lt;/span&gt;
+          &lt;/figcaption&gt;
+        &lt;/figure&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;card&quot;&gt;
+        &lt;figure class=&quot;testimonial&quot;&gt;
+          &lt;blockquote&gt;&lt;p&gt;Git sync means my notes live next to my code. Brilliant.&lt;/p&gt;&lt;/blockquote&gt;
+          &lt;figcaption&gt;
+            &lt;img src=&quot;/img/grace.webp&quot; alt=&quot;&quot; width=&quot;48&quot; height=&quot;48&quot; loading=&quot;lazy&quot;&gt;
+            &lt;span&gt;&lt;strong&gt;Grace Hopper&lt;/strong&gt;&lt;br&gt;Platform lead&lt;/span&gt;
+          &lt;/figcaption&gt;
+        &lt;/figure&gt;
+      &lt;/li&gt;
+      &lt;li class=&quot;card&quot;&gt;
+        &lt;figure class=&quot;testimonial&quot;&gt;
+          &lt;blockquote&gt;&lt;p&gt;Search is instant, even with ten thousand notes.&lt;/p&gt;&lt;/blockquote&gt;
+          &lt;figcaption&gt;
+            &lt;img src=&quot;/img/alan.webp&quot; alt=&quot;&quot; width=&quot;48&quot; height=&quot;48&quot; loading=&quot;lazy&quot;&gt;
+            &lt;span&gt;&lt;strong&gt;Alan Turing&lt;/strong&gt;&lt;br&gt;Data scientist&lt;/span&gt;
+          &lt;/figcaption&gt;
+        &lt;/figure&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;style&gt;
+  .testimonial-grid {
+    display: grid;
+    gap: var(--space-m);
+    list-style: none;
+    padding: 0;
+  }
+  @media (min-width: 56rem) {
+    .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .testimonial blockquote { font-size: 1.125rem; margin-bottom: var(--space-m); }
+  .testimonial figcaption { display: flex; align-items: center; gap: var(--space-s); color: var(--color-muted); }
+  .testimonial img { border-radius: 50%; }
+&lt;/style&gt;"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="css-modern-layout-project" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext learn-upnext--done" href="/learn/programming/" data-complete-on-click><span class="learn-upnext-label">Last lesson</span><strong>Finish HTML &amp; CSS</strong><small>Mark this lesson complete and pick your next course.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/htmlcss/animations/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/" data-complete-on-click>Finish course</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>CASE and Conditional Logic | SQL Tutorial | stackcone</title>
+  <meta name="description" content="Branch inside a query with CASE, and reshape rows into columns with conditional aggregation. Free SQL lesson 7 of 17 with runnable examples and exercises.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/sql/case-conditionals/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/sql/case-conditionals/">
+  <meta property="og:title" content="CASE and Conditional Logic | SQL Tutorial | stackcone">
+  <meta property="og:description" content="Branch inside a query with CASE, and reshape rows into columns with conditional aggregation. Free SQL lesson 7 of 17 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CASE and Conditional Logic | SQL Tutorial | stackcone">
+  <meta name="twitter:description" content="Branch inside a query with CASE, and reshape rows into columns with conditional aggregation. Free SQL lesson 7 of 17 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/sql/subqueries/">
+  <link rel="next" href="https://stackcone.com/learn/programming/sql/string-functions/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "SQL", "item": "https://stackcone.com/learn/programming/sql/introduction/"}, {"@type": "ListItem", "position": 4, "name": "CASE and Conditional Logic", "item": "https://stackcone.com/learn/programming/sql/case-conditionals/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "CASE and Conditional Logic", "headline": "CASE and Conditional Logic", "description": "Branch inside a query with CASE, and reshape rows into columns with conditional aggregation. Free SQL lesson 7 of 17 with runnable examples and exercises.", "url": "https://stackcone.com/learn/programming/sql/case-conditionals/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT14M", "isAccessibleForFree": true, "teaches": ["Label rows with CASE", "Handle NULL with COALESCE and NULLIF", "Pivot rows into columns with conditional aggregation"], "position": 7, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "SQL Course", "url": "https://stackcone.com/learn/programming/sql/introduction/", "description": "Query, filter, join and aggregate data in relational databases.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/sql/introduction/">SQL</a> / <span aria-current="page">CASE and Conditional Logic</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="sql">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/sql/introduction/">SQL</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn SQL from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="SQL lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/sql/introduction/" data-lesson="sql-introduction" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Databases and SQL Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/select-where/" data-lesson="sql-select-where" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">SELECT and WHERE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/sorting-aggregates/" data-lesson="sql-sorting-aggregates" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Sorting and Aggregates</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/joins/" data-lesson="sql-joins" data-minutes="17"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Joins</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/set-operations/" data-lesson="sql-set-operations" data-minutes="12"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">UNION, INTERSECT and EXCEPT</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/subqueries/" data-lesson="sql-subqueries" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Subqueries and EXISTS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/sql/case-conditionals/" aria-current="page" data-lesson="sql-case-conditionals" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">CASE and Conditional Logic</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/string-functions/" data-lesson="sql-string-functions" data-minutes="13"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">String Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/date-time/" data-lesson="sql-date-time" data-minutes="14"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates and Times</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/numeric-functions/" data-lesson="sql-numeric-functions" data-minutes="12"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Numbers, Rounding and Ratios</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/cte/" data-lesson="sql-cte" data-minutes="15"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">CTEs and Recursive Queries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/window-functions/" data-lesson="sql-window-functions" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Window Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/modifying-data/" data-lesson="sql-modifying-data" data-minutes="12"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">INSERT, UPDATE, DELETE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/schema-design/" data-lesson="sql-schema-design" data-minutes="15"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Creating Tables and Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/views/" data-lesson="sql-views" data-minutes="10"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Views</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/indexes-performance/" data-lesson="sql-indexes-performance" data-minutes="14"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Indexes and Query Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/interview-patterns/" data-lesson="sql-interview-patterns" data-minutes="20"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">SQL Interview Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/sql/introduction/">SQL</a> · Lesson 7 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/sql/subqueries/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="sql-case-conditionals" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/sql/string-functions/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>CASE and Conditional Logic</h1>
+          <p class="learn-summary">Branch inside a query with CASE, and reshape rows into columns with conditional aggregation.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>14 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/sql/subqueries/">Lesson 6: Subqueries and EXISTS</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Label rows with CASE</li><li>Handle NULL with COALESCE and NULLIF</li><li>Pivot rows into columns with conditional aggregation</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>SQL has no <code>if</code> statement, because a query is not a program that steps through rows. What it has is <code>CASE</code>, an expression that produces a different value depending on the row it is looking at.</p>
+      <h2>CASE WHEN ... THEN ... ELSE</h2>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name, age,
+       CASE
+         WHEN age &lt; 30 THEN &#x27;under 30&#x27;
+         WHEN age &lt; 40 THEN &#x27;30s&#x27;
+         ELSE &#x27;40 and up&#x27;
+       END AS band
+FROM customers;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | age | band
+------+----+----------
+Ada   | 36  | 30s
+Linus | 28  | under 30
+Grace | 45  | 40 and up</pre></div>
+      <p>Branches are tested top to bottom and the first match wins, so order them from most to least specific. Without an <code>ELSE</code>, a row matching nothing gets <code>NULL</code>.</p>
+      <h2>CASE works anywhere an expression does</h2>
+      <p>It is not limited to the select list. Sorting by a <code>CASE</code> is how you get a custom order that is not alphabetical.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT id, status, total
+FROM orders
+ORDER BY CASE status
+  WHEN &#x27;paid&#x27; THEN 1
+  WHEN &#x27;refunded&#x27; THEN 2
+  ELSE 3
+END, total DESC;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id | status   | total
+---+---------+------
+10 | paid     | 120
+11 | paid     | 35.5
+12 | refunded | 80</pre></div>
+      <h2>Conditional aggregation: rows into columns</h2>
+      <p>This is the single most useful trick in the lesson. Put a <code>CASE</code> <em>inside</em> an aggregate and each branch becomes its own column — a pivot table, without any special pivot syntax.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT country,
+       COUNT(*) AS trans_count,
+       SUM(CASE WHEN state = &#x27;approved&#x27; THEN 1 ELSE 0 END) AS approved_count,
+       SUM(amount) AS trans_total,
+       SUM(CASE WHEN state = &#x27;approved&#x27; THEN amount ELSE 0 END) AS approved_total
+FROM transactions
+GROUP BY country;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>country | trans_count | approved_count | trans_total | approved_total
+--------+------------+---------------+------------+---------------
+DE      | 2           | 1              | 2500        | 2000
+US      | 3           | 2              | 5000        | 3000</pre></div>
+      <p>That is LeetCode 1193 <em>Monthly Transactions I</em> almost verbatim. Note the two shapes: <code>SUM(CASE WHEN cond THEN 1 ELSE 0 END)</code> counts matches, and <code>SUM(CASE WHEN cond THEN value ELSE 0 END)</code> totals them.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>COUNT counts NULLs away</p><p class="learn-callout-body"><code>COUNT(CASE WHEN cond THEN 1 END)</code> works too, without an <code>ELSE</code>: <code>COUNT</code> ignores <code>NULL</code>, so unmatched rows simply are not counted. Do <em>not</em> write <code>COUNT(CASE WHEN cond THEN 1 ELSE 0 END)</code> — that counts every row, because 0 is not NULL.</p></aside>
+      <h2>Flipping a value in place</h2>
+      <p>A <code>CASE</code> in an <code>UPDATE</code> swaps values in one pass, with no temporary table.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>UPDATE customers
+SET country = CASE country WHEN &#x27;UK&#x27; THEN &#x27;US&#x27; WHEN &#x27;US&#x27; THEN &#x27;UK&#x27; ELSE country END;
+SELECT id, name, country FROM customers;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3 rows affected.
+
+id | name  | country
+---+------+--------
+1  | Ada   | US
+2  | Linus | FI
+3  | Grace | UK</pre></div>
+      <h2>COALESCE, NULLIF and IIF</h2>
+      <ul><li><code>COALESCE(a, b, c)</code> returns the first argument that is not <code>NULL</code>.</li><li><code>NULLIF(a, b)</code> returns <code>NULL</code> when the two are equal — the standard guard against dividing by zero.</li><li><code>IIF(cond, yes, no)</code> is shorthand for a two-branch <code>CASE</code>.</li></ul>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT name,
+       COALESCE(phone, &#x27;no phone&#x27;) AS phone,
+       IIF(age &gt;= 40, &#x27;senior&#x27;, &#x27;regular&#x27;) AS tier
+FROM customers;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name  | phone            | tier
+------+-----------------+--------
+Ada   | +44 20 7946 0958 | regular
+Linus | no phone         | regular
+Grace | +1 202 555 0143  | senior</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Dialect differences</p><p class="learn-callout-body">MySQL writes <code>IF(cond, yes, no)</code> and <code>IFNULL(a, b)</code>; SQLite has <code>IIF</code> and <code>IFNULL</code>; Postgres has neither and wants a plain <code>CASE</code>. <code>COALESCE</code>, <code>NULLIF</code> and <code>CASE</code> are standard and work everywhere — prefer them in code that has to travel.</p></aside>
+      <h2>Key takeaways</h2>
+      <ul><li><code>CASE</code> is an expression, so it works in <code>SELECT</code>, <code>WHERE</code>, <code>ORDER BY</code> and <code>UPDATE</code>.</li><li>First matching branch wins; no <code>ELSE</code> means <code>NULL</code>.</li><li><code>SUM(CASE ...)</code> turns rows into columns — conditional aggregation.</li><li><code>COALESCE</code> and <code>NULLIF</code> are the portable NULL tools.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Label every node in the <code>tree</code> table as <code>Root</code> (no parent), <code>Inner</code> (has a parent and is some node’s parent) or <code>Leaf</code>, ordered by id. This is LeetCode 608 <em>Tree Node</em>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT id,
+       CASE
+         WHEN p_id IS NULL THEN &#x27;Root&#x27;
+         WHEN id IN (SELECT p_id FROM tree WHERE p_id IS NOT NULL) THEN &#x27;Inner&#x27;
+         ELSE &#x27;Leaf&#x27;
+       END AS type
+FROM tree
+ORDER BY id;"><pre><code>-- Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="sql-case-conditionals" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/sql/string-functions/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 8</span><strong>String Functions</strong><small>Clean, cut, join and match text: LENGTH, SUBSTR, UPPER, TRIM, REPLACE and pattern matching.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/sql/subqueries/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/sql/string-functions/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/sql-runner.js?v=9" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

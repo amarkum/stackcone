@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Every Term, Explained | System Design Tutorial | stackcone</title>
+  <meta name="description" content="Scaling, sharding, caching, replication, quorums, idempotency and 40 more terms — one by one. Free System Design lesson 2 of 18 with runnable examples and exercises.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/sysdesign/concepts/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/sysdesign/concepts/">
+  <meta property="og:title" content="Every Term, Explained | System Design Tutorial | stackcone">
+  <meta property="og:description" content="Scaling, sharding, caching, replication, quorums, idempotency and 40 more terms — one by one. Free System Design lesson 2 of 18 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Every Term, Explained | System Design Tutorial | stackcone">
+  <meta name="twitter:description" content="Scaling, sharding, caching, replication, quorums, idempotency and 40 more terms — one by one. Free System Design lesson 2 of 18 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/sysdesign/scaling-caching/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "System Design", "item": "https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/"}, {"@type": "ListItem", "position": 4, "name": "Every Term, Explained", "item": "https://stackcone.com/learn/ds-algo/sysdesign/concepts/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Every Term, Explained", "headline": "Every Term, Explained", "description": "Scaling, sharding, caching, replication, quorums, idempotency and 40 more terms — one by one. Free System Design lesson 2 of 18 with runnable examples and exercises.", "url": "https://stackcone.com/learn/ds-algo/sysdesign/concepts/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT30M", "isAccessibleForFree": true, "teaches": ["Define every term interviewers use", "Know which problem each one solves", "Pick the right tool per bottleneck"], "position": 2, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "System Design Course", "url": "https://stackcone.com/learn/ds-algo/sysdesign/fundamentals/", "description": "Scalability, caching, databases, queues and how to design real systems.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> / <span aria-current="page">Every Term, Explained</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="sysdesign">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a></p>
+              <p class="learn-sidebar-tagline">18 lessons · Learn System Design from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 18 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="System Design lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/fundamentals/" data-lesson="sysdesign-fundamentals" data-minutes="22"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">System Design Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/sysdesign/concepts/" aria-current="page" data-lesson="sysdesign-concepts" data-minutes="30"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Every Term, Explained</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/scaling-caching/" data-lesson="sysdesign-scaling-caching" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Scaling and Caching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/databases/" data-lesson="sysdesign-databases" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Choosing and Scaling Databases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/queues-apis/" data-lesson="sysdesign-queues-apis" data-minutes="18"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Queues, APIs and Reliability</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/lld/" data-lesson="sysdesign-lld" data-minutes="32"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Low-Level Design: Classes, APIs and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/unique-id/" data-lesson="sysdesign-unique-id" data-minutes="35"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Unique ID Generator</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/case-study/" data-lesson="sysdesign-case-study" data-minutes="40"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">URL Shortener</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/rate-limiter/" data-lesson="sysdesign-rate-limiter" data-minutes="38"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Rate Limiter</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/kv-store/" data-lesson="sysdesign-kv-store" data-minutes="40"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Key-Value Store and Pastebin</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/news-feed/" data-lesson="sysdesign-news-feed" data-minutes="42"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">News Feed (Twitter / Instagram)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/chat/" data-lesson="sysdesign-chat" data-minutes="42"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Chat System (WhatsApp / Messenger)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/video/" data-lesson="sysdesign-video" data-minutes="40"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Video Streaming (YouTube)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/drive/" data-lesson="sysdesign-drive" data-minutes="38"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Storage (Dropbox / Drive)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/crawler/" data-lesson="sysdesign-crawler" data-minutes="36"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Web Crawler</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/typeahead/" data-lesson="sysdesign-typeahead" data-minutes="38"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Typeahead and Nearby Search</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/notifications/" data-lesson="sysdesign-notifications" data-minutes="40"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Notification System</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/sysdesign/food-delivery/" data-lesson="sysdesign-food-delivery" data-minutes="50"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Capstone: Food Delivery (Swiggy / DoorDash)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/sysdesign/fundamentals/">System Design</a> · Lesson 2 of 18</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/sysdesign/fundamentals/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="sysdesign-concepts" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/sysdesign/scaling-caching/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Every Term, Explained</h1>
+          <p class="learn-summary">Scaling, sharding, caching, replication, quorums, idempotency and 40 more terms — one by one.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/sysdesign/fundamentals/">Lesson 1: System Design Fundamentals</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Define every term interviewers use</li><li>Know which problem each one solves</li><li>Pick the right tool per bottleneck</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 18 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 18</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 10 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Interviewers throw around forty or fifty words as if everyone agrees on them: <em>shard</em>, <em>partition</em>, <em>quorum</em>, <em>idempotent</em>, <em>backpressure</em>. This lesson defines them one at a time. For each term: what it means, the problem it solves, and the cost you pay. Read it once end to end, then come back to it as a dictionary while you work through the case studies.</p>
+      <p>Everything below fits one mental model. A request travels client → DNS → CDN → load balancer → app server → cache → database, and every term names either a stage on that path, a way of multiplying a stage, or a way of surviving a stage failing.</p>
+<div class="diagram-wrap" data-diagram-title="Where every term lives"><button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen"><img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="" aria-hidden="true"></button><div class="diagram-body"><div class="mermaid-pending">flowchart LR
+  C[Client] --> DNS[DNS / GSLB]
+  DNS --> CDN[CDN edge]
+  CDN --> LB[Load balancer]
+  LB --> GW[API gateway]
+  GW --> APP[App servers<br/>stateless]
+  APP --> CACHE[(Cache)]
+  APP --> DB[(Database<br/>primary)]
+  DB --> REP[(Replicas)]
+  DB --> SH[(Shards)]
+  APP --> Q[(Queue)]
+  Q --> W[Workers]
+  APP --> OBJ[(Object storage)]</div></div><p class="diagram-caption">Every term in this lesson is a box on this path, a way to duplicate a box, or a way to keep working when a box dies.</p></div>
+
+<h2>1. Scaling</h2>
+<h3>Vertical scaling (scale up)</h3>
+<p>Buy a bigger machine: more CPU, more RAM, faster NVMe. <strong>Solves:</strong> load, with zero code change — this is genuinely the right first answer for most systems. <strong>Costs:</strong> a hard ceiling (there is a largest instance), price grows faster than capacity, and one machine is one failure domain. You still need a second machine for availability.</p>
+<h3>Horizontal scaling (scale out)</h3>
+<p>Run many identical machines behind a load balancer. <strong>Solves:</strong> unbounded capacity and redundancy. <strong>Costs:</strong> you must now handle coordination — where does session state live, how do you find a peer, how do you avoid two workers doing the same job. Horizontal scaling is easy for stateless servers and hard for databases; that asymmetry drives most of system design.</p>
+<h3>Stateless vs stateful</h3>
+<p>A <strong>stateless</strong> service keeps nothing important in local memory or disk: any server can serve any request, so you can add, kill or restart machines freely. A <strong>stateful</strong> service owns data (a database, a cache node, a WebSocket connection) so requests care <em>which</em> instance they reach. Make app servers stateless by pushing session data into Redis or a signed token (JWT) and files into object storage.</p>
+<h3>Sticky sessions (session affinity)</h3>
+<p>The load balancer pins a client to one server (by cookie or IP hash). <strong>Solves:</strong> in-memory session or an open WebSocket. <strong>Costs:</strong> uneven load, and a deploy or crash drops that user's state. Prefer statelessness; use stickiness only for long-lived connections.</p>
+<h3>Bottleneck</h3>
+<p>The single resource that saturates first — CPU, memory, disk IOPS, network, database connections, or a lock. Scaling anything else changes nothing. Interviewers want you to <em>name</em> the bottleneck before proposing a fix.</p>
+
+<h2>2. Getting the request to a server</h2>
+<h3>DNS and GSLB</h3>
+<p>DNS maps a name to IPs and is your cheapest load balancer: return several A records, or return a <em>different</em> IP per region (GSLB / geo-DNS / anycast) so users hit the nearest datacenter. <strong>Costs:</strong> TTL caching means DNS failover takes minutes, not seconds, so never rely on DNS alone for fast failover.</p>
+<h3>Load balancer</h3>
+<p>Spreads requests over healthy servers and hides individual failures. <strong>Layer 4</strong> balances TCP/UDP by IP and port — fast, protocol-blind. <strong>Layer 7</strong> reads HTTP, so it can route by path or header, terminate TLS, retry, and compress — flexible, slightly slower. Algorithms: <em>round robin</em> (simple), <em>least connections</em> (better with uneven request cost), <em>least response time</em>, <em>random with two choices</em> (nearly as good as least-connections without global state), and <em>hash on a key</em> (sends the same user or key to the same server).</p>
+<h3>Health check</h3>
+<p>The balancer polls <code>/health</code> and removes failing instances. Make it check real dependencies shallowly — a health check that pings the database can take your whole fleet out of rotation when the database hiccups. Separate <em>liveness</em> (am I alive — restart me if not) from <em>readiness</em> (should I get traffic right now).</p>
+<h3>Reverse proxy and API gateway</h3>
+<p>A <strong>reverse proxy</strong> (nginx, Envoy) sits in front of app servers to terminate TLS, cache, compress and buffer slow clients. An <strong>API gateway</strong> adds product concerns: authentication, rate limiting, quotas, request validation, routing to many microservices, API versioning and usage metering. One place to enforce cross-cutting rules; also one more hop and one more thing that can fall over.</p>
+<h3>CDN (content delivery network)</h3>
+<p>Hundreds of edge locations cache your static assets — images, JS, video segments — near users. <strong>Solves:</strong> latency (100 ms across an ocean becomes 10 ms), and bandwidth cost on your origin. <strong>Costs:</strong> invalidation is now a problem (fix it with content-hashed filenames like <code>app.7f3a91.js</code> and long <code>Cache-Control</code>), and per-GB egress is a real line item.</p>
+<h3>Object storage (blob store)</h3>
+<p>S3, GCS, Azure Blob: cheap, effectively infinite, durable storage for immutable files, addressed by key, served through a CDN. Never store photos or videos in your relational database — store the bytes in object storage and the <em>key plus metadata</em> in the DB. Uploads go straight from the client to the store with a <strong>pre-signed URL</strong>, so the bytes never touch your app servers.</p>
+
+<h2>3. Caching</h2>
+<h3>Cache</h3>
+<p>A small, fast copy of data you will read again soon. <strong>Solves:</strong> read latency and database load — in a 100:1 read-heavy product, a 90% hit rate removes 90% of database reads. <strong>Costs:</strong> staleness, memory cost, one more failure mode, and a whole class of consistency bugs.</p>
+<h3>The cache layers</h3>
+<ul><li><strong>Browser / client cache</strong>: free, closest, hardest to invalidate.</li><li><strong>CDN / edge cache</strong>: static and public content.</li><li><strong>Application in-process cache</strong>: nanoseconds, but each server has its own copy, so N servers means N versions of the truth.</li><li><strong>Distributed cache</strong> (Redis, Memcached): sub-millisecond, shared by all servers — the workhorse.</li><li><strong>Database buffer pool / query cache</strong>: the DB caching its own hot pages.</li></ul>
+<h3>Hit rate, hot key, working set</h3>
+<p><strong>Hit rate</strong> is the fraction of reads served by cache. The <strong>working set</strong> is the data actively being read — size your cache for that, not the whole dataset (Pareto: 20% of items get 80% of traffic). A <strong>hot key</strong> is one item so popular it saturates a single cache node (a celebrity profile, a viral link); fix it by replicating that key to several nodes or caching it locally in every app server for a few seconds.</p>
+<h3>Eviction policies</h3>
+<p><strong>LRU</strong> (least recently used) — the sane default. <strong>LFU</strong> (least frequently used) — better when popularity is stable, resists a scan wiping your cache. <strong>FIFO</strong> — cheap, worse. <strong>TTL</strong> — every entry expires after N seconds, which bounds staleness regardless of policy.</p>
+<h3>Read patterns</h3>
+<p><strong>Cache-aside (lazy loading)</strong>: app checks the cache, on a miss reads the DB and writes the cache. Only requested data is cached; every miss pays double latency. <strong>Read-through</strong>: the cache library does it for you. See lesson 3 for code.</p>
+<h3>Write patterns</h3>
+<ul><li><strong>Write-through</strong>: write cache and DB together. Cache is always warm and fresh; writes are slower.</li><li><strong>Write-around</strong>: write only the DB and invalidate the key. Best when written data is rarely read straight back.</li><li><strong>Write-back (write-behind)</strong>: write the cache, flush to the DB asynchronously. Fastest writes, and you lose data if the cache node dies before the flush.</li></ul>
+<h3>Cache stampede, thundering herd, penetration</h3>
+<p>A popular key expires and a thousand concurrent requests all miss and all hit the database at once — a <strong>stampede</strong>. Fixes: add random <strong>jitter</strong> to TTLs so keys do not expire together; take a short per-key lock so one request refills while others wait or serve stale; refresh hot keys in the background before expiry. <strong>Cache penetration</strong> is repeated lookups for keys that do not exist — cache the negative result, or put a <em>bloom filter</em> in front.</p>
+
+<h2>4. Databases: replication</h2>
+<h3>Replication</h3>
+<p>Keep copies of the same data on several machines. <strong>Solves:</strong> read capacity, durability, and failover. <strong>Costs:</strong> copies can disagree.</p>
+<h3>Leader–follower (primary–replica)</h3>
+<p>All writes go to one leader, which streams its change log to followers that serve reads. <strong>Synchronous</strong> replication waits for a follower to acknowledge — no data loss on failover, higher write latency, and a stalled follower stalls writes. <strong>Asynchronous</strong> is fast but a leader crash loses the last few writes. Common middle ground: <em>semi-synchronous</em> — one synchronous follower, the rest async.</p>
+<h3>Replication lag and read-your-writes</h3>
+<p>A follower is milliseconds to seconds behind. The classic bug: a user posts a comment, the next read hits a lagging replica, and their own comment is missing. Fixes: read from the leader for that user for a few seconds, route a session's reads to one replica (<strong>monotonic reads</strong>), or track a write timestamp / log position per session and only use a replica that has caught up.</p>
+<h3>Failover, split brain, fencing</h3>
+<p><strong>Failover</strong> promotes a follower when the leader dies — automatically (fast, risky) or manually (safe, slow). <strong>Split brain</strong> is two nodes both believing they are leader, each accepting writes; you resolve it with a majority-based election and <strong>fencing</strong> (a monotonically increasing term or epoch number so the old leader's writes get rejected).</p>
+<h3>Multi-leader and leaderless</h3>
+<p><strong>Multi-leader</strong>: several regions accept writes, so local writes are fast — but concurrent edits to the same row conflict and must be merged (last-write-wins, per-field merge, CRDTs, or ask the user). <strong>Leaderless</strong> (Dynamo, Cassandra): the client writes to several replicas directly and reads from several, using quorums.</p>
+<h3>Quorum: N, W, R</h3>
+<p>With <strong>N</strong> replicas, a write waits for <strong>W</strong> acknowledgements and a read collects <strong>R</strong> responses. If <strong>W + R &gt; N</strong>, any read overlaps at least one up-to-date replica, giving strong consistency. <code>N=3, W=2, R=2</code> is the standard balanced choice; <code>W=1</code> gives fast writes and stale reads; <code>R=1</code> gives fast reads and possibly stale data. <strong>Hinted handoff</strong> parks writes for a down replica on a neighbour; <strong>anti-entropy</strong> (Merkle-tree comparison) repairs divergence later.</p>
+
+<h2>5. Databases: partitioning and sharding</h2>
+<h3>Partitioning vs sharding</h3>
+<p><strong>Partitioning</strong> is splitting one logical table into pieces — it can be <em>vertical</em> (some columns to another table or service — move that rarely-read <code>bio TEXT</code> off the hot row) or <em>horizontal</em> (some rows to another place). <strong>Sharding</strong> is horizontal partitioning across <em>separate machines</em>, each with its own CPU, memory and disk. Loosely: partitioning splits data, sharding splits data <em>and</em> the hardware. <strong>Solves:</strong> a dataset or write rate one machine cannot hold. <strong>Costs:</strong> cross-shard queries, cross-shard transactions, rebalancing, and hot shards — this is the most expensive decision in the lesson, so do it last.</p>
+<h3>Shard key</h3>
+<p>The column used to route a row (<code>user_id</code>, <code>tenant_id</code>, <code>video_id</code>). Pick one that (a) appears in nearly every query, so you hit one shard, and (b) spreads traffic evenly. Sharding a chat app by <code>user_id</code> means one user's messages are in one place; sharding it by <code>message_id</code> means every conversation read touches every shard.</p>
+<h3>Sharding strategies</h3>
+<ul><li><strong>Range-based</strong>: A–F on shard 1, G–M on shard 2. Range scans stay local; skewed data creates hot shards (everyone named "S", or all of today's rows if you shard by time).</li><li><strong>Hash-based</strong>: <code>shard = hash(key) % num_shards</code>. Even distribution, no range scans, and changing <code>num_shards</code> moves almost all data.</li><li><strong>Consistent hashing</strong>: place shards and keys on a hash ring; a key belongs to the next node clockwise. Adding or removing a node moves only <code>1/N</code> of keys. <strong>Virtual nodes</strong> (each physical node holds ~100–300 ring positions) smooth out imbalance and let heterogeneous machines carry different weights. Used by Cassandra, DynamoDB and Memcached clients.</li><li><strong>Directory-based</strong>: a lookup service maps key → shard. Maximum flexibility (move a big tenant to its own shard), plus one more service in the critical path.</li><li><strong>Geo / entity-based</strong>: shard by region or tenant, for latency and data-residency rules.</li></ul>
+<h3>Hot spot, skew, resharding</h3>
+<p>A <strong>hot spot</strong> is one shard or key taking a disproportionate share of traffic — usually a celebrity, a viral item, or a monotonically increasing key that sends every new write to the last shard. Fixes: salt the key (<code>celebrity_id:bucket_0..15</code>), split that key's data, cache it hard, or dedicate a shard. <strong>Resharding</strong> is splitting shards as you grow: doubling shard count, or pre-creating many logical shards (say 1,024) and mapping several onto each physical machine so growth is a move, not a rehash.</p>
+<h3>Federation and celebrity/fan-out problems</h3>
+<p><strong>Federation</strong> splits by feature into separate databases (users DB, orders DB, analytics DB) — easy early wins, no cross-DB joins. <strong>Fan-out</strong> is one write producing many follow-up writes (a tweet delivered to 40 million followers); hybrid fan-out — push for normal users, pull for celebrities — is the standard answer (lesson 11).</p>
+
+<h2>6. Databases: modelling and engines</h2>
+<h3>SQL vs NoSQL</h3>
+<p>Relational databases give you a fixed schema, joins, secondary indexes and real transactions — the right default whenever you have relationships and need correctness. NoSQL is a family: <strong>key-value</strong> (Redis, DynamoDB), <strong>document</strong> (MongoDB), <strong>wide-column</strong> (Cassandra, HBase — huge write volume, queries by known key), <strong>graph</strong> (Neo4j — relationships as first-class), <strong>time-series</strong> (InfluxDB, Timescale), <strong>search</strong> (Elasticsearch — inverted index, full-text, ranking). Choose NoSQL for a stated reason: write volume, flexible shape, horizontal scale, or a specific access pattern — not because it is new.</p>
+<h3>ACID vs BASE</h3>
+<p><strong>ACID</strong>: Atomicity (all or nothing), Consistency (invariants hold), Isolation (concurrent transactions do not corrupt each other), Durability (committed means on disk). <strong>BASE</strong>: Basically Available, Soft state, Eventually consistent — the relaxed contract most distributed stores offer.</p>
+<h3>Isolation levels</h3>
+<p>From weak to strong: <em>read uncommitted</em> (dirty reads), <em>read committed</em> (the common default), <em>repeatable read / snapshot</em> (no changing rows mid-transaction; write skew still possible), <em>serializable</em> (as if transactions ran one at a time — correct and slowest). Know the anomalies by name: <strong>dirty read</strong>, <strong>non-repeatable read</strong>, <strong>phantom read</strong>, <strong>lost update</strong>, <strong>write skew</strong>.</p>
+<h3>Index</h3>
+<p>A separate sorted structure mapping column values to rows, turning a full scan into a lookup. <strong>Costs:</strong> every write must update every index, and indexes take space. A <strong>composite index</strong> on <code>(user_id, created_at)</code> serves "this user's recent rows" in one range read — column order matters. A <strong>covering index</strong> contains every column the query needs, so the table itself is never touched.</p>
+<h3>Normalization and denormalization</h3>
+<p><strong>Normalized</strong> means each fact is stored once — no update anomalies, but reads need joins. <strong>Denormalized</strong> duplicates data (storing <code>author_name</code> next to each post, or a pre-computed timeline row) so a read is one lookup. Reads get fast; writes get more expensive and you own the job of keeping copies in step. Denormalize deliberately, for a measured read path.</p>
+<h3>B-tree vs LSM tree</h3>
+<p><strong>B-tree</strong> (Postgres, MySQL/InnoDB): updates pages in place, excellent reads and range scans, random write I/O. <strong>LSM tree</strong> (Cassandra, RocksDB, LevelDB): appends to an in-memory <em>memtable</em>, flushes sorted <em>SSTables</em> to disk, merges them during <strong>compaction</strong> — superb write throughput, reads may touch several files, and compaction costs background I/O. Write-heavy workload → LSM; read and range heavy → B-tree.</p>
+<h3>WAL, bloom filter, checksum</h3>
+<p>A <strong>write-ahead log</strong> records every change before applying it, so a crash can be replayed — it is also the stream replication and change-data-capture read from. A <strong>bloom filter</strong> is a small bit array that answers "is this key definitely absent, or probably present?" with no false negatives — it saves LSM engines and caches from pointless disk reads. A <strong>checksum</strong> detects silent corruption on disk or over the wire.</p>
+<h3>MVCC and locking</h3>
+<p><strong>MVCC</strong> (multi-version concurrency control) keeps multiple row versions so readers never block writers. <strong>Pessimistic locking</strong> takes a lock up front (<code>SELECT ... FOR UPDATE</code>) — correct under contention, risks deadlocks. <strong>Optimistic locking</strong> reads a version number and fails the write if it changed (<code>UPDATE ... WHERE version = 7</code>) — better when conflicts are rare.</p>
+<h3>Distributed transactions: 2PC and sagas</h3>
+<p><strong>Two-phase commit</strong> has a coordinator ask every participant to prepare, then commit — atomic across services, but it blocks if the coordinator dies and it scales poorly. A <strong>saga</strong> replaces one distributed transaction with a sequence of local transactions plus <em>compensating</em> actions (charge the card; if dispatch fails, refund). Sagas are eventually consistent and are what real systems use. The <strong>outbox pattern</strong> makes this safe: write the row and the event to the same database transaction, and a separate process publishes the event — no lost or phantom messages.</p>
+
+<h2>7. Consistency and the CAP trade-off</h2>
+<h3>CAP</h3>
+<p>During a network <strong>partition</strong> you must choose: refuse requests to stay consistent (<strong>CP</strong> — payments, inventory, bookings) or answer with possibly stale data to stay available (<strong>AP</strong> — feeds, likes, recommendations). "CA" is not an option on a real network. <strong>PACELC</strong> extends it: <em>else</em>, when there is no partition, you still trade latency against consistency, because stronger guarantees mean more round trips.</p>
+<h3>Consistency models, strongest first</h3>
+<ul><li><strong>Linearizable / strong</strong>: every read sees the latest committed write, as if there were one copy.</li><li><strong>Sequential / causal</strong>: operations that depend on each other are seen in order by everyone (your reply never appears before the message it replies to).</li><li><strong>Read-your-writes</strong>: you always see your own changes; others may lag.</li><li><strong>Monotonic reads</strong>: you never see time go backwards.</li><li><strong>Eventual</strong>: given no new writes, all replicas converge — eventually.</li></ul>
+<p>Name the model per feature, not per system: a shopping app can be eventual for the product-view counter and linearizable for the checkout.</p>
+<h3>Idempotency</h3>
+<p>An operation is <strong>idempotent</strong> when doing it twice has the same effect as doing it once. Since every network call can time out and be retried, this is the property that keeps you from double-charging a card. Implement it with a client-supplied <strong>idempotency key</strong>: store <code>key → result</code>, and on a repeat return the stored result instead of re-executing. <code>GET</code>, <code>PUT</code> and <code>DELETE</code> are naturally idempotent; <code>POST</code> is not, so it needs a key.</p>
+<h3>Exactly-once, at-least-once, at-most-once</h3>
+<p>Messaging gives you <strong>at-least-once</strong> (may duplicate) or <strong>at-most-once</strong> (may lose). True exactly-once delivery is impossible across a network; <em>exactly-once processing</em> is achievable by combining at-least-once delivery with idempotent consumers or a dedupe table.</p>
+
+<h2>8. Asynchronous work</h2>
+<h3>Message queue and log</h3>
+<p>A <strong>queue</strong> (SQS, RabbitMQ) hands each message to one consumer and then forgets it. A <strong>log</strong> (Kafka, Kinesis) is an append-only ordered record that many independent consumer groups read at their own offset, and can replay. <strong>Solves:</strong> decoupling producers from consumers, absorbing traffic spikes, retries, and keeping slow work off the request path. <strong>Costs:</strong> eventual consistency, duplicate delivery, ordering caveats, and operational weight.</p>
+<h3>Partition, consumer group, offset</h3>
+<p>A Kafka topic is split into <strong>partitions</strong>; order is guaranteed only <em>within</em> a partition, so choose a partition key (say <code>conversation_id</code>) that puts things needing order together. Each <strong>consumer group</strong> tracks its own <strong>offset</strong>, so adding a new consumer never steals another's messages.</p>
+<h3>Dead letter queue and poison pill</h3>
+<p>A message that keeps failing (a <strong>poison pill</strong>) would block or loop forever. After N attempts, move it to a <strong>dead letter queue</strong> for humans, and keep the pipeline flowing.</p>
+<h3>Backpressure</h3>
+<p>When downstream cannot keep up, the system must push back — bounded queues, rejecting with <code>429</code>, slowing producers, or shedding low-priority load. Without backpressure, queues grow without bound, memory fills, latency explodes and the failure arrives all at once instead of gracefully.</p>
+<h3>Batching, coalescing, debouncing</h3>
+<p>Group many small operations into one to amortise overhead: batch 1,000 events into a single insert, coalesce repeated invalidations of the same key, debounce a burst of edits into one notification. Throughput improves, per-item latency gets slightly worse.</p>
+<h3>CDC and event sourcing</h3>
+<p><strong>Change data capture</strong> tails the database's WAL and publishes row changes, so caches, search indexes and analytics stay current without dual writes. <strong>Event sourcing</strong> goes further: the log of events <em>is</em> the source of truth, and current state is a projection you can rebuild.</p>
+
+<h2>9. Reliability and failure</h2>
+<h3>Timeout, retry, jitter</h3>
+<p>Always set a timeout — an unbounded wait converts one slow dependency into a fleet-wide outage as threads pile up. Retry only idempotent operations, with a bounded count and <strong>exponential backoff plus jitter</strong> (<code>random(0, base·2^attempt)</code>), so clients do not resynchronise into a <strong>retry storm</strong>. A <strong>retry budget</strong> caps retries as a fraction of total traffic.</p>
+<h3>Circuit breaker, bulkhead, load shedding</h3>
+<p>A <strong>circuit breaker</strong> watches a dependency's error rate; past a threshold it <em>opens</em> and fails fast for a cooldown, then lets a trial request through (<em>half-open</em>) before closing. <strong>Bulkheads</strong> give each dependency its own connection and thread pool, so one slow service cannot consume every worker. <strong>Load shedding</strong> drops the least valuable requests at the edge to keep the rest healthy; <strong>graceful degradation</strong> serves a reduced feature (a cached, unranked feed) instead of an error page.</p>
+<h3>Single point of failure and failure domains</h3>
+<p>Any component whose death takes the system with it. Find it by asking "what if exactly this one thing dies?" for every box in your diagram. Spread replicas across <strong>availability zones</strong> (independent power and network, ~1 ms apart) and, if the product needs it, across <strong>regions</strong> (hundreds of ms apart).</p>
+<h3>Availability math</h3>
+<p>99.9% ≈ 8.8 hours down a year, 99.99% ≈ 53 minutes, 99.999% ≈ 5 minutes. Components <em>in series</em> multiply (0.999 × 0.999 = 0.998), so every added hop costs availability. Redundant components <em>in parallel</em> improve it: two 99% instances give <code>1 − 0.01² = 99.99%</code> — if their failures are genuinely independent.</p>
+<h3>SLI, SLO, SLA, error budget</h3>
+<p>An <strong>SLI</strong> is a measured indicator (p99 latency, success rate). An <strong>SLO</strong> is your internal target ("99.9% of reads under 200 ms over 30 days"). An <strong>SLA</strong> is the contractual promise with penalties — always looser than your SLO. The <strong>error budget</strong> is the allowed failure left over (0.1% of a month ≈ 43 minutes); spend it on releases, and freeze changes when it runs out.</p>
+<h3>RPO and RTO</h3>
+<p><strong>RPO</strong> (recovery point objective) is how much data you can afford to lose — it sets backup and replication frequency. <strong>RTO</strong> (recovery time objective) is how long recovery may take — it sets whether you need a warm standby or can restore from a snapshot. A backup you have never restored is not a backup.</p>
+<h3>Observability</h3>
+<p><strong>Metrics</strong> (cheap numeric time series — rates, errors, durations), <strong>logs</strong> (structured events for detail), <strong>traces</strong> (one request's path and timing across services, via a propagated trace id). Always quote <strong>percentiles</strong>, not averages: the mean hides the tail, and p99 is what your loudest users experience. Watch out for <strong>tail latency amplification</strong> — if one request fans out to 100 services, a 1% slow rate means almost every request is slow.</p>
+
+<h2>10. Traffic control and delivery</h2>
+<h3>Rate limiting and throttling</h3>
+<p><strong>Rate limiting</strong> rejects requests over a quota (<code>429 Too Many Requests</code> with <code>Retry-After</code>) to protect capacity and stop abuse; <strong>throttling</strong> slows or queues them instead. Algorithms — token bucket, leaky bucket, fixed window, sliding window — get a full lesson (lesson 9).</p>
+<h3>Realtime transports</h3>
+<p><strong>Short polling</strong>: ask every few seconds — trivial, wasteful. <strong>Long polling</strong>: the server holds the request open until there is news — decent fallback. <strong>SSE</strong>: one long-lived HTTP stream, server → client only, auto-reconnecting — perfect for feeds and token streaming. <strong>WebSocket</strong>: full-duplex over one TCP connection — the choice for chat and multiplayer, and now you have stateful servers to manage. <strong>gRPC / HTTP&#47;2</strong> streams: efficient service-to-service.</p>
+<h3>Deployment safety</h3>
+<p><strong>Blue-green</strong> runs two full environments and flips traffic (instant rollback, double the cost). <strong>Canary</strong> sends 1% of traffic to the new version and watches the metrics. <strong>Rolling</strong> replaces instances a few at a time. <strong>Feature flags</strong> separate deploying code from enabling behaviour, which makes both rollout and rollback a config change.</p>
+<h3>Consistent hashing, bloom filters, geohash — where they show up</h3>
+<p>Three structures pay for themselves repeatedly: <strong>consistent hashing</strong> for assigning keys to nodes (caches, shards, WebSocket servers), <strong>bloom filters</strong> for cheaply skipping work on absent keys (LSM reads, crawler URL dedupe, "have I sent this notification?"), and <strong>geohash / quadtree / S2</strong> for turning two-dimensional coordinates into one-dimensional prefix-searchable keys (nearby search, lesson 16).</p>
+
+<h2>Numbers to reason with</h2>
+<div class="learn-code-wrap" data-lang="python"><pre><code># Latency, in nanoseconds, so ratios are obvious
+L1_cache            = 1
+main_memory         = 100
+ssd_read            = 100_000          # 100 us
+same_dc_round_trip  = 500_000          # 0.5 ms
+disk_seek           = 10_000_000       # 10 ms
+cross_continent_rtt = 150_000_000      # 150 ms
+
+print("memory vs SSD:      ", ssd_read // main_memory, "x")
+print("SSD vs disk seek:   ", disk_seek // ssd_read, "x")
+print("local vs global hop:", cross_continent_rtt // same_dc_round_trip, "x")
+
+# Why a cache hit rate matters: 4,000 reads/s at a 95% hit rate
+reads = 4_000
+for hit_rate in (0.0, 0.8, 0.95, 0.99):
+    print(f"hit {hit_rate:.0%} -> DB sees {round(reads * (1 - hit_rate))} reads/s")</code></pre></div>
+<div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>memory vs SSD:       1000 x
+SSD vs disk seek:    100 x
+local vs global hop: 300 x
+hit 0% -> DB sees 4000 reads/s
+hit 80% -> DB sees 800 reads/s
+hit 95% -> DB sees 200 reads/s
+hit 99% -> DB sees 40 reads/s
+</pre></div>
+<p>That last block is the whole argument for caching in four lines: a 95% hit rate turns a database problem into a non-problem. It is also the argument for measuring the hit rate, because 80% and 99% differ by 20x in load.</p>
+
+<h2>The order you should reach for these</h2>
+<p>Escalate in this order, and only when a number forces the next step. Most interview candidates lose points by starting at step 7.</p>
+<ol><li>One server, one database. Measure.</li><li>Indexes and query fixes. (Most "we need to shard" is a missing index.)</li><li>Vertical scale.</li><li>Stateless app servers behind a load balancer; CDN for static assets.</li><li>Cache the hot reads.</li><li>Read replicas for read load; queues to move slow work off the request path.</li><li>Shard, or split services, when one machine genuinely cannot hold the write volume or the data.</li></ol>
+<aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Say the cost, not just the name</p><p class="learn-callout-body">Anyone can say "add a cache" or "shard it". What earns the signal is the second half of the sentence: "cache-aside in Redis keyed by code, 10-minute TTL with jitter — accepting up to 10 minutes of staleness on edits, which is fine here because links rarely change." Every term in this lesson has a cost. Name it.</p></aside>
+<aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A multi-tenant SaaS analytics product has 5,000 customer accounts. The largest single account produces 40% of all rows. Which sharding strategy do you choose, what is the shard key, and what breaks?</p></aside><div class="learn-code-wrap learn-practice" data-lang="text" data-solution="Shard key: tenant_id — almost every query filters by tenant, so reads hit one shard and cross-shard joins disappear.
+
+Strategy: directory-based, not hash. Hashing tenant_id spreads tenants evenly by COUNT but not by VOLUME: the whale still lands on one shard and makes it hot (40% of rows on 1/N of the hardware). A directory (tenant_id -> shard) lets you move that tenant to a dedicated shard, and split it further by (tenant_id, time_bucket) if one machine is still not enough.
+
+What breaks:
+- Cross-tenant queries (global analytics, admin dashboards) must scatter-gather or read from a separate warehouse fed by CDC.
+- The directory is now in the critical path: cache it in every app server and treat it as a replicated, highly available service.
+- Rebalancing needs online tenant migration: dual-write or replicate, verify, cut over, backfill.
+- Per-shard capacity planning replaces uniform planning, so you need per-tenant usage metrics and a rate limit per tenant so one whale cannot starve the others."><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="sysdesign-concepts" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/sysdesign/scaling-caching/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Scaling and Caching</strong><small>Load balancers, horizontal scaling, caches, CDNs and consistent hashing.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/sysdesign/fundamentals/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/sysdesign/scaling-caching/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="/solutions/diagrams.js?v=16"></script>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

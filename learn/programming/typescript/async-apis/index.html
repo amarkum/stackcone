@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Typing Async Code, fetch and API Responses | TypeScript | stackcone</title>
+  <meta name="description" content="Type TypeScript async functions and Promises, wrap fetch in a typed API client, handle errors with Result types and validate JSON at runtime with zod.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/typescript/async-apis/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/typescript/async-apis/">
+  <meta property="og:title" content="Typing Async Code, fetch and API Responses | TypeScript | stackcone">
+  <meta property="og:description" content="Type TypeScript async functions and Promises, wrap fetch in a typed API client, handle errors with Result types and validate JSON at runtime with zod.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Typing Async Code, fetch and API Responses | TypeScript | stackcone">
+  <meta name="twitter:description" content="Type TypeScript async functions and Promises, wrap fetch in a typed API client, handle errors with Result types and validate JSON at runtime with zod.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/typescript/modules-declarations/">
+  <link rel="next" href="https://stackcone.com/learn/programming/typescript/tsconfig-strict/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "TypeScript", "item": "https://stackcone.com/learn/programming/typescript/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Typing Async Code, fetch and API Responses", "item": "https://stackcone.com/learn/programming/typescript/async-apis/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Typing Async Code, fetch and API Responses", "headline": "Typing Async Code, fetch and API Responses", "description": "Type TypeScript async functions and Promises, wrap fetch in a typed API client, handle errors with Result types and validate JSON at runtime with zod.", "url": "https://stackcone.com/learn/programming/typescript/async-apis/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Type async functions, Promise.all and Awaited", "Build a small generic fetch wrapper", "Validate API responses at runtime with zod", "Model success and failure with a Result type"], "position": 9, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "TypeScript Course", "url": "https://stackcone.com/learn/programming/typescript/introduction/", "description": "Add static types to JavaScript: interfaces, generics and safer code.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/typescript/introduction/">TypeScript</a> / <span aria-current="page">Typing Async Code, fetch and API Responses</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="typescript">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/typescript/introduction/">TypeScript</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn TypeScript from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="TypeScript lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/introduction/" data-lesson="ts-introduction" data-minutes="12"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Why TypeScript</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/types-interfaces/" data-lesson="ts-types-interfaces" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Types, Interfaces and Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/functions/" data-lesson="ts-functions" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Typing Functions and Overloads</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/narrowing/" data-lesson="ts-narrowing" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Narrowing, Type Guards and Discriminated Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/generics-utility/" data-lesson="ts-generics-utility" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Generics and Utility Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/classes/" data-lesson="ts-classes" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Classes, Access Modifiers and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/advanced-types/" data-lesson="ts-advanced-types" data-minutes="18"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Mapped, Conditional and Template Literal Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/modules-declarations/" data-lesson="ts-modules-declarations" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Enums, Modules and Declaration Files</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/typescript/async-apis/" aria-current="page" data-lesson="ts-async-apis" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Typing Async Code, fetch and API Responses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/tsconfig-strict/" data-lesson="ts-tsconfig-strict" data-minutes="16"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">tsconfig, Strict Mode and Tooling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/react/" data-lesson="ts-react" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">TypeScript with React</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/real-world/" data-lesson="ts-real-world" data-minutes="15"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">TypeScript in Real Projects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/typescript/introduction/">TypeScript</a> · Lesson 9 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/typescript/modules-declarations/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ts-async-apis" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/typescript/tsconfig-strict/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Typing Async Code, fetch and API Responses</h1>
+          <p class="learn-summary">Type TypeScript async functions and Promises, wrap fetch in a typed API client, handle errors with Result types and validate JSON at runtime with zod.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/typescript/modules-declarations/">Lesson 8: Enums, Modules and Declaration Files</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Type async functions, Promise.all and Awaited</li><li>Build a small generic fetch wrapper</li><li>Validate API responses at runtime with zod</li><li>Model success and failure with a Result type</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Almost every app talks to a server, and that boundary is where TypeScript's guarantees are weakest. Your types describe what you <em>expect</em> the API to send, but the network sends whatever it sends. This lesson shows how to type async code cleanly and how to actually check incoming data so your types stay true.</p>
+      <h2>Async functions return Promises</h2>
+      <p>An <code>async</code> function always returns a <code>Promise</code>. If the body returns a <code>User</code>, the function's type is <code>Promise&lt;User&gt;</code>, and <code>await</code> unwraps it back to <code>User</code>.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>interface User { id: number; name: string; }
+
+async function getUser(id: number): Promise&lt;User&gt; {
+  return { id, name: &quot;Ada&quot; };
+}
+
+async function main() {
+  const user = await getUser(1);   // User
+  // const bad = getUser(1).name;  // Error: Property &#x27;name&#x27; does not exist on type &#x27;Promise&lt;User&gt;&#x27;
+}</code></pre></div>
+      <p>That commented line is a very common bug (forgetting <code>await</code>), and TypeScript catches it. The <code>@typescript-eslint/no-floating-promises</code> lint rule catches the other half: calling an async function and never awaiting or handling it.</p>
+      <h2>Running work in parallel</h2>
+      <p><code>Promise.all</code> is typed as a tuple: each position keeps its own type. <code>Promise.allSettled</code> never rejects and gives you a discriminated union per result, which you narrow on <code>status</code>.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>async function getOrders(userId: number) { return [{ id: &quot;A1&quot;, total: 49 }]; }
+
+async function dashboard(id: number) {
+  const [user, orders] = await Promise.all([getUser(id), getOrders(id)]);
+  // user: User, orders: { id: string; total: number }[]
+
+  const results = await Promise.allSettled([getUser(1), getUser(2)]);
+  for (const r of results) {
+    if (r.status === &quot;fulfilled&quot;) console.log(r.value.name);
+    else console.log(&quot;failed:&quot;, r.reason);
+  }
+}</code></pre></div>
+      <p>Here is the runtime behaviour, with one request failing:</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const wait = (ms) =&gt; new Promise((r) =&gt; setTimeout(r, ms));
+
+async function getUser(id) {
+  await wait(10);
+  if (id === 2) throw new Error(&quot;User 2 not found&quot;);
+  return { id, name: id === 1 ? &quot;Ada&quot; : &quot;Linus&quot; };
+}
+
+async function main() {
+  const results = await Promise.allSettled([getUser(1), getUser(2), getUser(3)]);
+  for (const r of results) {
+    if (r.status === &quot;fulfilled&quot;) console.log(&quot;ok:&quot;, r.value.name);
+    else console.log(&quot;failed:&quot;, r.reason.message);
+  }
+  try {
+    await Promise.all([getUser(1), getUser(2)]);
+  } catch (err) {
+    console.log(&quot;Promise.all rejected:&quot;, err.message);
+  }
+}
+main();</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>ok: Ada
+failed: User 2 not found
+ok: Linus
+Promise.all rejected: User 2 not found</pre></div>
+      <h2>A typed fetch wrapper</h2>
+      <p><code>res.json()</code> returns <code>Promise&lt;any&gt;</code>, which switches off type checking for everything downstream. A small generic wrapper centralises the base URL, headers and error handling and returns a typed value.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>class HttpError extends Error {
+  constructor(public readonly status: number, message: string) {
+    super(message);
+    this.name = &quot;HttpError&quot;;
+  }
+}
+
+async function request&lt;T&gt;(path: string, init?: RequestInit): Promise&lt;T&gt; {
+  const res = await fetch(`https://api.stackcone.com${path}`, {
+    ...init,
+    headers: { &quot;Content-Type&quot;: &quot;application/json&quot;, ...init?.headers },
+  });
+  if (!res.ok) throw new HttpError(res.status, `${init?.method ?? &quot;GET&quot;} ${path} failed`);
+  return (await res.json()) as T;
+}
+
+const user = await request&lt;User&gt;(&quot;/users/1&quot;);   // User</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The as T is a lie you are telling the compiler</p><p class="learn-callout-body"><code>request&lt;User&gt;</code> looks safe, but nothing checked the JSON. If the API renames <code>name</code> to <code>fullName</code>, your code compiles fine and crashes (or shows <code>undefined</code>) in production. Types are erased at runtime, so to be sure you must validate the data.</p></aside>
+      <h2>Runtime validation with zod</h2>
+      <p>A schema library lets you describe the shape once and get two things from it: a runtime validator and a TypeScript type. <a href="https://zod.dev">zod</a> is the most popular choice (valibot and ArkType are lighter alternatives). With zod 4, the API looks like this:</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>import { z } from &quot;zod&quot;;
+
+const UserSchema = z.object({
+  id: z.number().int(),
+  name: z.string().min(1),
+  email: z.email(),
+  role: z.enum([&quot;admin&quot;, &quot;member&quot;]).default(&quot;member&quot;),
+  createdAt: z.coerce.date(),          // turns an ISO string into a Date
+});
+
+type User = z.infer&lt;typeof UserSchema&gt;;
+// { id: number; name: string; email: string; role: &quot;admin&quot; | &quot;member&quot;; createdAt: Date }
+
+async function getUser(id: number): Promise&lt;User&gt; {
+  const json = await request&lt;unknown&gt;(`/users/${id}`);   // unknown, not any
+  return UserSchema.parse(json);                         // throws ZodError if invalid
+}</code></pre></div>
+      <p>The key moves: fetch as <code>unknown</code> (so you cannot use the data before checking it), parse with the schema, and let <code>z.infer</code> produce the type. There is now exactly one source of truth. <code>parse</code> throws on bad data; <code>safeParse</code> returns a result object instead, which is better when you want to show a friendly message.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>const result = UserSchema.safeParse({ id: 1, name: &quot;&quot;, email: &quot;not-an-email&quot;, createdAt: &quot;2026-09-23&quot; });
+
+if (!result.success) {
+  console.log(z.flattenError(result.error).fieldErrors);
+  // { name: [ &#x27;Too small: expected string to have &gt;=1 characters&#x27; ],
+  //   email: [ &#x27;Invalid email address&#x27; ] }
+} else {
+  result.data.name;   // fully typed User
+}</code></pre></div>
+      <p>The same schema can validate form input on the client and request bodies on the server, which is why zod shows up in tRPC, React Hook Form and Next.js server actions.</p>
+      <h2>Errors as values: a Result type</h2>
+      <p><code>throw</code> is invisible in a function's type: nothing in <code>Promise&lt;User&gt;</code> warns callers that it can fail. For operations where failure is expected (not found, validation errors), returning a discriminated union makes the failure case impossible to ignore.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type Result&lt;T, E = string&gt; =
+  | { ok: true; value: T }
+  | { ok: false; error: E };
+
+async function findUser(id: number): Promise&lt;Result&lt;User&gt;&gt; {
+  try {
+    return { ok: true, value: await getUser(id) };
+  } catch (err) {
+    if (err instanceof HttpError &amp;&amp; err.status === 404) return { ok: false, error: &quot;not_found&quot; };
+    return { ok: false, error: err instanceof Error ? err.message : &quot;unknown&quot; };
+  }
+}
+
+const r = await findUser(7);
+if (r.ok) console.log(r.value.name);   // must check ok before touching value
+else console.log(&quot;Could not load user:&quot;, r.error);</code></pre></div>
+      <p>You do not need to use this everywhere. A reasonable split: throw for truly unexpected problems (bugs, server down), return a <code>Result</code> for outcomes the caller should handle as part of normal flow.</p>
+      <h2>Recap</h2>
+      <ul><li>An <code>async</code> function returns <code>Promise&lt;T&gt;</code>; forgetting <code>await</code> is a type error you get for free.</li><li><code>Promise.all</code> preserves a typed tuple; <code>allSettled</code> gives a union to narrow on <code>status</code>.</li><li>Treat network data as <code>unknown</code>, never trust <code>as T</code> alone.</li><li>Validate with a schema (zod) and derive the type with <code>z.infer</code> so runtime and compile time agree.</li><li>Return a <code>Result</code> union for expected failures so callers cannot forget them.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a zod schema for a product list response <code>{ items: Product[]; nextCursor: string | null }</code> where a product has <code>id</code> (string), <code>title</code> (non-empty string) and <code>price</code> (positive number). Then write <code>async function listProducts(): Promise&lt;Result&lt;ProductPage&gt;&gt;</code> using <code>safeParse</code>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="typescript" data-solution="import { z } from &quot;zod&quot;;
+
+const ProductSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1),
+  price: z.number().positive(),
+});
+
+const ProductPageSchema = z.object({
+  items: z.array(ProductSchema),
+  nextCursor: z.string().nullable(),
+});
+
+type ProductPage = z.infer&lt;typeof ProductPageSchema&gt;;
+type Result&lt;T, E = string&gt; = { ok: true; value: T } | { ok: false; error: E };
+
+async function listProducts(): Promise&lt;Result&lt;ProductPage&gt;&gt; {
+  const res = await fetch(&quot;https://api.stackcone.com/products&quot;);
+  if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+
+  const parsed = ProductPageSchema.safeParse(await res.json());
+  if (!parsed.success) return { ok: false, error: z.prettifyError(parsed.error) };
+  return { ok: true, value: parsed.data };
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ts-async-apis" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/typescript/tsconfig-strict/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 10</span><strong>tsconfig, Strict Mode and Tooling</strong><small>Configure tsconfig.json: what strict mode enables, extra safety flags, module settings, running TypeScript with Node, and type-aware linting.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/typescript/modules-declarations/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/typescript/tsconfig-strict/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

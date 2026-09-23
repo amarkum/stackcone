@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>async/await and Concurrency | Python Tutorial | stackcone</title>
+  <meta name="description" content="Learn Python async/await with asyncio: coroutines, the event loop, gather, TaskGroup, timeouts, and when to use threads or processes instead.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/python/async/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/python/async/">
+  <meta property="og:title" content="async/await and Concurrency | Python Tutorial | stackcone">
+  <meta property="og:description" content="Learn Python async/await with asyncio: coroutines, the event loop, gather, TaskGroup, timeouts, and when to use threads or processes instead.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="async/await and Concurrency | Python Tutorial | stackcone">
+  <meta name="twitter:description" content="Learn Python async/await with asyncio: coroutines, the event loop, gather, TaskGroup, timeouts, and when to use threads or processes instead.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/python/json-datetime/">
+  <link rel="next" href="https://stackcone.com/learn/programming/python/testing-debugging/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Python", "item": "https://stackcone.com/learn/programming/python/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "async/await and Concurrency", "item": "https://stackcone.com/learn/programming/python/async/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "async/await and Concurrency", "headline": "async/await and Concurrency", "description": "Learn Python async/await with asyncio: coroutines, the event loop, gather, TaskGroup, timeouts, and when to use threads or processes instead.", "url": "https://stackcone.com/learn/programming/python/async/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT20M", "isAccessibleForFree": true, "teaches": ["Explain concurrency versus parallelism and when async helps", "Write and run coroutines with async def and await", "Run tasks concurrently with gather and TaskGroup", "Choose between asyncio, threads and processes"], "position": 20, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Python Course", "url": "https://stackcone.com/learn/programming/python/hello-world/", "description": "From your first print() to classes, files, and exceptions.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / <span aria-current="page">async/await and Concurrency</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="python">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
+              <p class="learn-sidebar-tagline">21 lessons · Learn Python from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 21 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Python lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/python/hello-world/" data-lesson="python-hello-world" data-minutes="8"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Python</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/variables-and-types/" data-lesson="python-variables-and-types" data-minutes="12"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/strings/" data-lesson="python-strings" data-minutes="14"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Working with Strings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/control-flow/" data-lesson="python-control-flow" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/functions/" data-lesson="python-functions" data-minutes="14"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/lists-tuples/" data-lesson="python-lists-tuples" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Lists and Tuples</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/dictionaries/" data-lesson="python-dictionaries" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Dictionaries and Sets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/comprehensions/" data-lesson="python-comprehensions" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Comprehensions and Iteration</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/decorators/" data-lesson="python-decorators" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Closures and Decorators</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/generators/" data-lesson="python-generators" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Generators, Iterators and itertools</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/" data-lesson="python-oop-classes" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/" data-lesson="python-inheritance" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Inheritance and Special Methods</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/type-hints/" data-lesson="python-type-hints" data-minutes="18"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Type Hints and dataclasses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/file-handling/" data-lesson="python-file-handling" data-minutes="12"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/" data-lesson="python-error-handling" data-minutes="13"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Error Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/regex/" data-lesson="python-regex" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Regular Expressions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/" data-lesson="python-modules-packages" data-minutes="13"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Modules, Packages and pip</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/virtual-environments/" data-lesson="python-virtual-environments" data-minutes="16"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Virtual Environments and Project Setup</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/" data-lesson="python-json-datetime" data-minutes="14"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">JSON, Dates and the Standard Library</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/async/" aria-current="page" data-lesson="python-async" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">async/await and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/" data-lesson="python-testing-debugging" data-minutes="15"><span class="learn-sidebar-num">21</span><span class="learn-sidebar-title">Testing and Debugging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 20 of 21</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/python/json-datetime/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="python-async" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/python/testing-debugging/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>async/await and Concurrency</h1>
+          <p class="learn-summary">Learn Python async/await with asyncio: coroutines, the event loop, gather, TaskGroup, timeouts, and when to use threads or processes instead.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/json-datetime/">Lesson 19: JSON, Dates and the Standard Library</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain concurrency versus parallelism and when async helps</li><li>Write and run coroutines with async def and await</li><li>Run tasks concurrently with gather and TaskGroup</li><li>Choose between asyncio, threads and processes</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 21 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 21</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Most real programs spend a lot of time <em>waiting</em>: for a web API to answer, a database query to return, a file to download. While one request waits, the CPU sits idle. <strong>Concurrency</strong> means making progress on several tasks during those waits instead of doing them strictly one after another.</p>
+      <p>Python's <code>asyncio</code> module, together with the <code>async</code> and <code>await</code> keywords, is the standard way to do this for I/O-heavy work. It powers web frameworks like FastAPI and HTTP clients like httpx. In this lesson we simulate network calls with <code>asyncio.sleep</code> so every example runs anywhere.</p>
+      <h2>Concurrency is not parallelism</h2>
+      <p>Picture a chef making three dishes. Parallelism is hiring three chefs. Concurrency is one chef who puts the pasta on to boil, chops vegetables while it cooks, then checks the oven. asyncio is the single chef: one thread that switches between tasks whenever the current one is waiting. It will not make CPU-heavy maths faster, but it makes waiting-heavy code dramatically faster.</p>
+      <ul><li><strong>I/O-bound</strong> (network, disk, databases): asyncio or threads.</li><li><strong>CPU-bound</strong> (image processing, heavy number crunching): multiple processes, or libraries that release the GIL.</li></ul>
+      <h2>Coroutines: async def and await</h2>
+      <p>A function defined with <code>async def</code> is a <strong>coroutine function</strong>. Calling it does not run it; it returns a coroutine object. You run coroutines with <code>await</code> (from inside another coroutine) or start the whole program with <code>asyncio.run()</code>, which creates the event loop. <code>await</code> means "pause me here until this finishes, and let other tasks run meanwhile".</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import asyncio
+
+async def fetch_user(user_id):
+    print(f&quot;fetching user {user_id}&quot;)
+    await asyncio.sleep(0.1)          # stands in for a network call
+    return {&quot;id&quot;: user_id, &quot;name&quot;: f&quot;user{user_id}&quot;}
+
+async def main():
+    coro = fetch_user(1)
+    print(type(coro).__name__)
+    user = await coro
+    print(user)
+
+asyncio.run(main())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>coroutine
+fetching user 1
+{&#x27;id&#x27;: 1, &#x27;name&#x27;: &#x27;user1&#x27;}</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Running async code in the browser</p><p class="learn-callout-body">The Run button on this page executes code inside an event loop that is already running, where <code>asyncio.run()</code> may refuse to start. If you see <code>asyncio.run() cannot be called from a running event loop</code>, replace the last line with <code>await main()</code>. On your own machine, <code>asyncio.run(main())</code> is the correct entry point.</p></aside>
+      <h2>Sequential awaits are still sequential</h2>
+      <p>A common first surprise: awaiting three calls in a row takes three times as long, because each <code>await</code> waits before the next call even starts. Here each call takes 0.2 seconds, so the total is about 0.6.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import asyncio
+import time
+
+async def fetch(name, delay):
+    await asyncio.sleep(delay)
+    return f&quot;{name} done&quot;
+
+async def main():
+    start = time.perf_counter()
+    a = await fetch(&quot;orders&quot;, 0.2)
+    b = await fetch(&quot;users&quot;, 0.2)
+    c = await fetch(&quot;stats&quot;, 0.2)
+    print(a, b, c)
+    print(f&quot;took about {round(time.perf_counter() - start, 1)}s&quot;)
+
+asyncio.run(main())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>orders done users done stats done
+took about 0.6s</pre></div>
+      <h2>Running tasks concurrently with gather</h2>
+      <p><code>asyncio.gather()</code> starts several coroutines at once and waits for all of them, returning results in the same order you passed them in. The same calls now overlap, so the total is roughly the slowest one (0.3 seconds) instead of the sum (0.6). Notice the completion order in the log differs from the result order.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import asyncio
+import time
+
+async def fetch(name, delay):
+    await asyncio.sleep(delay)
+    print(f&quot;finished {name}&quot;)
+    return f&quot;{name} done&quot;
+
+async def main():
+    start = time.perf_counter()
+    results = await asyncio.gather(
+        fetch(&quot;orders&quot;, 0.3),
+        fetch(&quot;users&quot;, 0.1),
+        fetch(&quot;stats&quot;, 0.2),
+    )
+    print(results)
+    print(f&quot;took about {round(time.perf_counter() - start, 1)}s&quot;)
+
+asyncio.run(main())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>finished users
+finished stats
+finished orders
+[&#x27;orders done&#x27;, &#x27;users done&#x27;, &#x27;stats done&#x27;]
+took about 0.3s</pre></div>
+      <h2>Structured concurrency with TaskGroup</h2>
+      <p>Since Python 3.11, <code>asyncio.TaskGroup</code> is the recommended way to run a group of tasks. It waits for every task when the <code>async with</code> block ends, and if any task fails it cancels the others and raises the errors together as an <code>ExceptionGroup</code>, which you catch with <code>except*</code>. Nothing is left running in the background by accident.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import asyncio
+
+async def charge(customer, amount):
+    await asyncio.sleep(0.1)
+    if amount &lt;= 0:
+        raise ValueError(f&quot;bad amount for {customer}&quot;)
+    return f&quot;charged {customer} ${amount}&quot;
+
+async def main():
+    async with asyncio.TaskGroup() as tg:
+        t1 = tg.create_task(charge(&quot;Ada&quot;, 30))
+        t2 = tg.create_task(charge(&quot;Linus&quot;, 12))
+    print(t1.result(), &quot;|&quot;, t2.result())
+
+    try:
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(charge(&quot;Grace&quot;, 20))
+            tg.create_task(charge(&quot;Bob&quot;, 0))
+    except* ValueError as group:
+        for err in group.exceptions:
+            print(&quot;failed:&quot;, err)
+
+asyncio.run(main())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>charged Ada $30 | charged Linus $12
+failed: bad amount for Bob</pre></div>
+      <h2>Timeouts and limiting concurrency</h2>
+      <p>Network calls can hang, so put a deadline on them with <code>asyncio.timeout()</code> (3.11+). When you have hundreds of URLs, starting them all at once can overwhelm a server; an <code>asyncio.Semaphore</code> caps how many run at the same time.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import asyncio
+
+async def slow_api():
+    await asyncio.sleep(5)
+    return &quot;never&quot;
+
+async def download(sem, page, active):
+    async with sem:                     # at most 2 inside at once
+        active.append(page)
+        print(f&quot;page {page} start, running: {len(active)}&quot;)
+        await asyncio.sleep(0.1)
+        active.remove(page)
+        return page * 10
+
+async def main():
+    try:
+        async with asyncio.timeout(0.2):
+            await slow_api()
+    except TimeoutError:
+        print(&quot;slow_api timed out&quot;)
+
+    sem = asyncio.Semaphore(2)
+    active = []
+    sizes = await asyncio.gather(*(download(sem, p, active) for p in range(1, 5)))
+    print(sizes)
+
+asyncio.run(main())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>slow_api timed out
+page 1 start, running: 1
+page 2 start, running: 2
+page 3 start, running: 1
+page 4 start, running: 2
+[10, 20, 30, 40]</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: blocking the event loop</p><p class="learn-callout-body">Calling a normal blocking function such as <code>time.sleep(2)</code> or <code>requests.get()</code> inside a coroutine freezes <em>every</em> task, because the single thread is stuck. Use async libraries (<code>asyncio.sleep</code>, <code>httpx.AsyncClient</code>, <code>asyncpg</code>) or push blocking work to a thread with <code>await asyncio.to_thread(func, *args)</code>. Also, forgetting <code>await</code> gives you a coroutine object and a "was never awaited" warning instead of a result.</p></aside>
+      <h2>Threads and processes with concurrent.futures</h2>
+      <p>Not every library is async. <code>concurrent.futures</code> gives the same "run many things and collect results" idea for ordinary functions. <code>ThreadPoolExecutor</code> suits blocking I/O. <code>ProcessPoolExecutor</code> runs CPU-heavy work on multiple cores, sidestepping the Global Interpreter Lock (GIL). Python 3.13+ also offers an optional free-threaded build without the GIL, but most installs still have it, so processes remain the safe choice for CPU work.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import time
+from concurrent.futures import ThreadPoolExecutor
+
+def blocking_fetch(url):
+    time.sleep(0.2)            # a blocking call, like requests.get
+    return f&quot;{url}: 200&quot;
+
+urls = [&quot;/learn&quot;, &quot;/blog&quot;, &quot;/about&quot;, &quot;/contact&quot;]
+
+start = time.perf_counter()
+with ThreadPoolExecutor(max_workers=4) as pool:
+    results = list(pool.map(blocking_fetch, urls))
+print(results)
+print(f&quot;took about {round(time.perf_counter() - start, 1)}s&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;/learn: 200&#x27;, &#x27;/blog: 200&#x27;, &#x27;/about: 200&#x27;, &#x27;/contact: 200&#x27;]
+took about 0.2s</pre></div>
+      <p><code>pool.map</code> keeps the input order, just like <code>gather</code>. Four 0.2-second calls finished in about 0.2 seconds total.</p>
+      <h2>Recap</h2>
+      <ul><li>Concurrency overlaps waiting; asyncio does it on one thread for I/O-bound work.</li><li><code>async def</code> creates coroutines; run them with <code>await</code> or <code>asyncio.run()</code>.</li><li>Awaiting calls one by one is sequential; use <code>gather</code> or <code>TaskGroup</code> to overlap them.</li><li>Add deadlines with <code>asyncio.timeout</code>, cap load with <code>Semaphore</code>, and never block the loop.</li><li>Use <code>ThreadPoolExecutor</code> for blocking libraries and <code>ProcessPoolExecutor</code> for CPU-heavy work.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a coroutine <code>check(service, delay)</code> that sleeps for <code>delay</code> seconds and returns <code>f"{service}: ok"</code>, but raises <code>ConnectionError</code> if <code>delay</code> is greater than 0.3. In <code>main()</code>, run checks for <code>api</code> (0.1), <code>db</code> (0.2) and <code>cache</code> (0.5) concurrently with <code>asyncio.gather(..., return_exceptions=True)</code> and print each result or error.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import asyncio
+
+async def check(service, delay):
+    await asyncio.sleep(delay)
+    if delay &gt; 0.3:
+        raise ConnectionError(f&quot;{service}: too slow&quot;)
+    return f&quot;{service}: ok&quot;
+
+async def main():
+    results = await asyncio.gather(
+        check(&quot;api&quot;, 0.1),
+        check(&quot;db&quot;, 0.2),
+        check(&quot;cache&quot;, 0.5),
+        return_exceptions=True,
+    )
+    for r in results:
+        if isinstance(r, Exception):
+            print(&quot;error -&gt;&quot;, r)
+        else:
+            print(r)
+
+asyncio.run(main())"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="python-async" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/python/testing-debugging/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 21</span><strong>Testing and Debugging</strong><small>Write tests with pytest, read tracebacks, and track down bugs with print and the debugger.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/json-datetime/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/testing-debugging/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

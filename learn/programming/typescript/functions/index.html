@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Typing Functions and Overloads | TypeScript Tutorial | stackcone</title>
+  <meta name="description" content="Type TypeScript functions properly: parameters, return types, optional and default params, rest args, callbacks, function types and overloads.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/typescript/functions/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/typescript/functions/">
+  <meta property="og:title" content="Typing Functions and Overloads | TypeScript Tutorial | stackcone">
+  <meta property="og:description" content="Type TypeScript functions properly: parameters, return types, optional and default params, rest args, callbacks, function types and overloads.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Typing Functions and Overloads | TypeScript Tutorial | stackcone">
+  <meta name="twitter:description" content="Type TypeScript functions properly: parameters, return types, optional and default params, rest args, callbacks, function types and overloads.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/typescript/types-interfaces/">
+  <link rel="next" href="https://stackcone.com/learn/programming/typescript/narrowing/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "TypeScript", "item": "https://stackcone.com/learn/programming/typescript/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Typing Functions and Overloads", "item": "https://stackcone.com/learn/programming/typescript/functions/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Typing Functions and Overloads", "headline": "Typing Functions and Overloads", "description": "Type TypeScript functions properly: parameters, return types, optional and default params, rest args, callbacks, function types and overloads.", "url": "https://stackcone.com/learn/programming/typescript/functions/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT15M", "isAccessibleForFree": true, "teaches": ["Annotate parameters and return types", "Use optional, default and rest parameters", "Describe callbacks with function types", "Write overloads only when a union is not enough"], "position": 3, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "TypeScript Course", "url": "https://stackcone.com/learn/programming/typescript/introduction/", "description": "Add static types to JavaScript: interfaces, generics and safer code.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/typescript/introduction/">TypeScript</a> / <span aria-current="page">Typing Functions and Overloads</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="typescript">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/typescript/introduction/">TypeScript</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn TypeScript from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="TypeScript lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/introduction/" data-lesson="ts-introduction" data-minutes="12"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Why TypeScript</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/types-interfaces/" data-lesson="ts-types-interfaces" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Types, Interfaces and Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/typescript/functions/" aria-current="page" data-lesson="ts-functions" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Typing Functions and Overloads</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/narrowing/" data-lesson="ts-narrowing" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Narrowing, Type Guards and Discriminated Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/generics-utility/" data-lesson="ts-generics-utility" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Generics and Utility Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/classes/" data-lesson="ts-classes" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Classes, Access Modifiers and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/advanced-types/" data-lesson="ts-advanced-types" data-minutes="18"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Mapped, Conditional and Template Literal Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/modules-declarations/" data-lesson="ts-modules-declarations" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Enums, Modules and Declaration Files</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/async-apis/" data-lesson="ts-async-apis" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Typing Async Code, fetch and API Responses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/tsconfig-strict/" data-lesson="ts-tsconfig-strict" data-minutes="16"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">tsconfig, Strict Mode and Tooling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/react/" data-lesson="ts-react" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">TypeScript with React</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/real-world/" data-lesson="ts-real-world" data-minutes="15"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">TypeScript in Real Projects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/typescript/introduction/">TypeScript</a> · Lesson 3 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/typescript/types-interfaces/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ts-functions" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/typescript/narrowing/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Typing Functions and Overloads</h1>
+          <p class="learn-summary">Type TypeScript functions properly: parameters, return types, optional and default params, rest args, callbacks, function types and overloads.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/typescript/types-interfaces/">Lesson 2: Types, Interfaces and Unions</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Annotate parameters and return types</li><li>Use optional, default and rest parameters</li><li>Describe callbacks with function types</li><li>Write overloads only when a union is not enough</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Functions are where most bugs enter a codebase: someone passes a string where a number was expected, forgets an argument, or ignores that a function can return <code>undefined</code>. Typing a function writes its contract down, so the compiler checks every call site for you.</p>
+      <p>This lesson covers the everyday tools (parameter and return types, optional and rest parameters, callbacks) and then the one advanced tool you will occasionally need: overloads.</p>
+      <h2>Parameters and return types</h2>
+      <p>Parameters always need a type, because TypeScript cannot guess what callers will pass. Return types are usually inferred, but writing them on exported functions is a good habit: it documents intent and stops an accidental change in the body from silently changing the public API.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>function add(a: number, b: number): number {
+  return a + b;
+}
+
+// Arrow functions use the same syntax
+const formatPrice = (cents: number): string =&gt; `$${(cents / 100).toFixed(2)}`;
+
+// void means &quot;the caller should not use the return value&quot;
+function logOrder(id: string): void {
+  console.log(`order ${id}`);
+}
+
+add(2, 3);        // OK
+// add(&quot;2&quot;, 3);   // Error: Argument of type &#x27;string&#x27; is not assignable to parameter of type &#x27;number&#x27;
+// add(2);        // Error: Expected 2 arguments, but got 1</code></pre></div>
+      <p>Notice that TypeScript also checks the <em>number</em> of arguments. In plain JavaScript, <code>add(2)</code> would quietly return <code>NaN</code>.</p>
+      <h2>Optional, default and rest parameters</h2>
+      <p>A <code>?</code> makes a parameter optional, which means its type inside the function includes <code>undefined</code>. A default value is often nicer, because the parameter is then never undefined in the body and TypeScript infers its type from the default.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>function greet(name: string, title?: string): string {
+  // title is string | undefined here
+  return title ? `Hello, ${title} ${name}` : `Hello, ${name}`;
+}
+
+function paginate(page = 1, pageSize = 20): string {
+  // page and pageSize are inferred as number
+  return `offset=${(page - 1) * pageSize}&amp;limit=${pageSize}`;
+}
+
+// Rest parameters collect any number of arguments into a typed array
+function sum(...nums: number[]): number {
+  return nums.reduce((total, n) =&gt; total + n, 0);
+}</code></pre></div>
+      <p>Here is the same code as plain JavaScript so you can run it and see what the types are protecting:</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>function greet(name, title) {
+  return title ? `Hello, ${title} ${name}` : `Hello, ${name}`;
+}
+function paginate(page = 1, pageSize = 20) {
+  return `offset=${(page - 1) * pageSize}&amp;limit=${pageSize}`;
+}
+function sum(...nums) {
+  return nums.reduce((total, n) =&gt; total + n, 0);
+}
+
+console.log(greet(&quot;Ada&quot;));
+console.log(greet(&quot;Ada&quot;, &quot;Dr.&quot;));
+console.log(paginate());
+console.log(paginate(3));
+console.log(sum(4, 5, 6));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Hello, Ada
+Hello, Dr. Ada
+offset=0&amp;limit=20
+offset=40&amp;limit=20
+15</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Optional parameters go last</p><p class="learn-callout-body">A required parameter cannot follow an optional one: <code>function f(a?: string, b: number)</code> is an error. If you find yourself wanting that, switch to a single options object (next section).</p></aside>
+      <h2>Options objects instead of long parameter lists</h2>
+      <p>Once a function takes more than three or so parameters, calls like <code>createUser("Ada", true, false, 3)</code> become unreadable. Pass one object instead and destructure it. The type describes every option by name, and call sites become self-documenting.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>interface CreateUserOptions {
+  name: string;
+  email: string;
+  isAdmin?: boolean;
+  plan?: &quot;free&quot; | &quot;pro&quot;;
+}
+
+function createUser({ name, email, isAdmin = false, plan = &quot;free&quot; }: CreateUserOptions) {
+  return { id: crypto.randomUUID(), name, email, isAdmin, plan };
+}
+
+createUser({ name: &quot;Ada&quot;, email: &quot;ada@stackcone.com&quot;, plan: &quot;pro&quot; });
+// createUser({ name: &quot;Ada&quot;, email: &quot;ada@stackcone.com&quot;, plna: &quot;pro&quot; });
+// Error: Object literal may only specify known properties, and &#x27;plna&#x27; does not exist</code></pre></div>
+      <h2>Function types and callbacks</h2>
+      <p>Functions are values, so they have types too. A function type looks like an arrow: <code>(input: Params) =&gt; Result</code>. You use these whenever a function accepts or returns another function, which in JavaScript means callbacks, event handlers and middleware.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type Predicate&lt;T&gt; = (item: T) =&gt; boolean;
+
+function filterBy&lt;T&gt;(items: T[], keep: Predicate&lt;T&gt;): T[] {
+  const out: T[] = [];
+  for (const item of items) if (keep(item)) out.push(item);
+  return out;
+}
+
+interface Order { id: string; total: number; }
+const orders: Order[] = [
+  { id: &quot;A1&quot;, total: 120 },
+  { id: &quot;A2&quot;, total: 40 },
+];
+
+// The callback&#x27;s parameter is inferred as Order: no annotation needed
+const big = filterBy(orders, (o) =&gt; o.total &gt; 100);</code></pre></div>
+      <p>That last line shows <strong>contextual typing</strong>: because <code>filterBy</code> declares what the callback receives, TypeScript types <code>o</code> for you. This is why you rarely annotate callback parameters passed to <code>map</code>, <code>filter</code> or <code>addEventListener</code>.</p>
+      <p>A function type with a <code>void</code> return is also flexible: a callback typed <code>() =&gt; void</code> may return something, and TypeScript simply ignores it. That is what lets you write <code>items.forEach((x) =&gt; list.push(x))</code> even though <code>push</code> returns a number.</p>
+      <h2>Overloads</h2>
+      <p>Sometimes a function's return type depends on what you pass in. A union return type loses that link: callers always get the full union and must narrow it. <strong>Overloads</strong> let you list several call signatures, followed by one implementation that handles all of them.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>// Overload signatures (what callers see)
+function parseInput(value: string): number;
+function parseInput(value: string[]): number[];
+// Implementation signature (hidden from callers, must be compatible with all overloads)
+function parseInput(value: string | string[]): number | number[] {
+  return Array.isArray(value) ? value.map(Number) : Number(value);
+}
+
+const one = parseInput(&quot;42&quot;);          // number
+const many = parseInput([&quot;1&quot;, &quot;2&quot;]);   // number[]
+// parseInput(42);                     // Error: No overload matches this call</code></pre></div>
+      <p>The implementation signature is not callable from outside; only the overloads above it are. TypeScript checks overloads top to bottom and picks the first one that matches, so put the most specific signatures first.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Reach for a union or generic first</p><p class="learn-callout-body">Overloads are easy to get subtly wrong, because TypeScript only checks that the implementation is <em>compatible</em> with each overload, not that it really returns <code>number[]</code> for an array. If one signature with a union parameter works, or a generic like <code>&lt;T&gt;(x: T) =&gt; T</code> expresses the relationship, prefer that.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Always type parameters; annotate return types on exported functions.</li><li>Prefer default values to <code>?</code> when a sensible default exists; use rest parameters for variable argument lists.</li><li>Switch to a single options object once a function has several parameters.</li><li>Function types like <code>(item: T) =&gt; boolean</code> describe callbacks, and contextual typing fills in callback parameters.</li><li>Use overloads only when the return type truly depends on the argument type and a union or generic cannot express it.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a function <code>formatDate</code> with two overloads: called with a <code>Date</code> it returns a <code>string</code> like <code>"2026-09-23"</code>; called with a <code>Date[]</code> it returns <code>string[]</code>. Add an optional second parameter <code>separator</code> that defaults to <code>"-"</code>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="typescript" data-solution="function formatDate(date: Date, separator?: string): string;
+function formatDate(dates: Date[], separator?: string): string[];
+function formatDate(input: Date | Date[], separator = &quot;-&quot;): string | string[] {
+  const one = (d: Date) =&gt;
+    [d.getFullYear(), String(d.getMonth() + 1).padStart(2, &quot;0&quot;), String(d.getDate()).padStart(2, &quot;0&quot;)].join(separator);
+  return Array.isArray(input) ? input.map(one) : one(input);
+}
+
+const s = formatDate(new Date(2026, 8, 23));              // string: &quot;2026-09-23&quot;
+const list = formatDate([new Date(2026, 0, 1)], &quot;/&quot;);     // string[]: [&quot;2026/01/01&quot;]"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ts-functions" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/typescript/narrowing/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Narrowing, Type Guards and Discriminated Unions</strong><small>Learn TypeScript narrowing with typeof, instanceof, in, custom type guards, assertion functions and exhaustive discriminated unions using never.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/typescript/types-interfaces/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/typescript/narrowing/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

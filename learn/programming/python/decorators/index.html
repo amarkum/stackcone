@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Closures and Decorators | Python Tutorial | stackcone</title>
+  <meta name="description" content="Learn Python closures and decorators step by step: functions as values, nonlocal, functools.wraps, decorators with arguments and lru_cache.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/python/decorators/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/python/decorators/">
+  <meta property="og:title" content="Closures and Decorators | Python Tutorial | stackcone">
+  <meta property="og:description" content="Learn Python closures and decorators step by step: functions as values, nonlocal, functools.wraps, decorators with arguments and lru_cache.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Closures and Decorators | Python Tutorial | stackcone">
+  <meta name="twitter:description" content="Learn Python closures and decorators step by step: functions as values, nonlocal, functools.wraps, decorators with arguments and lru_cache.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/python/comprehensions/">
+  <link rel="next" href="https://stackcone.com/learn/programming/python/generators/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Python", "item": "https://stackcone.com/learn/programming/python/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Closures and Decorators", "item": "https://stackcone.com/learn/programming/python/decorators/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Closures and Decorators", "headline": "Closures and Decorators", "description": "Learn Python closures and decorators step by step: functions as values, nonlocal, functools.wraps, decorators with arguments and lru_cache.", "url": "https://stackcone.com/learn/programming/python/decorators/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Treat functions as values you can pass and return", "Explain how a closure remembers variables", "Write decorators that keep the original name with functools.wraps", "Build decorators that take arguments"], "position": 9, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Python Course", "url": "https://stackcone.com/learn/programming/python/hello-world/", "description": "From your first print() to classes, files, and exceptions.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / <span aria-current="page">Closures and Decorators</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="python">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
+              <p class="learn-sidebar-tagline">21 lessons · Learn Python from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 21 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Python lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/python/hello-world/" data-lesson="python-hello-world" data-minutes="8"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Python</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/variables-and-types/" data-lesson="python-variables-and-types" data-minutes="12"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/strings/" data-lesson="python-strings" data-minutes="14"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Working with Strings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/control-flow/" data-lesson="python-control-flow" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/functions/" data-lesson="python-functions" data-minutes="14"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/lists-tuples/" data-lesson="python-lists-tuples" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Lists and Tuples</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/dictionaries/" data-lesson="python-dictionaries" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Dictionaries and Sets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/comprehensions/" data-lesson="python-comprehensions" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Comprehensions and Iteration</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/decorators/" aria-current="page" data-lesson="python-decorators" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Closures and Decorators</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/generators/" data-lesson="python-generators" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Generators, Iterators and itertools</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/" data-lesson="python-oop-classes" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/" data-lesson="python-inheritance" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Inheritance and Special Methods</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/type-hints/" data-lesson="python-type-hints" data-minutes="18"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Type Hints and dataclasses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/file-handling/" data-lesson="python-file-handling" data-minutes="12"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/" data-lesson="python-error-handling" data-minutes="13"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Error Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/regex/" data-lesson="python-regex" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Regular Expressions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/" data-lesson="python-modules-packages" data-minutes="13"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Modules, Packages and pip</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/virtual-environments/" data-lesson="python-virtual-environments" data-minutes="16"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Virtual Environments and Project Setup</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/" data-lesson="python-json-datetime" data-minutes="14"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">JSON, Dates and the Standard Library</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/async/" data-lesson="python-async" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">async/await and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/" data-lesson="python-testing-debugging" data-minutes="15"><span class="learn-sidebar-num">21</span><span class="learn-sidebar-title">Testing and Debugging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 9 of 21</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/python/comprehensions/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="python-decorators" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/python/generators/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Closures and Decorators</h1>
+          <p class="learn-summary">Learn Python closures and decorators step by step: functions as values, nonlocal, functools.wraps, decorators with arguments and lru_cache.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/comprehensions/">Lesson 8: Comprehensions and Iteration</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Treat functions as values you can pass and return</li><li>Explain how a closure remembers variables</li><li>Write decorators that keep the original name with functools.wraps</li><li>Build decorators that take arguments</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 21 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 21</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>You have probably already used a decorator without knowing how it works: the <code>@property</code> or <code>@staticmethod</code> line above a method, or <code>@app.get("/")</code> in a web framework. A decorator is a way to wrap extra behaviour (logging, timing, caching, access checks) around a function <em>without editing the function itself</em>.</p>
+      <p>Decorators look like magic until you see the two ideas underneath them: functions are ordinary values, and inner functions can remember variables from the function that created them (a <strong>closure</strong>). This lesson builds up from those two ideas, so by the end the <code>@</code> syntax is just a shortcut you understand.</p>
+      <h2>Functions are values</h2>
+      <p>In Python a function is an object like a number or a list. You can store it in a variable, put it in a dict, pass it to another function, or return it. Notice the difference between <code>shout</code> (the function itself) and <code>shout("hi")</code> (calling it).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def shout(text):
+    return text.upper() + &quot;!&quot;
+
+def whisper(text):
+    return text.lower() + &quot;...&quot;
+
+speak = shout            # no parentheses: we copy the function, not its result
+print(speak(&quot;hello&quot;))
+
+def greet(style, name):
+    return style(f&quot;hi {name}&quot;)
+
+print(greet(shout, &quot;Ada&quot;))
+print(greet(whisper, &quot;Ada&quot;))
+
+handlers = {&quot;loud&quot;: shout, &quot;quiet&quot;: whisper}
+print(handlers[&quot;quiet&quot;](&quot;STACKCONE&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>HELLO!
+HI ADA!
+hi ada...
+stackcone...</pre></div>
+      <h2>Closures: functions that remember</h2>
+      <p>A function defined inside another function can read the outer function's variables. The surprising part is that it keeps access to them <em>after the outer function has returned</em>. That combination of a function plus the variables it captured is called a closure. Here <code>make_multiplier</code> returns a new function each time, and each one remembers its own <code>factor</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def make_multiplier(factor):
+    def multiply(n):
+        return n * factor     # factor comes from the enclosing call
+    return multiply
+
+double = make_multiplier(2)
+triple = make_multiplier(3)
+print(double(10), triple(10))
+print(double.__closure__[0].cell_contents)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>20 30
+2</pre></div>
+      <p>Closures are a lightweight alternative to a class when you only need one method and a little bit of state.</p>
+      <h2>Changing captured state with nonlocal</h2>
+      <p>Reading a captured variable is automatic, but <em>assigning</em> to it is not: Python would treat the name as a brand-new local variable. The <code>nonlocal</code> keyword tells Python you mean the variable from the enclosing function.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def make_counter():
+    count = 0
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+    return increment
+
+next_id = make_counter()
+print(next_id(), next_id(), next_id())
+
+other = make_counter()     # a fresh, independent count
+print(other())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1 2 3
+1</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: the late-binding loop</p><p class="learn-callout-body">Closures capture the <em>variable</em>, not its value at that moment. <code>funcs = [lambda: i for i in range(3)]</code> gives three functions that all return <code>2</code>, because they all look up <code>i</code> after the loop finished. Bind the current value with a default argument: <code>lambda i=i: i</code>.</p></aside>
+      <h2>Your first decorator</h2>
+      <p>A decorator is simply a function that takes a function and returns a new function (usually a closure that calls the original). The <code>@name</code> line above a <code>def</code> is shorthand for <code>func = name(func)</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def log_calls(func):
+    def wrapper(*args, **kwargs):
+        print(f&quot;calling {func.__name__} with {args} {kwargs}&quot;)
+        result = func(*args, **kwargs)
+        print(f&quot;{func.__name__} returned {result}&quot;)
+        return result
+    return wrapper
+
+@log_calls
+def add(a, b):
+    return a + b
+
+@log_calls
+def greet(name, punctuation=&quot;!&quot;):
+    return f&quot;Hello, {name}{punctuation}&quot;
+
+add(2, 3)
+greet(&quot;Ada&quot;, punctuation=&quot;?&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>calling add with (2, 3) {}
+add returned 5
+calling greet with (&#x27;Ada&#x27;,) {&#x27;punctuation&#x27;: &#x27;?&#x27;}
+greet returned Hello, Ada?</pre></div>
+      <p>The <code>*args, **kwargs</code> pair lets the wrapper accept any arguments and forward them unchanged, so one decorator works on any function. Always <code>return result</code> from the wrapper, or the decorated function will silently return <code>None</code>.</p>
+      <h2>Keep the function&#x27;s identity with functools.wraps</h2>
+      <p>There is a subtle problem with the wrapper above: the decorated function now <em>is</em> <code>wrapper</code>, so its name and docstring are lost. That confuses debuggers, logs and documentation tools. <code>functools.wraps</code> copies the original metadata onto the wrapper. Use it in every decorator you write.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import functools
+
+def plain(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+def polite(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+
+@plain
+def total(items):
+    &quot;&quot;&quot;Sum a list of prices.&quot;&quot;&quot;
+    return sum(items)
+
+@polite
+def average(items):
+    &quot;&quot;&quot;Average a list of prices.&quot;&quot;&quot;
+    return sum(items) / len(items)
+
+print(total.__name__, total.__doc__)
+print(average.__name__, average.__doc__)
+print(average.__wrapped__([2, 4]))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>wrapper None
+average Average a list of prices.
+3.0</pre></div>
+      <h2>A practical decorator: timing</h2>
+      <p>Timing is a classic use case: you want to measure how long functions take without sprinkling timer code through each one. <code>time.perf_counter()</code> is the right clock for measuring short durations. Here we only print whether the call was slow, so the output is repeatable.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import functools
+import time
+
+def timed(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            elapsed = time.perf_counter() - start
+            label = &quot;slow&quot; if elapsed &gt; 0.5 else &quot;fast&quot;
+            print(f&quot;{func.__name__} was {label}&quot;)
+    return wrapper
+
+@timed
+def build_report(n):
+    return sum(i * i for i in range(n))
+
+print(build_report(10_000))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>build_report was fast
+333283335000</pre></div>
+      <p>The <code>try/finally</code> means the timing message prints even if the function raises an exception.</p>
+      <h2>Decorators that take arguments</h2>
+      <p>What about <code>@retry(times=3)</code>? Because <code>retry(times=3)</code> is called first, it must <em>return</em> a decorator. That means three levels of functions: the outer one takes the settings, the middle one takes the function, and the inner one runs on each call.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import functools
+
+def retry(times):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, times + 1):
+                try:
+                    return func(*args, **kwargs)
+                except ConnectionError as err:
+                    print(f&quot;attempt {attempt} failed: {err}&quot;)
+            raise ConnectionError(f&quot;gave up after {times} attempts&quot;)
+        return wrapper
+    return decorator
+
+calls = {&quot;n&quot;: 0}
+
+@retry(times=3)
+def fetch_orders():
+    calls[&quot;n&quot;] += 1
+    if calls[&quot;n&quot;] &lt; 3:
+        raise ConnectionError(&quot;timeout&quot;)
+    return [&quot;order-1&quot;, &quot;order-2&quot;]
+
+print(fetch_orders())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>attempt 1 failed: timeout
+attempt 2 failed: timeout
+[&#x27;order-1&#x27;, &#x27;order-2&#x27;]</pre></div>
+      <h2>Built-in decorators worth knowing</h2>
+      <p>The standard library ships several ready-made decorators. <code>functools.lru_cache</code> (or the unbounded <code>functools.cache</code>) remembers results for arguments it has seen, which can turn an exponential recursive function into an instant one. You have also met <code>@property</code>, <code>@classmethod</code> and <code>@staticmethod</code> in the classes lessons, and <code>@dataclass</code> appears later in this course.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import functools
+
+@functools.lru_cache(maxsize=None)
+def fib(n):
+    return n if n &lt; 2 else fib(n - 1) + fib(n - 2)
+
+print(fib(80))
+print(fib.cache_info())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>23416728348467685
+CacheInfo(hits=78, misses=81, maxsize=None, currsize=81)</pre></div>
+      <p>You can stack decorators. They apply bottom-up: <code>@a</code> above <code>@b</code> above <code>def f</code> means <code>f = a(b(f))</code>.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Only cache pure functions</p><p class="learn-callout-body"><code>lru_cache</code> returns the stored result without running the function again. That is wrong for functions that read the clock, the database or random numbers, and arguments must be hashable (no lists or dicts).</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Functions are values: you can pass them, return them and store them.</li><li>A closure is an inner function that remembers variables from its enclosing scope; use <code>nonlocal</code> to reassign them.</li><li>A decorator takes a function and returns a wrapped one; <code>@deco</code> means <code>f = deco(f)</code>.</li><li>Always use <code>*args, **kwargs</code>, return the result and apply <code>@functools.wraps</code>.</li><li>A decorator with arguments is a function that returns a decorator; <code>lru_cache</code> is a ready-made one for memoisation.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a decorator <code>count_calls</code> that tracks how many times a function has been called and stores the number on a <code>calls</code> attribute of the wrapper. Keep the original name with <code>functools.wraps</code>. Decorate a <code>say(msg)</code> function, call it three times and print <code>say.calls</code> and <code>say.__name__</code>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import functools
+
+def count_calls(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        wrapper.calls += 1
+        return func(*args, **kwargs)
+    wrapper.calls = 0
+    return wrapper
+
+@count_calls
+def say(msg):
+    print(msg)
+
+say(&quot;one&quot;)
+say(&quot;two&quot;)
+say(&quot;three&quot;)
+print(say.calls, say.__name__)"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="python-decorators" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/python/generators/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 10</span><strong>Generators, Iterators and itertools</strong><small>Understand Python iterators and generators: the iterator protocol, yield, yield from, lazy pipelines and the most useful itertools functions.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/comprehensions/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/generators/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

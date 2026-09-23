@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Volumes, Bind Mounts and Networks | Docker Tutorial | stackcone</title>
+  <meta name="description" content="Persist container data with Docker volumes and bind mounts, and connect containers with user-defined bridge networks and DNS by container name.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/docker/volumes-networks/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/docker/volumes-networks/">
+  <meta property="og:title" content="Volumes, Bind Mounts and Networks | Docker Tutorial | stackcone">
+  <meta property="og:description" content="Persist container data with Docker volumes and bind mounts, and connect containers with user-defined bridge networks and DNS by container name.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Volumes, Bind Mounts and Networks | Docker Tutorial | stackcone">
+  <meta name="twitter:description" content="Persist container data with Docker volumes and bind mounts, and connect containers with user-defined bridge networks and DNS by container name.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/docker/dockerfile/">
+  <link rel="next" href="https://stackcone.com/learn/programming/docker/compose/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Docker", "item": "https://stackcone.com/learn/programming/docker/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Volumes, Bind Mounts and Networks", "item": "https://stackcone.com/learn/programming/docker/volumes-networks/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Volumes, Bind Mounts and Networks", "headline": "Volumes, Bind Mounts and Networks", "description": "Persist container data with Docker volumes and bind mounts, and connect containers with user-defined bridge networks and DNS by container name.", "url": "https://stackcone.com/learn/programming/docker/volumes-networks/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Choose between named volumes, bind mounts and tmpfs", "Back up and inspect a volume", "Create a user-defined network and connect containers by name", "Understand port publishing versus internal traffic"], "position": 4, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Docker Course", "url": "https://stackcone.com/learn/programming/docker/introduction/", "description": "Package apps into containers and run multi-service stacks with Compose.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/docker/introduction/">Docker</a> / <span aria-current="page">Volumes, Bind Mounts and Networks</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="docker">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/docker/introduction/">Docker</a></p>
+              <p class="learn-sidebar-tagline">11 lessons · Learn Docker from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 11 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Docker lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/docker/introduction/" data-lesson="docker-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Containers and Docker Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/images-registries/" data-lesson="docker-images-registries" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Images, Layers and Registries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/dockerfile/" data-lesson="docker-dockerfile" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Writing a Dockerfile</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/docker/volumes-networks/" aria-current="page" data-lesson="docker-volumes-networks" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Volumes, Bind Mounts and Networks</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/compose/" data-lesson="docker-compose" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Docker Compose</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/multistage/" data-lesson="docker-multistage" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Multi-stage Builds and Small Images</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/config-secrets/" data-lesson="docker-config-secrets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Environment Variables, Config and Secrets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/debugging/" data-lesson="docker-debugging" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Debugging and Inspecting Containers</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/security/" data-lesson="docker-security" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Container Security Best Practices</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/ci-deploy/" data-lesson="docker-ci-deploy" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Build, Push and Deploy with CI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/kubernetes-intro/" data-lesson="docker-kubernetes-intro" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">From Compose to Kubernetes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/docker/introduction/">Docker</a> · Lesson 4 of 11</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/docker/dockerfile/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="docker-volumes-networks" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/docker/compose/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Volumes, Bind Mounts and Networks</h1>
+          <p class="learn-summary">Persist container data with Docker volumes and bind mounts, and connect containers with user-defined bridge networks and DNS by container name.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/docker/dockerfile/">Lesson 3: Writing a Dockerfile</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Choose between named volumes, bind mounts and tmpfs</li><li>Back up and inspect a volume</li><li>Create a user-defined network and connect containers by name</li><li>Understand port publishing versus internal traffic</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 11 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 11</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Containers are designed to be disposable: you should be able to delete one and start a fresh copy at any moment. That raises two practical questions. Where does data go that must survive, like a database? And how do containers find each other without hard-coded IP addresses? Docker answers the first with <strong>storage mounts</strong> and the second with <strong>networks</strong>.</p>
+      <p>Here you will do it by hand with the plain <code>docker</code> CLI. In the next lesson, Docker Compose automates all of this, and you will know exactly what it is doing behind the scenes.</p>
+      <h2>Three kinds of mounts</h2>
+      <ul><li><strong>Named volume</strong>: storage managed by Docker (under <code>/var/lib/docker/volumes</code> on Linux). Best for database files and anything the app owns.</li><li><strong>Bind mount</strong>: a folder or file from your machine mapped into the container. Best for local development (live code reload) and injecting a single config file.</li><li><strong>tmpfs mount</strong>: in-memory only, gone when the container stops. Useful for scratch files or secrets you never want on disk.</li></ul>
+      <p>The modern, explicit syntax is <code>--mount</code>. The short <code>-v</code> form still works and is what you will see in most tutorials; the two are equivalent.</p>
+      <h2>Named volumes for data that must survive</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker volume create pgdata
+
+docker run -d --name db \
+  -e POSTGRES_PASSWORD=secret \
+  --mount type=volume,source=pgdata,target=/var/lib/postgresql/data \
+  postgres:16
+
+# delete the container entirely...
+docker rm -f db
+
+# ...and the data is still there
+docker volume ls</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>DRIVER    VOLUME NAME
+local     pgdata</pre></div>
+      <p>Start a new <code>postgres:16</code> container with the same volume and every table is still there. The container was replaced; the data was not. If you forget to create the volume first, Docker creates it automatically on <code>docker run</code>.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker volume inspect pgdata</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[
+    {
+        &quot;CreatedAt&quot;: &quot;2026-09-20T10:14:02Z&quot;,
+        &quot;Driver&quot;: &quot;local&quot;,
+        &quot;Labels&quot;: null,
+        &quot;Mountpoint&quot;: &quot;/var/lib/docker/volumes/pgdata/_data&quot;,
+        &quot;Name&quot;: &quot;pgdata&quot;,
+        &quot;Options&quot;: null,
+        &quot;Scope&quot;: &quot;local&quot;
+    }
+]</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Anonymous volumes pile up</p><p class="learn-callout-body">Many official images declare a <code>VOLUME</code> in their Dockerfile. If you do not mount a named volume there, Docker creates an anonymous one with a random hash name. It survives <code>docker rm</code> (without <code>-v</code>) but is hard to find again. Always name the volumes you care about, and run <code>docker volume prune</code> occasionally to remove the orphans.</p></aside>
+      <h2>Backing up a volume</h2>
+      <p>Because a volume is just a directory, you can back it up by mounting it into a throwaway container alongside a bind mount of your current folder, then creating a tar archive:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run --rm \
+  -v pgdata:/data:ro \
+  -v &quot;$PWD&quot;:/backup \
+  alpine tar czf /backup/pgdata-2026-09-20.tgz -C /data .
+
+ls -lh pgdata-2026-09-20.tgz</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>-rw-r--r--  1 ada  staff    6.3M Sep 20 10:21 pgdata-2026-09-20.tgz</pre></div>
+      <p>For a real database, prefer the database's own dump tool (<code>pg_dump</code>) while it runs, or stop the container before copying files, so you never archive a half-written state.</p>
+      <h2>Bind mounts for development</h2>
+      <p>A bind mount makes a host folder appear inside the container. Edit a file in your editor and the container sees the change instantly, which is perfect for hot reload:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run --rm -p 8000:8000 \
+  --mount type=bind,source=&quot;$PWD&quot;,target=/app \
+  -w /app python:3.12-slim \
+  python -m http.server 8000</code></pre></div>
+      <p>Add <code>,readonly</code> (or <code>:ro</code> with <code>-v</code>) when the container should only read, such as mounting an <code>nginx.conf</code>. Two common gotchas: the source path must be absolute (hence <code>$PWD</code>), and files created by the container may be owned by root on your Linux host.</p>
+      <h2>Networks: how containers find each other</h2>
+      <p>Every container gets its own network namespace with its own <code>localhost</code>. That is why an app container cannot reach a database at <code>localhost:5432</code>: that address points back at the app container itself.</p>
+      <p>The fix is a <strong>user-defined bridge network</strong>. Containers on the same user-defined network can reach each other by container name, thanks to Docker's built-in DNS server. (The legacy default <code>bridge</code> network does not provide name resolution, which is a common source of confusion.)</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker network create stackcone-net
+
+docker run -d --name db --network stackcone-net \
+  -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data postgres:16
+
+docker run --rm --network stackcone-net alpine ping -c 2 db</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>PING db (172.19.0.2): 56 data bytes
+64 bytes from 172.19.0.2: seq=0 ttl=64 time=0.112 ms
+64 bytes from 172.19.0.2: seq=1 ttl=64 time=0.098 ms
+
+--- db ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.098/0.105/0.112 ms</pre></div>
+      <p>Your app would now use the connection string <code>postgresql://postgres:secret@db:5432/postgres</code>. Compose does exactly this: it creates a network named <code>&lt;project&gt;_default</code> and uses service names as hostnames.</p>
+      <h2>Publishing ports versus internal traffic</h2>
+      <p>Notice the database above has no <code>-p</code> flag. It does not need one: containers on the same network talk directly on the container port. You only publish a port (<code>-p host:container</code>) for traffic coming from <em>outside</em> Docker, such as your browser. Keeping databases unpublished is a simple, effective security win.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run -d --name api --network stackcone-net -p 127.0.0.1:8000:8000 stackcone-api:1.0.0
+docker port api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>8000/tcp -&gt; 127.0.0.1:8000</pre></div>
+      <p>Binding to <code>127.0.0.1</code> makes the port reachable only from your own machine. Plain <code>-p 8000:8000</code> binds to all interfaces, and on Linux Docker's firewall rules can expose it to the whole network even if you use ufw.</p>
+      <h2>Recap</h2>
+      <ul><li>Use named volumes for data the app owns, bind mounts for development and config files, tmpfs for throwaway in-memory data.</li><li>Volumes outlive containers; back them up with a throwaway container or the database's dump tool.</li><li>Inside a container, <code>localhost</code> means that container only.</li><li>On a user-defined network, containers reach each other by name via Docker's DNS.</li><li>Publish ports only for traffic from outside Docker, and bind to <code>127.0.0.1</code> when possible.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Without Compose, run Redis and a one-off client that can reach it by name. Create a network called <code>cache-net</code>, start <code>redis:7</code> named <code>cache</code> with a named volume <code>redisdata</code> mounted at <code>/data</code> and no published ports, then run <code>redis-cli -h cache ping</code> from a temporary container.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="docker network create cache-net
+
+docker run -d --name cache --network cache-net \
+  -v redisdata:/data redis:7
+
+docker run --rm --network cache-net redis:7 redis-cli -h cache ping
+# PONG"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="docker-volumes-networks" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/docker/compose/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Docker Compose</strong><small>Run an app with a database and other services from one file.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/docker/dockerfile/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/docker/compose/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

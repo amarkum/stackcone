@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>How to Solve Coding Interview Problems | Algorithms | stackcone</title>
+  <meta name="description" content="A step-by-step method for coding interview problems: clarify, find patterns, pick data structures, analyse Big O, code cleanly and test out loud, in Python.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/interview-strategy/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/interview-strategy/">
+  <meta property="og:title" content="How to Solve Coding Interview Problems | Algorithms | stackcone">
+  <meta property="og:description" content="A step-by-step method for coding interview problems: clarify, find patterns, pick data structures, analyse Big O, code cleanly and test out loud, in Python.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="How to Solve Coding Interview Problems | Algorithms | stackcone">
+  <meta name="twitter:description" content="A step-by-step method for coding interview problems: clarify, find patterns, pick data structures, analyse Big O, code cleanly and test out loud, in Python.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/string-matching/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "How to Solve Coding Interview Problems", "item": "https://stackcone.com/learn/ds-algo/algorithms/interview-strategy/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "How to Solve Coding Interview Problems", "headline": "How to Solve Coding Interview Problems", "description": "A step-by-step method for coding interview problems: clarify, find patterns, pick data structures, analyse Big O, code cleanly and test out loud, in Python.", "url": "https://stackcone.com/learn/ds-algo/algorithms/interview-strategy/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Follow a repeatable six-step method in a live interview", "Map problem clues to the algorithm patterns in this track", "Use constraints to predict the required complexity", "Move from brute force to an optimised solution out loud"], "position": 17, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">How to Solve Coding Interview Problems</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/two-pointers/" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/divide-conquer/" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dp-patterns/" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/shortest-paths/" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/string-matching/" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/interview-strategy/" aria-current="page" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 17 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/string-matching/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-interview-strategy" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/" data-complete-on-click><span>Finish</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>How to Solve Coding Interview Problems</h1>
+          <p class="learn-summary">A step-by-step method for coding interview problems: clarify, find patterns, pick data structures, analyse Big O, code cleanly and test out loud, in Python.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/string-matching/">Lesson 16: String Algorithms: KMP and Rabin-Karp</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Follow a repeatable six-step method in a live interview</li><li>Map problem clues to the algorithm patterns in this track</li><li>Use constraints to predict the required complexity</li><li>Move from brute force to an optimised solution out loud</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Knowing algorithms is only half of passing a coding interview. The other half is showing <em>how</em> you think under time pressure: asking the right questions, starting simple, improving step by step and catching your own bugs. Interviewers at most companies in 2026 score communication, problem solving, code quality and testing separately, and a candidate who talks through a correct O(n log n) solution often beats one who silently writes the optimal code with a bug.</p>
+      <p>This lesson gives you a repeatable method and ties together everything in this track. We will walk one problem through every step.</p>
+      <h2>The six-step method</h2>
+      <ul><li><strong>1. Clarify.</strong> Restate the problem. Ask about input size, empty input, duplicates, negatives, sorted or not, and what to return if there is no answer.</li><li><strong>2. Examples.</strong> Work one normal example and one edge case by hand. This often reveals the pattern.</li><li><strong>3. Brute force.</strong> Say the obvious solution and its complexity, even if it is slow. It proves you understand the problem and gives you a fallback.</li><li><strong>4. Optimise.</strong> Find the bottleneck and match it to a pattern. Agree on the approach with the interviewer before coding.</li><li><strong>5. Code.</strong> Write clean code with good names and small helper functions. Narrate as you go.</li><li><strong>6. Test.</strong> Trace your examples through the code line by line, then edge cases. State final time and space complexity.</li></ul>
+      <h2>Let the constraints tell you the complexity</h2>
+      <p>Input size is a huge hint. A typical judge or interviewer expects roughly 10<sup>8</sup> simple operations to be fine. Work backwards:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import math
+
+limits = [(10, &quot;O(n!) or O(2^n): backtracking, bitmask&quot;),
+          (20, &quot;O(2^n): subsets, bitmask DP&quot;),
+          (500, &quot;O(n^3): interval DP, Floyd-Warshall&quot;),
+          (5_000, &quot;O(n^2): nested loops, 2D DP&quot;),
+          (1_000_000, &quot;O(n log n) or O(n): sorting, heaps, two pointers&quot;),
+          (10**18, &quot;O(log n): binary search, fast power, math&quot;)]
+for n, advice in limits:
+    print(f&quot;n &lt;= {n:&lt;20,} ~{advice}&quot;)
+print(f&quot;{1_000_000 * math.log2(1_000_000):,.0f} steps for n log n at n = 1e6&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>n &lt;= 10                   ~O(n!) or O(2^n): backtracking, bitmask
+n &lt;= 20                   ~O(2^n): subsets, bitmask DP
+n &lt;= 500                  ~O(n^3): interval DP, Floyd-Warshall
+n &lt;= 5,000                ~O(n^2): nested loops, 2D DP
+n &lt;= 1,000,000            ~O(n log n) or O(n): sorting, heaps, two pointers
+n &lt;= 1,000,000,000,000,000,000 ~O(log n): binary search, fast power, math
+19,931,569 steps for n log n at n = 1e6</pre></div>
+      <h2>Map clues to patterns</h2>
+      <p>After a few dozen problems you will notice that the same phrases keep pointing to the same tools. This table links each clue to the lesson in this track that covers it.</p>
+      <ul><li>Sorted array, pair or triplet sums, in-place changes: <a href="/learn/ds-algo/algorithms/two-pointers/">two pointers</a>.</li><li>Contiguous sub-array or substring with a condition: <a href="/learn/ds-algo/algorithms/two-pointers/">sliding window</a>.</li><li>Sorted data, "minimum value that works", monotonic yes/no: <a href="/learn/ds-algo/algorithms/binary-search-patterns/">binary search</a>.</li><li>"Have we seen this before?", counts, fast lookup: a hash map or set.</li><li>Top k, k-th largest, merge k lists, running median: a heap.</li><li>Fewest steps, levels, grids, connectivity: <a href="/learn/ds-algo/algorithms/bfs-dfs/">BFS/DFS</a>. Weighted edges: <a href="/learn/ds-algo/algorithms/shortest-paths/">Dijkstra</a>.</li><li>Dependencies, ordering, prerequisites: <a href="/learn/ds-algo/algorithms/topological-sort/">topological sort</a>.</li><li>"All combinations/permutations": <a href="/learn/ds-algo/algorithms/backtracking/">backtracking</a>.</li><li>"Number of ways", "min/max cost" with overlapping choices: <a href="/learn/ds-algo/algorithms/dp-patterns/">dynamic programming</a>.</li><li>Matching brackets, "next greater element", undo: a stack.</li></ul>
+      <h2>Worked example: steps 1 to 3</h2>
+      <p><strong>Problem:</strong> given a list of daily revenue changes (can be negative) and a number k, count how many contiguous stretches of days sum to exactly k.</p>
+      <p><strong>Clarify:</strong> Can values be negative? (Yes.) Can the list be empty? (Yes, return 0.) Up to how many days? (10<sup>5</sup>.) Negatives rule out a sliding window, and 10<sup>5</sup> means O(n<sup>2</sup>) = 10<sup>10</sup> is too slow, so we are aiming for O(n) or O(n log n).</p>
+      <p><strong>Brute force:</strong> try every start and end, keeping a running sum. Say it out loud: "This is O(n<sup>2</sup>) time and O(1) space. It works but is too slow for 10<sup>5</sup>; let me write it anyway so I can check the faster version against it."</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def count_k_brute(nums, k):
+    count = 0
+    for start in range(len(nums)):
+        total = 0
+        for end in range(start, len(nums)):
+            total += nums[end]
+            if total == k:
+                count += 1
+    return count
+
+print(count_k_brute([3, 4, -7, 3, 1, 3, 1, -4, -2, -2], 7))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3</pre></div>
+      <h2>Worked example: steps 4 to 6</h2>
+      <p><strong>Optimise:</strong> the bottleneck is re-summing ranges. With prefix sums, the sum from i+1 to j is <code>prefix[j] - prefix[i]</code>. We want that to equal k, so for each j we need to know <em>how many earlier prefixes equal <code>prefix[j] - k</code></em>. That is a "have we seen this before?" question, so use a hash map of counts.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from collections import defaultdict
+
+def count_k(nums, k):
+    seen = defaultdict(int)
+    seen[0] = 1                     # empty prefix, so ranges can start at 0
+    prefix = count = 0
+    for x in nums:
+        prefix += x
+        count += seen[prefix - k]   # earlier prefixes that complete a range
+        seen[prefix] += 1
+    return count
+
+data = [3, 4, -7, 3, 1, 3, 1, -4, -2, -2]
+print(count_k(data, 7))
+print(count_k([], 3), count_k([1, 1, 1], 2), count_k([0, 0], 0))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3
+0 2 3</pre></div>
+      <p><strong>Test:</strong> trace <code>[1, 1, 1]</code>, k = 2 by hand: prefixes are 1, 2, 3; at prefix 2 we find one earlier 0, at prefix 3 we find one earlier 1, total 2. Check edge cases: empty list, all zeros with k = 0 (three ranges in <code>[0, 0]</code>), negatives. Then state it: <strong>O(n) time, O(n) space.</strong></p>
+      <h2>Test against the brute force</h2>
+      <p>A habit that separates strong candidates (and strong engineers): when you have a slow but obviously correct solution, use it to check the fast one on random inputs. In an interview you describe this; in practice you run it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def count_k_brute(nums, k):
+    count = 0
+    for start in range(len(nums)):
+        total = 0
+        for end in range(start, len(nums)):
+            total += nums[end]
+            if total == k:
+                count += 1
+    return count
+
+from collections import defaultdict
+
+def count_k(nums, k):
+    seen = defaultdict(int)
+    seen[0] = 1                     # empty prefix, so ranges can start at 0
+    prefix = count = 0
+    for x in nums:
+        prefix += x
+        count += seen[prefix - k]   # earlier prefixes that complete a range
+        seen[prefix] += 1
+    return count
+
+# new code
+import random
+
+random.seed(7)
+for trial in range(500):
+    nums = [random.randint(-5, 5) for _ in range(random.randint(0, 12))]
+    k = random.randint(-6, 6)
+    assert count_k(nums, k) == count_k_brute(nums, k), (nums, k)
+print(&quot;500 random tests passed&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>500 random tests passed</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Mistakes that sink interviews</p><p class="learn-callout-body">Jumping into code before agreeing on an approach. Going silent for minutes (say what you are thinking, even "I am considering a heap here because..."). Ignoring edge cases like empty input or a single element. Not stating complexity. And refusing to give a brute force because it feels too simple; a working O(n<sup>2</sup>) beats an unfinished O(n).</p></aside>
+      <h2>When you are stuck</h2>
+      <ul><li>Solve a tiny example by hand and watch what <em>you</em> do; that is often the algorithm.</li><li>Ask "what if the input were sorted?" or "what if I had a hash map of everything so far?"</li><li>Walk the pattern list above and ask whether each one fits.</li><li>Simplify: solve it for k = 1, or for one dimension, then generalise.</li><li>Ask for a hint. Interviewers expect it, and using a hint well is a positive signal.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Follow clarify, examples, brute force, optimise, code, test, every time.</li><li>Input size tells you the target complexity before you pick an algorithm.</li><li>Recurring phrases map to recurring patterns: windows, binary search, BFS, DP, heaps, hash maps.</li><li>Always state a brute force and its Big O first; then improve the bottleneck.</li><li>Trace your code on examples and edge cases, and finish by stating time and space.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Apply the method to this problem: given a list of task durations and an integer k, return the length of the longest contiguous stretch whose total is at most k (all durations are positive). Write the brute force, then an O(n) version, and compare them on random inputs. Test <code>[3, 1, 2, 7, 4, 2, 1, 1, 5]</code> with k = 8 (answer 4).</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import random
+
+def longest_brute(nums, k):
+    best = 0
+    for i in range(len(nums)):
+        total = 0
+        for j in range(i, len(nums)):
+            total += nums[j]
+            if total &lt;= k:
+                best = max(best, j - i + 1)
+    return best
+
+def longest_window(nums, k):
+    # positive values: a sliding window works (O(n) time, O(1) space)
+    left = total = best = 0
+    for right, x in enumerate(nums):
+        total += x
+        while total &gt; k:
+            total -= nums[left]
+            left += 1
+        best = max(best, right - left + 1)
+    return best
+
+print(longest_window([3, 1, 2, 7, 4, 2, 1, 1, 5], 8))
+for _ in range(300):
+    nums = [random.randint(1, 9) for _ in range(random.randint(0, 10))]
+    k = random.randint(0, 20)
+    assert longest_window(nums, k) == longest_brute(nums, k)
+print(&quot;ok&quot;)"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-interview-strategy" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext learn-upnext--done" href="/learn/ds-algo/" data-complete-on-click><span class="learn-upnext-label">Last lesson</span><strong>Finish Algorithms</strong><small>Mark this lesson complete and pick your next course.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/string-matching/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/" data-complete-on-click>Finish course</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

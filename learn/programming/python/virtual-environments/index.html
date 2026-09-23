@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Virtual Environments and Project Setup | Python | stackcone</title>
+  <meta name="description" content="Set up Python projects the modern way: venv, pip, requirements files, pyproject.toml, uv for fast installs and lockfiles, and a clean src layout.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/python/virtual-environments/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/python/virtual-environments/">
+  <meta property="og:title" content="Virtual Environments and Project Setup | Python | stackcone">
+  <meta property="og:description" content="Set up Python projects the modern way: venv, pip, requirements files, pyproject.toml, uv for fast installs and lockfiles, and a clean src layout.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Virtual Environments and Project Setup | Python | stackcone">
+  <meta name="twitter:description" content="Set up Python projects the modern way: venv, pip, requirements files, pyproject.toml, uv for fast installs and lockfiles, and a clean src layout.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/python/modules-packages/">
+  <link rel="next" href="https://stackcone.com/learn/programming/python/json-datetime/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Python", "item": "https://stackcone.com/learn/programming/python/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Virtual Environments and Project Setup", "item": "https://stackcone.com/learn/programming/python/virtual-environments/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Virtual Environments and Project Setup", "headline": "Virtual Environments and Project Setup", "description": "Set up Python projects the modern way: venv, pip, requirements files, pyproject.toml, uv for fast installs and lockfiles, and a clean src layout.", "url": "https://stackcone.com/learn/programming/python/virtual-environments/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Explain why every project needs its own environment", "Create and use environments with venv and pip", "Describe a project in pyproject.toml", "Manage dependencies and lockfiles with uv"], "position": 18, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Python Course", "url": "https://stackcone.com/learn/programming/python/hello-world/", "description": "From your first print() to classes, files, and exceptions.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / <span aria-current="page">Virtual Environments and Project Setup</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="python">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
+              <p class="learn-sidebar-tagline">21 lessons · Learn Python from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 21 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Python lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/python/hello-world/" data-lesson="python-hello-world" data-minutes="8"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Python</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/variables-and-types/" data-lesson="python-variables-and-types" data-minutes="12"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/strings/" data-lesson="python-strings" data-minutes="14"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Working with Strings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/control-flow/" data-lesson="python-control-flow" data-minutes="15"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/functions/" data-lesson="python-functions" data-minutes="14"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/lists-tuples/" data-lesson="python-lists-tuples" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Lists and Tuples</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/dictionaries/" data-lesson="python-dictionaries" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Dictionaries and Sets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/comprehensions/" data-lesson="python-comprehensions" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Comprehensions and Iteration</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/decorators/" data-lesson="python-decorators" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Closures and Decorators</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/generators/" data-lesson="python-generators" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Generators, Iterators and itertools</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/" data-lesson="python-oop-classes" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/" data-lesson="python-inheritance" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Inheritance and Special Methods</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/type-hints/" data-lesson="python-type-hints" data-minutes="18"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Type Hints and dataclasses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/file-handling/" data-lesson="python-file-handling" data-minutes="12"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/" data-lesson="python-error-handling" data-minutes="13"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Error Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/regex/" data-lesson="python-regex" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Regular Expressions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/" data-lesson="python-modules-packages" data-minutes="13"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Modules, Packages and pip</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/virtual-environments/" aria-current="page" data-lesson="python-virtual-environments" data-minutes="16"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Virtual Environments and Project Setup</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/" data-lesson="python-json-datetime" data-minutes="14"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">JSON, Dates and the Standard Library</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/async/" data-lesson="python-async" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">async/await and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/" data-lesson="python-testing-debugging" data-minutes="15"><span class="learn-sidebar-num">21</span><span class="learn-sidebar-title">Testing and Debugging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 18 of 21</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/python/modules-packages/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="python-virtual-environments" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/python/json-datetime/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Virtual Environments and Project Setup</h1>
+          <p class="learn-summary">Set up Python projects the modern way: venv, pip, requirements files, pyproject.toml, uv for fast installs and lockfiles, and a clean src layout.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/modules-packages/">Lesson 17: Modules, Packages and pip</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain why every project needs its own environment</li><li>Create and use environments with venv and pip</li><li>Describe a project in pyproject.toml</li><li>Manage dependencies and lockfiles with uv</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 21 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 21</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>In the modules lesson you created a virtual environment and installed a package with <code>pip</code>. That is enough for a quick script. Real projects need more: a record of dependencies that teammates and servers can reproduce exactly, a place for project metadata, and settings for tools like pytest and linters. This lesson walks through the modern Python project setup, from plain <code>venv</code> to <code>pyproject.toml</code> and the fast <code>uv</code> tool.</p>
+      <h2>Why environments exist</h2>
+      <p>Without environments, every <code>pip install</code> goes into one shared place. Project A needs Django 4, project B needs Django 5, and whichever you installed last wins. Worse, installing into the system Python on macOS or Linux can break operating system tools, which is why modern distributions block it with an <code>externally-managed-environment</code> error.</p>
+      <p>A virtual environment is just a folder (conventionally <code>.venv</code>) containing a link to a Python interpreter and its own <code>site-packages</code> directory. Activating it puts that folder first on your <code>PATH</code>. You can see which environment is active from inside Python:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import sys
+
+print(sys.prefix == sys.base_prefix)   # True means no venv is active
+print(sys.version_info &gt;= (3, 10))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True
+True</pre></div>
+      <p>Inside an activated virtual environment, <code>sys.prefix</code> points at <code>.venv</code> and the first line prints <code>False</code>.</p>
+      <h2>The classic workflow: venv and pip</h2>
+      <p>This works everywhere Python is installed, with no extra tools. Use <code>python -m pip</code> rather than bare <code>pip</code> so you are certain which interpreter installs the package.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install &quot;requests&gt;=2.32&quot; pytest
+python -m pip list
+python -m pip freeze &gt; requirements.txt
+deactivate</code></pre></div>
+      <p><code>requirements.txt</code> pins every installed package, including dependencies of dependencies. A teammate recreates the environment with <code>python -m pip install -r requirements.txt</code>. Always add <code>.venv/</code> to <code>.gitignore</code>: environments are machine-specific and are rebuilt, never committed.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: installing into the wrong Python</p><p class="learn-callout-body">If <code>import requests</code> fails right after installing, you almost certainly installed into a different interpreter. Check with <code>which python</code> (Windows: <code>where python</code>) and <code>python -m pip --version</code>, and make sure your editor uses the <code>.venv</code> interpreter too.</p></aside>
+      <h2>Version specifiers</h2>
+      <p>When you list dependencies you choose how strict to be. Libraries should use loose ranges so they play well with others; applications should lock exact versions for reproducible deploys.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>requests            # any version
+requests==2.32.3    # exactly this version
+requests&gt;=2.32      # this version or newer
+requests~=2.32.0    # compatible release: &gt;=2.32.0, &lt;2.33
+requests&gt;=2.32,&lt;3   # a range</code></pre></div>
+      <h2>pyproject.toml: one file for the project</h2>
+      <p><code>pyproject.toml</code> is the standard configuration file for Python projects (PEP 518 and PEP 621). It holds the project name, version, supported Python versions and dependencies, the build backend, and settings for tools such as pytest, ruff and mypy. It replaces the older mix of <code>setup.py</code>, <code>setup.cfg</code> and scattered config files.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>[project]
+name = &quot;stackcone-orders&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Order processing service&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;httpx&gt;=0.27&quot;,
+    &quot;pydantic&gt;=2.8&quot;,
+]
+
+[project.optional-dependencies]
+cli = [&quot;rich&gt;=13&quot;]
+
+[dependency-groups]
+dev = [&quot;pytest&gt;=8&quot;, &quot;ruff&gt;=0.6&quot;, &quot;mypy&gt;=1.11&quot;]
+
+[project.scripts]
+orders = &quot;stackcone_orders.cli:main&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.pytest.ini_options]
+testpaths = [&quot;tests&quot;]
+
+[tool.ruff]
+line-length = 100</code></pre></div>
+      <p><code>dependencies</code> are what your code needs at runtime. <code>[dependency-groups]</code> (PEP 735) holds development-only tools. <code>[project.scripts]</code> creates a command called <code>orders</code> that runs the <code>main</code> function. With this file in place, <code>python -m pip install -e .</code> installs your project in editable mode so code changes take effect immediately.</p>
+      <h2>The src layout</h2>
+      <p>A widely recommended structure puts your package inside a <code>src/</code> folder. It forces tests to import the <em>installed</em> package rather than whatever happens to be in the current directory, which catches packaging mistakes early.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>stackcone-orders/
+  pyproject.toml
+  uv.lock
+  README.md
+  .gitignore
+  .python-version
+  src/
+    stackcone_orders/
+      __init__.py
+      cli.py
+      models.py
+  tests/
+    test_models.py</code></pre></div>
+      <h2>uv: the fast all-in-one tool</h2>
+      <p><strong>uv</strong>, from Astral, has become the most popular modern Python project tool. Written in Rust, it replaces pip, venv, pip-tools, pipx and pyenv with one command that is typically 10 to 100 times faster. It creates the <code>.venv</code> for you, edits <code>pyproject.toml</code> when you add packages, and writes a cross-platform <code>uv.lock</code> lockfile with exact versions and hashes.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code># install once (macOS/Linux; see docs.astral.sh/uv for Windows)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv init stackcone-orders --package   # creates pyproject.toml and src layout
+cd stackcone-orders
+uv python pin 3.13                   # writes .python-version, downloads Python if needed
+uv add httpx pydantic                # adds to dependencies, updates uv.lock
+uv add --dev pytest ruff             # adds to the dev dependency group
+uv run pytest                        # syncs .venv, then runs inside it
+uv run orders                        # runs your project script
+uv lock --upgrade-package httpx      # bump one dependency</code></pre></div>
+      <p><code>uv run</code> checks that the environment matches the lockfile before every command, so you rarely need to activate anything. A teammate who clones the repository runs <code>uv sync</code> and gets exactly the same versions. Commit both <code>pyproject.toml</code> and <code>uv.lock</code>.</p>
+      <p>uv also handles one-off tools and scripts: <code>uvx ruff check .</code> runs a tool in a throwaway environment, and <code>uv pip install</code> is a drop-in faster pip if you prefer the classic workflow.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Poetry, PDM and Conda</p><p class="learn-callout-body">You will meet other tools in existing projects. Poetry and PDM also manage <code>pyproject.toml</code> and lockfiles. Conda is common in data science because it can install non-Python libraries (like CUDA). The concepts in this lesson (isolated environment, declared dependencies, locked versions) apply to all of them.</p></aside>
+      <h2>A reproducible checklist</h2>
+      <ul><li>One environment per project, in <code>.venv</code>, ignored by git.</li><li>Declare direct dependencies in <code>pyproject.toml</code> with sensible ranges.</li><li>Commit a lockfile (<code>uv.lock</code>, or a pinned <code>requirements.txt</code>) for applications.</li><li>Pin the Python version (<code>requires-python</code> and <code>.python-version</code>).</li><li>Put tool settings in <code>[tool.*]</code> tables so the whole team shares them.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Virtual environments isolate each project's packages and protect the system Python.</li><li><code>python -m venv .venv</code> plus <code>python -m pip</code> works everywhere; <code>pip freeze</code> pins versions.</li><li><code>pyproject.toml</code> is the single source of project metadata, dependencies and tool config.</li><li>The <code>src/</code> layout keeps imports honest and packaging mistakes visible.</li><li><code>uv</code> manages Python versions, environments, dependencies and lockfiles quickly with <code>uv add</code>, <code>uv sync</code> and <code>uv run</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write the <code>[project]</code> and <code>[dependency-groups]</code> sections of a <code>pyproject.toml</code> for a project called <code>blog-stats</code>, version <code>0.2.0</code>, requiring Python 3.12 or newer, depending on <code>httpx</code> 0.27 or newer, with <code>pytest</code> as a dev dependency. Then list the uv commands to add those dependencies and run the tests.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="text" data-solution="[project]
+name = &quot;blog-stats&quot;
+version = &quot;0.2.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [&quot;httpx&gt;=0.27&quot;]
+
+[dependency-groups]
+dev = [&quot;pytest&gt;=8&quot;]
+
+# commands
+uv add &quot;httpx&gt;=0.27&quot;
+uv add --dev pytest
+uv run pytest"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="python-virtual-environments" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/python/json-datetime/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 19</span><strong>JSON, Dates and the Standard Library</strong><small>Read and write JSON, work with dates and durations, and reach for collections and pathlib.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/modules-packages/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/json-datetime/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

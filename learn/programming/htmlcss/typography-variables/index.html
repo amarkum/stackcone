@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Typography, Colors and CSS Variables | HTML &amp; CSS | stackcone</title>
+  <meta name="description" content="Style readable text with web fonts and fluid type, choose accessible colors with hsl() and oklch(), and theme a site with CSS custom properties.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/htmlcss/typography-variables/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/htmlcss/typography-variables/">
+  <meta property="og:title" content="Typography, Colors and CSS Variables | HTML &amp; CSS | stackcone">
+  <meta property="og:description" content="Style readable text with web fonts and fluid type, choose accessible colors with hsl() and oklch(), and theme a site with CSS custom properties.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Typography, Colors and CSS Variables | HTML &amp; CSS | stackcone">
+  <meta name="twitter:description" content="Style readable text with web fonts and fluid type, choose accessible colors with hsl() and oklch(), and theme a site with CSS custom properties.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/htmlcss/box-model-units/">
+  <link rel="next" href="https://stackcone.com/learn/programming/htmlcss/positioning/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "HTML & CSS", "item": "https://stackcone.com/learn/programming/htmlcss/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Typography, Colors and CSS Variables", "item": "https://stackcone.com/learn/programming/htmlcss/typography-variables/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Typography, Colors and CSS Variables", "headline": "Typography, Colors and CSS Variables", "description": "Style readable text with web fonts and fluid type, choose accessible colors with hsl() and oklch(), and theme a site with CSS custom properties.", "url": "https://stackcone.com/learn/programming/htmlcss/typography-variables/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Load web fonts efficiently and set a readable type scale", "Use modern colour functions and keep contrast accessible", "Build design tokens with CSS custom properties", "Add a dark theme by swapping variables"], "position": 8, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "HTML & CSS Course", "url": "https://stackcone.com/learn/programming/htmlcss/introduction/", "description": "Structure pages with HTML and style them with modern CSS, Flexbox and Grid.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> / <span aria-current="page">Typography, Colors and CSS Variables</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="htmlcss">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a></p>
+              <p class="learn-sidebar-tagline">13 lessons · Learn HTML &amp; CSS from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 13 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="HTML &amp; CSS lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/introduction/" data-lesson="html-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">HTML Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/forms-semantics/" data-lesson="html-forms-semantics" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Forms and Semantic HTML</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/media-accessibility/" data-lesson="html-media-accessibility" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Images, Media and Accessibility</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/seo-performance/" data-lesson="html-seo-performance" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Meta Tags, SEO and Page Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/basics/" data-lesson="css-basics" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">CSS Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/selectors-cascade/" data-lesson="css-selectors-cascade" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Selectors, Specificity and the Cascade</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/box-model-units/" data-lesson="css-box-model-units" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">The Box Model, Sizing and Units</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/htmlcss/typography-variables/" aria-current="page" data-lesson="css-typography-variables" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Typography, Colors and CSS Variables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/positioning/" data-lesson="css-positioning" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Positioning, z-index and Overflow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/flexbox/" data-lesson="css-flexbox" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Flexbox Layout</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/grid-responsive/" data-lesson="css-grid-responsive" data-minutes="17"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Grid and Responsive Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/animations/" data-lesson="css-animations" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Transitions, Transforms and Animations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/layout-project/" data-lesson="css-modern-layout-project" data-minutes="25"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Project: Build a Responsive Landing Page</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> · Lesson 8 of 13</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/htmlcss/box-model-units/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="css-typography-variables" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/htmlcss/positioning/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Typography, Colors and CSS Variables</h1>
+          <p class="learn-summary">Style readable text with web fonts and fluid type, choose accessible colors with hsl() and oklch(), and theme a site with CSS custom properties.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/htmlcss/box-model-units/">Lesson 7: The Box Model, Sizing and Units</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Load web fonts efficiently and set a readable type scale</li><li>Use modern colour functions and keep contrast accessible</li><li>Build design tokens with CSS custom properties</li><li>Add a dark theme by swapping variables</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 13 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 13</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Most of a web page is text, so typography does more for how professional a site feels than almost anything else. Colour sets the mood and guides attention. And CSS custom properties (variables) tie it all together, so a brand colour or font lives in one place instead of fifty. CSS Basics showed a two-line variable example; this lesson turns that into a small design system.</p>
+      <h2>Font stacks and web fonts</h2>
+      <p>A font stack lists fonts in order of preference. The browser uses the first one it has. The system stack is fast (no download) and looks native everywhere:</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>body {
+  font-family: system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, sans-serif;
+}
+code {
+  font-family: ui-monospace, &quot;SF Mono&quot;, Menlo, Consolas, monospace;
+}</code></pre></div>
+      <p>For a custom font, self-host a WOFF2 file (the most compressed format) and declare it with <code>@font-face</code>. A single <strong>variable font</strong> file can contain every weight from thin to black, which is usually smaller than loading three separate weights.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@font-face {
+  font-family: &quot;Inter&quot;;
+  src: url(&quot;/fonts/inter-var.woff2&quot;) format(&quot;woff2&quot;);
+  font-weight: 100 900;      /* variable font: any weight in this range */
+  font-display: swap;        /* show fallback text immediately, swap when loaded */
+}
+
+body { font-family: &quot;Inter&quot;, system-ui, sans-serif; }</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Invisible text</p><p class="learn-callout-body">Without <code>font-display: swap</code>, some browsers hide text for up to 3 seconds while the font downloads. On a slow connection users stare at a blank page. Always set it, and preload the one font file used above the fold with <code>&lt;link rel="preload" as="font" type="font/woff2" crossorigin&gt;</code>.</p></aside>
+      <h2>Readable text</h2>
+      <p>Four properties do most of the work: size, line height, line length and weight.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>body {
+  font-size: 1.0625rem;        /* 17px: slightly larger reads better on screens */
+  line-height: 1.6;            /* unitless, so it scales with each element&#x27;s size */
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  line-height: 1.15;           /* big text needs tighter leading */
+  letter-spacing: -0.02em;
+  text-wrap: balance;          /* evens out lines in headings */
+}
+
+p {
+  max-width: 65ch;
+  text-wrap: pretty;           /* avoids a single orphan word on the last line */
+}
+
+.caption { font-size: 0.875rem; color: #64748b; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }</code></pre></div>
+      <p>Always give <code>line-height</code> without a unit. <code>line-height: 24px</code> is inherited as a fixed 24px, so a 40px heading would have lines overlapping.</p>
+      <h2>A type scale</h2>
+      <p>Rather than picking random sizes, multiply by a ratio. A 1.25 ratio from a 1rem base gives 1, 1.25, 1.563, 1.953, 2.441rem. Combined with <code>clamp()</code>, headings shrink on phones and grow on desktops without media queries.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>:root {
+  --step-0: 1rem;
+  --step-1: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+  --step-2: clamp(1.375rem, 1.1rem + 1vw, 1.563rem);
+  --step-3: clamp(1.625rem, 1.2rem + 1.8vw, 1.953rem);
+  --step-4: clamp(2rem, 1.3rem + 3vw, 2.441rem);
+}
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-2); }</code></pre></div>
+      <h2>Colours: hex, rgb, hsl and oklch</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.a { color: #2563eb; }                  /* hex */
+.b { color: rgb(37 99 235); }           /* modern space-separated syntax */
+.c { color: rgb(37 99 235 / 50%); }     /* with 50% opacity */
+.d { color: hsl(221 83% 53%); }         /* hue, saturation, lightness */
+.e { color: oklch(55% 0.2 262); }       /* lightness, chroma, hue */
+
+/* Mix colours in the browser */
+.f { background: color-mix(in oklch, #2563eb 20%, white); }</code></pre></div>
+      <p>HSL is easy to reason about: keep the hue and change lightness to get lighter and darker shades. <code>oklch()</code>, supported in all modern browsers, goes further: its lightness is <em>perceptually</em> even, so a yellow and a blue at 60% lightness really look equally bright. That makes generating accessible palettes much more reliable. <code>color-mix()</code> creates tints and shades without a preprocessor.</p>
+      <p>Whatever the format, check contrast: at least 4.5:1 for body text. Light grey text on white is the most common failure on the web.</p>
+      <h2>Custom properties as design tokens</h2>
+      <p>Custom properties start with two dashes and are read with <code>var()</code>. Unlike preprocessor variables, they are live: they inherit, can be changed per element, and can be updated by JavaScript or a media query at runtime.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>:root {
+  /* Raw palette */
+  --blue-600: oklch(55% 0.2 262);
+  --slate-900: oklch(21% 0.04 265);
+  --slate-50: oklch(98% 0.005 250);
+
+  /* Semantic tokens: what the colour is FOR */
+  --color-bg: var(--slate-50);
+  --color-text: var(--slate-900);
+  --color-accent: var(--blue-600);
+  --color-muted: oklch(55% 0.02 260);
+
+  --radius: 0.5rem;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --font-body: &quot;Inter&quot;, system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+.button {
+  background: var(--btn-bg, var(--color-accent));   /* fallback value */
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+}
+
+/* A variant just overrides one variable */
+.button.danger { --btn-bg: oklch(58% 0.21 27); }</code></pre></div>
+      <p>The two-layer approach (raw palette, then semantic tokens) is what design systems use. Components only reference semantic names like <code>--color-accent</code>, so changing the theme never means hunting through component CSS.</p>
+      <h2>Dark mode by swapping tokens</h2>
+      <p>Because components use semantic tokens, a dark theme is just a new set of values. Respect the operating system setting, and optionally allow a manual override with a <code>data-theme</code> attribute.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>:root { color-scheme: light dark; }   /* dark scrollbars and form controls too */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme=&quot;light&quot;]) {
+    --color-bg: oklch(18% 0.02 265);
+    --color-text: oklch(94% 0.01 250);
+    --color-accent: oklch(72% 0.15 262);
+  }
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  --color-bg: oklch(18% 0.02 265);
+  --color-text: oklch(94% 0.01 250);
+  --color-accent: oklch(72% 0.15 262);
+}</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Variables are not valid everywhere</p><p class="learn-callout-body"><code>var()</code> works inside property values, but not in selectors, property names or media query conditions. <code>@media (min-width: var(--bp))</code> silently does nothing.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Use a system font stack or a self-hosted WOFF2 variable font with <code>font-display: swap</code>.</li><li>Readable text: about 1rem or more, unitless line-height around 1.5-1.7, lines around 65ch, <code>text-wrap: balance</code> for headings.</li><li>Build a type scale with a ratio and <code>clamp()</code> for fluid headings.</li><li>Prefer <code>oklch()</code> or <code>hsl()</code> for palettes, <code>color-mix()</code> for tints, and always check 4.5:1 contrast.</li><li>Define raw and semantic tokens as custom properties; dark mode becomes a token swap.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a token set for a small blog: a font, three colour tokens (background, text, accent), a radius and two spacing values. Style <code>body</code>, <code>a</code> and a <code>.callout</code> box with them, then add a dark theme that follows the OS setting.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="css" data-solution=":root {
+  color-scheme: light dark;
+  --font-body: system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif;
+  --color-bg: oklch(99% 0.003 250);
+  --color-text: oklch(25% 0.03 265);
+  --color-accent: oklch(52% 0.18 160);
+  --radius: 0.5rem;
+  --space-s: 0.75rem;
+  --space-m: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: oklch(19% 0.02 265);
+    --color-text: oklch(93% 0.01 250);
+    --color-accent: oklch(75% 0.14 160);
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-accent);
+  text-underline-offset: 0.2em;
+}
+
+.callout {
+  padding: var(--space-s) var(--space-m);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius);
+  background: color-mix(in oklch, var(--color-accent) 10%, var(--color-bg));
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="css-typography-variables" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/htmlcss/positioning/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Positioning, z-index and Overflow</strong><small>Learn CSS position relative, absolute, fixed and sticky, how z-index and stacking contexts work, and how to control overflow and scrolling.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/htmlcss/box-model-units/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/htmlcss/positioning/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Binary Search Trees | Data Structures Tutorial | stackcone</title>
+  <meta name="description" content="Go beyond insert and search in binary search trees: deletion, min and max, successor, floor and range queries, validation and why BSTs degrade.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/data-structures/bst/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/data-structures/bst/">
+  <meta property="og:title" content="Binary Search Trees | Data Structures Tutorial | stackcone">
+  <meta property="og:description" content="Go beyond insert and search in binary search trees: deletion, min and max, successor, floor and range queries, validation and why BSTs degrade.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Binary Search Trees | Data Structures Tutorial | stackcone">
+  <meta name="twitter:description" content="Go beyond insert and search in binary search trees: deletion, min and max, successor, floor and range queries, validation and why BSTs degrade.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/data-structures/trees/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/data-structures/balanced-trees/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Data Structures", "item": "https://stackcone.com/learn/ds-algo/data-structures/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Binary Search Trees", "item": "https://stackcone.com/learn/ds-algo/data-structures/bst/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Binary Search Trees", "headline": "Binary Search Trees", "description": "Go beyond insert and search in binary search trees: deletion, min and max, successor, floor and range queries, validation and why BSTs degrade.", "url": "https://stackcone.com/learn/ds-algo/data-structures/bst/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Delete nodes in all three cases", "Answer min, max, floor and successor queries", "Validate a BST with bounds", "Explain why height decides performance"], "position": 10, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Data Structures Course", "url": "https://stackcone.com/learn/ds-algo/data-structures/introduction/", "description": "Arrays, lists, trees, graphs, and why Big O matters.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a> / <span aria-current="page">Binary Search Trees</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="data-structures">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a></p>
+              <p class="learn-sidebar-tagline">16 lessons · Learn Data Structures from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 16 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Data Structures lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/introduction/" data-lesson="ds-introduction" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">What Are Data Structures?</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/big-o/" data-lesson="ds-big-o" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Big O Notation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/arrays/" data-lesson="ds-arrays" data-minutes="12"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/strings/" data-lesson="ds-strings" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Strings and Character Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/linked-lists/" data-lesson="ds-linked-lists" data-minutes="14"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Linked Lists</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/stacks-queues/" data-lesson="ds-stacks-queues" data-minutes="13"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Stacks and Queues</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/deques-sets/" data-lesson="ds-deques-sets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Deques, Sets and Ordered Maps</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/hash-tables/" data-lesson="ds-hash-tables" data-minutes="14"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Hash Tables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/trees/" data-lesson="ds-trees" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/data-structures/bst/" aria-current="page" data-lesson="ds-bst" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Binary Search Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/balanced-trees/" data-lesson="ds-balanced-trees" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Balanced Trees: AVL, Red-Black and B-Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/heaps/" data-lesson="ds-heaps" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Heaps and Priority Queues</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/tries/" data-lesson="ds-tries" data-minutes="15"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Tries (Prefix Trees)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/graphs/" data-lesson="ds-graphs" data-minutes="16"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Graphs</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/union-find/" data-lesson="ds-union-find" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Union-Find (Disjoint Set Union)</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/data-structures/segment-fenwick/" data-lesson="ds-segment-fenwick" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Segment Trees and Fenwick Trees</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/data-structures/introduction/">Data Structures</a> · Lesson 10 of 16</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/data-structures/trees/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ds-bst" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/data-structures/balanced-trees/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Binary Search Trees</h1>
+          <p class="learn-summary">Go beyond insert and search in binary search trees: deletion, min and max, successor, floor and range queries, validation and why BSTs degrade.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/data-structures/trees/">Lesson 9: Trees</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Delete nodes in all three cases</li><li>Answer min, max, floor and successor queries</li><li>Validate a BST with bounds</li><li>Explain why height decides performance</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 16 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 16</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>In the Trees lesson you met the <strong>binary search tree</strong> (BST): every key in a node's left subtree is smaller, and every key in its right subtree is larger. You saw insert, contains and in-order traversal. This lesson finishes the job with the operations that make a BST genuinely useful: deleting, finding neighbours of a key, range queries, and checking that a tree is valid.</p>
+      <p>Why bother, when a hash table finds keys in O(1)? Because a hash table knows nothing about order. "What is the next appointment after 14:00?" or "list all orders between 100 and 200" are natural BST questions and slow hash table questions.</p>
+      <h2>A small BST to work with</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    if key &lt; root.key:
+        root.left = insert(root.left, key)
+    elif key &gt; root.key:
+        root.right = insert(root.right, key)
+    return root          # duplicates are ignored
+
+def inorder(root):
+    return inorder(root.left) + [root.key] + inorder(root.right) if root else []
+
+root = None
+for k in [50, 30, 70, 20, 40, 60, 80, 35]:
+    root = insert(root, k)
+print(inorder(root))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[20, 30, 35, 40, 50, 60, 70, 80]</pre></div>
+      <p>The tree looks like this: 50 at the root, 30 and 70 below it, then 20, 40, 60, 80, and 35 as the left child of 40. We will reuse the same code in the examples below.</p>
+      <h2>Minimum and maximum</h2>
+      <p>The smallest key is found by walking left until you cannot; the largest by walking right. Both cost O(h), where h is the height of the tree.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+def insert(root, key):
+    if root is None: return Node(key)
+    if key &lt; root.key: root.left = insert(root.left, key)
+    elif key &gt; root.key: root.right = insert(root.right, key)
+    return root
+root = None
+for k in [50, 30, 70, 20, 40, 60, 80, 35]:
+    root = insert(root, k)
+
+def minimum(node):
+    while node.left:
+        node = node.left
+    return node.key
+
+def maximum(node):
+    while node.right:
+        node = node.right
+    return node.key
+
+print(minimum(root), maximum(root))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>20 80</pre></div>
+      <h2>Floor, ceiling and successor</h2>
+      <p>The <strong>floor</strong> of x is the largest key less than or equal to x. Walk down from the root: if the node's key is too big, go left; if it fits, remember it as a candidate and go right to look for something closer. The <strong>ceiling</strong> is the mirror image. The <strong>successor</strong> of a key is the smallest key strictly greater than it, which is what "next appointment" needs.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+def insert(root, key):
+    if root is None: return Node(key)
+    if key &lt; root.key: root.left = insert(root.left, key)
+    elif key &gt; root.key: root.right = insert(root.right, key)
+    return root
+root = None
+for k in [50, 30, 70, 20, 40, 60, 80, 35]:
+    root = insert(root, k)
+
+def floor(node, x):
+    best = None
+    while node:
+        if node.key == x:
+            return x
+        if node.key &gt; x:
+            node = node.left
+        else:
+            best = node.key
+            node = node.right
+    return best
+
+def successor(node, x):
+    best = None
+    while node:
+        if node.key &gt; x:
+            best = node.key
+            node = node.left
+        else:
+            node = node.right
+    return best
+
+print(floor(root, 45), floor(root, 10))
+print(successor(root, 40), successor(root, 80))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>40 None
+50 None</pre></div>
+      <h2>Range queries</h2>
+      <p>To list every key between <code>lo</code> and <code>hi</code>, do an in-order walk but skip subtrees that cannot contain answers. If the node's key is below <code>lo</code>, its whole left subtree is too small. The cost is O(h + k), where k is the number of results.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+def insert(root, key):
+    if root is None: return Node(key)
+    if key &lt; root.key: root.left = insert(root.left, key)
+    elif key &gt; root.key: root.right = insert(root.right, key)
+    return root
+root = None
+for k in [50, 30, 70, 20, 40, 60, 80, 35]:
+    root = insert(root, k)
+
+def keys_between(node, lo, hi, out):
+    if node is None:
+        return out
+    if node.key &gt; lo:
+        keys_between(node.left, lo, hi, out)
+    if lo &lt;= node.key &lt;= hi:
+        out.append(node.key)
+    if node.key &lt; hi:
+        keys_between(node.right, lo, hi, out)
+    return out
+
+print(keys_between(root, 33, 65, []))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[35, 40, 50, 60]</pre></div>
+      <h2>Deletion: three cases</h2>
+      <p>Deleting is the trickiest BST operation because the ordering rule must still hold afterwards. Find the node, then:</p>
+      <ul><li><strong>No children</strong> (a leaf): just remove it.</li><li><strong>One child</strong>: replace the node with that child.</li><li><strong>Two children</strong>: copy in the <em>in-order successor</em> (the minimum of the right subtree), then delete that successor from the right subtree. The successor has no left child, so its own deletion is one of the easy cases.</li></ul>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+def insert(root, key):
+    if root is None: return Node(key)
+    if key &lt; root.key: root.left = insert(root.left, key)
+    elif key &gt; root.key: root.right = insert(root.right, key)
+    return root
+def inorder(r):
+    return inorder(r.left) + [r.key] + inorder(r.right) if r else []
+root = None
+for k in [50, 30, 70, 20, 40, 60, 80, 35]:
+    root = insert(root, k)
+
+def delete(node, key):
+    if node is None:
+        return None
+    if key &lt; node.key:
+        node.left = delete(node.left, key)
+    elif key &gt; node.key:
+        node.right = delete(node.right, key)
+    else:
+        if node.left is None:
+            return node.right
+        if node.right is None:
+            return node.left
+        succ = node.right
+        while succ.left:
+            succ = succ.left
+        node.key = succ.key
+        node.right = delete(node.right, succ.key)
+    return node
+
+root = delete(root, 20)   # leaf
+root = delete(root, 40)   # one child (35)
+root = delete(root, 50)   # two children: root becomes 60
+print(inorder(root), &quot;root:&quot;, root.key)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[30, 35, 60, 70, 80] root: 60</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: forgetting to reattach</p><p class="learn-callout-body">The recursive functions above return the (possibly new) root of each subtree, and the caller assigns it: <code>node.left = delete(node.left, key)</code>. If you call <code>delete(node.left, key)</code> without assigning, removing a leaf or a one-child node silently does nothing to the real tree.</p></aside>
+      <h2>Validating a BST</h2>
+      <p>A tempting check is "each node is greater than its left child and smaller than its right child". That is wrong: a grandchild can break the rule while every parent-child pair looks fine. Instead, pass down the allowed range <code>(low, high)</code> for each subtree.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>class Node:
+    def __init__(self, key, left=None, right=None):
+        self.key, self.left, self.right = key, left, right
+
+def is_bst(node, low=float(&quot;-inf&quot;), high=float(&quot;inf&quot;)):
+    if node is None:
+        return True
+    if not (low &lt; node.key &lt; high):
+        return False
+    return is_bst(node.left, low, node.key) and is_bst(node.right, node.key, high)
+
+good = Node(50, Node(30, Node(20), Node(40)), Node(70))
+bad = Node(50, Node(30, Node(20), Node(60)), Node(70))  # 60 is left of 50
+print(is_bst(good), is_bst(bad))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True False</pre></div>
+      <h2>Height is everything</h2>
+      <p>Every operation above costs O(h). If keys arrive in random order, h stays around 2 log n on average. But if keys arrive already sorted, each new key goes to the right of the last one and the tree becomes a linked list with h = n.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import random
+
+class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+def insert(root, key):
+    if root is None: return Node(key)
+    node = root
+    while True:
+        side = &quot;left&quot; if key &lt; node.key else &quot;right&quot;
+        nxt = getattr(node, side)
+        if nxt is None:
+            setattr(node, side, Node(key))
+            return root
+        node = nxt
+def height(n):
+    return 1 + max(height(n.left), height(n.right)) if n else 0
+
+keys = list(range(500))
+sorted_root = None
+for k in keys:
+    sorted_root = insert(sorted_root, k)
+
+random.seed(7)
+random.shuffle(keys)
+random_root = None
+for k in keys:
+    random_root = insert(random_root, k)
+
+print(&quot;sorted inserts height:&quot;, height(sorted_root))
+print(&quot;random inserts height under 30:&quot;, height(random_root) &lt; 30)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>sorted inserts height: 500
+random inserts height under 30: True</pre></div>
+      <p>Real data is often sorted (timestamps, auto-increment IDs), so a plain BST is risky in production. The fix is a self-balancing tree, the topic of the next lesson.</p>
+      <h2>Complexity</h2>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>Operation              Balanced (h = log n)   Degenerate (h = n)
+search / insert        O(log n)               O(n)
+delete                 O(log n)               O(n)
+min / max              O(log n)               O(n)
+floor / successor      O(log n)               O(n)
+range query, k results O(log n + k)           O(n)
+in-order traversal     O(n)                   O(n)
+space                  O(n)                   O(n)</code></pre></div>
+      <h2>Recap</h2>
+      <ul><li>A BST keeps keys ordered, so it answers min, max, floor, successor and range queries that hash tables cannot.</li><li>Every operation walks one root-to-leaf path, costing O(h).</li><li>Delete has three cases; the two-child case swaps in the in-order successor.</li><li>Validate with a (low, high) range, not by comparing parent and child only.</li><li>Sorted inserts create a height-n chain, which is why balanced trees exist.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>kth_smallest(root, k)</code> that returns the k-th smallest key (1-based) in a BST without building the full sorted list. Stop the in-order walk as soon as you reach the k-th key. With keys <code>[50, 30, 70, 20, 40, 60, 80]</code>, <code>k=3</code> returns 40.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="class Node:
+    def __init__(self, key):
+        self.key, self.left, self.right = key, None, None
+
+def insert(root, key):
+    if root is None:
+        return Node(key)
+    if key &lt; root.key:
+        root.left = insert(root.left, key)
+    else:
+        root.right = insert(root.right, key)
+    return root
+
+def kth_smallest(root, k):
+    stack, node = [], root
+    while stack or node:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        k -= 1
+        if k == 0:
+            return node.key
+        node = node.right
+    return None
+
+root = None
+for key in [50, 30, 70, 20, 40, 60, 80]:
+    root = insert(root, key)
+print(kth_smallest(root, 3))  # 40"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ds-bst" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/data-structures/balanced-trees/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 11</span><strong>Balanced Trees: AVL, Red-Black and B-Trees</strong><small>See how AVL trees, red-black trees and B-trees keep search trees balanced with rotations and wide nodes, guaranteeing O(log n) for databases and libraries.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/data-structures/trees/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/data-structures/balanced-trees/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

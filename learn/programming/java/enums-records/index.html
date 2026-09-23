@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Enums, Records and Optional | Java Tutorial | stackcone</title>
+  <meta name="description" content="Model data cleanly in Java with enums (fields, methods, EnumMap), immutable records with compact constructors, and Optional for missing values.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/java/enums-records/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/java/enums-records/">
+  <meta property="og:title" content="Enums, Records and Optional | Java Tutorial | stackcone">
+  <meta property="og:description" content="Model data cleanly in Java with enums (fields, methods, EnumMap), immutable records with compact constructors, and Optional for missing values.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Enums, Records and Optional | Java Tutorial | stackcone">
+  <meta name="twitter:description" content="Model data cleanly in Java with enums (fields, methods, EnumMap), immutable records with compact constructors, and Optional for missing values.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/java/interfaces-abstract/">
+  <link rel="next" href="https://stackcone.com/learn/programming/java/generics/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Java", "item": "https://stackcone.com/learn/programming/java/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Enums, Records and Optional", "item": "https://stackcone.com/learn/programming/java/enums-records/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Enums, Records and Optional", "headline": "Enums, Records and Optional", "description": "Model data cleanly in Java with enums (fields, methods, EnumMap), immutable records with compact constructors, and Optional for missing values.", "url": "https://stackcone.com/learn/programming/java/enums-records/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Replace magic strings and ints with enums that carry data and behaviour", "Use EnumMap, EnumSet and enums in switch", "Write immutable data classes as records with validation", "Return and consume Optional values without null checks"], "position": 12, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Java Course", "url": "https://stackcone.com/learn/programming/java/hello-world/", "description": "Static typing, OOP, and the collections you use every day.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/java/hello-world/">Java</a> / <span aria-current="page">Enums, Records and Optional</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="java">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/java/hello-world/">Java</a></p>
+              <p class="learn-sidebar-tagline">20 lessons · Learn Java from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 20 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Java lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/java/hello-world/" data-lesson="java-hello-world" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Java</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/variables-types/" data-lesson="java-variables-types" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/control-flow/" data-lesson="java-control-flow" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/oop-classes/" data-lesson="java-oop-classes" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/collections/" data-lesson="java-collections" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Collections Framework</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/exceptions/" data-lesson="java-exceptions" data-minutes="13"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Exception Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/strings/" data-lesson="java-strings" data-minutes="12"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Strings and StringBuilder</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/arrays/" data-lesson="java-arrays" data-minutes="12"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/methods/" data-lesson="java-methods" data-minutes="12"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Methods and Overloading</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/inheritance/" data-lesson="java-inheritance" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Inheritance and Polymorphism</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/interfaces-abstract/" data-lesson="java-interfaces-abstract" data-minutes="14"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Interfaces and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/java/enums-records/" aria-current="page" data-lesson="java-enums-records" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Enums, Records and Optional</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/generics/" data-lesson="java-generics" data-minutes="14"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Generics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/lambdas-streams/" data-lesson="java-lambdas-streams" data-minutes="16"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Lambdas and Streams</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/modern-features/" data-lesson="java-modern-features" data-minutes="20"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Modern Java: var, switch expressions, text blocks, pattern matching, sealed classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/date-time/" data-lesson="java-date-time" data-minutes="17"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Dates and Times with java.time</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/files-io/" data-lesson="java-files-io" data-minutes="14"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Files and I/O</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/concurrency/" data-lesson="java-concurrency" data-minutes="22"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Threads, Executors and CompletableFuture</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/build-tools/" data-lesson="java-build-tools" data-minutes="17"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">Build Tools: Maven and Gradle</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/testing-junit/" data-lesson="java-testing-junit" data-minutes="14"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">Testing with JUnit</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/java/hello-world/">Java</a> · Lesson 12 of 20</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/java/interfaces-abstract/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="java-enums-records" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/java/generics/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Enums, Records and Optional</h1>
+          <p class="learn-summary">Model data cleanly in Java with enums (fields, methods, EnumMap), immutable records with compact constructors, and Optional for missing values.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/java/interfaces-abstract/">Lesson 11: Interfaces and Abstract Classes</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Replace magic strings and ints with enums that carry data and behaviour</li><li>Use EnumMap, EnumSet and enums in switch</li><li>Write immutable data classes as records with validation</li><li>Return and consume Optional values without null checks</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 20 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 20</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>A lot of Java code exists just to describe data: an order status, a money amount, a user returned from a lookup that might not exist. Older Java handled these with <code>int</code> constants, long hand-written classes and <code>null</code>. Modern Java has three purpose-built tools: <strong>enums</strong> for a fixed set of choices, <strong>records</strong> for immutable data, and <strong>Optional</strong> for "there might be no value".</p>
+      <p>You met <code>Optional</code> briefly in the streams lesson. Here we look at all three in depth, because together they remove whole categories of bugs.</p>
+      <h2>Enums: a fixed set of named values</h2>
+      <p>Imagine storing an order status as a <code>String</code>. Nothing stops someone typing <code>"shiped"</code>. An <code>enum</code> defines every allowed value up front, so the compiler rejects anything else. Each constant is a real object with useful built-in methods: <code>name()</code>, <code>ordinal()</code>, <code>values()</code> and <code>valueOf()</code>.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    enum Status { PENDING, PAID, SHIPPED, DELIVERED }
+
+    public static void main(String[] args) {
+        Status s = Status.PAID;
+        System.out.println(s);
+        System.out.println(s.name() + &quot; is at position &quot; + s.ordinal());
+        System.out.println(s == Status.PAID);   // enums are safe to compare with ==
+
+        for (Status each : Status.values()) {
+            System.out.print(each + &quot; &quot;);
+        }
+        System.out.println();
+
+        Status parsed = Status.valueOf(&quot;SHIPPED&quot;);
+        System.out.println(parsed.compareTo(Status.PENDING) &gt; 0);
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>PAID
+PAID is at position 1
+true
+PENDING PAID SHIPPED DELIVERED 
+true</pre></div>
+      <h2>Enums with fields and methods</h2>
+      <p>Enums are full classes. Give them fields, a constructor (always private) and methods, so the data lives next to the value it belongs to instead of in a separate <code>switch</code> somewhere else. You can even give a constant its own override of a method.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    enum Plan {
+        FREE(0, 1),
+        PRO(12, 5),
+        TEAM(40, 50) {
+            @Override
+            String label() { return &quot;Team (billed yearly)&quot;; }
+        };
+
+        private final int monthlyPrice;
+        private final int seats;
+
+        Plan(int monthlyPrice, int seats) {
+            this.monthlyPrice = monthlyPrice;
+            this.seats = seats;
+        }
+
+        int yearlyPrice() { return monthlyPrice * 12; }
+        String label() { return name().charAt(0) + name().substring(1).toLowerCase(); }
+    }
+
+    public static void main(String[] args) {
+        for (Plan p : Plan.values()) {
+            System.out.println(p.label() + &quot;: $&quot; + p.yearlyPrice() + &quot;/year, &quot; + p.seats + &quot; seats&quot;);
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Free: $0/year, 1 seats
+Pro: $144/year, 5 seats
+Team (billed yearly): $480/year, 50 seats</pre></div>
+      <h2>Enums in switch, EnumMap and EnumSet</h2>
+      <p>Enums pair naturally with <code>switch</code>. With the arrow form (covered fully in the Modern Java lesson), the compiler checks that a switch <em>expression</em> handles every constant. <code>EnumMap</code> and <code>EnumSet</code> are specialised collections that are faster and more compact than <code>HashMap</code> or <code>HashSet</code> when the keys are enum values, and they keep declaration order.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    enum Status { PENDING, PAID, SHIPPED, DELIVERED }
+
+    static String message(Status s) {
+        return switch (s) {
+            case PENDING -&gt; &quot;Waiting for payment&quot;;
+            case PAID -&gt; &quot;Preparing your order&quot;;
+            case SHIPPED, DELIVERED -&gt; &quot;On its way or already there&quot;;
+        };
+    }
+
+    public static void main(String[] args) {
+        System.out.println(message(Status.PAID));
+
+        Map&lt;Status, Integer&gt; counts = new EnumMap&lt;&gt;(Status.class);
+        List&lt;Status&gt; orders = List.of(Status.PAID, Status.PENDING, Status.PAID, Status.SHIPPED);
+        for (Status s : orders) counts.merge(s, 1, Integer::sum);
+        System.out.println(counts);
+
+        Set&lt;Status&gt; open = EnumSet.range(Status.PENDING, Status.SHIPPED);
+        System.out.println(open + &quot; &quot; + open.contains(Status.DELIVERED));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Preparing your order
+{PENDING=1, PAID=2, SHIPPED=1}
+[PENDING, PAID, SHIPPED] false</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: storing ordinal()</p><p class="learn-callout-body">Never save <code>ordinal()</code> in a database or file. If someone later inserts a new constant in the middle, every stored number shifts meaning. Store <code>name()</code> (or an explicit code field) instead.</p></aside>
+      <h2>Records: immutable data in one line</h2>
+      <p>A class that just carries data traditionally needs private final fields, a constructor, getters, <code>equals</code>, <code>hashCode</code> and <code>toString</code>: easily 40 lines. A <strong>record</strong> (standard since Java 16) declares the components once and the compiler generates all of that. Fields are final, so records are immutable. Accessors use the component name without a <code>get</code> prefix.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    record Point(int x, int y) {}
+
+    record User(long id, String email) {}
+
+    public static void main(String[] args) {
+        Point a = new Point(3, 4);
+        Point b = new Point(3, 4);
+        System.out.println(a);
+        System.out.println(a.x() + &quot;, &quot; + a.y());
+        System.out.println(a.equals(b) + &quot; &quot; + (a.hashCode() == b.hashCode()));
+
+        Set&lt;User&gt; users = new HashSet&lt;&gt;();
+        users.add(new User(1, &quot;ada@example.com&quot;));
+        users.add(new User(1, &quot;ada@example.com&quot;));   // equal, so not added twice
+        System.out.println(users.size());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Point[x=3, y=4]
+3, 4
+true true
+1</pre></div>
+      <h2>Compact constructors, methods and copies</h2>
+      <p>Records can validate and normalise their data in a <strong>compact constructor</strong> (no parameter list, the fields are assigned automatically at the end). They can also have instance methods and static factory methods. Because a record cannot change, you "modify" one by returning a new copy, often called a wither.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>public class Main {
+    record Money(long cents, String currency) {
+        Money {
+            if (cents &lt; 0) throw new IllegalArgumentException(&quot;negative amount&quot;);
+            currency = currency.toUpperCase();
+        }
+
+        static Money of(double amount, String currency) {
+            return new Money(Math.round(amount * 100), currency);
+        }
+
+        Money plus(Money other) {
+            if (!currency.equals(other.currency)) throw new IllegalArgumentException(&quot;currency mismatch&quot;);
+            return new Money(cents + other.cents, currency);
+        }
+
+        Money withCents(long newCents) { return new Money(newCents, currency); }
+
+        @Override
+        public String toString() { return String.format(&quot;%d.%02d %s&quot;, cents / 100, cents % 100, currency); }
+    }
+
+    public static void main(String[] args) {
+        Money price = Money.of(19.99, &quot;usd&quot;);
+        Money total = price.plus(Money.of(5.01, &quot;USD&quot;));
+        System.out.println(price + &quot; + 5.01 = &quot; + total);
+        System.out.println(total.withCents(100));
+        try {
+            new Money(-5, &quot;EUR&quot;);
+        } catch (IllegalArgumentException e) {
+            System.out.println(&quot;rejected: &quot; + e.getMessage());
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>19.99 USD + 5.01 = 25.00 USD
+1.00 USD
+rejected: negative amount</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Records are shallowly immutable</p><p class="learn-callout-body">A record holding a <code>List</code> can still have that list changed by whoever else has a reference to it. Make a defensive copy in the compact constructor: <code>items = List.copyOf(items);</code>. Also, records cannot extend other classes (they implicitly extend <code>Record</code>), but they can implement interfaces.</p></aside>
+      <h2>Optional: making missing values explicit</h2>
+      <p>Returning <code>null</code> for "not found" is the source of countless <code>NullPointerException</code>s, because nothing in the method signature warns the caller. Returning <code>Optional&lt;User&gt;</code> makes the possibility visible and gives the caller tools to handle it: <code>map</code> transforms the value if present, <code>filter</code> keeps it only if it matches, <code>orElse</code> supplies a default, <code>orElseThrow</code> fails loudly and <code>ifPresentOrElse</code> runs one of two actions.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    record User(long id, String name, String email) {}
+
+    static final List&lt;User&gt; USERS = List.of(
+        new User(1, &quot;Ada&quot;, &quot;ada@example.com&quot;),
+        new User(2, &quot;Linus&quot;, null));
+
+    static Optional&lt;User&gt; findById(long id) {
+        return USERS.stream().filter(u -&gt; u.id() == id).findFirst();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(findById(1).map(User::name).orElse(&quot;unknown&quot;));
+        System.out.println(findById(9).map(User::name).orElse(&quot;unknown&quot;));
+
+        String email = findById(2)
+            .map(User::email)              // null here becomes an empty Optional
+            .orElse(&quot;no email on file&quot;);
+        System.out.println(email);
+
+        findById(1).filter(u -&gt; u.name().startsWith(&quot;A&quot;))
+            .ifPresentOrElse(u -&gt; System.out.println(&quot;found &quot; + u.name()),
+                             () -&gt; System.out.println(&quot;nobody&quot;));
+
+        try {
+            findById(9).orElseThrow(() -&gt; new NoSuchElementException(&quot;user 9 not found&quot;));
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Ada
+unknown
+no email on file
+found Ada
+user 9 not found</pre></div>
+      <p>Use <code>Optional</code> as a <strong>return type</strong>. Avoid it for fields, method parameters and collections (return an empty list instead of <code>Optional&lt;List&gt;</code>). And avoid calling <code>get()</code> without checking: that just moves the crash.</p>
+      <h2>Recap</h2>
+      <ul><li>Enums replace magic strings and ints; they can hold fields, constructors and methods.</li><li>Use enums in switch expressions, and <code>EnumMap</code>/<code>EnumSet</code> for enum-keyed collections.</li><li>Records generate constructor, accessors, <code>equals</code>, <code>hashCode</code> and <code>toString</code> for immutable data.</li><li>Validate in a compact constructor and return new copies instead of mutating.</li><li>Return <code>Optional</code> for maybe-missing results and handle it with <code>map</code>, <code>orElse</code> and <code>orElseThrow</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create an enum <code>Size</code> with constants <code>S</code>, <code>M</code>, <code>L</code>, each holding a price multiplier (1.0, 1.25, 1.5). Create a record <code>Coffee(String name, Size size, double basePrice)</code> whose compact constructor rejects a non-positive <code>basePrice</code>, with a method <code>price()</code>. Write <code>static Optional&lt;Coffee&gt; find(List&lt;Coffee&gt; menu, String name)</code> and print the price of a found coffee and the fallback text <code>not on the menu</code> for a missing one.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="import java.util.*;
+
+public class Main {
+    enum Size {
+        S(1.0), M(1.25), L(1.5);
+        final double multiplier;
+        Size(double multiplier) { this.multiplier = multiplier; }
+    }
+
+    record Coffee(String name, Size size, double basePrice) {
+        Coffee {
+            if (basePrice &lt;= 0) throw new IllegalArgumentException(&quot;price must be positive&quot;);
+        }
+        double price() { return basePrice * size.multiplier; }
+    }
+
+    static Optional&lt;Coffee&gt; find(List&lt;Coffee&gt; menu, String name) {
+        return menu.stream().filter(c -&gt; c.name().equalsIgnoreCase(name)).findFirst();
+    }
+
+    public static void main(String[] args) {
+        List&lt;Coffee&gt; menu = List.of(
+            new Coffee(&quot;Latte&quot;, Size.L, 4.0),
+            new Coffee(&quot;Espresso&quot;, Size.S, 2.5));
+        System.out.println(find(menu, &quot;latte&quot;).map(c -&gt; &quot;$&quot; + c.price()).orElse(&quot;not on the menu&quot;));
+        System.out.println(find(menu, &quot;mocha&quot;).map(c -&gt; &quot;$&quot; + c.price()).orElse(&quot;not on the menu&quot;));
+    }
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="java-enums-records" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/java/generics/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 13</span><strong>Generics</strong><small>Type-safe containers and methods with type parameters and bounds.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/java/interfaces-abstract/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/java/generics/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

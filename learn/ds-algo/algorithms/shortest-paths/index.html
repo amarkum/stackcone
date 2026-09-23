@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Shortest Paths: Dijkstra and Bellman-Ford | Algorithms | stackcone</title>
+  <meta name="description" content="Learn Dijkstra&#x27;s algorithm and Bellman-Ford in Python to find shortest paths in weighted graphs, handle negative edges and detect negative cycles.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/shortest-paths/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/shortest-paths/">
+  <meta property="og:title" content="Shortest Paths: Dijkstra and Bellman-Ford | Algorithms | stackcone">
+  <meta property="og:description" content="Learn Dijkstra&#x27;s algorithm and Bellman-Ford in Python to find shortest paths in weighted graphs, handle negative edges and detect negative cycles.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Shortest Paths: Dijkstra and Bellman-Ford | Algorithms | stackcone">
+  <meta name="twitter:description" content="Learn Dijkstra&#x27;s algorithm and Bellman-Ford in Python to find shortest paths in weighted graphs, handle negative edges and detect negative cycles.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/bfs-dfs/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/algorithms/topological-sort/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "Shortest Paths: Dijkstra and Bellman-Ford", "item": "https://stackcone.com/learn/ds-algo/algorithms/shortest-paths/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Shortest Paths: Dijkstra and Bellman-Ford", "headline": "Shortest Paths: Dijkstra and Bellman-Ford", "description": "Learn Dijkstra's algorithm and Bellman-Ford in Python to find shortest paths in weighted graphs, handle negative edges and detect negative cycles.", "url": "https://stackcone.com/learn/ds-algo/algorithms/shortest-paths/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT20M", "isAccessibleForFree": true, "teaches": ["Explain why BFS fails on weighted graphs", "Implement Dijkstra with a heap and rebuild the path", "Implement Bellman-Ford and detect negative cycles", "Choose the right algorithm and state its complexity"], "position": 12, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">Shortest Paths: Dijkstra and Bellman-Ford</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/two-pointers/" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/divide-conquer/" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dp-patterns/" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/shortest-paths/" aria-current="page" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/string-matching/" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/interview-strategy/" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 12 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/bfs-dfs/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-shortest-paths" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/algorithms/topological-sort/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Shortest Paths: Dijkstra and Bellman-Ford</h1>
+          <p class="learn-summary">Learn Dijkstra&#x27;s algorithm and Bellman-Ford in Python to find shortest paths in weighted graphs, handle negative edges and detect negative cycles.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/bfs-dfs/">Lesson 11: Graph Traversal: BFS and DFS</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain why BFS fails on weighted graphs</li><li>Implement Dijkstra with a heap and rebuild the path</li><li>Implement Bellman-Ford and detect negative cycles</li><li>Choose the right algorithm and state its complexity</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>BFS finds the path with the fewest edges. But real graphs have <em>weights</em>: road distances, network latency, ticket prices. A route with three short roads can beat one long highway, and BFS cannot see that. This lesson covers the two shortest-path algorithms every developer should know: <strong>Dijkstra</strong>, the fast default for non-negative weights, and <strong>Bellman-Ford</strong>, the slower but more general one that handles negative weights.</p>
+      <p>Both are built on one operation called <strong>relaxation</strong>. Keep a best-known distance <code>dist[v]</code> for every node, starting at infinity. When you look at an edge u to v with weight w, ask: is going through u better? If <code>dist[u] + w &lt; dist[v]</code>, update <code>dist[v]</code>. The algorithms differ only in the order they relax edges.</p>
+      <h2>Why BFS is not enough</h2>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># delivery times in minutes between stackcone warehouses
+roads = {
+    &quot;A&quot;: [(&quot;B&quot;, 10), (&quot;C&quot;, 3)],
+    &quot;B&quot;: [(&quot;D&quot;, 2)],
+    &quot;C&quot;: [(&quot;B&quot;, 4), (&quot;D&quot;, 8), (&quot;E&quot;, 2)],
+    &quot;D&quot;: [(&quot;E&quot;, 7)],
+    &quot;E&quot;: [],
+}
+# BFS would pick A -&gt; B -&gt; D (2 edges, 12 minutes)
+# but A -&gt; C -&gt; B -&gt; D is 3 edges and only 9 minutes
+print(10 + 2, 3 + 4 + 2)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>12 9</pre></div>
+      <h2>Dijkstra&#x27;s algorithm</h2>
+      <p>Dijkstra is BFS with a <strong>priority queue</strong> instead of a plain queue. It always expands the unfinished node with the smallest known distance. With non-negative weights, that node's distance can never improve later (any other route would go through a node that is already at least as far), so it is final.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+# delivery times in minutes between stackcone warehouses
+roads = {
+    &quot;A&quot;: [(&quot;B&quot;, 10), (&quot;C&quot;, 3)],
+    &quot;B&quot;: [(&quot;D&quot;, 2)],
+    &quot;C&quot;: [(&quot;B&quot;, 4), (&quot;D&quot;, 8), (&quot;E&quot;, 2)],
+    &quot;D&quot;: [(&quot;E&quot;, 7)],
+    &quot;E&quot;: [],
+}
+# BFS would pick A -&gt; B -&gt; D (2 edges, 12 minutes)
+# but A -&gt; C -&gt; B -&gt; D is 3 edges and only 9 minutes
+
+# new code
+import heapq
+
+def dijkstra(graph, source):
+    dist = {node: float(&quot;inf&quot;) for node in graph}
+    parent = {source: None}
+    dist[source] = 0
+    heap = [(0, source)]
+    while heap:
+        d, u = heapq.heappop(heap)
+        if d &gt; dist[u]:
+            continue                  # stale entry, already found better
+        for v, w in graph[u]:
+            if d + w &lt; dist[v]:       # relax
+                dist[v] = d + w
+                parent[v] = u
+                heapq.heappush(heap, (dist[v], v))
+    return dist, parent
+
+def path_to(parent, target):
+    path = []
+    while target is not None:
+        path.append(target)
+        target = parent[target]
+    return path[::-1]
+
+dist, parent = dijkstra(roads, &quot;A&quot;)
+print(dist)
+print(path_to(parent, &quot;D&quot;), dist[&quot;D&quot;])</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;A&#x27;: 0, &#x27;B&#x27;: 7, &#x27;C&#x27;: 3, &#x27;D&#x27;: 9, &#x27;E&#x27;: 5}
+[&#x27;A&#x27;, &#x27;C&#x27;, &#x27;B&#x27;, &#x27;D&#x27;] 9</pre></div>
+      <p>Python's <code>heapq</code> has no "decrease key" operation, so instead of updating an entry we push a new one and skip stale entries when popped (the <code>d &gt; dist[u]</code> check). This "lazy deletion" is the standard Python approach.</p>
+      <p><strong>Time O((V + E) log V)</strong>: each edge can push one heap entry, and each push or pop costs O(log V). <strong>Space O(V + E)</strong>. This is fast enough for graphs with millions of edges, and it is the core of real routing engines (which add tricks like A* heuristics and precomputed shortcuts).</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Dijkstra breaks with negative weights</p><p class="learn-callout-body">If an edge can have negative weight, a node that was popped as "final" might later be reachable more cheaply through that edge, and Dijkstra will not revisit it. The answer can be silently wrong. Negative weights appear in finance (a trade that earns money) or when costs are credits. Use Bellman-Ford for those.</p></aside>
+      <p>You can see it with the textbook version of Dijkstra, which marks each node as finished the moment it is popped and never touches it again:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import heapq
+
+def dijkstra_textbook(graph, source):
+    dist = {node: float(&quot;inf&quot;) for node in graph}
+    dist[source] = 0
+    done = set()
+    heap = [(0, source)]
+    while heap:
+        d, u = heapq.heappop(heap)
+        if u in done:
+            continue
+        done.add(u)                        # u is now final
+        for v, w in graph[u]:
+            if v not in done and d + w &lt; dist[v]:
+                dist[v] = d + w
+                heapq.heappush(heap, (dist[v], v))
+    return dist
+
+tricky = {&quot;S&quot;: [(&quot;A&quot;, 2), (&quot;B&quot;, 5)], &quot;A&quot;: [(&quot;C&quot;, 1)], &quot;B&quot;: [(&quot;A&quot;, -4)], &quot;C&quot;: []}
+print(dijkstra_textbook(tricky, &quot;S&quot;))
+print(&quot;true answer: A = 1, C = 2 (S -&gt; B -&gt; A -&gt; C = 5 - 4 + 1)&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;S&#x27;: 0, &#x27;A&#x27;: 2, &#x27;B&#x27;: 5, &#x27;C&#x27;: 3}
+true answer: A = 1, C = 2 (S -&gt; B -&gt; A -&gt; C = 5 - 4 + 1)</pre></div>
+      <p>Dijkstra finalised A at distance 2 and C at 3 before it discovered the cheaper route through B. (The lazy version above sometimes recovers by re-pushing nodes, but that can take exponential time and is not something to rely on.)</p>
+      <h2>Bellman-Ford</h2>
+      <p>Bellman-Ford is beautifully simple: relax <em>every</em> edge, and repeat that V - 1 times. Why V - 1? A shortest path without cycles has at most V - 1 edges, and after round k, every path with k edges has been fully relaxed. It does not care about the order, so negative weights are fine.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+# delivery times in minutes between stackcone warehouses
+roads = {
+    &quot;A&quot;: [(&quot;B&quot;, 10), (&quot;C&quot;, 3)],
+    &quot;B&quot;: [(&quot;D&quot;, 2)],
+    &quot;C&quot;: [(&quot;B&quot;, 4), (&quot;D&quot;, 8), (&quot;E&quot;, 2)],
+    &quot;D&quot;: [(&quot;E&quot;, 7)],
+    &quot;E&quot;: [],
+}
+# BFS would pick A -&gt; B -&gt; D (2 edges, 12 minutes)
+# but A -&gt; C -&gt; B -&gt; D is 3 edges and only 9 minutes
+
+tricky = {&quot;S&quot;: [(&quot;A&quot;, 2), (&quot;B&quot;, 5)], &quot;A&quot;: [(&quot;C&quot;, 1)], &quot;B&quot;: [(&quot;A&quot;, -4)], &quot;C&quot;: []}
+
+# new code
+def bellman_ford(graph, source):
+    edges = [(u, v, w) for u in graph for v, w in graph[u]]
+    dist = {node: float(&quot;inf&quot;) for node in graph}
+    dist[source] = 0
+    for _ in range(len(graph) - 1):
+        changed = False
+        for u, v, w in edges:
+            if dist[u] + w &lt; dist[v]:
+                dist[v] = dist[u] + w
+                changed = True
+        if not changed:
+            break                     # early exit: nothing improved
+    # one more pass: any improvement means a negative cycle
+    for u, v, w in edges:
+        if dist[u] + w &lt; dist[v]:
+            raise ValueError(&quot;negative cycle reachable from source&quot;)
+    return dist
+
+print(bellman_ford(tricky, &quot;S&quot;))
+print(bellman_ford(roads, &quot;A&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&#x27;S&#x27;: 0, &#x27;A&#x27;: 1, &#x27;B&#x27;: 5, &#x27;C&#x27;: 2}
+{&#x27;A&#x27;: 0, &#x27;B&#x27;: 7, &#x27;C&#x27;: 3, &#x27;D&#x27;: 9, &#x27;E&#x27;: 5}</pre></div>
+      <p><strong>Time O(V * E), space O(V + E)</strong>. Much slower than Dijkstra on big graphs, which is why you only reach for it when weights can be negative.</p>
+      <h2>Detecting negative cycles</h2>
+      <p>If a cycle has a negative total, you can loop around it forever and the "shortest" path is minus infinity. Bellman-Ford detects this with one extra pass: if anything still improves after V - 1 rounds, there must be a negative cycle. A real use is currency arbitrage: take edge weights as <code>-log(rate)</code>, and a negative cycle is a sequence of trades that ends with more money than it started.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def bellman_ford(graph, source):
+    edges = [(u, v, w) for u in graph for v, w in graph[u]]
+    dist = {node: float(&quot;inf&quot;) for node in graph}
+    dist[source] = 0
+    for _ in range(len(graph) - 1):
+        changed = False
+        for u, v, w in edges:
+            if dist[u] + w &lt; dist[v]:
+                dist[v] = dist[u] + w
+                changed = True
+        if not changed:
+            break                     # early exit: nothing improved
+    # one more pass: any improvement means a negative cycle
+    for u, v, w in edges:
+        if dist[u] + w &lt; dist[v]:
+            raise ValueError(&quot;negative cycle reachable from source&quot;)
+    return dist
+
+# new code
+loop = {&quot;X&quot;: [(&quot;Y&quot;, 1)], &quot;Y&quot;: [(&quot;Z&quot;, -3)], &quot;Z&quot;: [(&quot;X&quot;, 1)]}
+try:
+    bellman_ford(loop, &quot;X&quot;)
+except ValueError as e:
+    print(&quot;error:&quot;, e)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>error: negative cycle reachable from source</pre></div>
+      <h2>Choosing an algorithm</h2>
+      <ul><li>All edges equal weight: <strong>BFS</strong>, O(V + E).</li><li>Non-negative weights, one source: <strong>Dijkstra</strong>, O((V + E) log V).</li><li>Negative weights or you need negative-cycle detection: <strong>Bellman-Ford</strong>, O(V * E).</li><li>Edges of weight 0 or 1 only: 0-1 BFS with a deque, O(V + E).</li><li>All pairs on a small graph (a few hundred nodes): Floyd-Warshall, O(V<sup>3</sup>).</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Weighted shortest paths are built on relaxation: improve <code>dist[v]</code> if going through u is cheaper.</li><li>Dijkstra always expands the closest unfinished node using a heap, and requires non-negative weights.</li><li>In Python, push duplicates onto the heap and skip stale entries instead of decreasing keys.</li><li>Bellman-Ford relaxes all edges V - 1 times and handles negative weights.</li><li>An extra Bellman-Ford pass that still improves something proves a negative cycle.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A network has servers and one-way links with latencies in ms. Write <code>time_to_reach_all(links, n, source)</code> where <code>links</code> is a list of <code>(u, v, ms)</code> and servers are numbered 1..n. Return the time for a signal from <code>source</code> to reach every server, or <code>-1</code> if some server is unreachable. Test with <code>[(2, 1, 1), (2, 3, 1), (3, 4, 1)]</code>, n=4, source=2 (answer 2).</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import heapq
+
+def time_to_reach_all(links, n, source):
+    graph = {i: [] for i in range(1, n + 1)}
+    for u, v, w in links:
+        graph[u].append((v, w))
+    dist = {source: 0}
+    heap = [(0, source)]
+    while heap:
+        d, u = heapq.heappop(heap)
+        if d &gt; dist.get(u, float(&quot;inf&quot;)):
+            continue
+        for v, w in graph[u]:
+            if d + w &lt; dist.get(v, float(&quot;inf&quot;)):
+                dist[v] = d + w
+                heapq.heappush(heap, (d + w, v))
+    return max(dist.values()) if len(dist) == n else -1
+
+print(time_to_reach_all([(2, 1, 1), (2, 3, 1), (3, 4, 1)], 4, 2))
+print(time_to_reach_all([(1, 2, 1)], 3, 1))"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-shortest-paths" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/topological-sort/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 13</span><strong>Topological Sort</strong><small>Learn topological sort in Python with Kahn&#x27;s algorithm and DFS to order tasks, build systems and course prerequisites in a DAG and detect cycles.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/bfs-dfs/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/topological-sort/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

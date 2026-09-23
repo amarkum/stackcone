@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Mapped, Conditional and Template Literal Types | stackcone</title>
+  <meta name="description" content="Master advanced TypeScript types: keyof, indexed access, mapped types with key remapping, conditional types with infer, and template literal types.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/typescript/advanced-types/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/typescript/advanced-types/">
+  <meta property="og:title" content="Mapped, Conditional and Template Literal Types | stackcone">
+  <meta property="og:description" content="Master advanced TypeScript types: keyof, indexed access, mapped types with key remapping, conditional types with infer, and template literal types.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Mapped, Conditional and Template Literal Types | stackcone">
+  <meta name="twitter:description" content="Master advanced TypeScript types: keyof, indexed access, mapped types with key remapping, conditional types with infer, and template literal types.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/typescript/classes/">
+  <link rel="next" href="https://stackcone.com/learn/programming/typescript/modules-declarations/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "TypeScript", "item": "https://stackcone.com/learn/programming/typescript/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Mapped, Conditional and Template Literal Types", "item": "https://stackcone.com/learn/programming/typescript/advanced-types/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Mapped, Conditional and Template Literal Types", "headline": "Mapped, Conditional and Template Literal Types", "description": "Master advanced TypeScript types: keyof, indexed access, mapped types with key remapping, conditional types with infer, and template literal types.", "url": "https://stackcone.com/learn/programming/typescript/advanced-types/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Use keyof and indexed access types", "Build mapped types and remap keys with as", "Write conditional types and extract parts with infer", "Generate string types with template literals"], "position": 7, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "TypeScript Course", "url": "https://stackcone.com/learn/programming/typescript/introduction/", "description": "Add static types to JavaScript: interfaces, generics and safer code.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/typescript/introduction/">TypeScript</a> / <span aria-current="page">Mapped, Conditional and Template Literal Types</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="typescript">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/typescript/introduction/">TypeScript</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn TypeScript from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="TypeScript lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/introduction/" data-lesson="ts-introduction" data-minutes="12"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Why TypeScript</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/types-interfaces/" data-lesson="ts-types-interfaces" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Types, Interfaces and Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/functions/" data-lesson="ts-functions" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Typing Functions and Overloads</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/narrowing/" data-lesson="ts-narrowing" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Narrowing, Type Guards and Discriminated Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/generics-utility/" data-lesson="ts-generics-utility" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Generics and Utility Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/classes/" data-lesson="ts-classes" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Classes, Access Modifiers and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/typescript/advanced-types/" aria-current="page" data-lesson="ts-advanced-types" data-minutes="18"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Mapped, Conditional and Template Literal Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/modules-declarations/" data-lesson="ts-modules-declarations" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Enums, Modules and Declaration Files</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/async-apis/" data-lesson="ts-async-apis" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Typing Async Code, fetch and API Responses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/tsconfig-strict/" data-lesson="ts-tsconfig-strict" data-minutes="16"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">tsconfig, Strict Mode and Tooling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/react/" data-lesson="ts-react" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">TypeScript with React</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/real-world/" data-lesson="ts-real-world" data-minutes="15"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">TypeScript in Real Projects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/typescript/introduction/">TypeScript</a> · Lesson 7 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/typescript/classes/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ts-advanced-types" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/typescript/modules-declarations/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Mapped, Conditional and Template Literal Types</h1>
+          <p class="learn-summary">Master advanced TypeScript types: keyof, indexed access, mapped types with key remapping, conditional types with infer, and template literal types.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/typescript/classes/">Lesson 6: Classes, Access Modifiers and Abstract Classes</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Use keyof and indexed access types</li><li>Build mapped types and remap keys with as</li><li>Write conditional types and extract parts with infer</li><li>Generate string types with template literals</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Utility types like <code>Partial</code> and <code>Pick</code> feel like magic until you learn they are written in ordinary TypeScript. This lesson opens the box. You will learn the handful of type-level tools behind them, so you can read library types and, occasionally, write your own.</p>
+      <p>A fair warning up front: these tools are for keeping types in sync automatically, typically in shared libraries and API layers. In application code, a plain interface is usually clearer.</p>
+      <h2>keyof and indexed access</h2>
+      <p><code>keyof T</code> produces a union of an object type's keys. <code>T[K]</code> (an indexed access type) looks up the type of a property, just like <code>obj[key]</code> looks up a value. Together they let one type follow another.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>interface User {
+  id: number;
+  name: string;
+  role: &quot;admin&quot; | &quot;member&quot;;
+}
+
+type UserKey = keyof User;          // &quot;id&quot; | &quot;name&quot; | &quot;role&quot;
+type Role = User[&quot;role&quot;];            // &quot;admin&quot; | &quot;member&quot;
+type IdOrName = User[&quot;id&quot; | &quot;name&quot;]; // number | string
+
+// Works on arrays too: number indexes every element
+const PLANS = [&quot;free&quot;, &quot;pro&quot;, &quot;team&quot;] as const;
+type Plan = (typeof PLANS)[number];  // &quot;free&quot; | &quot;pro&quot; | &quot;team&quot;</code></pre></div>
+      <h2>Mapped types</h2>
+      <p>A mapped type loops over a union of keys and builds a new object type. The syntax <code>{ [K in Keys]: Type }</code> reads like a <code>for</code> loop at the type level. Here is how <code>Partial</code> and <code>Readonly</code> are actually defined:</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type MyPartial&lt;T&gt; = { [K in keyof T]?: T[K] };
+type MyReadonly&lt;T&gt; = { readonly [K in keyof T]: T[K] };
+
+// Modifiers can also be removed with a minus sign
+type Mutable&lt;T&gt; = { -readonly [K in keyof T]: T[K] };
+type Concrete&lt;T&gt; = { [K in keyof T]-?: T[K] };   // same as Required&lt;T&gt;
+
+// Map every field to a different type
+type Validators&lt;T&gt; = { [K in keyof T]: (value: T[K]) =&gt; boolean };
+
+const userValidators: Validators&lt;User&gt; = {
+  id: (v) =&gt; v &gt; 0,                       // v: number
+  name: (v) =&gt; v.length &gt; 0,              // v: string
+  role: (v) =&gt; v === &quot;admin&quot; || v === &quot;member&quot;,
+};</code></pre></div>
+      <p>The <code>Validators</code> example is the practical payoff: add a field to <code>User</code> and the compiler immediately demands a validator for it.</p>
+      <h2>Key remapping with as</h2>
+      <p>Inside a mapped type, <code>as</code> lets you rename keys or filter them out (mapping a key to <code>never</code> drops it). Combined with template literal types (below), this generates things like getter names.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type Getters&lt;T&gt; = {
+  [K in keyof T as `get${Capitalize&lt;string &amp; K&gt;}`]: () =&gt; T[K];
+};
+
+type UserGetters = Getters&lt;User&gt;;
+// { getId: () =&gt; number; getName: () =&gt; string; getRole: () =&gt; &quot;admin&quot; | &quot;member&quot; }
+
+// Keep only keys whose value is a string
+type StringKeys&lt;T&gt; = {
+  [K in keyof T as T[K] extends string ? K : never]: T[K];
+};
+type UserStrings = StringKeys&lt;User&gt;;   // { name: string; role: &quot;admin&quot; | &quot;member&quot; }</code></pre></div>
+      <h2>Conditional types</h2>
+      <p>A conditional type is a ternary for types: <code>A extends B ? X : Y</code>. If <code>A</code> is assignable to <code>B</code>, the result is <code>X</code>, otherwise <code>Y</code>. When <code>A</code> is a bare type parameter and you pass a union, the condition runs on each member separately (this is called <em>distribution</em>), which is how <code>Exclude</code> works.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type IsString&lt;T&gt; = T extends string ? &quot;yes&quot; : &quot;no&quot;;
+type A = IsString&lt;&quot;hi&quot;&gt;;   // &quot;yes&quot;
+type B = IsString&lt;42&gt;;     // &quot;no&quot;
+
+// Distribution over unions: built-in Exclude and Extract
+type MyExclude&lt;T, U&gt; = T extends U ? never : T;
+type NonAdmin = MyExclude&lt;&quot;admin&quot; | &quot;member&quot; | &quot;guest&quot;, &quot;admin&quot;&gt;;  // &quot;member&quot; | &quot;guest&quot;
+
+type MyNonNullable&lt;T&gt; = T extends null | undefined ? never : T;
+type Clean = MyNonNullable&lt;string | null | undefined&gt;;             // string</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Stopping distribution</p><p class="learn-callout-body">Sometimes you do not want the union split up. Wrap both sides in brackets: <code>[T] extends [string] ? ...</code>. For example <code>IsString&lt;string | number&gt;</code> gives <code>"yes" | "no"</code>, while the bracketed version gives <code>"no"</code>, because the union as a whole is not a string.</p></aside>
+      <h2>Extracting types with infer</h2>
+      <p>Inside the <code>extends</code> clause, <code>infer X</code> declares a type variable that TypeScript fills in by pattern matching. This is how <code>ReturnType</code> and <code>Awaited</code> pull pieces out of other types.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type MyReturnType&lt;F&gt; = F extends (...args: any[]) =&gt; infer R ? R : never;
+type ElementOf&lt;T&gt; = T extends readonly (infer E)[] ? E : never;
+type Unwrap&lt;T&gt; = T extends Promise&lt;infer V&gt; ? Unwrap&lt;V&gt; : T;   // recursive, like Awaited
+
+async function fetchOrders() {
+  return [{ id: &quot;A1&quot;, total: 49 }];
+}
+
+type Orders = Unwrap&lt;MyReturnType&lt;typeof fetchOrders&gt;&gt;;  // { id: string; total: number }[]
+type Order = ElementOf&lt;Orders&gt;;                          // { id: string; total: number }</code></pre></div>
+      <p>That last pair is a real pattern: derive the type from the function that produces the data, so the type can never drift out of date.</p>
+      <h2>Template literal types</h2>
+      <p>Template literal types use backtick syntax at the type level to build string types. Given unions, they produce every combination. TypeScript also ships <code>Uppercase</code>, <code>Lowercase</code>, <code>Capitalize</code> and <code>Uncapitalize</code> helpers.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type Size = &quot;sm&quot; | &quot;md&quot; | &quot;lg&quot;;
+type Tone = &quot;primary&quot; | &quot;danger&quot;;
+type ButtonClass = `btn-${Tone}-${Size}`;
+// &quot;btn-primary-sm&quot; | &quot;btn-primary-md&quot; | ... 6 combinations
+
+type Entity = &quot;user&quot; | &quot;order&quot;;
+type EventName = `${Entity}:${&quot;created&quot; | &quot;deleted&quot;}`;
+// &quot;user:created&quot; | &quot;user:deleted&quot; | &quot;order:created&quot; | &quot;order:deleted&quot;
+
+function on(event: EventName, handler: () =&gt; void) { /* ... */ }
+on(&quot;order:created&quot;, () =&gt; {});
+// on(&quot;order:updated&quot;, () =&gt; {});   // Error: not assignable to type EventName
+
+// Pattern matching on strings with infer
+type RouteParam&lt;S&gt; = S extends `${string}:${infer P}/${infer Rest}`
+  ? P | RouteParam&lt;`/${Rest}`&gt;
+  : S extends `${string}:${infer P}` ? P : never;
+type Params = RouteParam&lt;&quot;/users/:userId/orders/:orderId&quot;&gt;;  // &quot;userId&quot; | &quot;orderId&quot;</code></pre></div>
+      <p>The <code>RouteParam</code> type is roughly how routers like Express types and React Router extract <code>:params</code> from a path string, so <code>req.params.userId</code> is known to exist.</p>
+      <p>Types exist only at compile time, but it helps to see the runtime equivalent of what <code>ButtonClass</code> enumerates:</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const tones = [&quot;primary&quot;, &quot;danger&quot;];
+const sizes = [&quot;sm&quot;, &quot;md&quot;, &quot;lg&quot;];
+const classes = tones.flatMap((t) =&gt; sizes.map((s) =&gt; `btn-${t}-${s}`));
+console.log(classes.length);
+console.log(classes.join(&quot; &quot;));</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>6
+btn-primary-sm btn-primary-md btn-primary-lg btn-danger-sm btn-danger-md btn-danger-lg</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Keep it readable</p><p class="learn-callout-body">Large unions from template literals can slow the compiler (there is a limit of around 100,000 members), and deeply recursive conditional types produce error messages nobody can read. If a type needs a comment longer than itself, simplify it.</p></aside>
+      <h2>Recap</h2>
+      <ul><li><code>keyof T</code> gives a union of keys; <code>T[K]</code> gives the type of a property.</li><li>Mapped types <code>{ [K in keyof T]: ... }</code> transform every property; <code>as</code> renames or filters keys.</li><li>Conditional types <code>A extends B ? X : Y</code> distribute over unions; wrap in <code>[ ]</code> to stop that.</li><li><code>infer</code> extracts parts of a type, which is how <code>ReturnType</code> and <code>Awaited</code> work.</li><li>Template literal types build and pattern-match string types such as event names and route params.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write a mapped type <code>Setters&lt;T&gt;</code> that turns <code>{ name: string; age: number }</code> into <code>{ setName: (value: string) =&gt; void; setAge: (value: number) =&gt; void }</code>. Then write <code>FunctionKeys&lt;T&gt;</code> that returns a union of the keys of <code>T</code> whose values are functions.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="typescript" data-solution="type Setters&lt;T&gt; = {
+  [K in keyof T as `set${Capitalize&lt;string &amp; K&gt;}`]: (value: T[K]) =&gt; void;
+};
+
+type FunctionKeys&lt;T&gt; = {
+  [K in keyof T]: T[K] extends (...args: any[]) =&gt; any ? K : never;
+}[keyof T];
+
+type Person = { name: string; age: number };
+type PersonSetters = Setters&lt;Person&gt;;
+// { setName: (value: string) =&gt; void; setAge: (value: number) =&gt; void }
+
+type Api = { baseUrl: string; get(path: string): void; post(path: string): void };
+type Methods = FunctionKeys&lt;Api&gt;;   // &quot;get&quot; | &quot;post&quot;"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ts-advanced-types" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/typescript/modules-declarations/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 8</span><strong>Enums, Modules and Declaration Files</strong><small>Understand TypeScript enums vs as const, ES module imports and type-only imports, and how .d.ts declaration files and @types packages type JavaScript.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/typescript/classes/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/typescript/modules-declarations/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

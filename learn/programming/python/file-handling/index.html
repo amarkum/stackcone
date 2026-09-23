@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/assets/theme.js?v=1"></script>
   <meta name="robots" content="index, follow">
-  <title>File Handling | Python | stackcone Learn</title>
-  <meta name="description" content="Read and write text files safely with context managers.">
+  <title>File Handling | Python Tutorial | stackcone</title>
+  <meta name="description" content="Read and write text files safely with context managers. Free Python lesson 14 of 21 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/python/file-handling/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +14,26 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=27">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
-  <link rel="stylesheet" href="/learn/learn.css?v=36">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
   <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/python/file-handling/">
+  <meta property="og:title" content="File Handling | Python Tutorial | stackcone">
+  <meta property="og:description" content="Read and write text files safely with context managers. Free Python lesson 14 of 21 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="File Handling | Python Tutorial | stackcone">
+  <meta name="twitter:description" content="Read and write text files safely with context managers. Free Python lesson 14 of 21 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/python/type-hints/">
+  <link rel="next" href="https://stackcone.com/learn/programming/python/error-handling/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Python", "item": "https://stackcone.com/learn/programming/python/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "File Handling", "item": "https://stackcone.com/learn/programming/python/file-handling/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "File Handling", "headline": "File Handling", "description": "Read and write text files safely with context managers. Free Python lesson 14 of 21 with runnable examples and exercises.", "url": "https://stackcone.com/learn/programming/python/file-handling/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT12M", "isAccessibleForFree": true, "teaches": ["Use with open()", "Read and write text", "Handle missing files"], "position": 14, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Python Course", "url": "https://stackcone.com/learn/programming/python/hello-world/", "description": "From your first print() to classes, files, and exceptions.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
 </head>
 <body class="learn-page">
   <header class="header">
@@ -34,22 +49,22 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / File Handling</p>
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/python/hello-world/">Python</a> / <span aria-current="page">File Handling</span></nav>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="python">
           <div class="learn-sidebar-head">
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="/learn/programming/python/hello-world/">Python</a></p>
-              <p class="learn-sidebar-tagline">Learn Python from scratch</p>
+              <p class="learn-sidebar-tagline">21 lessons · Learn Python from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
               <span data-progress-pct>0%</span>
             </div>
           </div>
-          <p class="learn-sidebar-progress" data-progress-count>0 of 15 lessons completed</p>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 21 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
-          <nav class="learn-sidebar-lessons">
+          <nav class="learn-sidebar-lessons" aria-label="Python lessons">
           <a class="learn-sidebar-link" href="/learn/programming/python/hello-world/" data-lesson="python-hello-world" data-minutes="8"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Python</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/python/variables-and-types/" data-lesson="python-variables-and-types" data-minutes="12"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/python/strings/" data-lesson="python-strings" data-minutes="14"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Working with Strings</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -58,21 +73,28 @@
           <a class="learn-sidebar-link" href="/learn/programming/python/lists-tuples/" data-lesson="python-lists-tuples" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Lists and Tuples</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/python/dictionaries/" data-lesson="python-dictionaries" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Dictionaries and Sets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/python/comprehensions/" data-lesson="python-comprehensions" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Comprehensions and Iteration</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/" data-lesson="python-oop-classes" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/" data-lesson="python-inheritance" data-minutes="16"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Inheritance and Special Methods</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link is-active" href="/learn/programming/python/file-handling/" aria-current="page" data-lesson="python-file-handling" data-minutes="12"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">File Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/" data-lesson="python-error-handling" data-minutes="13"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Error Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/" data-lesson="python-modules-packages" data-minutes="13"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Modules, Packages and pip</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/" data-lesson="python-json-datetime" data-minutes="14"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">JSON, Dates and the Standard Library</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/" data-lesson="python-testing-debugging" data-minutes="15"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Testing and Debugging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/decorators/" data-lesson="python-decorators" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Closures and Decorators</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/generators/" data-lesson="python-generators" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Generators, Iterators and itertools</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/oop-classes/" data-lesson="python-oop-classes" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/inheritance/" data-lesson="python-inheritance" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Inheritance and Special Methods</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/type-hints/" data-lesson="python-type-hints" data-minutes="18"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Type Hints and dataclasses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/python/file-handling/" aria-current="page" data-lesson="python-file-handling" data-minutes="12"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">File Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/error-handling/" data-lesson="python-error-handling" data-minutes="13"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Error Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/regex/" data-lesson="python-regex" data-minutes="18"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Regular Expressions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/modules-packages/" data-lesson="python-modules-packages" data-minutes="13"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Modules, Packages and pip</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/virtual-environments/" data-lesson="python-virtual-environments" data-minutes="16"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Virtual Environments and Project Setup</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/json-datetime/" data-lesson="python-json-datetime" data-minutes="14"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">JSON, Dates and the Standard Library</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/async/" data-lesson="python-async" data-minutes="20"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">async/await and Concurrency</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/python/testing-debugging/" data-lesson="python-testing-debugging" data-minutes="15"><span class="learn-sidebar-num">21</span><span class="learn-sidebar-title">Testing and Debugging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
           <div class="learn-lesson-top">
-            <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 11 of 15</p>
+            <p class="learn-eyebrow"><a href="/learn/programming/python/hello-world/">Python</a> · Lesson 14 of 21</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <a class="learn-top-btn" href="/learn/programming/python/inheritance/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/python/error-handling/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/programming/python/type-hints/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="python-file-handling" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/python/error-handling/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
           <h1>File Handling</h1>
@@ -82,7 +104,7 @@
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>12 min read</li>
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
-          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/inheritance/">Lesson 10: Inheritance and Special Methods</a></p>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/python/type-hints/">Lesson 13: Type Hints and dataclasses</a></p>
           <div class="learn-objectives">
             <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
             <ul><li>Use with open()</li><li>Read and write text</li><li>Handle missing files</li></ul>
@@ -90,15 +112,16 @@
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
               <h2>Your Progress</h2>
-              <p><span data-progress-short>0 of 15 lessons</span> <strong data-progress-pct>0%</strong></p>
+              <p><span data-progress-short>0 of 21 lessons</span> <strong data-progress-pct>0%</strong></p>
             </div>
             <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
             <ul class="learn-progress-stats">
-              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 15</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 21</strong></span></li>
               <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
-              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
           </section>
       <p>Real programs read configuration, process logs and save results, all of which means working with files. Python's <code>open()</code> gives you a file object, and the safest way to use it is inside a <code>with</code> block. The block guarantees the file is closed when you leave it, even if an error happens.</p>
       <h2>Why programs need files</h2>
@@ -192,12 +215,15 @@ print(repr(data))</code></pre></div>
     except FileNotFoundError:
         return 0"><pre><code># Write your solution here
 </code></pre></div>
-          <a class="learn-upnext" href="/learn/programming/python/error-handling/"><span class="learn-upnext-label">Up next · Lesson 12</span><strong>Error Handling</strong><small>try/except/finally and raising your own exceptions.</small></a>
-          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
-            <a class="learn-nav-btn" href="/learn/programming/python/inheritance/">Previous</a>
-            <div class="learn-lesson-nav-end">
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
             <button type="button" class="learn-complete" data-mark-complete="python-file-handling" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/error-handling/">Next lesson</a>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/python/error-handling/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 15</span><strong>Error Handling</strong><small>try/except/finally and raising your own exceptions.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/python/type-hints/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/python/error-handling/" data-complete-on-click>Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">
@@ -223,13 +249,13 @@ print(repr(data))</code></pre></div>
     </div>
   </footer>
   <script src="/site-nav.js?v=21" defer></script>
-  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
-  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Debugging and Inspecting Containers | Docker Tutorial | stackcone</title>
+  <meta name="description" content="Debug Docker containers that crash or misbehave using docker logs, exec, inspect, stats, events, exit codes, health checks and docker debug.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/docker/debugging/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/docker/debugging/">
+  <meta property="og:title" content="Debugging and Inspecting Containers | Docker Tutorial | stackcone">
+  <meta property="og:description" content="Debug Docker containers that crash or misbehave using docker logs, exec, inspect, stats, events, exit codes, health checks and docker debug.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Debugging and Inspecting Containers | Docker Tutorial | stackcone">
+  <meta name="twitter:description" content="Debug Docker containers that crash or misbehave using docker logs, exec, inspect, stats, events, exit codes, health checks and docker debug.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/docker/config-secrets/">
+  <link rel="next" href="https://stackcone.com/learn/programming/docker/security/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Docker", "item": "https://stackcone.com/learn/programming/docker/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Debugging and Inspecting Containers", "item": "https://stackcone.com/learn/programming/docker/debugging/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Debugging and Inspecting Containers", "headline": "Debugging and Inspecting Containers", "description": "Debug Docker containers that crash or misbehave using docker logs, exec, inspect, stats, events, exit codes, health checks and docker debug.", "url": "https://stackcone.com/learn/programming/docker/debugging/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Read logs and exit codes to find why a container stopped", "Open a shell or run tools inside a running container", "Use docker inspect, stats and events", "Debug images that have no shell"], "position": 8, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Docker Course", "url": "https://stackcone.com/learn/programming/docker/introduction/", "description": "Package apps into containers and run multi-service stacks with Compose.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/docker/introduction/">Docker</a> / <span aria-current="page">Debugging and Inspecting Containers</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="docker">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/docker/introduction/">Docker</a></p>
+              <p class="learn-sidebar-tagline">11 lessons · Learn Docker from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 11 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Docker lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/docker/introduction/" data-lesson="docker-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Containers and Docker Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/images-registries/" data-lesson="docker-images-registries" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Images, Layers and Registries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/dockerfile/" data-lesson="docker-dockerfile" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Writing a Dockerfile</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/volumes-networks/" data-lesson="docker-volumes-networks" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Volumes, Bind Mounts and Networks</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/compose/" data-lesson="docker-compose" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Docker Compose</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/multistage/" data-lesson="docker-multistage" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Multi-stage Builds and Small Images</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/config-secrets/" data-lesson="docker-config-secrets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Environment Variables, Config and Secrets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/docker/debugging/" aria-current="page" data-lesson="docker-debugging" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Debugging and Inspecting Containers</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/security/" data-lesson="docker-security" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Container Security Best Practices</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/ci-deploy/" data-lesson="docker-ci-deploy" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Build, Push and Deploy with CI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/kubernetes-intro/" data-lesson="docker-kubernetes-intro" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">From Compose to Kubernetes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/docker/introduction/">Docker</a> · Lesson 8 of 11</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/docker/config-secrets/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="docker-debugging" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/docker/security/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Debugging and Inspecting Containers</h1>
+          <p class="learn-summary">Debug Docker containers that crash or misbehave using docker logs, exec, inspect, stats, events, exit codes, health checks and docker debug.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/docker/config-secrets/">Lesson 7: Environment Variables, Config and Secrets</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Read logs and exit codes to find why a container stopped</li><li>Open a shell or run tools inside a running container</li><li>Use docker inspect, stats and events</li><li>Debug images that have no shell</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 11 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 11</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Sooner or later a container will exit the moment it starts, restart in a loop, or answer every request with a timeout. Because the app runs in an isolated box, the usual approach of "look at the terminal" does not work. Docker gives you a small set of tools that cover almost every case, and a repeatable order to use them in.</p>
+      <p>The checklist this lesson builds: <strong>status and exit code, then logs, then inspect, then get inside</strong>. Most problems are solved by step two.</p>
+      <h2>Step 1: status and exit code</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker ps -a --filter name=api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS                       PORTS     NAMES
+7d3f9a2c1b8e   stackcone-api:1.0.0   &quot;uvicorn main:app --…&quot;   40 seconds ago   Exited (1) 38 seconds ago              api</pre></div>
+      <p>The exit code is the first clue:</p>
+      <ul><li><code>0</code>: the process finished normally. For a server, that usually means the command was wrong (it ran and ended instead of staying in the foreground).</li><li><code>1</code> (or other small numbers): the application raised an error. Check the logs.</li><li><code>125</code>, <code>126</code>, <code>127</code>: Docker could not run the command at all (bad flag, not executable, command not found).</li><li><code>137</code>: killed with SIGKILL, very often by the out-of-memory killer, or by <code>docker stop</code> after the grace period.</li><li><code>143</code>: stopped with SIGTERM, a normal graceful shutdown.</li></ul>
+      <h2>Step 2: logs</h2>
+      <p>Docker captures anything the main process writes to stdout and stderr. Logs survive after the container exits (until you remove it):</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker logs --tail 20 api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>INFO:     Started server process [1]
+INFO:     Waiting for application startup.
+ERROR:    Traceback (most recent call last):
+  File &quot;/app/main.py&quot;, line 14, in lifespan
+    await db.connect()
+  ...
+OSError: Multiple exceptions: [Errno 111] Connect call failed (&#x27;127.0.0.1&#x27;, 5432)
+ERROR:    Application startup failed. Exiting.</pre></div>
+      <p>Found it: the app tried to reach Postgres at <code>127.0.0.1</code>, which inside a container is the container itself (see the volumes and networks lesson). Useful flags: <code>-f</code> to follow, <code>--since 10m</code>, and <code>-t</code> for timestamps. With Compose, <code>docker compose logs -f api</code> does the same per service.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>No logs? Check where your app writes</p><p class="learn-callout-body">If <code>docker logs</code> is empty, the app is probably logging to a file inside the container, or Python is buffering output. Log to stdout, and set <code>PYTHONUNBUFFERED=1</code> for Python apps. Official nginx images symlink their log files to stdout for exactly this reason.</p></aside>
+      <h2>Step 3: inspect the configuration</h2>
+      <p><code>docker inspect</code> prints everything Docker knows about a container as JSON: environment, mounts, networks, restart count, health status. Use <code>--format</code> with a Go template to pull out one piece:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker inspect --format &#x27;{{json .Config.Env}}&#x27; api
+docker inspect --format &#x27;{{.State.OOMKilled}} restarts={{.RestartCount}}&#x27; api
+docker inspect --format &#x27;{{range .Mounts}}{{.Source}} -&gt; {{.Destination}}{{println}}{{end}}&#x27; api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&quot;DATABASE_URL=postgresql://app:app@localhost:5432/stackcone&quot;,&quot;PATH=/venv/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&quot;,&quot;PYTHONUNBUFFERED=1&quot;]
+false restarts=0
+/Users/ada/stackcone/api -&gt; /app</pre></div>
+      <p>This confirms the bad <code>DATABASE_URL</code> came from configuration, not code. Change <code>localhost</code> to <code>db</code> and put both containers on the same network.</p>
+      <h2>Step 4: get inside</h2>
+      <p>For a running container, <code>docker exec</code> starts an extra process next to the app. Open a shell, check files, test DNS and connectivity from the container's point of view:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker exec -it api sh
+# inside the container:
+cat /etc/hosts
+env | grep DATABASE
+python -c &quot;import socket; print(socket.gethostbyname(&#x27;db&#x27;))&quot;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>127.0.0.1	localhost
+172.19.0.4	8b1c0e7f2a3d
+DATABASE_URL=postgresql://app:app@db:5432/stackcone
+172.19.0.2</pre></div>
+      <p>If the container exits immediately, you cannot exec into it. Instead, start a new container from the same image with a shell as the command so it stays alive:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run --rm -it --entrypoint sh stackcone-api:1.0.0
+# now explore: ls -la /app, run the start command by hand, read the traceback</code></pre></div>
+      <h2>Resource usage and events</h2>
+      <p>For slow or restarting containers, check live CPU and memory:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker stats --no-stream</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>CONTAINER ID   NAME    CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O        PIDS
+8b1c0e7f2a3d   api     187.42%   498.2MiB / 512MiB   97.30%    1.2MB / 3.4MB     0B / 0B          23
+3a9e2d1c7b40   db      0.35%     42.1MiB / 7.66GiB   0.54%     2.8MB / 1.1MB     12.3MB / 45MB    9</pre></div>
+      <p>The <code>api</code> container is at 97% of its 512 MiB limit and about to be OOM-killed (exit 137). Either raise the limit or find the leak. <code>docker events</code> streams what the daemon is doing, which makes restart loops obvious:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker events --filter container=api --since 5m</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>2026-09-20T11:40:02.114Z container oom 8b1c0e7f2a3d (image=stackcone-api:1.0.0, name=api)
+2026-09-20T11:40:02.231Z container die 8b1c0e7f2a3d (exitCode=137, image=stackcone-api:1.0.0, name=api)
+2026-09-20T11:40:02.735Z container start 8b1c0e7f2a3d (image=stackcone-api:1.0.0, name=api)</pre></div>
+      <h2>Health checks</h2>
+      <p>A process can be running yet broken (deadlocked, lost its DB connection). A <code>HEALTHCHECK</code> lets Docker test it and report <code>healthy</code> or <code>unhealthy</code>:</p>
+      <div class="learn-code-wrap" data-lang="dockerfile"><pre><code>HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+  CMD python -c &quot;import urllib.request; urllib.request.urlopen(&#x27;http://localhost:8000/health&#x27;)&quot; || exit 1</code></pre></div>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker inspect --format &#x27;{{json .State.Health}}&#x27; api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&quot;Status&quot;:&quot;unhealthy&quot;,&quot;FailingStreak&quot;:4,&quot;Log&quot;:[{&quot;Start&quot;:&quot;2026-09-20T11:45:10Z&quot;,&quot;End&quot;:&quot;2026-09-20T11:45:13Z&quot;,&quot;ExitCode&quot;:1,&quot;Output&quot;:&quot;urllib.error.URLError: &lt;urlopen error timed out&gt;\n&quot;}]}</pre></div>
+      <h2>Debugging images with no shell</h2>
+      <p>Distroless and scratch images (from the multi-stage lesson) have no <code>sh</code>, so <code>docker exec -it api sh</code> fails. Two options work well. <code>docker debug</code> (included with Docker Desktop) attaches a toolbox shell with common utilities to any container or image without changing it. On any Docker host, you can also run a tools container that shares the target's network and process namespaces:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker run --rm -it --network container:api --pid container:api nicolaka/netshoot
+# inside: ps aux, curl localhost:8000/health, ss -tlnp, dig db</code></pre></div>
+      <p>Finally, <code>docker cp api:/app/config.yaml .</code> copies files out of any container, running or stopped, which is handy for grabbing a generated config or crash dump.</p>
+      <h2>Recap</h2>
+      <ul><li>Start with <code>docker ps -a</code>: the exit code (0, 1, 127, 137, 143) tells you what kind of failure it was.</li><li><code>docker logs</code> solves most problems; make sure your app logs unbuffered to stdout.</li><li><code>docker inspect --format</code> shows the real environment, mounts, health and OOM status.</li><li>Use <code>docker exec</code> for running containers and <code>docker run --entrypoint sh</code> for ones that crash on start.</li><li>For shell-less images, use <code>docker debug</code> or a tools container sharing the target's namespaces.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A container named <code>worker</code> keeps restarting. Write the sequence of commands you would run to find out (1) its last exit code and whether it was OOM-killed, (2) its last 50 log lines with timestamps, (3) its memory usage right now, and (4) the restart events from the past 15 minutes.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="docker inspect --format &#x27;exit={{.State.ExitCode}} oom={{.State.OOMKilled}} restarts={{.RestartCount}}&#x27; worker
+docker logs -t --tail 50 worker
+docker stats --no-stream worker
+docker events --filter container=worker --filter event=die --filter event=start --since 15m --until 0s"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="docker-debugging" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/docker/security/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Container Security Best Practices</strong><small>Harden Docker containers: run as non-root, drop Linux capabilities, use read-only filesystems, scan images for CVEs and protect the Docker socket.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/docker/config-secrets/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/docker/security/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

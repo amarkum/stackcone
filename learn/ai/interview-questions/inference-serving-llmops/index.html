@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/assets/theme.js?v=1"></script>
   <meta name="robots" content="index, follow">
-  <title>Inference, Serving Performance and LLMOps | AI Interview Questions | stackcone Learn</title>
+  <title>Inference, Serving Performance and LLMOps | stackcone</title>
   <meta name="description" content="TTFT and throughput, continuous batching, PagedAttention, speculative decoding, quantisation, parallelism, caching, cost control, failover and observability.">
   <link rel="canonical" href="https://stackcone.com/learn/ai/interview-questions/inference-serving-llmops/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
@@ -14,11 +14,26 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=27">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
-  <link rel="stylesheet" href="/learn/learn.css?v=36">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
   <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ai/interview-questions/inference-serving-llmops/">
+  <meta property="og:title" content="Inference, Serving Performance and LLMOps | stackcone">
+  <meta property="og:description" content="TTFT and throughput, continuous batching, PagedAttention, speculative decoding, quantisation, parallelism, caching, cost control, failover and observability.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Inference, Serving Performance and LLMOps | stackcone">
+  <meta name="twitter:description" content="TTFT and throughput, continuous batching, PagedAttention, speculative decoding, quantisation, parallelism, caching, cost control, failover and observability.">
+  <link rel="prev" href="https://stackcone.com/learn/ai/interview-questions/fine-tuning-alignment/">
+  <link rel="next" href="https://stackcone.com/learn/ai/interview-questions/evaluation-safety/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "AI", "item": "https://stackcone.com/learn/ai/"}, {"@type": "ListItem", "position": 3, "name": "AI Interview Questions", "item": "https://stackcone.com/learn/ai/interview-questions/ai-ml-fundamentals/"}, {"@type": "ListItem", "position": 4, "name": "Inference, Serving Performance and LLMOps", "item": "https://stackcone.com/learn/ai/interview-questions/inference-serving-llmops/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Inference, Serving Performance and LLMOps", "headline": "Inference, Serving Performance and LLMOps", "description": "TTFT and throughput, continuous batching, PagedAttention, speculative decoding, quantisation, parallelism, caching, cost control, failover and observability.", "url": "https://stackcone.com/learn/ai/interview-questions/inference-serving-llmops/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Explain why LLM serving is memory-bound and how batching, caching and quantisation change the economics", "Do back-of-envelope latency, memory and cost estimates", "Design for rate limits, outages, monitoring and safe rollouts"], "position": 8, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "AI Interview Questions Course", "url": "https://stackcone.com/learn/ai/interview-questions/ai-ml-fundamentals/", "description": "110 commonly asked AI, ML, LLM, RAG and agent interview questions with detailed model answers, diagrams and code. Built for big-tech style loops.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
 </head>
 <body class="learn-page">
   <header class="header">
@@ -34,13 +49,13 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> / Inference, Serving Performance and LLMOps</p>
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ai/">AI</a> / <a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> / <span aria-current="page">Inference, Serving Performance and LLMOps</span></nav>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="ai-interview-questions">
           <div class="learn-sidebar-head">
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a></p>
-              <p class="learn-sidebar-tagline">110 questions with model answers</p>
+              <p class="learn-sidebar-tagline">10 lessons · Learn AI Interview Questions from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
@@ -49,7 +64,7 @@
           </div>
           <p class="learn-sidebar-progress" data-progress-count>0 of 10 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
-          <nav class="learn-sidebar-lessons">
+          <nav class="learn-sidebar-lessons" aria-label="AI Interview Questions lessons">
           <a class="learn-sidebar-link" href="/learn/ai/interview-questions/ai-ml-fundamentals/" data-lesson="aiq-ai-ml-fundamentals" data-minutes="16"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">AI and Machine Learning Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ai/interview-questions/llm-transformers/" data-lesson="aiq-llm-transformers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">LLMs and Transformers: How They Actually Work</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/ai/interview-questions/prompt-engineering/" data-lesson="aiq-prompt-engineering" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Prompt Engineering and Structured Output</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -66,8 +81,9 @@
           <div class="learn-lesson-top">
             <p class="learn-eyebrow"><a href="/learn/ai/interview-questions/ai-ml-fundamentals/">AI Interview Questions</a> · Lesson 8 of 10</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <a class="learn-top-btn" href="/learn/ai/interview-questions/fine-tuning-alignment/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ai/interview-questions/evaluation-safety/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/ai/interview-questions/fine-tuning-alignment/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="aiq-inference-serving-llmops" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ai/interview-questions/evaluation-safety/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
           <h1>Inference, Serving Performance and LLMOps</h1>
@@ -75,7 +91,7 @@
           <ul class="learn-facts">
             <li><span class="learn-badge">Advanced</span></li>
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
-            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>11 questions</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
           <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ai/interview-questions/fine-tuning-alignment/">Lesson 7: Fine-Tuning, LoRA and Alignment (RLHF, DPO)</a></p>
           <div class="learn-objectives">
@@ -94,6 +110,7 @@
               <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
           </section>
       <p>Companies that run models at scale care intensely about this lesson. It is where "I can call an API" becomes "I can keep a feature fast, available and affordable for a million users". The questions reward <strong>numbers and named techniques</strong>: time-to-first-token, tokens per second, continuous batching, KV cache, p99.</p>
       <p>Even if you will only call hosted APIs, the same ideas apply to caching, routing, cost control and failure handling, so do not skip it.</p>
@@ -268,12 +285,15 @@ print("another client      :", backoff_schedule(7, seed=9))</code></pre></div>
       <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Pick a model size and GPU. Compute the single-stream tokens-per-second ceiling from memory bandwidth, then the KV-cache memory for 16 concurrent 8k-token requests and check that it fits. Then estimate the monthly bill for 100,000 requests per day at your own token counts, and show two changes that would cut it by a third without hurting quality.</p></aside>
       <h2>Sources and further reading</h2>
       <ul><li><a href="https://arxiv.org/abs/2309.06180" rel="noopener noreferrer" target="_blank">Kwon et al., Efficient Memory Management for LLM Serving with PagedAttention (vLLM)</a></li><li><a href="https://arxiv.org/abs/2211.17192" rel="noopener noreferrer" target="_blank">Leviathan et al., Fast Inference from Transformers via Speculative Decoding</a></li><li><a href="https://www.usenix.org/conference/osdi22/presentation/yu" rel="noopener noreferrer" target="_blank">Yu et al., Orca: Continuous Batching</a></li><li><a href="https://arxiv.org/abs/2210.17323" rel="noopener noreferrer" target="_blank">Frantar et al., GPTQ</a></li><li><a href="https://arxiv.org/abs/2306.00978" rel="noopener noreferrer" target="_blank">Lin et al., AWQ: Activation-aware Weight Quantization</a></li><li><a href="https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/" rel="noopener noreferrer" target="_blank">AWS Architecture Blog: Exponential Backoff and Jitter</a></li><li><a href="https://github.com/amitshekhariitbhu/ai-engineering-interview-questions" rel="noopener noreferrer" target="_blank">AI Engineering interview questions (Outcome School, Apache-2.0)</a></li></ul>
-          <a class="learn-upnext" href="/learn/ai/interview-questions/evaluation-safety/"><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Evaluation, Safety, Bias and Responsible AI</strong><small>LLM metrics, LLM-as-a-judge, golden datasets, benchmark pitfalls, A/B testing, hallucination control, red teaming, fairness, privacy, the EU AI Act and guardrails.</small></a>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="aiq-inference-serving-llmops" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ai/interview-questions/evaluation-safety/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 9</span><strong>Evaluation, Safety, Bias and Responsible AI</strong><small>LLM metrics, LLM-as-a-judge, golden datasets, benchmark pitfalls, A/B testing, hallucination control, red teaming, fairness, privacy, the EU AI Act and guardrails.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/ai/interview-questions/fine-tuning-alignment/">Previous</a>
             <div class="learn-lesson-nav-end">
-            <button type="button" class="learn-complete" data-mark-complete="aiq-inference-serving-llmops" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ai/interview-questions/evaluation-safety/">Next lesson</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ai/interview-questions/evaluation-safety/" data-complete-on-click>Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">
@@ -301,13 +321,13 @@ print("another client      :", backoff_schedule(7, seed=9))</code></pre></div>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="/solutions/diagrams.js?v=16"></script>
   <script src="/site-nav.js?v=21" defer></script>
-  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
-  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

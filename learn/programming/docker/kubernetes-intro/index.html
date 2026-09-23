@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>From Compose to Kubernetes | Docker Tutorial | stackcone</title>
+  <meta name="description" content="Learn when to move from Docker Compose to Kubernetes and translate a Compose service into Deployments, Services, ConfigMaps and Secrets with kubectl.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/docker/kubernetes-intro/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/docker/kubernetes-intro/">
+  <meta property="og:title" content="From Compose to Kubernetes | Docker Tutorial | stackcone">
+  <meta property="og:description" content="Learn when to move from Docker Compose to Kubernetes and translate a Compose service into Deployments, Services, ConfigMaps and Secrets with kubectl.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="From Compose to Kubernetes | Docker Tutorial | stackcone">
+  <meta name="twitter:description" content="Learn when to move from Docker Compose to Kubernetes and translate a Compose service into Deployments, Services, ConfigMaps and Secrets with kubectl.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/docker/ci-deploy/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Docker", "item": "https://stackcone.com/learn/programming/docker/introduction/"}, {"@type": "ListItem", "position": 4, "name": "From Compose to Kubernetes", "item": "https://stackcone.com/learn/programming/docker/kubernetes-intro/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "From Compose to Kubernetes", "headline": "From Compose to Kubernetes", "description": "Learn when to move from Docker Compose to Kubernetes and translate a Compose service into Deployments, Services, ConfigMaps and Secrets with kubectl.", "url": "https://stackcone.com/learn/programming/docker/kubernetes-intro/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Explain what Kubernetes adds on top of Docker", "Map Compose concepts to Pods, Deployments and Services", "Deploy and scale an app on a local cluster with kubectl", "Perform a rolling update and a rollback"], "position": 11, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Docker Course", "url": "https://stackcone.com/learn/programming/docker/introduction/", "description": "Package apps into containers and run multi-service stacks with Compose.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/docker/introduction/">Docker</a> / <span aria-current="page">From Compose to Kubernetes</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="docker">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/docker/introduction/">Docker</a></p>
+              <p class="learn-sidebar-tagline">11 lessons · Learn Docker from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 11 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Docker lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/docker/introduction/" data-lesson="docker-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Containers and Docker Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/images-registries/" data-lesson="docker-images-registries" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Images, Layers and Registries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/dockerfile/" data-lesson="docker-dockerfile" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Writing a Dockerfile</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/volumes-networks/" data-lesson="docker-volumes-networks" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Volumes, Bind Mounts and Networks</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/compose/" data-lesson="docker-compose" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Docker Compose</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/multistage/" data-lesson="docker-multistage" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Multi-stage Builds and Small Images</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/config-secrets/" data-lesson="docker-config-secrets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Environment Variables, Config and Secrets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/debugging/" data-lesson="docker-debugging" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Debugging and Inspecting Containers</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/security/" data-lesson="docker-security" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Container Security Best Practices</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/ci-deploy/" data-lesson="docker-ci-deploy" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Build, Push and Deploy with CI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/docker/kubernetes-intro/" aria-current="page" data-lesson="docker-kubernetes-intro" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">From Compose to Kubernetes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/docker/introduction/">Docker</a> · Lesson 11 of 11</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/docker/ci-deploy/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="docker-kubernetes-intro" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/" data-complete-on-click><span>Finish</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>From Compose to Kubernetes</h1>
+          <p class="learn-summary">Learn when to move from Docker Compose to Kubernetes and translate a Compose service into Deployments, Services, ConfigMaps and Secrets with kubectl.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/docker/ci-deploy/">Lesson 10: Build, Push and Deploy with CI</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain what Kubernetes adds on top of Docker</li><li>Map Compose concepts to Pods, Deployments and Services</li><li>Deploy and scale an app on a local cluster with kubectl</li><li>Perform a rolling update and a rollback</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 11 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 11</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Docker Compose is excellent at running a stack on one machine. Once you need several machines, zero-downtime rollouts, automatic restarts when a server dies, or scaling on load, you need an <strong>orchestrator</strong>. Kubernetes (often written K8s) is the industry standard, offered as a managed service by every major cloud (EKS, GKE, AKS).</p>
+      <p>Kubernetes looks intimidating because it has a lot of vocabulary. The good news: it runs the exact same container images you have been building. This lesson maps what you already know from Compose onto Kubernetes, so you can read and write basic manifests.</p>
+      <h2>Do you actually need Kubernetes?</h2>
+      <p>Honestly, many apps do not. A single VM with Compose, or a managed container service like Cloud Run or ECS, is simpler and cheaper for a handful of services. Kubernetes starts to pay off when you have many services, several teams, multiple nodes for reliability, or need its ecosystem (autoscaling, service mesh, operators). It helps to understand it either way, since you will meet it in most larger companies.</p>
+      <h2>The core idea: desired state</h2>
+      <p>With Docker you give commands: run this, stop that. With Kubernetes you <em>declare</em> the state you want in YAML ("three copies of api:1.4.2 should be running") and submit it to the cluster. Controllers constantly compare reality to that declaration and fix any difference. If a node dies and takes a copy with it, Kubernetes starts a replacement elsewhere without anyone being paged.</p>
+      <h2>Compose to Kubernetes, concept by concept</h2>
+      <ul><li><strong>Container</strong> stays a container, from the same image.</li><li><strong>Pod</strong>: the smallest unit Kubernetes runs, one (sometimes a few tightly coupled) containers sharing a network address. You rarely create Pods directly.</li><li><strong>Deployment</strong> is roughly a Compose service: which image, how many replicas, how to roll out updates.</li><li><strong>Service</strong> gives Pods a stable name and IP and load-balances between them. This replaces Compose's service-name DNS.</li><li><strong>ConfigMap</strong> and <strong>Secret</strong> replace <code>environment:</code>, <code>env_file:</code> and <code>secrets:</code>.</li><li><strong>PersistentVolumeClaim</strong> replaces named volumes.</li><li><strong>Ingress</strong> (or the newer Gateway API) replaces published ports for HTTP traffic from outside.</li></ul>
+      <h2>A local cluster</h2>
+      <p>Docker Desktop can enable a single-node Kubernetes cluster in its settings. On Linux, <code>kind</code> (Kubernetes in Docker) runs a cluster inside containers. Either way, you talk to it with <code>kubectl</code>:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>kind create cluster --name stackcone
+kubectl get nodes</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>NAME                      STATUS   ROLES           AGE   VERSION
+stackcone-control-plane   Ready    control-plane   48s   v1.34.0</pre></div>
+      <h2>Translating a Compose service</h2>
+      <p>Here is a small Compose service from earlier lessons:</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>services:
+  api:
+    image: ghcr.io/stackcone/api:1.4.2
+    ports:
+      - &quot;8000:8000&quot;
+    environment:
+      LOG_LEVEL: info
+      DATABASE_URL: postgresql://app:secret@db:5432/stackcone</code></pre></div>
+      <p>The Kubernetes equivalent is more verbose, but each part maps cleanly. Put these in <code>k8s/api.yaml</code> (multiple documents are separated by <code>---</code>):</p>
+      <div class="learn-code-wrap" data-lang="yaml"><pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  LOG_LEVEL: info
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-secrets
+type: Opaque
+stringData:
+  DATABASE_URL: postgresql://app:secret@db:5432/stackcone
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/stackcone/api:1.4.2
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: api-config
+            - secretRef:
+                name: api-secrets
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 80
+      targetPort: 8000</code></pre></div>
+      <p>The glue is <strong>labels</strong>. The Deployment stamps <code>app: api</code> on every Pod it creates, and the Service's <code>selector</code> sends traffic to any Pod with that label. Other Pods in the cluster can now reach the app at <code>http://api</code>, just like a Compose service name.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Secrets are encoded, not encrypted</p><p class="learn-callout-body">A Kubernetes Secret is only base64-encoded by default, and anyone with read access to the namespace can decode it. Never commit Secret manifests with real values to git. In real clusters use a tool like External Secrets Operator, Sealed Secrets or your cloud's secret manager, and restrict access with RBAC.</p></aside>
+      <h2>Apply, watch and reach the app</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>kubectl apply -f k8s/api.yaml
+kubectl get deployments,pods,services -l app=api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>configmap/api-config created
+secret/api-secrets created
+deployment.apps/api created
+service/api created
+
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api   3/3     3            3           21s
+
+NAME                       READY   STATUS    RESTARTS   AGE
+pod/api-6c9f7d8b5d-4xkq2   1/1     Running   0          21s
+pod/api-6c9f7d8b5d-9mzt7   1/1     Running   0          21s
+pod/api-6c9f7d8b5d-lp8wc   1/1     Running   0          21s</pre></div>
+      <p>(The Service does not carry the <code>app</code> label itself, so it is not listed by the <code>-l</code> filter; <code>kubectl get svc api</code> shows it.) To reach it from your laptop without an Ingress, forward a port:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>kubectl port-forward service/api 8080:80
+# in another terminal:
+curl -s localhost:8080/health</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>{&quot;status&quot;:&quot;ok&quot;,&quot;version&quot;:&quot;1.4.2&quot;}</pre></div>
+      <p>The debugging skills from the debugging lesson carry over directly: <code>kubectl logs</code>, <code>kubectl exec -it</code>, and <code>kubectl describe pod</code> (which shows events like image pull errors and OOM kills).</p>
+      <h2>Scaling, rolling updates and rollbacks</h2>
+      <p>Delete a Pod and watch Kubernetes replace it. Scaling is one command:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>kubectl delete pod api-6c9f7d8b5d-4xkq2
+kubectl scale deployment/api --replicas=5
+kubectl get pods -l app=api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>pod &quot;api-6c9f7d8b5d-4xkq2&quot; deleted
+deployment.apps/api scaled
+NAME                   READY   STATUS    RESTARTS   AGE
+api-6c9f7d8b5d-9mzt7   1/1     Running   0          3m2s
+api-6c9f7d8b5d-lp8wc   1/1     Running   0          3m2s
+api-6c9f7d8b5d-r2hvn   1/1     Running   0          6s
+api-6c9f7d8b5d-t7c4j   1/1     Running   0          2s
+api-6c9f7d8b5d-x5bnq   1/1     Running   0          2s</pre></div>
+      <p>Deploying a new version is changing the image tag. Kubernetes replaces Pods gradually, only sending traffic to new ones once their readiness probe passes, so users see no downtime:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>kubectl set image deployment/api api=ghcr.io/stackcone/api:1.5.0
+kubectl rollout status deployment/api
+
+# something is wrong? go back
+kubectl rollout undo deployment/api</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Waiting for deployment &quot;api&quot; rollout to finish: 2 out of 5 new replicas have been updated...
+Waiting for deployment &quot;api&quot; rollout to finish: 4 out of 5 new replicas have been updated...
+Waiting for deployment &quot;api&quot; rollout to finish: 1 old replicas are pending termination...
+deployment &quot;api&quot; successfully rolled out
+deployment.apps/api rolled back</pre></div>
+      <p>In practice you would edit the tag in the YAML and commit it, then let CI or a GitOps tool such as Argo CD or Flux apply it, so git remains the record of what is running. Helm and Kustomize help manage the YAML once you have several environments.</p>
+      <h2>Recap</h2>
+      <ul><li>Kubernetes runs the same images across many machines, restarting, scaling and rolling them out for you.</li><li>You declare desired state in YAML with <code>kubectl apply</code>; controllers make reality match.</li><li>Deployment is roughly a Compose service; a Service gives stable DNS and load balancing via label selectors.</li><li>ConfigMaps and Secrets hold configuration; Secrets are only base64-encoded by default.</li><li><code>kubectl set image</code>, <code>rollout status</code> and <code>rollout undo</code> give zero-downtime updates and quick rollbacks.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Translate this Compose service into a Kubernetes Deployment (2 replicas) and a Service named <code>worker-metrics</code> exposing port 9100: <code>worker: { image: ada/orders-worker:3.0.1, environment: { QUEUE: orders } }</code>. The container listens on 9100 for metrics.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="yaml" data-solution="apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: ada/orders-worker:3.0.1
+          env:
+            - name: QUEUE
+              value: orders
+          ports:
+            - containerPort: 9100
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-metrics
+spec:
+  selector:
+    app: worker
+  ports:
+    - port: 9100
+      targetPort: 9100"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="docker-kubernetes-intro" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext learn-upnext--done" href="/learn/programming/" data-complete-on-click><span class="learn-upnext-label">Last lesson</span><strong>Finish Docker</strong><small>Mark this lesson complete and pick your next course.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/docker/ci-deploy/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/" data-complete-on-click>Finish course</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

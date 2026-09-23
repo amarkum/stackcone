@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Selectors, Specificity and the Cascade | HTML &amp; CSS | stackcone</title>
+  <meta name="description" content="Master CSS selectors, pseudo-classes and pseudo-elements, calculate specificity, and understand the cascade, inheritance, :is(), :where() and @layer.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/htmlcss/selectors-cascade/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/htmlcss/selectors-cascade/">
+  <meta property="og:title" content="Selectors, Specificity and the Cascade | HTML &amp; CSS | stackcone">
+  <meta property="og:description" content="Master CSS selectors, pseudo-classes and pseudo-elements, calculate specificity, and understand the cascade, inheritance, :is(), :where() and @layer.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Selectors, Specificity and the Cascade | HTML &amp; CSS | stackcone">
+  <meta name="twitter:description" content="Master CSS selectors, pseudo-classes and pseudo-elements, calculate specificity, and understand the cascade, inheritance, :is(), :where() and @layer.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/htmlcss/basics/">
+  <link rel="next" href="https://stackcone.com/learn/programming/htmlcss/box-model-units/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "HTML & CSS", "item": "https://stackcone.com/learn/programming/htmlcss/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Selectors, Specificity and the Cascade", "item": "https://stackcone.com/learn/programming/htmlcss/selectors-cascade/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Selectors, Specificity and the Cascade", "headline": "Selectors, Specificity and the Cascade", "description": "Master CSS selectors, pseudo-classes and pseudo-elements, calculate specificity, and understand the cascade, inheritance, :is(), :where() and @layer.", "url": "https://stackcone.com/learn/programming/htmlcss/selectors-cascade/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Target elements precisely with combinators, attribute selectors and pseudo-classes", "Calculate specificity and predict which rule wins", "Understand inheritance and the keywords inherit, initial and unset", "Use :is(), :where(), :has() and @layer to keep CSS manageable"], "position": 6, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "HTML & CSS Course", "url": "https://stackcone.com/learn/programming/htmlcss/introduction/", "description": "Structure pages with HTML and style them with modern CSS, Flexbox and Grid.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> / <span aria-current="page">Selectors, Specificity and the Cascade</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="htmlcss">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a></p>
+              <p class="learn-sidebar-tagline">13 lessons · Learn HTML &amp; CSS from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 13 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="HTML &amp; CSS lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/introduction/" data-lesson="html-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">HTML Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/forms-semantics/" data-lesson="html-forms-semantics" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Forms and Semantic HTML</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/media-accessibility/" data-lesson="html-media-accessibility" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Images, Media and Accessibility</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/seo-performance/" data-lesson="html-seo-performance" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Meta Tags, SEO and Page Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/basics/" data-lesson="css-basics" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">CSS Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/htmlcss/selectors-cascade/" aria-current="page" data-lesson="css-selectors-cascade" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Selectors, Specificity and the Cascade</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/box-model-units/" data-lesson="css-box-model-units" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">The Box Model, Sizing and Units</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/typography-variables/" data-lesson="css-typography-variables" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Typography, Colors and CSS Variables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/positioning/" data-lesson="css-positioning" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Positioning, z-index and Overflow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/flexbox/" data-lesson="css-flexbox" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Flexbox Layout</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/grid-responsive/" data-lesson="css-grid-responsive" data-minutes="17"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Grid and Responsive Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/animations/" data-lesson="css-animations" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Transitions, Transforms and Animations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/layout-project/" data-lesson="css-modern-layout-project" data-minutes="25"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Project: Build a Responsive Landing Page</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> · Lesson 6 of 13</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/htmlcss/basics/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="css-selectors-cascade" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/htmlcss/box-model-units/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Selectors, Specificity and the Cascade</h1>
+          <p class="learn-summary">Master CSS selectors, pseudo-classes and pseudo-elements, calculate specificity, and understand the cascade, inheritance, :is(), :where() and @layer.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/htmlcss/basics/">Lesson 5: CSS Basics</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Target elements precisely with combinators, attribute selectors and pseudo-classes</li><li>Calculate specificity and predict which rule wins</li><li>Understand inheritance and the keywords inherit, initial and unset</li><li>Use :is(), :where(), :has() and @layer to keep CSS manageable</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 13 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 13</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>In CSS Basics you met element, class and ID selectors and heard that "the more specific rule wins". That is enough for a small page. On a real site, with hundreds of rules, you will eventually write a style that simply refuses to apply. This lesson explains exactly how the browser decides, so you can fix those problems in seconds instead of reaching for <code>!important</code>.</p>
+      <h2>Combinators: selecting by relationship</h2>
+      <p>Combinators select elements based on where they sit in the HTML tree.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* Descendant (space): any &lt;a&gt; anywhere inside .nav */
+.nav a { color: #1e293b; }
+
+/* Child (&gt;): only &lt;li&gt; that are direct children of .menu */
+.menu &gt; li { display: inline-block; }
+
+/* Adjacent sibling (+): the &lt;p&gt; immediately after an &lt;h2&gt; */
+h2 + p { margin-top: 0; font-size: 1.125rem; }
+
+/* General sibling (~): every &lt;p&gt; after an &lt;h2&gt;, same parent */
+h2 ~ p { color: #475569; }
+
+/* Grouping (,): same rules for several selectors */
+h1, h2, h3 { line-height: 1.2; }</code></pre></div>
+      <h2>Attribute selectors</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>input[type=&quot;email&quot;] { background: #f8fafc; }
+a[href^=&quot;https://&quot;] { padding-right: 1em; }     /* starts with */
+a[href$=&quot;.pdf&quot;]::after { content: &quot; (PDF)&quot;; }    /* ends with */
+[class*=&quot;btn-&quot;] { cursor: pointer; }             /* contains */
+[disabled] { opacity: 0.5; }                     /* attribute present */</code></pre></div>
+      <h2>Pseudo-classes and pseudo-elements</h2>
+      <p>A <strong>pseudo-class</strong> (one colon) selects an element in a particular state or position. A <strong>pseudo-element</strong> (two colons) styles a part of an element, or inserts generated content.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* States */
+a:hover { text-decoration: underline; }
+button:focus-visible { outline: 3px solid #2563eb; }
+input:invalid { border-color: #dc2626; }
+input:checked + label { font-weight: 600; }
+
+/* Position */
+li:first-child { border-top: none; }
+li:last-child { border-bottom: none; }
+tr:nth-child(even) { background: #f1f5f9; }   /* zebra stripes */
+li:nth-child(3n + 1) { clear: left; }          /* 1st, 4th, 7th... */
+p:not(.lead) { font-size: 1rem; }
+
+/* Parts and generated content */
+p::first-line { font-weight: 600; }
+.required::after { content: &quot; *&quot;; color: #dc2626; }
+::selection { background: #fde68a; }
+input::placeholder { color: #94a3b8; }</code></pre></div>
+      <h2>The :has() parent selector</h2>
+      <p>For decades CSS could not style a parent based on its children. <code>:has()</code>, supported in every major browser since late 2023, changes that. It reads as "an element that has...".</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* A card that contains an image gets a different layout */
+.card:has(img) { display: grid; grid-template-columns: 120px 1fr; }
+
+/* Highlight a form field wrapper when its input is invalid */
+.field:has(input:invalid) label { color: #dc2626; }
+
+/* Style a label whose checkbox is checked */
+label:has(input[type=&quot;checkbox&quot;]:checked) { background: #ecfdf5; }</code></pre></div>
+      <h2>Specificity: how the browser scores selectors</h2>
+      <p>When two rules set the same property on the same element, the browser compares their <strong>specificity</strong>. Think of it as a three-part score written <code>(IDs, classes, elements)</code>:</p>
+      <ul><li><strong>A</strong>: count of ID selectors (<code>#header</code>).</li><li><strong>B</strong>: count of classes, attribute selectors and pseudo-classes (<code>.btn</code>, <code>[type]</code>, <code>:hover</code>).</li><li><strong>C</strong>: count of element selectors and pseudo-elements (<code>div</code>, <code>::before</code>).</li></ul>
+      <p>Compare column by column from the left. Any ID beats any number of classes, just as 1-0-0 is bigger than 0-15-0.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>p                     /* (0,0,1) */
+.intro                /* (0,1,0) */
+p.intro               /* (0,1,1) */
+.card .title          /* (0,2,0) */
+nav ul li a:hover     /* (0,1,4) */
+#hero .title          /* (1,1,0)  wins over all of the above */
+*                     /* (0,0,0)  the universal selector adds nothing */</code></pre></div>
+      <p>Inline <code>style="..."</code> attributes beat every selector, and a declaration marked <code>!important</code> beats even inline styles. If two rules tie on specificity, the one that appears <strong>later</strong> in the CSS wins.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Stop the specificity war</p><p class="learn-callout-body">When a rule does not apply, the tempting fix is a longer selector or <code>!important</code>. That makes the next override even harder. Prefer low, flat specificity: style with single classes (<code>.card-title</code>) and avoid IDs in CSS. Reserve <code>!important</code> for utility classes like <code>.hidden</code>.</p></aside>
+      <h2>:is() and :where()</h2>
+      <p>Both take a list of selectors and match if any of them match, which shortens repetitive CSS. The difference is specificity: <code>:is()</code> takes the specificity of its most specific argument, while <code>:where()</code> always counts as zero. That makes <code>:where()</code> perfect for defaults that should be easy to override.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>/* Instead of: article h1, article h2, article h3 { ... } */
+article :is(h1, h2, h3) { margin-top: 2rem; }
+
+/* Zero-specificity reset: any single class will override it */
+:where(ul, ol)[role=&quot;list&quot;] { list-style: none; padding: 0; }</code></pre></div>
+      <h2>Inheritance</h2>
+      <p>Some properties pass automatically from parent to child. Mostly these are text properties: <code>color</code>, <code>font-family</code>, <code>font-size</code>, <code>line-height</code>. Box properties such as <code>margin</code>, <code>padding</code>, <code>border</code> and <code>background</code> do not inherit. That is why you set fonts once on <code>body</code> and every paragraph picks them up.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>body { font-family: system-ui, sans-serif; color: #1e293b; }
+
+/* Buttons and inputs do NOT inherit fonts by default; force it */
+button, input, select, textarea { font: inherit; color: inherit; }
+
+.reset-me { all: unset; }   /* wipe every property back to inherited/initial */</code></pre></div>
+      <p>The keywords: <code>inherit</code> copies the parent's value, <code>initial</code> uses the CSS default for that property, and <code>unset</code> acts as <code>inherit</code> for inherited properties and <code>initial</code> for the rest.</p>
+      <h2>Cascade layers with @layer</h2>
+      <p>Cascade layers let you decide which group of styles wins <em>before</em> specificity is even compared. Layers declared later win, regardless of how specific the selectors inside earlier layers are. This is a clean way to keep resets, third-party CSS and your components from fighting.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>@layer reset, base, components, utilities;
+
+@layer reset {
+  * { margin: 0; box-sizing: border-box; }
+}
+@layer components {
+  #app .card .title { color: #334155; }   /* high specificity... */
+}
+@layer utilities {
+  .text-brand { color: #2563eb; }         /* ...still loses to this later layer */
+}</code></pre></div>
+      <p>The full order the browser checks is: origin and <code>!important</code>, then layers, then specificity, then source order. In DevTools, the Styles panel lists rules in that order and strikes through the losers.</p>
+      <h2>Recap</h2>
+      <ul><li>Combinators (space, <code>&gt;</code>, <code>+</code>, <code>~</code>) and attribute selectors target elements by relationship and attributes.</li><li>Pseudo-classes select states (<code>:hover</code>, <code>:nth-child</code>, <code>:has()</code>); pseudo-elements style parts (<code>::before</code>, <code>::placeholder</code>).</li><li>Specificity is scored (IDs, classes, elements) and compared left to right; ties go to the later rule.</li><li>Text properties inherit, box properties do not; use <code>font: inherit</code> on form controls.</li><li>Keep specificity low with classes and <code>:where()</code>, and organise big codebases with <code>@layer</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Given a table with class <code>orders</code>: stripe even body rows, highlight a row on hover, make the header row bold with no top border, colour any cell with class <code>overdue</code> red, and give a row that contains a checked checkbox a green background. Keep every selector at or below (0,3,1) specificity.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="css" data-solution=".orders thead th {
+  font-weight: 700;
+  border-top: none;
+}
+.orders tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+.orders tbody tr:hover {
+  background: #e0f2fe;
+}
+.orders .overdue {
+  color: #dc2626;
+}
+.orders tr:has(input[type=&quot;checkbox&quot;]:checked) {
+  background: #dcfce7;
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="css-selectors-cascade" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/htmlcss/box-model-units/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 7</span><strong>The Box Model, Sizing and Units</strong><small>Understand the CSS box model in depth: margins, padding, borders, box-sizing, display types, margin collapse, min/max sizing and units like rem, vw and ch.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/htmlcss/basics/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/htmlcss/box-model-units/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

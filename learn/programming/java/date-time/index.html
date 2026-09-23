@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Dates and Times with java.time Tutorial | stackcone Learn</title>
+  <meta name="description" content="Work with dates and times in Java using java.time: LocalDate, LocalDateTime, Instant, ZonedDateTime, Duration, Period, formatting and parsing.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/java/date-time/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/java/date-time/">
+  <meta property="og:title" content="Dates and Times with java.time Tutorial | stackcone Learn">
+  <meta property="og:description" content="Work with dates and times in Java using java.time: LocalDate, LocalDateTime, Instant, ZonedDateTime, Duration, Period, formatting and parsing.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Dates and Times with java.time Tutorial | stackcone Learn">
+  <meta name="twitter:description" content="Work with dates and times in Java using java.time: LocalDate, LocalDateTime, Instant, ZonedDateTime, Duration, Period, formatting and parsing.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/java/modern-features/">
+  <link rel="next" href="https://stackcone.com/learn/programming/java/files-io/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Java", "item": "https://stackcone.com/learn/programming/java/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Dates and Times with java.time", "item": "https://stackcone.com/learn/programming/java/date-time/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Dates and Times with java.time", "headline": "Dates and Times with java.time", "description": "Work with dates and times in Java using java.time: LocalDate, LocalDateTime, Instant, ZonedDateTime, Duration, Period, formatting and parsing.", "url": "https://stackcone.com/learn/programming/java/date-time/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Pick the right java.time type for each situation", "Do date arithmetic with plus, minus, Period and Duration", "Convert between time zones with ZonedDateTime and Instant", "Format and parse dates with DateTimeFormatter"], "position": 16, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Java Course", "url": "https://stackcone.com/learn/programming/java/hello-world/", "description": "Static typing, OOP, and the collections you use every day.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/java/hello-world/">Java</a> / <span aria-current="page">Dates and Times with java.time</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="java">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/java/hello-world/">Java</a></p>
+              <p class="learn-sidebar-tagline">20 lessons · Learn Java from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 20 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Java lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/java/hello-world/" data-lesson="java-hello-world" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Java</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/variables-types/" data-lesson="java-variables-types" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/control-flow/" data-lesson="java-control-flow" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/oop-classes/" data-lesson="java-oop-classes" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/collections/" data-lesson="java-collections" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Collections Framework</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/exceptions/" data-lesson="java-exceptions" data-minutes="13"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Exception Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/strings/" data-lesson="java-strings" data-minutes="12"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Strings and StringBuilder</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/arrays/" data-lesson="java-arrays" data-minutes="12"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/methods/" data-lesson="java-methods" data-minutes="12"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Methods and Overloading</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/inheritance/" data-lesson="java-inheritance" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Inheritance and Polymorphism</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/interfaces-abstract/" data-lesson="java-interfaces-abstract" data-minutes="14"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Interfaces and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/enums-records/" data-lesson="java-enums-records" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Enums, Records and Optional</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/generics/" data-lesson="java-generics" data-minutes="14"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Generics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/lambdas-streams/" data-lesson="java-lambdas-streams" data-minutes="16"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Lambdas and Streams</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/modern-features/" data-lesson="java-modern-features" data-minutes="20"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Modern Java: var, switch expressions, text blocks, pattern matching, sealed classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/java/date-time/" aria-current="page" data-lesson="java-date-time" data-minutes="17"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Dates and Times with java.time</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/files-io/" data-lesson="java-files-io" data-minutes="14"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Files and I/O</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/concurrency/" data-lesson="java-concurrency" data-minutes="22"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Threads, Executors and CompletableFuture</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/build-tools/" data-lesson="java-build-tools" data-minutes="17"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">Build Tools: Maven and Gradle</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/testing-junit/" data-lesson="java-testing-junit" data-minutes="14"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">Testing with JUnit</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/java/hello-world/">Java</a> · Lesson 16 of 20</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/java/modern-features/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="java-date-time" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/java/files-io/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Dates and Times with java.time</h1>
+          <p class="learn-summary">Work with dates and times in Java using java.time: LocalDate, LocalDateTime, Instant, ZonedDateTime, Duration, Period, formatting and parsing.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/java/modern-features/">Lesson 15: Modern Java: var, switch expressions, text blocks, pattern matching, sealed classes</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Pick the right java.time type for each situation</li><li>Do date arithmetic with plus, minus, Period and Duration</li><li>Convert between time zones with ZonedDateTime and Instant</li><li>Format and parse dates with DateTimeFormatter</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 20 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 20</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Dates look simple until you meet leap years, months of different lengths, daylight saving time and users in different time zones. Java's original <code>java.util.Date</code> and <code>Calendar</code> classes were mutable, confusing (months started at 0) and not thread-safe. Since Java 8 the <code>java.time</code> package has replaced them with clear, <strong>immutable</strong> types that each model one idea.</p>
+      <p>To keep the output on this page repeatable, the examples use fixed dates instead of "now". In real code you would call <code>LocalDate.now()</code> or <code>Instant.now()</code>.</p>
+      <h2>Choosing the right type</h2>
+      <ul><li><code>LocalDate</code>: a calendar date with no time or zone, like a birthday (2026-09-23).</li><li><code>LocalTime</code>: a wall-clock time, like opening hours (09:30).</li><li><code>LocalDateTime</code>: date plus time but no zone; fine for "the meeting is at 10:00" in one known place.</li><li><code>ZonedDateTime</code>: date, time and a zone like <code>Europe/London</code>; needed for scheduling across regions.</li><li><code>Instant</code>: an exact point on the global timeline in UTC; use it for timestamps, logs and databases.</li><li><code>Duration</code> (hours, minutes, seconds) and <code>Period</code> (years, months, days) measure amounts of time.</li></ul>
+      <h2>LocalDate and LocalTime</h2>
+      <p>Create dates with factory methods such as <code>of</code> and <code>parse</code> (ISO format, <code>yyyy-MM-dd</code>). Months are 1 to 12, and there is a <code>Month</code> enum if you prefer names. Getter methods read each part, and the class knows about leap years and weekdays for you.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.time.*;
+
+public class Main {
+    public static void main(String[] args) {
+        LocalDate launch = LocalDate.of(2026, 9, 23);
+        LocalDate parsed = LocalDate.parse(&quot;2028-02-29&quot;);
+        LocalTime opens = LocalTime.of(9, 30);
+
+        System.out.println(launch + &quot; is a &quot; + launch.getDayOfWeek());
+        System.out.println(launch.getMonth() + &quot; has &quot; + launch.lengthOfMonth() + &quot; days&quot;);
+        System.out.println(parsed.isLeapYear() + &quot; &quot; + parsed.getDayOfYear());
+        System.out.println(opens.plusHours(8).plusMinutes(15));
+        System.out.println(launch.isBefore(parsed));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>2026-09-23 is a WEDNESDAY
+SEPTEMBER has 30 days
+true 60
+17:45
+true</pre></div>
+      <h2>Date arithmetic is immutable</h2>
+      <p>Methods like <code>plusDays</code>, <code>minusMonths</code> and <code>withDayOfMonth</code> return a <em>new</em> object; the original never changes. Month arithmetic is clever: adding one month to January 31 gives the last valid day of February rather than overflowing. <code>TemporalAdjusters</code> answers questions like "the next Monday" or "the last day of this month".</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.time.*;
+import java.time.temporal.TemporalAdjusters;
+
+public class Main {
+    public static void main(String[] args) {
+        LocalDate invoice = LocalDate.of(2026, 1, 31);
+        LocalDate due = invoice.plusMonths(1);
+        System.out.println(&quot;invoice &quot; + invoice + &quot;, due &quot; + due);
+
+        invoice.plusDays(10);                     // result thrown away!
+        System.out.println(&quot;still &quot; + invoice);
+
+        LocalDate d = LocalDate.of(2026, 9, 23);
+        System.out.println(d.with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
+        System.out.println(d.with(TemporalAdjusters.lastDayOfMonth()));
+        System.out.println(d.withDayOfMonth(1).minusYears(1));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>invoice 2026-01-31, due 2026-02-28
+still 2026-01-31
+2026-09-28
+2026-09-30
+2025-09-01</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: ignoring the return value</p><p class="learn-callout-body"><code>date.plusDays(10);</code> on its own line does nothing useful because <code>java.time</code> objects are immutable. Always assign the result: <code>date = date.plusDays(10);</code>. The upside is that dates are safe to share between threads and to use as map keys.</p></aside>
+      <h2>Period, Duration and ChronoUnit</h2>
+      <p>Use <code>Period</code> for calendar amounts ("2 years, 3 months") and <code>Duration</code> for exact time amounts ("90 minutes"). <code>ChronoUnit.X.between(a, b)</code> gives a single total, such as the number of days until a deadline.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.time.*;
+import java.time.temporal.ChronoUnit;
+
+public class Main {
+    public static void main(String[] args) {
+        LocalDate born = LocalDate.of(1990, 12, 10);
+        LocalDate today = LocalDate.of(2026, 9, 23);
+        Period age = Period.between(born, today);
+        System.out.println(age.getYears() + &quot; years, &quot; + age.getMonths() + &quot; months, &quot; + age.getDays() + &quot; days&quot;);
+        System.out.println(ChronoUnit.DAYS.between(today, LocalDate.of(2026, 12, 25)) + &quot; days to go&quot;);
+
+        LocalDateTime start = LocalDateTime.of(2026, 9, 23, 9, 15);
+        LocalDateTime end = LocalDateTime.of(2026, 9, 23, 17, 45);
+        Duration worked = Duration.between(start, end);
+        System.out.println(worked + &quot; = &quot; + worked.toHours() + &quot;h &quot; + worked.toMinutesPart() + &quot;m&quot;);
+        System.out.println(Duration.ofMinutes(150).plusSeconds(30));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>35 years, 9 months, 13 days
+93 days to go
+PT8H30M = 8h 30m
+PT2H30M30S</pre></div>
+      <p><code>PT8H30M</code> is ISO-8601 notation for a duration: P for period, T for time, then hours and minutes. <code>Period</code> prints similarly, for example <code>P35Y9M13D</code>.</p>
+      <h2>Time zones: ZonedDateTime and Instant</h2>
+      <p>An <code>Instant</code> is the same moment everywhere. A <code>ZonedDateTime</code> is that moment viewed from a particular zone. Store and compare <code>Instant</code>s; convert to a zone only when showing times to a person. Always use region IDs like <code>America/New_York</code> rather than fixed offsets, because the region's rules include daylight saving changes.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.time.*;
+
+public class Main {
+    public static void main(String[] args) {
+        ZonedDateTime meeting = ZonedDateTime.of(
+            LocalDateTime.of(2026, 9, 23, 10, 0), ZoneId.of(&quot;America/New_York&quot;));
+
+        System.out.println(meeting);
+        System.out.println(&quot;London:  &quot; + meeting.withZoneSameInstant(ZoneId.of(&quot;Europe/London&quot;)).toLocalTime());
+        System.out.println(&quot;Kolkata: &quot; + meeting.withZoneSameInstant(ZoneId.of(&quot;Asia/Kolkata&quot;)).toLocalTime());
+
+        Instant stamp = meeting.toInstant();
+        System.out.println(stamp);
+        System.out.println(stamp.toEpochMilli());
+
+        // daylight saving: clocks in New York jump forward on 2026-03-08
+        ZonedDateTime before = ZonedDateTime.of(LocalDateTime.of(2026, 3, 8, 1, 30), ZoneId.of(&quot;America/New_York&quot;));
+        System.out.println(before.plusHours(1).toLocalTime());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>2026-09-23T10:00-04:00[America/New_York]
+London:  15:00
+Kolkata: 19:30
+2026-09-23T14:00:00Z
+1790172000000
+03:30</pre></div>
+      <p>The last line shows why zones matter: one hour after 01:30 on the day clocks spring forward is 03:30, not 02:30. <code>LocalDateTime</code> would have got this wrong.</p>
+      <h2>Formatting and parsing</h2>
+      <p><code>toString()</code> always gives ISO-8601, which is ideal for APIs and storage. For people, use a <code>DateTimeFormatter</code>, either a pattern (<code>dd MMM yyyy</code>) or a localised style. The same formatter parses text back into a date. Formatters are immutable and thread-safe, so store them in constants.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.time.*;
+import java.time.format.*;
+import java.util.Locale;
+
+public class Main {
+    static final DateTimeFormatter DISPLAY = DateTimeFormatter.ofPattern(&quot;EEE, dd MMM yyyy HH:mm&quot;, Locale.ENGLISH);
+    static final DateTimeFormatter INPUT = DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;);
+
+    public static void main(String[] args) {
+        LocalDateTime order = LocalDateTime.of(2026, 9, 23, 14, 5);
+        System.out.println(order.format(DISPLAY));
+        System.out.println(order.format(DateTimeFormatter.ISO_LOCAL_DATE));
+
+        LocalDate fromUser = LocalDate.parse(&quot;05/11/2026&quot;, INPUT);
+        System.out.println(fromUser + &quot; &quot; + fromUser.getMonth());
+
+        try {
+            LocalDate.parse(&quot;31/02/2026&quot;, INPUT.withResolverStyle(ResolverStyle.STRICT));
+        } catch (DateTimeParseException e) {
+            System.out.println(&quot;invalid date: &quot; + e.getParsedString());
+        }
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Wed, 23 Sep 2026 14:05
+2026-09-23
+2026-11-05 NOVEMBER
+invalid date: 31/02/2026</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Pattern letters are case-sensitive</p><p class="learn-callout-body"><code>MM</code> is month but <code>mm</code> is minutes; <code>HH</code> is 24-hour but <code>hh</code> is 12-hour. Also note that with <code>ResolverStyle.STRICT</code>, year must be written <code>uuuu</code> rather than <code>yyyy</code>; otherwise even valid dates fail. The default (smart) style quietly adjusts 31/02 to 28/02.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Use <code>java.time</code>, never <code>Date</code> or <code>Calendar</code>, in new code.</li><li><code>LocalDate</code>/<code>LocalDateTime</code> have no zone; <code>Instant</code> is a UTC timestamp; <code>ZonedDateTime</code> adds zone rules.</li><li>All types are immutable: always use the returned value from <code>plus</code>/<code>minus</code>/<code>with</code>.</li><li><code>Period</code> measures calendar amounts, <code>Duration</code> exact time, <code>ChronoUnit.between</code> single totals.</li><li>Format for humans with <code>DateTimeFormatter</code>, and store or exchange ISO-8601 strings or Instants.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">A subscription starts on <code>2026-01-31</code> and renews monthly. Print the next four renewal dates (use <code>plusMonths</code> on the <em>start</em> date each time, not on the previous renewal), each formatted as <code>dd MMM yyyy</code>, and then print how many days there are between the start and the fourth renewal.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Locale;
+
+public class Main {
+    public static void main(String[] args) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern(&quot;dd MMM yyyy&quot;, Locale.ENGLISH);
+        LocalDate start = LocalDate.of(2026, 1, 31);
+        LocalDate last = start;
+        for (int i = 1; i &lt;= 4; i++) {
+            last = start.plusMonths(i);
+            System.out.println(&quot;Renewal &quot; + i + &quot;: &quot; + last.format(fmt));
+        }
+        System.out.println(ChronoUnit.DAYS.between(start, last) + &quot; days&quot;);
+    }
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="java-date-time" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/java/files-io/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 17</span><strong>Files and I/O</strong><small>Read and write files with java.nio and handle resources with try-with-resources.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/java/modern-features/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/java/files-io/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

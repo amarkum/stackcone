@@ -100,19 +100,24 @@
         pyodide.setStdout({ batched: function (t) { if (capture) stdout += t + '\n'; } });
         pyodide.setStderr({ batched: function (t) { if (capture) stderr += t + '\n'; } });
 
+        // Pyodide already runs an event loop, so asyncio.run() raises there.
+        // It supports top-level await instead: rewrite unindented asyncio.run(x) to await (x).
+        function topLevelAwait(src) {
+          return src.replace(/^(\S.*?)?\basyncio\.run\(/gm, function (m, pre) { return (pre || '') + 'await ('; });
+        }
         var ns = pyodide.globals.get('dict')();
         var seed = isPandasPage() ? 'import pandas as pd\nimport numpy as np' : '';
         var chain = Promise.resolve();
         if (seed) chain = chain.then(function () { return pyodide.runPythonAsync(seed, { globals: ns }); });
         prelude.forEach(function (snippet) {
           chain = chain.then(function () {
-            return pyodide.runPythonAsync(snippet, { globals: ns }).catch(function () {});
+            return pyodide.runPythonAsync(topLevelAwait(snippet), { globals: ns }).catch(function () {});
           });
         });
         return chain
           .then(function () {
             capture = true;
-            return pyodide.runPythonAsync(code, { globals: ns });
+            return pyodide.runPythonAsync(topLevelAwait(code), { globals: ns });
           })
           .then(
             function () {

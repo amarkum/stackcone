@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/assets/theme.js?v=1"></script>
   <meta name="robots" content="index, follow">
-  <title>Creating Tables and Design | SQL | stackcone Learn</title>
-  <meta name="description" content="Data types, constraints, foreign keys and normalization.">
+  <title>Creating Tables and Design | SQL Tutorial | stackcone</title>
+  <meta name="description" content="Data types, constraints, foreign keys and normalization. Free SQL lesson 14 of 17 with runnable examples and exercises.">
   <link rel="canonical" href="https://stackcone.com/learn/programming/sql/schema-design/">
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +14,26 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css?v=27">
   <link rel="stylesheet" href="/blog/blog.css?v=11">
-  <link rel="stylesheet" href="/learn/learn.css?v=36">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
   <link rel="stylesheet" href="/assets/auth.css?v=50">
-  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
   <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/sql/schema-design/">
+  <meta property="og:title" content="Creating Tables and Design | SQL Tutorial | stackcone">
+  <meta property="og:description" content="Data types, constraints, foreign keys and normalization. Free SQL lesson 14 of 17 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Creating Tables and Design | SQL Tutorial | stackcone">
+  <meta name="twitter:description" content="Data types, constraints, foreign keys and normalization. Free SQL lesson 14 of 17 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/sql/modifying-data/">
+  <link rel="next" href="https://stackcone.com/learn/programming/sql/views/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "SQL", "item": "https://stackcone.com/learn/programming/sql/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Creating Tables and Design", "item": "https://stackcone.com/learn/programming/sql/schema-design/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Creating Tables and Design", "headline": "Creating Tables and Design", "description": "Data types, constraints, foreign keys and normalization. Free SQL lesson 14 of 17 with runnable examples and exercises.", "url": "https://stackcone.com/learn/programming/sql/schema-design/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT15M", "isAccessibleForFree": true, "teaches": ["Create tables with constraints", "Model one-to-many relations", "Normalize a design"], "position": 14, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "SQL Course", "url": "https://stackcone.com/learn/programming/sql/introduction/", "description": "Query, filter, join and aggregate data in relational databases.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
 </head>
 <body class="learn-page">
   <header class="header">
@@ -34,37 +49,48 @@
 
   <main class="learn-main">
     <div class="learn-main-inner">
-      <p class="learn-breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/sql/introduction/">SQL</a> / Creating Tables and Design</p>
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/sql/introduction/">SQL</a> / <span aria-current="page">Creating Tables and Design</span></nav>
       <div class="learn-layout">
         <aside class="learn-sidebar" aria-label="Course lessons" data-course="sql">
           <div class="learn-sidebar-head">
             <div class="learn-sidebar-head-text">
               <p class="learn-sidebar-track"><a href="/learn/programming/sql/introduction/">SQL</a></p>
-              <p class="learn-sidebar-tagline">Learn SQL from scratch</p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn SQL from scratch</p>
             </div>
             <div class="learn-ring" aria-hidden="true">
               <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
               <span data-progress-pct>0%</span>
             </div>
           </div>
-          <p class="learn-sidebar-progress" data-progress-count>0 of 7 lessons completed</p>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
           <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
-          <nav class="learn-sidebar-lessons">
+          <nav class="learn-sidebar-lessons" aria-label="SQL lessons">
           <a class="learn-sidebar-link" href="/learn/programming/sql/introduction/" data-lesson="sql-introduction" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Databases and SQL Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/sql/select-where/" data-lesson="sql-select-where" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">SELECT and WHERE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/sql/sorting-aggregates/" data-lesson="sql-sorting-aggregates" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Sorting and Aggregates</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="learn-sidebar-link" href="/learn/programming/sql/joins/" data-lesson="sql-joins" data-minutes="17"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Joins</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/sql/modifying-data/" data-lesson="sql-modifying-data" data-minutes="12"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">INSERT, UPDATE, DELETE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link is-active" href="/learn/programming/sql/schema-design/" aria-current="page" data-lesson="sql-schema-design" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Creating Tables and Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="learn-sidebar-link" href="/learn/programming/sql/indexes-performance/" data-lesson="sql-indexes-performance" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Indexes and Query Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/set-operations/" data-lesson="sql-set-operations" data-minutes="12"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">UNION, INTERSECT and EXCEPT</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/subqueries/" data-lesson="sql-subqueries" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Subqueries and EXISTS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/case-conditionals/" data-lesson="sql-case-conditionals" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">CASE and Conditional Logic</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/string-functions/" data-lesson="sql-string-functions" data-minutes="13"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">String Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/date-time/" data-lesson="sql-date-time" data-minutes="14"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates and Times</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/numeric-functions/" data-lesson="sql-numeric-functions" data-minutes="12"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Numbers, Rounding and Ratios</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/cte/" data-lesson="sql-cte" data-minutes="15"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">CTEs and Recursive Queries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/window-functions/" data-lesson="sql-window-functions" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Window Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/modifying-data/" data-lesson="sql-modifying-data" data-minutes="12"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">INSERT, UPDATE, DELETE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/sql/schema-design/" aria-current="page" data-lesson="sql-schema-design" data-minutes="15"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Creating Tables and Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/views/" data-lesson="sql-views" data-minutes="10"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Views</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/indexes-performance/" data-lesson="sql-indexes-performance" data-minutes="14"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Indexes and Query Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/interview-patterns/" data-lesson="sql-interview-patterns" data-minutes="20"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">SQL Interview Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           </nav>
         </aside>
         <article class="blog-article learn-lesson">
           <div class="learn-lesson-top">
-            <p class="learn-eyebrow"><a href="/learn/programming/sql/introduction/">SQL</a> · Lesson 6 of 7</p>
+            <p class="learn-eyebrow"><a href="/learn/programming/sql/introduction/">SQL</a> · Lesson 14 of 17</p>
             <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
-              <a class="learn-top-btn" href="/learn/programming/sql/modifying-data/"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Previous</a>
-              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/sql/indexes-performance/">Next<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+              <a class="learn-top-btn" href="/learn/programming/sql/modifying-data/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="sql-schema-design" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/sql/views/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
             </nav>
           </div>
           <h1>Creating Tables and Design</h1>
@@ -74,7 +100,7 @@
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 min read</li>
             <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
           </ul>
-          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/sql/modifying-data/">Lesson 5: INSERT, UPDATE, DELETE</a></p>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/sql/modifying-data/">Lesson 13: INSERT, UPDATE, DELETE</a></p>
           <div class="learn-objectives">
             <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
             <ul><li>Create tables with constraints</li><li>Model one-to-many relations</li><li>Normalize a design</li></ul>
@@ -82,15 +108,16 @@
           <section class="learn-progress" aria-label="Your progress">
             <div class="learn-progress-head">
               <h2>Your Progress</h2>
-              <p><span data-progress-short>0 of 7 lessons</span> <strong data-progress-pct>0%</strong></p>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
             </div>
             <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
             <ul class="learn-progress-stats">
-              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 7</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
               <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
-              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 2 hours</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
             </ul>
             <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
           </section>
       <p>Before you can query data you have to shape it. <strong>Schema design</strong> decides which tables exist, what columns they have and how they connect. A good schema prevents whole categories of bugs, because the database itself refuses bad data.</p>
       <h2>Design before you build</h2>
@@ -163,27 +190,26 @@ CREATE TABLE enrollments (
 );</code></pre></div>
       <h2>Key takeaways</h2>
       <ul><li>Each kind of thing gets its own table; relationships use foreign keys.</li><li>Constraints (<code>NOT NULL</code>, <code>UNIQUE</code>, <code>REFERENCES</code>, <code>CHECK</code>) reject bad data automatically.</li><li>Many-to-many relationships need a bridge table.</li><li>Store each fact once; that is the heart of normalization.</li></ul>
-      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Design tables for a blog: authors, posts and tags, where a post has one author and many tags. Write the CREATE TABLE statements.</p></aside>
-      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="CREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT NOT NULL);
-CREATE TABLE posts (
-  id INTEGER PRIMARY KEY,
-  author_id INTEGER NOT NULL REFERENCES authors(id),
-  title TEXT NOT NULL,
-  body TEXT
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Create a <code>reviews</code> table where each row points at a customer, carries a rating between 1 and 5, and cannot exist without a body. Then insert one valid review and read it back.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="CREATE TABLE reviews (
+  id          INTEGER PRIMARY KEY,
+  customer_id INTEGER NOT NULL REFERENCES customers(id),
+  rating      INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  body        TEXT NOT NULL
 );
-CREATE TABLE tags (id INTEGER PRIMARY KEY, name TEXT UNIQUE NOT NULL);
-CREATE TABLE post_tags (
-  post_id INTEGER REFERENCES posts(id),
-  tag_id  INTEGER REFERENCES tags(id),
-  PRIMARY KEY (post_id, tag_id)
-);"><pre><code>-- Write your solution here
+
+INSERT INTO reviews (customer_id, rating, body) VALUES (1, 5, &#x27;Fast delivery&#x27;);
+SELECT * FROM reviews;"><pre><code>-- Write your solution here
 </code></pre></div>
-          <a class="learn-upnext" href="/learn/programming/sql/indexes-performance/"><span class="learn-upnext-label">Up next · Lesson 7</span><strong>Indexes and Query Performance</strong><small>Why queries are slow, how indexes help and how to read EXPLAIN.</small></a>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="sql-schema-design" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/sql/views/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 15</span><strong>Views</strong><small>Save a query under a name so the complicated part is written once.</small></a>
           <nav class="learn-lesson-nav" aria-label="Lesson navigation">
             <a class="learn-nav-btn" href="/learn/programming/sql/modifying-data/">Previous</a>
             <div class="learn-lesson-nav-end">
-            <button type="button" class="learn-complete" data-mark-complete="sql-schema-design" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
-            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/sql/indexes-performance/">Next lesson</a>
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/sql/views/" data-complete-on-click>Next lesson</a>
             </div>
           </nav>
           <aside class="blog-cta">
@@ -209,14 +235,14 @@ CREATE TABLE post_tags (
     </div>
   </footer>
   <script src="/site-nav.js?v=21" defer></script>
-  <script src="/assets/learn-progress.js?v=2" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
   <script src="/assets/firebase-config.js" defer></script>
   <script type="module" src="/assets/learn-auth.js?v=5"></script>
-  <script src="/assets/pyodide-runner.js?v=3" defer></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
   <script src="/assets/js-runner.js" defer></script>
   <script src="/assets/java-runner.js?v=6" defer></script>
-  <script src="/assets/sql-runner.js?v=1" defer></script>
-  <script src="/assets/monaco-code.js?v=22" defer></script>
+  <script src="/assets/sql-runner.js?v=9" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
   <script src="/script.js?v=2" defer></script>
 </body>
 </html>

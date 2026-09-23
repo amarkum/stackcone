@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Divide and Conquer | Algorithms Tutorial | stackcone</title>
+  <meta name="description" content="Understand divide and conquer algorithms in Python: split, solve and combine, with counting inversions, quickselect, fast power and the Master Theorem.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/divide-conquer/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/divide-conquer/">
+  <meta property="og:title" content="Divide and Conquer | Algorithms Tutorial | stackcone">
+  <meta property="og:description" content="Understand divide and conquer algorithms in Python: split, solve and combine, with counting inversions, quickselect, fast power and the Master Theorem.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Divide and Conquer | Algorithms Tutorial | stackcone">
+  <meta name="twitter:description" content="Understand divide and conquer algorithms in Python: split, solve and combine, with counting inversions, quickselect, fast power and the Master Theorem.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/recursion/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/algorithms/greedy/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "Divide and Conquer", "item": "https://stackcone.com/learn/ds-algo/algorithms/divide-conquer/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Divide and Conquer", "headline": "Divide and Conquer", "description": "Understand divide and conquer algorithms in Python: split, solve and combine, with counting inversions, quickselect, fast power and the Master Theorem.", "url": "https://stackcone.com/learn/ds-algo/algorithms/divide-conquer/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Describe the split, solve, combine structure", "Analyse running time with recurrences and the Master Theorem", "Implement inversion counting, quickselect and fast power", "Tell divide and conquer apart from dynamic programming"], "position": 6, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">Divide and Conquer</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/two-pointers/" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/divide-conquer/" aria-current="page" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dp-patterns/" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/shortest-paths/" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/string-matching/" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/interview-strategy/" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 6 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/recursion/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-divide-conquer" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/algorithms/greedy/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Divide and Conquer</h1>
+          <p class="learn-summary">Understand divide and conquer algorithms in Python: split, solve and combine, with counting inversions, quickselect, fast power and the Master Theorem.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/recursion/">Lesson 5: Recursion</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Describe the split, solve, combine structure</li><li>Analyse running time with recurrences and the Master Theorem</li><li>Implement inversion counting, quickselect and fast power</li><li>Tell divide and conquer apart from dynamic programming</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Divide and conquer is a way of designing algorithms, not a single algorithm. You <strong>divide</strong> a problem into smaller pieces of the same kind, <strong>conquer</strong> each piece recursively, and <strong>combine</strong> the answers. You have already met two examples: binary search (divide in half, keep one side) and merge sort (divide in half, sort both, merge). This lesson makes the pattern explicit and shows how to predict its running time.</p>
+      <p>The reason it is so effective is that halving is powerful. A problem of size one million only needs about 20 levels of halving to reach size one. If each level does linear work in total, the whole thing is O(n log n), which is dramatically faster than the O(n<sup>2</sup>) brute force for most problems.</p>
+      <h2>The three steps</h2>
+      <ul><li><strong>Base case:</strong> a problem small enough to answer directly (often size 0 or 1).</li><li><strong>Divide:</strong> split into subproblems, usually two halves.</li><li><strong>Combine:</strong> merge the sub-answers into the answer for the whole. This step is where the cleverness lives.</li></ul>
+      <p>Here is the simplest possible example: finding the maximum of a list by splitting it. It is not faster than a loop, but it shows the shape clearly.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def max_dc(nums, lo, hi):
+    if lo == hi:                     # base case: one element
+        return nums[lo]
+    mid = (lo + hi) // 2
+    left = max_dc(nums, lo, mid)     # conquer left half
+    right = max_dc(nums, mid + 1, hi)
+    return max(left, right)          # combine
+
+orders = [14, 3, 27, 8, 19, 22, 5]
+print(max_dc(orders, 0, len(orders) - 1))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>27</pre></div>
+      <h2>Measuring cost with recurrences</h2>
+      <p>Divide and conquer running times are written as a <em>recurrence</em>: the cost of size n in terms of the cost of smaller sizes. For merge sort, sorting n items means two sorts of n/2 plus O(n) merging: <code>T(n) = 2T(n/2) + O(n)</code>. The <strong>Master Theorem</strong> gives the answer for recurrences of the form <code>T(n) = a T(n/b) + O(n<sup>d</sup>)</code>, where a is the number of subproblems, b the shrink factor and d the exponent of the combine work:</p>
+      <ul><li>If <code>d &gt; log<sub>b</sub> a</code>: the combine step dominates, <code>T(n) = O(n<sup>d</sup>)</code>.</li><li>If <code>d = log<sub>b</sub> a</code>: every level costs the same, <code>T(n) = O(n<sup>d</sup> log n)</code>. Merge sort: a=2, b=2, d=1, so O(n log n).</li><li>If <code>d &lt; log<sub>b</sub> a</code>: the leaves dominate, <code>T(n) = O(n<sup>log<sub>b</sub> a</sup>)</code>.</li></ul>
+      <p>Binary search is a=1, b=2, d=0, which falls in the middle case: O(log n). You do not need to memorise proofs; knowing these three cases lets you estimate almost any recursive split in an interview.</p>
+      <h2>Counting inversions: a smarter combine step</h2>
+      <p>An <em>inversion</em> is a pair i &lt; j with <code>a[i] &gt; a[j]</code>. It measures how unsorted a list is, and recommendation systems use it to compare two people's rankings. Checking every pair is O(n<sup>2</sup>). Instead, piggyback on merge sort: while merging two sorted halves, whenever you take an element from the right half, it is smaller than every element still waiting in the left half, so all of those form inversions at once.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def sort_and_count(a):
+    if len(a) &lt;= 1:
+        return a, 0
+    mid = len(a) // 2
+    left, inv_l = sort_and_count(a[:mid])
+    right, inv_r = sort_and_count(a[mid:])
+    merged, inv = [], inv_l + inv_r
+    i = j = 0
+    while i &lt; len(left) and j &lt; len(right):
+        if left[i] &lt;= right[j]:
+            merged.append(left[i]); i += 1
+        else:
+            merged.append(right[j]); j += 1
+            inv += len(left) - i         # all remaining left items are bigger
+    merged += left[i:] + right[j:]
+    return merged, inv
+
+ranking = [3, 1, 5, 2, 4]
+print(sort_and_count(ranking))
+print(sort_and_count(list(range(10, 0, -1)))[1])</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>([1, 2, 3, 4, 5], 4)
+45</pre></div>
+      <p>A fully reversed list of 10 items has 10*9/2 = 45 inversions, which matches. Same recurrence as merge sort: <strong>time O(n log n), space O(n)</strong> for the merged lists.</p>
+      <h2>Quickselect: the k-th smallest in average O(n)</h2>
+      <p>To find the median, you could sort (O(n log n)). Quickselect is quicksort's lazy cousin: partition around a pivot, then recurse into <em>only</em> the side that contains position k. On average the sizes go n, n/2, n/4, ..., which sums to about 2n.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import random
+
+def quickselect(nums, k):
+    # k is 0-based: k=0 gives the smallest
+    pivot = random.choice(nums)
+    lows = [x for x in nums if x &lt; pivot]
+    pivots = [x for x in nums if x == pivot]
+    highs = [x for x in nums if x &gt; pivot]
+    if k &lt; len(lows):
+        return quickselect(lows, k)
+    if k &lt; len(lows) + len(pivots):
+        return pivot
+    return quickselect(highs, k - len(lows) - len(pivots))
+
+latencies = [120, 45, 300, 88, 45, 210, 97, 150, 60]
+print(&quot;median:&quot;, quickselect(latencies, len(latencies) // 2))
+print(&quot;3rd smallest:&quot;, quickselect(latencies, 2))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>median: 97
+3rd smallest: 60</pre></div>
+      <p><strong>Average time O(n), worst case O(n<sup>2</sup>)</strong> if pivots are always terrible; random pivots make that astronomically unlikely. This version uses O(n) extra space for clarity; an in-place partition brings it to O(1) plus recursion. In real Python code, <code>heapq.nsmallest</code> or <code>statistics.median</code> are the practical choices.</p>
+      <h2>Fast exponentiation</h2>
+      <p>Computing x<sup>n</sup> by multiplying n times is O(n). But x<sup>n</sup> = (x<sup>n/2</sup>)<sup>2</sup>, so you only need to solve one half-size problem and square it. That is a=1, b=2, d=0: O(log n). This is how cryptography computes huge powers modulo a prime.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def power(x, n, mod):
+    if n == 0:
+        return 1
+    half = power(x, n // 2, mod)
+    result = half * half % mod
+    if n % 2 == 1:
+        result = result * x % mod
+    return result
+
+print(power(3, 13, 1000))
+print(power(2, 10**18, 1_000_000_007) == pow(2, 10**18, 1_000_000_007))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>323
+True</pre></div>
+      <p>Python's built-in three-argument <code>pow(x, n, mod)</code> does exactly this, and you should use it in real code.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Divide and conquer vs dynamic programming</p><p class="learn-callout-body">Both split problems recursively. The difference is overlap: merge sort's halves never share work, so plain recursion is efficient. When subproblems <em>repeat</em> (like Fibonacci), recursion explodes and you need memoization, which is <a href="/learn/ds-algo/algorithms/dynamic-programming/">dynamic programming</a>. If you notice the same arguments being computed twice, switch tools.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Divide and conquer: base case, split into same-shaped subproblems, combine the results.</li><li>Running time follows from a recurrence; the Master Theorem compares combine work with the number of subproblems.</li><li>Counting inversions adds one line to merge sort's merge step and stays O(n log n).</li><li>Quickselect recurses into one side only and averages O(n).</li><li>Fast power halves the exponent each call, giving O(log n) multiplications.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>max_subarray(nums)</code> using divide and conquer: the best sub-array is entirely in the left half, entirely in the right half, or crosses the middle. Compute the crossing case by extending left and right from the middle. Test on <code>[-2, 1, -3, 4, -1, 2, 1, -5, 4]</code> (answer 6). What is the time complexity?</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def max_subarray(nums, lo=0, hi=None):
+    if hi is None:
+        hi = len(nums) - 1
+    if lo == hi:
+        return nums[lo]
+    mid = (lo + hi) // 2
+    # best sum ending at mid, going left
+    best_left, s = float(&quot;-inf&quot;), 0
+    for i in range(mid, lo - 1, -1):
+        s += nums[i]
+        best_left = max(best_left, s)
+    # best sum starting at mid + 1, going right
+    best_right, s = float(&quot;-inf&quot;), 0
+    for i in range(mid + 1, hi + 1):
+        s += nums[i]
+        best_right = max(best_right, s)
+    return max(max_subarray(nums, lo, mid),
+               max_subarray(nums, mid + 1, hi),
+               best_left + best_right)
+
+print(max_subarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
+# T(n) = 2T(n/2) + O(n)  -&gt;  O(n log n)"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-divide-conquer" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/greedy/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 7</span><strong>Greedy Algorithms</strong><small>Make the locally best choice at each step, and know when that is enough.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/recursion/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/greedy/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

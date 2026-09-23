@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Cherry-pick, Bisect and Reflog | Git &amp; Command Line | stackcone</title>
+  <meta name="description" content="Copy commits between branches with git cherry-pick, find the commit that introduced a bug with git bisect run, and recover lost work with git reflog.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/git/advanced-recovery/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/git/advanced-recovery/">
+  <meta property="og:title" content="Cherry-pick, Bisect and Reflog | Git &amp; Command Line | stackcone">
+  <meta property="og:description" content="Copy commits between branches with git cherry-pick, find the commit that introduced a bug with git bisect run, and recover lost work with git reflog.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Cherry-pick, Bisect and Reflog | Git &amp; Command Line | stackcone">
+  <meta name="twitter:description" content="Copy commits between branches with git cherry-pick, find the commit that introduced a bug with git bisect run, and recover lost work with git reflog.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/git/stash-tags/">
+  <link rel="next" href="https://stackcone.com/learn/programming/git/github-actions/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Git & Command Line", "item": "https://stackcone.com/learn/programming/git/command-line/"}, {"@type": "ListItem", "position": 4, "name": "Cherry-pick, Bisect and Reflog", "item": "https://stackcone.com/learn/programming/git/advanced-recovery/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Cherry-pick, Bisect and Reflog", "headline": "Cherry-pick, Bisect and Reflog", "description": "Copy commits between branches with git cherry-pick, find the commit that introduced a bug with git bisect run, and recover lost work with git reflog.", "url": "https://stackcone.com/learn/programming/git/advanced-recovery/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Backport a fix with cherry-pick", "Find a bad commit with bisect, manually and automatically", "Recover reset commits and deleted branches with reflog"], "position": 11, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Git & Command Line Course", "url": "https://stackcone.com/learn/programming/git/command-line/", "description": "Move around the terminal and track work with Git branches and pull requests.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> / <span aria-current="page">Cherry-pick, Bisect and Reflog</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="git">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Git &amp; Command Line from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Git &amp; Command Line lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/git/command-line/" data-lesson="git-command-line" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Command Line Essentials</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/shell-scripting/" data-lesson="git-shell-scripting" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Pipes, Redirection and Shell Scripts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/introduction/" data-lesson="git-introduction" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Git Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/config-ignore/" data-lesson="git-config-ignore" data-minutes="14"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Config, .gitignore and Aliases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/branching-merging/" data-lesson="git-branching-merging" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Branching and Merging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/merge-conflicts/" data-lesson="git-merge-conflicts" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Resolving Merge Conflicts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/rebase/" data-lesson="git-rebase" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rebase and a Clean History</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/remote-github/" data-lesson="git-remote-github" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Remotes, GitHub and Pull Requests</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/undo-workflows/" data-lesson="git-undo-workflows" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Undoing Things and Team Workflows</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/stash-tags/" data-lesson="git-stash-tags" data-minutes="14"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Stash, Tags and Releases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/git/advanced-recovery/" aria-current="page" data-lesson="git-advanced-recovery" data-minutes="16"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Cherry-pick, Bisect and Reflog</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/github-actions/" data-lesson="git-github-actions" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">CI with GitHub Actions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> · Lesson 11 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/git/stash-tags/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="git-advanced-recovery" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/git/github-actions/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Cherry-pick, Bisect and Reflog</h1>
+          <p class="learn-summary">Copy commits between branches with git cherry-pick, find the commit that introduced a bug with git bisect run, and recover lost work with git reflog.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/git/stash-tags/">Lesson 10: Stash, Tags and Releases</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Backport a fix with cherry-pick</li><li>Find a bad commit with bisect, manually and automatically</li><li>Recover reset commits and deleted branches with reflog</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>The undo lesson listed these three tools in one line each. They deserve more, because they solve some of the most stressful moments in a developer's week: "we need that fix on the release branch now", "something broke in the last 200 commits" and "I think I just deleted my work".</p>
+      <h2>cherry-pick: copy one commit</h2>
+      <p><code>git cherry-pick &lt;sha&gt;</code> takes the change introduced by one commit and applies it as a new commit on your current branch. The classic use is a <strong>backport</strong>: a bug fix landed on <code>main</code>, and you need it on a release branch without also shipping unfinished features.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git log --oneline main</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>f06d7f8 Fix login redirect bug
+9162aba Add dark mode
+3e85e13 Release 1.0</pre></div>
+      <p>We want the fix on <code>release-1.0</code>, but not dark mode:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git switch release-1.0
+git cherry-pick f06d7f8
+git log --oneline</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[release-1.0 8d40c99] Fix login redirect bug
+ Date: Wed Sep 23 10:09:20 2026 +0530
+ 1 file changed, 1 insertion(+)
+ create mode 100644 security.txt
+8d40c99 Fix login redirect bug
+3e85e13 Release 1.0</pre></div>
+      <p>Notice the new hash <code>8d40c99</code>: it is a copy, not the same commit. Useful options:</p>
+      <ul><li><code>git cherry-pick -x &lt;sha&gt;</code>: adds "(cherry picked from commit ...)" to the message, so reviewers can trace the backport.</li><li><code>git cherry-pick A..B</code>: a range (excluding A, including B).</li><li><code>git cherry-pick -n &lt;sha&gt;</code>: apply the changes without committing.</li><li>On conflict: fix, <code>git add</code>, then <code>git cherry-pick --continue</code>, or <code>--abort</code>.</li></ul>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not use cherry-pick as a workflow</p><p class="learn-callout-body">Picking lots of commits between long-lived branches creates duplicate commits and future conflicts. Cherry-pick is for the occasional backport or rescue; for everything else, merge or rebase.</p></aside>
+      <h2>bisect: binary search for a bug</h2>
+      <p>A test passed last week and fails today, with dozens of commits in between. Checking each one is slow. <code>git bisect</code> does a binary search: you mark one good and one bad commit, Git checks out the middle, you say good or bad, and it halves the range each time. 1,000 commits take about 10 steps.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git bisect start
+git bisect bad                 # current commit is broken
+git bisect good v1.0.0         # this old one worked
+# Git checks out a commit in the middle; test it, then:
+git bisect good                # or: git bisect bad
+# ...repeat until Git names the first bad commit...
+git bisect reset               # go back to where you started</code></pre></div>
+      <p>If you cannot test a particular commit (it doesn't build), <code>git bisect skip</code> moves on to a neighbour.</p>
+      <h2>bisect run: let a script decide</h2>
+      <p>If you can express "is this commit good?" as a command, Git will do the whole search for you. The rule: exit code 0 means good, 1 to 127 (except 125) means bad, and 125 means skip. That is why the shell scripting lesson matters. Here a calculator was accidentally changed from <code>a+b</code> to <code>a-b</code> somewhere in the last seven commits:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git bisect start HEAD HEAD~7          # bad, then good
+git bisect run grep -q &quot;a+b&quot; calc.txt
+git bisect reset</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Bisecting: 3 revisions left to test after this (roughly 2 steps)
+[f4632254cef448c04f6b3e615557f5e392a5c160] Add note 3
+running &#x27;grep&#x27; &#x27;-q&#x27; &#x27;a+b&#x27; &#x27;calc.txt&#x27;
+Bisecting: 1 revision left to test after this (roughly 1 step)
+[d50d1f0e6400cf35bbff303361559a75803dbcdf] Add note 4
+running &#x27;grep&#x27; &#x27;-q&#x27; &#x27;a+b&#x27; &#x27;calc.txt&#x27;
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[1ab164c949cff8dc9f55b1114dc68cec72b89781] Refactor calculator
+running &#x27;grep&#x27; &#x27;-q&#x27; &#x27;a+b&#x27; &#x27;calc.txt&#x27;
+1ab164c949cff8dc9f55b1114dc68cec72b89781 is the first bad commit
+commit 1ab164c949cff8dc9f55b1114dc68cec72b89781
+Author: Ada &lt;ada@stackcone.com&gt;
+Date:   Wed Sep 23 10:09:13 2026 +0530
+
+    Refactor calculator
+
+ calc.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+bisect found first bad commit
+Previous HEAD position was 1ab164c Refactor calculator
+Switched to branch &#x27;main&#x27;</pre></div>
+      <p>In a real project the check is usually your test suite: <code>git bisect run npm test -- search.test.js</code> or <code>git bisect run pytest tests/test_cart.py</code>. Small, focused commits make bisect point at a tiny diff, which is one more reason to keep history clean.</p>
+      <h2>reflog: Git&#x27;s flight recorder</h2>
+      <p>Every time <code>HEAD</code> moves (commit, checkout, reset, rebase, merge, cherry-pick), Git writes a line to the <strong>reflog</strong>. It is local to your machine and entries are kept for about 90 days by default. Commits that no branch points to are not deleted immediately, so the reflog can bring them back.</p>
+      <p>Here we "accidentally" throw away two commits with a hard reset:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git reset --hard HEAD~2
+git log --oneline
+git reflog -4</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>HEAD is now at 3e85e13 Release 1.0
+3e85e13 Release 1.0
+3e85e13 HEAD@{0}: reset: moving to HEAD~2
+f06d7f8 HEAD@{1}: checkout: moving from release-1.0 to main
+8d40c99 HEAD@{2}: cherry-pick: Fix login redirect bug
+3e85e13 HEAD@{3}: checkout: moving from main to release-1.0</pre></div>
+      <p><code>HEAD@{1}</code> is where we were just before the reset, <code>f06d7f8</code>. Jump back:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git reset --hard HEAD@{1}
+git log --oneline</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>HEAD is now at f06d7f8 Fix login redirect bug
+f06d7f8 Fix login redirect bug
+9162aba Add dark mode
+3e85e13 Release 1.0</pre></div>
+      <h2>Recovering a deleted branch or bad rebase</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git branch -D experiment            # oops
+git reflog | grep experiment        # find its last commit, e.g. 7c1d2e3
+git branch experiment 7c1d2e3       # recreate the branch there
+
+# undo a rebase you regret
+git reflog                          # find &#x27;rebase (start)&#x27; and the line before it
+git reset --hard HEAD@{5}           # the entry just before the rebase began
+
+# every branch has its own reflog too
+git reflog show feature
+git reset --hard ORIG_HEAD          # ORIG_HEAD = where HEAD was before the last reset/merge/rebase</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>What reflog cannot save</p><p class="learn-callout-body">Reflog only knows about <strong>commits</strong>. Changes you never committed or stashed and then discarded with <code>git restore</code> or <code>reset --hard</code> are gone. Commit early (even as "wip") when you are about to do something risky. The reflog is also local only: a fresh clone has an empty one.</p></aside>
+      <h2>Recap</h2>
+      <ul><li><code>cherry-pick</code> copies a commit (new hash) onto the current branch; add <code>-x</code> for backports.</li><li><code>bisect</code> binary-searches history; <code>bisect run</code> automates it with a script's exit code.</li><li>Exit 0 is good, 125 is skip, other non-zero codes up to 127 are bad.</li><li><code>reflog</code> records every HEAD move for about 90 days; reset or branch back to any entry.</li><li>Only committed or stashed work can be recovered.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Your test <code>tests/test_cart.py</code> fails on <code>main</code> but passed at tag <code>v2.3.0</code>. Write the commands to find the first bad commit automatically with pytest, then backport the eventual fix commit <code>a1b2c3d</code> to branch <code>release-2.3</code> with a traceable message.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="git switch main
+git bisect start main v2.3.0
+git bisect run pytest -q tests/test_cart.py
+# Git prints: &lt;sha&gt; is the first bad commit
+git bisect reset
+
+# after the fix a1b2c3d lands on main:
+git switch release-2.3
+git cherry-pick -x a1b2c3d
+git push"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="git-advanced-recovery" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/git/github-actions/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 12</span><strong>CI with GitHub Actions</strong><small>Set up continuous integration with GitHub Actions: write workflow YAML that runs tests on every push and pull request, with caching, matrices and secrets.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/git/stash-tags/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/git/github-actions/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

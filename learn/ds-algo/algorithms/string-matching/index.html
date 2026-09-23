@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>String Algorithms: KMP and Rabin-Karp Tutorial | stackcone Learn</title>
+  <meta name="description" content="Learn string matching algorithms in Python: naive search, the KMP prefix function and Rabin-Karp rolling hashes, with time complexity for each.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/string-matching/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/string-matching/">
+  <meta property="og:title" content="String Algorithms: KMP and Rabin-Karp Tutorial | stackcone Learn">
+  <meta property="og:description" content="Learn string matching algorithms in Python: naive search, the KMP prefix function and Rabin-Karp rolling hashes, with time complexity for each.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="String Algorithms: KMP and Rabin-Karp Tutorial | stackcone Learn">
+  <meta name="twitter:description" content="Learn string matching algorithms in Python: naive search, the KMP prefix function and Rabin-Karp rolling hashes, with time complexity for each.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/bit-manipulation/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/algorithms/interview-strategy/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "String Algorithms: KMP and Rabin-Karp", "item": "https://stackcone.com/learn/ds-algo/algorithms/string-matching/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "String Algorithms: KMP and Rabin-Karp", "headline": "String Algorithms: KMP and Rabin-Karp", "description": "Learn string matching algorithms in Python: naive search, the KMP prefix function and Rabin-Karp rolling hashes, with time complexity for each.", "url": "https://stackcone.com/learn/ds-algo/algorithms/string-matching/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT20M", "isAccessibleForFree": true, "teaches": ["Explain why naive matching can be O(n * m)", "Build the KMP prefix (failure) table and search in O(n + m)", "Implement Rabin-Karp with a rolling hash", "Know when to just use the built-in find"], "position": 16, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">String Algorithms: KMP and Rabin-Karp</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/two-pointers/" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/binary-search-patterns/" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/divide-conquer/" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dp-patterns/" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/shortest-paths/" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/string-matching/" aria-current="page" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/interview-strategy/" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 16 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/bit-manipulation/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-string-matching" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/algorithms/interview-strategy/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>String Algorithms: KMP and Rabin-Karp</h1>
+          <p class="learn-summary">Learn string matching algorithms in Python: naive search, the KMP prefix function and Rabin-Karp rolling hashes, with time complexity for each.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/bit-manipulation/">Lesson 15: Bit Manipulation</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain why naive matching can be O(n * m)</li><li>Build the KMP prefix (failure) table and search in O(n + m)</li><li>Implement Rabin-Karp with a rolling hash</li><li>Know when to just use the built-in find</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Finding a pattern inside a larger text is one of the oldest problems in computing: the search box in your editor, <code>grep</code>, DNA sequence analysis, plagiarism checks and intrusion detection all do it. The text has length n and the pattern length m. This lesson covers the naive method and two classic improvements, <strong>KMP</strong> (Knuth-Morris-Pratt) and <strong>Rabin-Karp</strong>, each with a different clever idea.</p>
+      <h2>The naive approach and its worst case</h2>
+      <p>Try every starting position and compare character by character. It is simple and usually fine, but on repetitive input it re-checks the same characters again and again.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def naive_find_all(text, pat):
+    n, m = len(text), len(pat)
+    hits, comparisons = [], 0
+    for i in range(n - m + 1):
+        j = 0
+        while j &lt; m:
+            comparisons += 1
+            if text[i + j] != pat[j]:
+                break
+            j += 1
+        if j == m:
+            hits.append(i)
+    return hits, comparisons
+
+print(naive_find_all(&quot;stackcone learns, stackcone ships&quot;, &quot;stackcone&quot;))
+print(naive_find_all(&quot;a&quot; * 1000, &quot;a&quot; * 99 + &quot;b&quot;)[1], &quot;comparisons&quot;)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>([0, 18], 42)
+90100 comparisons</pre></div>
+      <p>That second call does about 90,000 comparisons for a 1,000-character text. <strong>Worst case O(n * m) time, O(1) space.</strong> When the mismatch happens at the last character of the pattern, the naive method throws away everything it just learned and starts again at <code>i + 1</code>.</p>
+      <h2>KMP: never re-read the text</h2>
+      <p>KMP's insight: when a mismatch happens after matching <code>j</code> characters, you already know what those characters were (they equal the pattern's first j characters). If the pattern's matched part ends with something that is also a prefix of the pattern, you can keep that overlap and continue, without moving back in the text.</p>
+      <p>Precompute, for each position i in the pattern, the length of the longest proper prefix of <code>pat[:i+1]</code> that is also a suffix of it. This is the <strong>prefix function</strong> (also called the failure table or LPS array).</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def prefix_function(pat):
+    pi = [0] * len(pat)
+    k = 0                           # length of current matching prefix
+    for i in range(1, len(pat)):
+        while k &gt; 0 and pat[i] != pat[k]:
+            k = pi[k - 1]           # fall back to a shorter border
+        if pat[i] == pat[k]:
+            k += 1
+        pi[i] = k
+    return pi
+
+print(prefix_function(&quot;ababaca&quot;))
+print(prefix_function(&quot;aabaaab&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[0, 0, 1, 2, 3, 0, 1]
+[0, 1, 0, 1, 2, 2, 3]</pre></div>
+      <p>For <code>"ababaca"</code>, <code>pi[4] = 3</code> because <code>"ababa"</code> starts and ends with <code>"aba"</code>. Now the search uses the table exactly the same way: on mismatch, fall back to <code>pi[j - 1]</code> instead of restarting.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def prefix_function(pat):
+    pi = [0] * len(pat)
+    k = 0                           # length of current matching prefix
+    for i in range(1, len(pat)):
+        while k &gt; 0 and pat[i] != pat[k]:
+            k = pi[k - 1]           # fall back to a shorter border
+        if pat[i] == pat[k]:
+            k += 1
+        pi[i] = k
+    return pi
+
+# new code
+def kmp_find_all(text, pat):
+    pi = prefix_function(pat)
+    hits, j = [], 0
+    for i, ch in enumerate(text):
+        while j &gt; 0 and ch != pat[j]:
+            j = pi[j - 1]
+        if ch == pat[j]:
+            j += 1
+        if j == len(pat):
+            hits.append(i - len(pat) + 1)
+            j = pi[j - 1]           # allow overlapping matches
+    return hits
+
+print(kmp_find_all(&quot;abababab&quot;, &quot;abab&quot;))
+print(kmp_find_all(&quot;a&quot; * 1000, &quot;a&quot; * 99 + &quot;b&quot;))
+print(kmp_find_all(&quot;stackcone learns, stackcone ships&quot;, &quot;stackcone&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[0, 2, 4]
+[]
+[0, 18]</pre></div>
+      <p>The index <code>i</code> only moves forward, and <code>j</code> can only fall back as many times as it has increased, so the total work is linear. <strong>Time O(n + m), space O(m)</strong> for the table.</p>
+      <h2>Rabin-Karp: compare hashes, not strings</h2>
+      <p>Rabin-Karp takes a different route. Turn each length-m window of the text into a number (a hash) and compare it with the pattern's hash. Numbers compare in O(1). The trick is a <strong>rolling hash</strong>: when the window slides one step, update the hash in O(1) by removing the leaving character and adding the new one, like the <a href="/learn/ds-algo/algorithms/two-pointers/">sliding window</a> sum.</p>
+      <p>Treat the window as a number in base B (say 256) modulo a large prime M. To slide: subtract the leading character times B<sup>m-1</sup>, multiply by B, add the new character.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def rabin_karp(text, pat, base=256, mod=1_000_000_007):
+    n, m = len(text), len(pat)
+    if m &gt; n:
+        return []
+    high = pow(base, m - 1, mod)          # weight of the leading char
+    p_hash = t_hash = 0
+    for i in range(m):
+        p_hash = (p_hash * base + ord(pat[i])) % mod
+        t_hash = (t_hash * base + ord(text[i])) % mod
+    hits = []
+    for i in range(n - m + 1):
+        if t_hash == p_hash and text[i:i + m] == pat:   # verify on hash hit
+            hits.append(i)
+        if i + m &lt; n:
+            t_hash = (t_hash - ord(text[i]) * high) % mod
+            t_hash = (t_hash * base + ord(text[i + m])) % mod
+    return hits
+
+print(rabin_karp(&quot;abababab&quot;, &quot;abab&quot;))
+print(rabin_karp(&quot;the cat sat on the mat&quot;, &quot;at&quot;))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[0, 2, 4]
+[5, 9, 20]</pre></div>
+      <p>Two different strings can share a hash (a <em>collision</em>), which is why the code double-checks with a real comparison. With a large prime, collisions are rare, so the <strong>expected time is O(n + m)</strong>; the worst case, with an adversary forcing collisions, is O(n * m). <strong>Space O(1)</strong>.</p>
+      <p>Rabin-Karp's real strength is searching for <em>many</em> patterns of the same length at once (put all pattern hashes in a set) and finding repeated substrings. For example, finding any duplicated 10-letter sequence in a DNA string:</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def repeated_substrings(s, k):
+    seen, repeats = set(), set()
+    for i in range(len(s) - k + 1):
+        chunk = s[i:i + k]          # Python hashes the slice for us
+        if chunk in seen:
+            repeats.add(chunk)
+        seen.add(chunk)
+    return sorted(repeats)
+
+print(repeated_substrings(&quot;AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT&quot;, 10))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[&#x27;AAAAACCCCC&#x27;, &#x27;CCCCCAAAAA&#x27;]</pre></div>
+      <p>This version leans on Python's built-in hashing of each slice (O(k) per step); a true rolling hash makes each step O(1), which matters when k is large.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>In real code, use the built-ins</p><p class="learn-callout-body">Python's <code>str.find</code>, <code>in</code> and <code>str.count</code> are implemented in C with a highly tuned algorithm (a two-way/Crochemore-Perrin hybrid for long patterns since CPython 3.10) and will beat any pure-Python KMP. Write KMP or Rabin-Karp in interviews, for streaming data, or when you need the prefix table itself (for example, finding the shortest repeating unit of a string).</p></aside>
+      <h2>Comparison</h2>
+      <ul><li><strong>Naive:</strong> O(n * m) worst case, O(1) space, fine for short patterns and normal text.</li><li><strong>KMP:</strong> O(n + m) guaranteed, O(m) space, never moves backwards in the text (good for streams).</li><li><strong>Rabin-Karp:</strong> O(n + m) expected, O(1) space, great for multiple patterns and duplicate detection.</li><li><strong>Built-in <code>str.find</code>:</strong> the practical default in Python.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Naive matching restarts after every mismatch, costing O(n * m) on repetitive input.</li><li>The KMP prefix function records the longest border of each pattern prefix.</li><li>KMP falls back using that table and never re-reads the text: O(n + m).</li><li>Rabin-Karp compares rolling hashes in O(1) per step and verifies on a match.</li><li>Hash collisions are possible, so always confirm a hash hit with a real comparison.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Using <code>prefix_function</code>, write <code>shortest_period(s)</code> that returns the length of the shortest string which, repeated, produces <code>s</code> exactly. For example <code>"abcabcabc"</code> gives 3, <code>"aaaa"</code> gives 1 and <code>"abcab"</code> gives 5. Hint: look at <code>len(s) - pi[-1]</code>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def prefix_function(pat):
+    pi = [0] * len(pat)
+    k = 0
+    for i in range(1, len(pat)):
+        while k &gt; 0 and pat[i] != pat[k]:
+            k = pi[k - 1]
+        if pat[i] == pat[k]:
+            k += 1
+        pi[i] = k
+    return pi
+
+def shortest_period(s):
+    p = len(s) - prefix_function(s)[-1]
+    return p if len(s) % p == 0 else len(s)
+
+print([shortest_period(s) for s in [&quot;abcabcabc&quot;, &quot;aaaa&quot;, &quot;abcab&quot;, &quot;abab&quot;]])"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-string-matching" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/interview-strategy/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 17</span><strong>How to Solve Coding Interview Problems</strong><small>A step-by-step method for coding interview problems: clarify, find patterns, pick data structures, analyse Big O, code cleanly and test out loud, in Python.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/bit-manipulation/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/interview-strategy/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

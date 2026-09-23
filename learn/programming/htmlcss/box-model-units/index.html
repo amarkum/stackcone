@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>The Box Model, Sizing and Units | HTML &amp; CSS Tutorial | stackcone</title>
+  <meta name="description" content="Understand the CSS box model in depth: margins, padding, borders, box-sizing, display types, margin collapse, min/max sizing and units like rem, vw and ch.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/htmlcss/box-model-units/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/htmlcss/box-model-units/">
+  <meta property="og:title" content="The Box Model, Sizing and Units | HTML &amp; CSS Tutorial | stackcone">
+  <meta property="og:description" content="Understand the CSS box model in depth: margins, padding, borders, box-sizing, display types, margin collapse, min/max sizing and units like rem, vw and ch.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Box Model, Sizing and Units | HTML &amp; CSS Tutorial | stackcone">
+  <meta name="twitter:description" content="Understand the CSS box model in depth: margins, padding, borders, box-sizing, display types, margin collapse, min/max sizing and units like rem, vw and ch.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/htmlcss/selectors-cascade/">
+  <link rel="next" href="https://stackcone.com/learn/programming/htmlcss/typography-variables/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "HTML & CSS", "item": "https://stackcone.com/learn/programming/htmlcss/introduction/"}, {"@type": "ListItem", "position": 4, "name": "The Box Model, Sizing and Units", "item": "https://stackcone.com/learn/programming/htmlcss/box-model-units/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "The Box Model, Sizing and Units", "headline": "The Box Model, Sizing and Units", "description": "Understand the CSS box model in depth: margins, padding, borders, box-sizing, display types, margin collapse, min/max sizing and units like rem, vw and ch.", "url": "https://stackcone.com/learn/programming/htmlcss/box-model-units/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Explain content, padding, border and margin and how box-sizing changes widths", "Know the difference between block, inline and inline-block", "Recognise and avoid margin collapse", "Pick the right unit: px, rem, em, %, vw, ch, and functions like min() and clamp()"], "position": 7, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "HTML & CSS Course", "url": "https://stackcone.com/learn/programming/htmlcss/introduction/", "description": "Structure pages with HTML and style them with modern CSS, Flexbox and Grid.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> / <span aria-current="page">The Box Model, Sizing and Units</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="htmlcss">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a></p>
+              <p class="learn-sidebar-tagline">13 lessons · Learn HTML &amp; CSS from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 13 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="HTML &amp; CSS lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/introduction/" data-lesson="html-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">HTML Fundamentals</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/forms-semantics/" data-lesson="html-forms-semantics" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Forms and Semantic HTML</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/media-accessibility/" data-lesson="html-media-accessibility" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Images, Media and Accessibility</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/seo-performance/" data-lesson="html-seo-performance" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Meta Tags, SEO and Page Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/basics/" data-lesson="css-basics" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">CSS Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/selectors-cascade/" data-lesson="css-selectors-cascade" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Selectors, Specificity and the Cascade</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/htmlcss/box-model-units/" aria-current="page" data-lesson="css-box-model-units" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">The Box Model, Sizing and Units</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/typography-variables/" data-lesson="css-typography-variables" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Typography, Colors and CSS Variables</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/positioning/" data-lesson="css-positioning" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Positioning, z-index and Overflow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/flexbox/" data-lesson="css-flexbox" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Flexbox Layout</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/grid-responsive/" data-lesson="css-grid-responsive" data-minutes="17"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Grid and Responsive Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/animations/" data-lesson="css-animations" data-minutes="16"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Transitions, Transforms and Animations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/htmlcss/layout-project/" data-lesson="css-modern-layout-project" data-minutes="25"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Project: Build a Responsive Landing Page</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/htmlcss/introduction/">HTML &amp; CSS</a> · Lesson 7 of 13</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/htmlcss/selectors-cascade/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="css-box-model-units" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/htmlcss/typography-variables/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>The Box Model, Sizing and Units</h1>
+          <p class="learn-summary">Understand the CSS box model in depth: margins, padding, borders, box-sizing, display types, margin collapse, min/max sizing and units like rem, vw and ch.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/htmlcss/selectors-cascade/">Lesson 6: Selectors, Specificity and the Cascade</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain content, padding, border and margin and how box-sizing changes widths</li><li>Know the difference between block, inline and inline-block</li><li>Recognise and avoid margin collapse</li><li>Pick the right unit: px, rem, em, %, vw, ch, and functions like min() and clamp()</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 13 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 13</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>CSS Basics introduced the idea that every element is a box. This lesson goes deeper, because nearly every "why is this 20px too wide?" or "where did that gap come from?" question is a box model question. Once you understand how width is calculated, how elements flow, and which unit to use, layout becomes predictable.</p>
+      <h2>The four layers, and how width is calculated</h2>
+      <p>From the inside out: <strong>content</strong>, <strong>padding</strong>, <strong>border</strong>, <strong>margin</strong>. By default (<code>box-sizing: content-box</code>), the <code>width</code> you set applies to the content only, and padding and border are added on top.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.box {
+  width: 300px;
+  padding: 20px;
+  border: 5px solid #334155;
+  margin: 16px;
+}
+/* content-box: visible width = 300 + 20*2 + 5*2 = 350px */
+
+.box.border-box {
+  box-sizing: border-box;
+}
+/* border-box: visible width = 300px exactly (content shrinks to 250px) */</code></pre></div>
+      <p>Almost every modern project applies <code>border-box</code> everywhere, so widths mean what you expect:</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>*, *::before, *::after {
+  box-sizing: border-box;
+}</code></pre></div>
+      <h2>Shorthand for margin and padding</h2>
+      <p>The shorthands go clockwise from the top: top, right, bottom, left. Missing values copy their opposite side.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.a { padding: 16px; }                 /* all four sides */
+.b { padding: 8px 16px; }             /* vertical | horizontal */
+.c { padding: 8px 16px 24px; }        /* top | horizontal | bottom */
+.d { padding: 8px 16px 24px 32px; }   /* top | right | bottom | left */
+
+/* Logical properties follow writing direction (great for RTL languages) */
+.e { padding-inline: 16px; margin-block: 24px; }</code></pre></div>
+      <h2>Display: block, inline and inline-block</h2>
+      <p>The <code>display</code> property controls how a box behaves in the normal flow of the page.</p>
+      <ul><li><strong>block</strong> (<code>div</code>, <code>p</code>, <code>h1</code>, <code>section</code>): starts on a new line and stretches to fill the width of its parent. Width, height, margin and padding all work.</li><li><strong>inline</strong> (<code>span</code>, <code>a</code>, <code>strong</code>): flows within a line of text. <code>width</code> and <code>height</code> are ignored, and vertical margins do not push other lines away.</li><li><strong>inline-block</strong>: sits in a line like text, but respects width, height and all margins. Handy for badges and buttons.</li><li><strong>none</strong>: removes the element from the page entirely (and from screen readers).</li><li><strong>flex</strong> and <strong>grid</strong>: turn the element into a layout container, covered in their own lessons.</li></ul>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e0e7ff;
+}</code></pre></div>
+      <h2>Margin collapse</h2>
+      <p>When two vertical margins of block elements touch, they <strong>collapse</strong> into one margin equal to the larger of the two, instead of adding up. It was designed so paragraphs get even spacing, but it surprises everyone at first.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>h2 { margin-bottom: 24px; }
+p  { margin-top: 16px; }
+/* Gap between an h2 and the following p is 24px, not 40px */</code></pre></div>
+      <p>A child's top margin can also collapse through its parent, pushing the parent down instead of creating space inside it. Margins do <em>not</em> collapse inside flex or grid containers, or when the parent has padding or a border.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Avoid the confusion</p><p class="learn-callout-body">A simple rule of thumb: space elements in one direction only (for example, only <code>margin-bottom</code>), or use <code>gap</code> on a flex or grid parent. Then collapse rarely matters.</p></aside>
+      <h2>Width, height and their limits</h2>
+      <p>Fixed widths break on small screens. Instead, let elements be fluid and cap them with <code>max-width</code>. Avoid fixed heights on anything containing text; content grows, and a fixed height causes overflow. Use <code>min-height</code> instead.</p>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.container {
+  width: 100%;
+  max-width: 72rem;       /* never wider than about 1150px */
+  margin-inline: auto;    /* centre it */
+  padding-inline: 1rem;   /* breathing room on phones */
+}
+
+.hero { min-height: 60vh; }   /* at least 60% of the screen, grows if needed */
+
+img { max-width: 100%; height: auto; }   /* images never overflow their box */
+
+.two-lines { aspect-ratio: 16 / 9; }     /* keep a video-like shape */</code></pre></div>
+      <h2>Choosing units</h2>
+      <ul><li><strong>px</strong>: fixed. Good for borders, shadows and small details.</li><li><strong>rem</strong>: relative to the root font size (16px by default). Use for font sizes, spacing and widths. If a user sets a larger default font for readability, everything scales with it.</li><li><strong>em</strong>: relative to the current element's font size. Useful for padding on buttons so it grows with the button's text.</li><li><strong>%</strong>: relative to the parent's size (for width) or the element's font size (for line-height).</li><li><strong>vw / vh</strong>: 1% of the viewport width or height. On mobile, <code>100vh</code> can be taller than the visible area because of browser toolbars; use <code>100dvh</code> (dynamic viewport height) instead.</li><li><strong>ch</strong>: the width of the "0" character. <code>max-width: 65ch</code> keeps text lines at a comfortable reading length.</li></ul>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>html { font-size: 100%; }          /* respect the user&#x27;s browser setting */
+h1 { font-size: 2.5rem; }           /* 40px at default settings */
+.btn { font-size: 1rem; padding: 0.5em 1.25em; }  /* padding scales with text */
+.article { max-width: 65ch; }
+.fullscreen { min-height: 100dvh; }</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not set html { font-size: 62.5% }</p><p class="learn-callout-body">An old trick set the root to 10px so that 1.6rem equals 16px. It overrides the user's preferred font size and forces you to reset every font. Keep the default and let rem mean "multiples of the user's font size".</p></aside>
+      <h2>Math functions: calc(), min(), max(), clamp()</h2>
+      <div class="learn-code-wrap" data-lang="css"><pre><code>.sidebar { width: calc(100% - 2rem); }        /* mix units */
+.card    { width: min(100%, 400px); }          /* the smaller of the two */
+.section { padding: max(1rem, 4vw); }          /* the larger of the two */
+h1       { font-size: clamp(1.75rem, 4vw + 1rem, 3rem); }  /* fluid, with limits */</code></pre></div>
+      <p><code>min(100%, 400px)</code> is a one-line replacement for <code>width: 100%; max-width: 400px</code>. The Grid lesson uses <code>clamp()</code> for fluid type, and it works just as well for spacing.</p>
+      <h2>Recap</h2>
+      <ul><li>A box is content, padding, border and margin; set <code>box-sizing: border-box</code> globally so width includes padding and border.</li><li>Block elements stack and fill width; inline elements flow with text and ignore width and height; inline-block mixes both.</li><li>Adjacent vertical margins collapse to the larger value; use one-direction margins or <code>gap</code> to avoid surprises.</li><li>Prefer fluid widths with <code>max-width</code> and <code>min-height</code> over fixed sizes.</li><li>Use rem for most sizing, em for component padding, ch for line length, dvh for full-screen sections, and <code>clamp()</code> for fluid values.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Style an <code>.article</code> page: centre it with a readable line length, give it responsive side padding that is at least 1rem and grows with the screen, make all images fit, and create a <code>.tag</code> element that sits inline with text but has padding and rounded corners. Include a global border-box rule.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="css" data-solution="*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.article {
+  max-width: 65ch;
+  margin-inline: auto;
+  padding-inline: max(1rem, 5vw);
+  padding-block: 2rem;
+}
+
+.article img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.15em 0.6em;
+  font-size: 0.875rem;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="css-box-model-units" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/htmlcss/typography-variables/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 8</span><strong>Typography, Colors and CSS Variables</strong><small>Style readable text with web fonts and fluid type, choose accessible colors with hsl() and oklch(), and theme a site with CSS custom properties.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/htmlcss/selectors-cascade/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/htmlcss/typography-variables/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

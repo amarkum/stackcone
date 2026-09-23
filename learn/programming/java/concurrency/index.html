@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Threads, Executors and CompletableFuture | Java | stackcone</title>
+  <meta name="description" content="Learn Java concurrency: threads, race conditions, synchronized and atomics, ExecutorService, CompletableFuture pipelines and Java 21 virtual threads.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/java/concurrency/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/java/concurrency/">
+  <meta property="og:title" content="Threads, Executors and CompletableFuture | Java | stackcone">
+  <meta property="og:description" content="Learn Java concurrency: threads, race conditions, synchronized and atomics, ExecutorService, CompletableFuture pipelines and Java 21 virtual threads.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Threads, Executors and CompletableFuture | Java | stackcone">
+  <meta name="twitter:description" content="Learn Java concurrency: threads, race conditions, synchronized and atomics, ExecutorService, CompletableFuture pipelines and Java 21 virtual threads.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/java/files-io/">
+  <link rel="next" href="https://stackcone.com/learn/programming/java/build-tools/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Java", "item": "https://stackcone.com/learn/programming/java/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Threads, Executors and CompletableFuture", "item": "https://stackcone.com/learn/programming/java/concurrency/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Threads, Executors and CompletableFuture", "headline": "Threads, Executors and CompletableFuture", "description": "Learn Java concurrency: threads, race conditions, synchronized and atomics, ExecutorService, CompletableFuture pipelines and Java 21 virtual threads.", "url": "https://stackcone.com/learn/programming/java/concurrency/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT22M", "isAccessibleForFree": true, "teaches": ["Start threads and explain why shared state causes race conditions", "Protect shared data with synchronized, atomics and concurrent collections", "Run tasks with ExecutorService and Futures", "Compose async work with CompletableFuture and use virtual threads"], "position": 18, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Java Course", "url": "https://stackcone.com/learn/programming/java/hello-world/", "description": "Static typing, OOP, and the collections you use every day.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/java/hello-world/">Java</a> / <span aria-current="page">Threads, Executors and CompletableFuture</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="java">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/java/hello-world/">Java</a></p>
+              <p class="learn-sidebar-tagline">20 lessons · Learn Java from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 20 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Java lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/java/hello-world/" data-lesson="java-hello-world" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Java</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/variables-types/" data-lesson="java-variables-types" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/control-flow/" data-lesson="java-control-flow" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/oop-classes/" data-lesson="java-oop-classes" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/collections/" data-lesson="java-collections" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Collections Framework</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/exceptions/" data-lesson="java-exceptions" data-minutes="13"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Exception Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/strings/" data-lesson="java-strings" data-minutes="12"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Strings and StringBuilder</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/arrays/" data-lesson="java-arrays" data-minutes="12"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/methods/" data-lesson="java-methods" data-minutes="12"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Methods and Overloading</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/inheritance/" data-lesson="java-inheritance" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Inheritance and Polymorphism</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/interfaces-abstract/" data-lesson="java-interfaces-abstract" data-minutes="14"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Interfaces and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/enums-records/" data-lesson="java-enums-records" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Enums, Records and Optional</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/generics/" data-lesson="java-generics" data-minutes="14"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Generics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/lambdas-streams/" data-lesson="java-lambdas-streams" data-minutes="16"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Lambdas and Streams</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/modern-features/" data-lesson="java-modern-features" data-minutes="20"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Modern Java: var, switch expressions, text blocks, pattern matching, sealed classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/date-time/" data-lesson="java-date-time" data-minutes="17"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Dates and Times with java.time</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/files-io/" data-lesson="java-files-io" data-minutes="14"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Files and I/O</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/java/concurrency/" aria-current="page" data-lesson="java-concurrency" data-minutes="22"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Threads, Executors and CompletableFuture</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/build-tools/" data-lesson="java-build-tools" data-minutes="17"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">Build Tools: Maven and Gradle</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/testing-junit/" data-lesson="java-testing-junit" data-minutes="14"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">Testing with JUnit</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/java/hello-world/">Java</a> · Lesson 18 of 20</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/java/files-io/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="java-concurrency" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/java/build-tools/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Threads, Executors and CompletableFuture</h1>
+          <p class="learn-summary">Learn Java concurrency: threads, race conditions, synchronized and atomics, ExecutorService, CompletableFuture pipelines and Java 21 virtual threads.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>22 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/java/files-io/">Lesson 17: Files and I/O</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Start threads and explain why shared state causes race conditions</li><li>Protect shared data with synchronized, atomics and concurrent collections</li><li>Run tasks with ExecutorService and Futures</li><li>Compose async work with CompletableFuture and use virtual threads</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 20 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 20</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>A server handling thousands of requests, an app that downloads files while staying responsive, a batch job that uses every CPU core: all of these need <strong>concurrency</strong>, doing several things at once. Java has had threads since version 1.0, and it has grown a rich toolbox on top of them. Since Java 21, <strong>virtual threads</strong> have made the simple "one thread per task" style scale to millions of tasks.</p>
+      <p>Concurrency is powerful but easy to get subtly wrong, so this lesson starts with the core problem (shared state) before moving to the higher-level tools you should use day to day. Examples use short <code>Thread.sleep</code> calls to stand in for slow network or database calls.</p>
+      <h2>Starting a thread</h2>
+      <p>A <code>Thread</code> runs a <code>Runnable</code> (any lambda with no arguments and no result) alongside the main thread. <code>start()</code> begins execution; <code>join()</code> waits for it to finish. The order in which threads run is decided by the scheduler, so never rely on it; here we wait for each result before printing.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        List&lt;String&gt; results = Collections.synchronizedList(new ArrayList&lt;&gt;());
+
+        Thread t1 = new Thread(() -&gt; results.add(&quot;report generated&quot;));
+        Thread t2 = Thread.ofPlatform().name(&quot;mailer&quot;).start(() -&gt; results.add(&quot;emails sent&quot;));
+        t1.start();
+
+        t1.join();
+        t2.join();
+        Collections.sort(results);
+        System.out.println(results);
+        System.out.println(&quot;main thread: &quot; + Thread.currentThread().getName());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>[emails sent, report generated]
+main thread: main</pre></div>
+      <h2>Race conditions</h2>
+      <p>Trouble starts when threads share mutable data. <code>count++</code> looks like one step but is really three: read, add one, write back. If two threads read the same value at the same moment, one increment is lost. Run the unsafe counter and the total is usually less than expected (and different every run).</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.concurrent.atomic.AtomicInteger;
+
+public class Main {
+    static int unsafeCount = 0;
+    static int lockedCount = 0;
+    static final Object LOCK = new Object();
+    static final AtomicInteger atomicCount = new AtomicInteger();
+
+    public static void main(String[] args) throws InterruptedException {
+        Runnable work = () -&gt; {
+            for (int i = 0; i &lt; 100_000; i++) {
+                unsafeCount++;                         // race condition
+                synchronized (LOCK) { lockedCount++; } // one thread at a time
+                atomicCount.incrementAndGet();         // lock-free and safe
+            }
+        };
+        Thread a = new Thread(work), b = new Thread(work);
+        a.start(); b.start();
+        a.join(); b.join();
+
+        System.out.println(&quot;unsafe correct? &quot; + (unsafeCount == 200_000));
+        System.out.println(&quot;synchronized: &quot; + lockedCount);
+        System.out.println(&quot;atomic: &quot; + atomicCount.get());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>unsafe correct? false
+synchronized: 200000
+atomic: 200000</pre></div>
+      <p>Two fixes are shown. A <code>synchronized</code> block lets only one thread hold the lock at a time. <code>AtomicInteger</code> uses special CPU instructions to update a single value safely without a lock. For maps shared between threads, use <code>ConcurrentHashMap</code> (its <code>merge</code> and <code>computeIfAbsent</code> are atomic).</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Prefer not sharing at all</p><p class="learn-callout-body">The easiest thread-safe data is data that is never shared or never changes. Immutable objects (records, <code>List.of</code>, <code>java.time</code> types) are always safe. Where possible, give each task its own inputs and combine the results at the end, as the executor examples below do.</p></aside>
+      <h2>ExecutorService: a pool of workers</h2>
+      <p>Creating a thread by hand for every task is clumsy. An <code>ExecutorService</code> manages a pool of threads: you <code>submit</code> tasks and get back a <code>Future</code>, a handle to a result that will arrive later. <code>future.get()</code> waits for it. Since Java 19 executors are <code>AutoCloseable</code>, so try-with-resources waits for tasks and shuts the pool down for you.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.*;
+import java.util.concurrent.*;
+
+public class Main {
+    static int fetchPrice(String product) throws InterruptedException {
+        Thread.sleep(200);                            // simulate a slow API
+        return product.length() * 10;
+    }
+
+    public static void main(String[] args) throws Exception {
+        List&lt;String&gt; products = List.of(&quot;mouse&quot;, &quot;keyboard&quot;, &quot;monitor&quot;, &quot;cable&quot;);
+        long start = System.nanoTime();
+
+        try (ExecutorService pool = Executors.newFixedThreadPool(4)) {
+            List&lt;Future&lt;Integer&gt;&gt; futures = new ArrayList&lt;&gt;();
+            for (String p : products) {
+                futures.add(pool.submit(() -&gt; fetchPrice(p)));  // Callable returns a value
+            }
+            int total = 0;
+            for (Future&lt;Integer&gt; f : futures) total += f.get();
+            System.out.println(&quot;total = &quot; + total);
+        }
+
+        long ms = (System.nanoTime() - start) / 1_000_000;
+        System.out.println(&quot;parallel? &quot; + (ms &lt; 600));
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>total = 250
+parallel? true</pre></div>
+      <p>Four 200 ms calls finished in roughly 200 ms, not 800, because they ran at the same time. If a task throws, <code>get()</code> rethrows it wrapped in an <code>ExecutionException</code>.</p>
+      <h2>CompletableFuture: composing async steps</h2>
+      <p><code>Future.get()</code> blocks, and combining several futures by hand is awkward. <code>CompletableFuture</code> lets you describe a pipeline: start work with <code>supplyAsync</code>, transform results with <code>thenApply</code>, combine two independent results with <code>thenCombine</code>, chain another async call with <code>thenCompose</code>, and recover from errors with <code>exceptionally</code>. Nothing blocks until you finally call <code>join()</code>.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.concurrent.*;
+
+public class Main {
+    static void pause(int ms) {
+        try { Thread.sleep(ms); } catch (InterruptedException e) { throw new RuntimeException(e); }
+    }
+
+    static String loadUser(int id) { pause(100); return &quot;Ada&quot;; }
+    static int loadOrderCount(int id) { pause(150); return 3; }
+    static CompletableFuture&lt;String&gt; loadPlan(String name) {
+        return CompletableFuture.supplyAsync(() -&gt; { pause(50); return &quot;pro&quot;; });
+    }
+
+    public static void main(String[] args) {
+        CompletableFuture&lt;String&gt; user = CompletableFuture.supplyAsync(() -&gt; loadUser(1));
+        CompletableFuture&lt;Integer&gt; orders = CompletableFuture.supplyAsync(() -&gt; loadOrderCount(1));
+
+        String dashboard = user
+            .thenApply(String::toUpperCase)
+            .thenCombine(orders, (name, n) -&gt; name + &quot; has &quot; + n + &quot; orders&quot;)
+            .join();
+        System.out.println(dashboard);
+
+        System.out.println(user.thenCompose(Main::loadPlan).join());
+
+        String safe = CompletableFuture.supplyAsync(() -&gt; {
+                if (true) throw new IllegalStateException(&quot;payment service down&quot;);
+                return &quot;ok&quot;;
+            })
+            .exceptionally(ex -&gt; &quot;fallback: &quot; + ex.getCause().getMessage())
+            .join();
+        System.out.println(safe);
+
+        var all = CompletableFuture.allOf(user, orders);
+        all.join();
+        System.out.println(&quot;all done: &quot; + all.isDone());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>ADA has 3 orders
+pro
+fallback: payment service down
+all done: true</pre></div>
+      <p>By default <code>supplyAsync</code> runs on the shared <code>ForkJoinPool.commonPool()</code>. For blocking I/O, pass your own executor as a second argument so slow calls do not starve other work.</p>
+      <h2>Virtual threads (Java 21+)</h2>
+      <p>A normal (platform) thread maps to an operating system thread, which costs around a megabyte of memory, so you can only have a few thousand. <strong>Virtual threads</strong> are lightweight threads managed by the JVM: when one blocks on I/O or <code>sleep</code>, the JVM parks it and reuses the underlying OS thread for another. You can run a million of them, which means plain, readable blocking code now scales like complex async code. Spring Boot, Helidon and Quarkus all support them.</p>
+      <div class="learn-code-wrap" data-lang="java"><pre><code>import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
+
+public class Main {
+    public static void main(String[] args) {
+        AtomicInteger done = new AtomicInteger();
+        long start = System.nanoTime();
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, 10_000).forEach(i -&gt;
+                executor.submit(() -&gt; {
+                    Thread.sleep(1000);               // 10,000 tasks each &quot;waiting&quot; 1 second
+                    done.incrementAndGet();
+                    return i;
+                }));
+        }                                             // waits for all tasks
+
+        long seconds = (System.nanoTime() - start) / 1_000_000_000;
+        System.out.println(done.get() + &quot; tasks finished&quot;);
+        System.out.println(&quot;under 5 seconds? &quot; + (seconds &lt; 5));
+        System.out.println(Thread.ofVirtual().unstarted(() -&gt; {}).isVirtual());
+    }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>10000 tasks finished
+under 5 seconds? true
+true</pre></div>
+      <p>With a fixed pool of 100 platform threads the same work would take 100 seconds. Use virtual threads for I/O-bound tasks (HTTP calls, database queries). They do not make CPU-heavy work faster: for that, a fixed pool sized to <code>Runtime.getRuntime().availableProcessors()</code> or parallel streams are the right tools.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistakes with virtual threads</p><p class="learn-callout-body">Do not pool virtual threads; create one per task, they are cheap. Do not use them to limit concurrency either: to cap calls to a database, use a <code>Semaphore</code>. And avoid <code>ThreadLocal</code> caches of expensive objects, since there may be millions of threads. (Java 24 removed the old problem of virtual threads getting pinned inside <code>synchronized</code> blocks.)</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Threads run code concurrently; <code>join()</code> waits, and execution order is never guaranteed.</li><li>Shared mutable state causes race conditions; fix with <code>synchronized</code>, atomics, concurrent collections or, best, no sharing.</li><li><code>ExecutorService</code> manages thread pools; <code>submit</code> returns a <code>Future</code>; close it with try-with-resources.</li><li><code>CompletableFuture</code> composes async steps with <code>thenApply</code>, <code>thenCombine</code>, <code>thenCompose</code> and <code>exceptionally</code>.</li><li>Virtual threads (<code>newVirtualThreadPerTaskExecutor</code>) make blocking I/O code scale to huge numbers of tasks.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Simulate checking the health of five services (<code>api</code>, <code>db</code>, <code>cache</code>, <code>search</code>, <code>mail</code>) where each check sleeps 300 ms and returns <code>name + ": up"</code>, except <code>search</code>, which throws an exception. Using a virtual-thread executor and <code>CompletableFuture.supplyAsync(..., executor)</code>, run all checks concurrently, turn failures into <code>name + ": down"</code> with <code>exceptionally</code>, and print the results in the original order.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="java" data-solution="import java.util.*;
+import java.util.concurrent.*;
+
+public class Main {
+    static String check(String name) {
+        try { Thread.sleep(300); } catch (InterruptedException e) { throw new RuntimeException(e); }
+        if (name.equals(&quot;search&quot;)) throw new IllegalStateException(&quot;timeout&quot;);
+        return name + &quot;: up&quot;;
+    }
+
+    public static void main(String[] args) {
+        List&lt;String&gt; services = List.of(&quot;api&quot;, &quot;db&quot;, &quot;cache&quot;, &quot;search&quot;, &quot;mail&quot;);
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            List&lt;CompletableFuture&lt;String&gt;&gt; futures = services.stream()
+                .map(s -&gt; CompletableFuture.supplyAsync(() -&gt; check(s), executor)
+                                           .exceptionally(ex -&gt; s + &quot;: down&quot;))
+                .toList();
+            futures.forEach(f -&gt; System.out.println(f.join()));
+        }
+    }
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="java-concurrency" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/java/build-tools/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 19</span><strong>Build Tools: Maven and Gradle</strong><small>Build Java projects with Maven and Gradle: project layout, pom.xml, build.gradle.kts, dependencies and scopes, lifecycle commands and wrappers.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/java/files-io/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/java/build-tools/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

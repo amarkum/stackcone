@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Selecting and Filtering: loc, iloc and query | Pandas | stackcone</title>
+  <meta name="description" content="Master pandas selection with loc, iloc, boolean masks, isin, between and query, and learn how to update rows safely without chained assignment.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/pandas/selecting/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/pandas/selecting/">
+  <meta property="og:title" content="Selecting and Filtering: loc, iloc and query | Pandas | stackcone">
+  <meta property="og:description" content="Master pandas selection with loc, iloc, boolean masks, isin, between and query, and learn how to update rows safely without chained assignment.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Selecting and Filtering: loc, iloc and query | Pandas | stackcone">
+  <meta name="twitter:description" content="Master pandas selection with loc, iloc, boolean masks, isin, between and query, and learn how to update rows safely without chained assignment.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/pandas/io/">
+  <link rel="next" href="https://stackcone.com/learn/programming/pandas/cleaning/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Pandas", "item": "https://stackcone.com/learn/programming/pandas/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Selecting and Filtering: loc, iloc and query", "item": "https://stackcone.com/learn/programming/pandas/selecting/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Selecting and Filtering: loc, iloc and query", "headline": "Selecting and Filtering: loc, iloc and query", "description": "Master pandas selection with loc, iloc, boolean masks, isin, between and query, and learn how to update rows safely without chained assignment.", "url": "https://stackcone.com/learn/programming/pandas/selecting/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Tell label-based loc apart from position-based iloc", "Combine conditions with &, |, ~, isin and between", "Write readable filters with query", "Update selected rows safely with loc instead of chained assignment"], "position": 3, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Pandas Course", "url": "https://stackcone.com/learn/programming/pandas/introduction/", "description": "Analyze tabular data in Python: loading, cleaning, grouping and merging.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/pandas/introduction/">Pandas</a> / <span aria-current="page">Selecting and Filtering: loc, iloc and query</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="pandas">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/pandas/introduction/">Pandas</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Pandas from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Pandas lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/introduction/" data-lesson="pandas-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">DataFrames and Series</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/io/" data-lesson="pandas-io" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/pandas/selecting/" aria-current="page" data-lesson="pandas-selecting" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Selecting and Filtering: loc, iloc and query</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/cleaning/" data-lesson="pandas-cleaning" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Cleaning Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/transform/" data-lesson="pandas-transform" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Transforming Columns: vectorization, map and apply</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/text-categories/" data-lesson="pandas-text-categories" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Text and Categorical Data</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/groupby-merge/" data-lesson="pandas-groupby-merge" data-minutes="17"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Grouping, Merging and Pivots</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/reshape/" data-lesson="pandas-reshape" data-minutes="17"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Reshaping: melt, stack and pivot_table</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/time-plots/" data-lesson="pandas-time-plots" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates, Plots and Exporting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/window/" data-lesson="pandas-window" data-minutes="17"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Rolling, Expanding and Window Calculations</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/performance/" data-lesson="pandas-performance" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Performance and Large Datasets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/pandas/project/" data-lesson="pandas-project" data-minutes="25"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Project: End-to-End Sales Analysis</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/pandas/introduction/">Pandas</a> · Lesson 3 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/pandas/io/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="pandas-selecting" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/pandas/cleaning/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Selecting and Filtering: loc, iloc and query</h1>
+          <p class="learn-summary">Master pandas selection with loc, iloc, boolean masks, isin, between and query, and learn how to update rows safely without chained assignment.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/pandas/io/">Lesson 2: Reading and Writing Data: CSV, Excel, JSON, SQL, Parquet</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Tell label-based loc apart from position-based iloc</li><li>Combine conditions with &amp;, |, ~, isin and between</li><li>Write readable filters with query</li><li>Update selected rows safely with loc instead of chained assignment</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>The introduction lesson showed the basics: <code>df["col"]</code> for a column and a boolean mask for filtering. That gets you surprisingly far, but as soon as you want <em>specific rows and specific columns at once</em>, or you want to change values in only some rows, you need the two workhorses of pandas selection: <code>.loc</code> and <code>.iloc</code>.</p>
+      <p>Getting selection right matters for more than tidiness. Most confusing pandas bugs (values that do not update, warnings about copies, off-by-one slices) come from mixing up labels and positions. Once the mental model clicks, the rest of the library feels much more predictable.</p>
+      <h2>Labels vs positions</h2>
+      <p>Every DataFrame has an <strong>index</strong> (row labels) and <strong>columns</strong> (column labels). <code>.loc</code> selects by those labels. <code>.iloc</code> selects by integer position, like a Python list, no matter what the labels are. The syntax for both is <code>[rows, columns]</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame(
+    {&quot;team&quot;: [&quot;core&quot;, &quot;web&quot;, &quot;core&quot;, &quot;data&quot;],
+     &quot;salary&quot;: [120, 95, 130, 110],
+     &quot;years&quot;: [5, 2, 8, 4]},
+    index=[&quot;ada&quot;, &quot;grace&quot;, &quot;linus&quot;, &quot;margaret&quot;],
+)
+
+print(df.loc[&quot;grace&quot;, &quot;salary&quot;])            # one value by label
+print(df.loc[[&quot;ada&quot;, &quot;linus&quot;], [&quot;team&quot;, &quot;years&quot;]])
+print(df.iloc[0, 1])                        # first row, second column
+print(df.iloc[-1])                          # last row as a Series</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>95
+       team  years
+ada    core      5
+linus  core      8
+120
+team      data
+salary     110
+years        4
+Name: margaret, dtype: object</pre></div>
+      <h2>Slicing: the end is included with loc</h2>
+      <p>Here is the classic trap. Label slices with <code>.loc</code> <strong>include</strong> the end label, because labels are not necessarily ordered numbers and "up to and including" is what people mean. Position slices with <code>.iloc</code> follow Python rules and <strong>exclude</strong> the end.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame(
+    {&quot;salary&quot;: [120, 95, 130, 110], &quot;years&quot;: [5, 2, 8, 4]},
+    index=[&quot;ada&quot;, &quot;grace&quot;, &quot;linus&quot;, &quot;margaret&quot;],
+)
+
+print(df.loc[&quot;grace&quot;:&quot;linus&quot;])   # includes linus
+print(df.iloc[1:3])              # rows 1 and 2, not 3
+print(df.loc[:, &quot;salary&quot;:&quot;years&quot;].shape)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>       salary  years
+grace      95      2
+linus     130      8
+       salary  years
+grace      95      2
+linus     130      8
+(4, 2)</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Integer labels make this worse</p><p class="learn-callout-body">With the default <code>RangeIndex</code> (0, 1, 2, ...) labels and positions look the same until you filter or sort. After <code>df.sort_values(...)</code>, <code>df.loc[0]</code> is still the row labelled 0, wherever it moved. If you mean "the first row", use <code>.iloc[0]</code>.</p></aside>
+      <h2>Boolean filters, combined</h2>
+      <p>A condition like <code>df["salary"] &gt; 100</code> produces a Series of True and False. Put it inside <code>.loc</code> to keep matching rows, and add a column list to pick columns at the same time. Combine conditions with <code>&amp;</code> (and), <code>|</code> (or) and <code>~</code> (not), and wrap each condition in parentheses because those operators bind tighter than comparisons.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;name&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Margaret&quot;, &quot;Ken&quot;],
+    &quot;team&quot;: [&quot;core&quot;, &quot;web&quot;, &quot;core&quot;, &quot;data&quot;, &quot;web&quot;],
+    &quot;salary&quot;: [120, 95, 130, 110, 88],
+    &quot;years&quot;: [5, 2, 8, 4, 1],
+})
+
+senior_core = df.loc[(df[&quot;team&quot;] == &quot;core&quot;) &amp; (df[&quot;years&quot;] &gt;= 5), [&quot;name&quot;, &quot;salary&quot;]]
+print(senior_core)
+
+print(df.loc[df[&quot;team&quot;].isin([&quot;web&quot;, &quot;data&quot;]), &quot;name&quot;].tolist())
+print(df.loc[df[&quot;salary&quot;].between(90, 115), &quot;name&quot;].tolist())
+print(df.loc[~(df[&quot;team&quot;] == &quot;web&quot;), &quot;name&quot;].tolist())</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    name  salary
+0    Ada     120
+2  Linus     130
+[&#x27;Grace&#x27;, &#x27;Margaret&#x27;, &#x27;Ken&#x27;]
+[&#x27;Grace&#x27;, &#x27;Margaret&#x27;]
+[&#x27;Ada&#x27;, &#x27;Linus&#x27;, &#x27;Margaret&#x27;]</pre></div>
+      <p><code>isin</code> replaces a long chain of <code>|</code> conditions, and <code>between</code> is an inclusive range check. Both make filters shorter and harder to get wrong.</p>
+      <h2>query: filters that read like English</h2>
+      <p>When conditions pile up, the brackets get noisy. <code>df.query()</code> takes the condition as a string and lets you use column names directly, plus <code>and</code>, <code>or</code> and <code>not</code>. Reference a Python variable with <code>@</code>.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;name&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Margaret&quot;, &quot;Ken&quot;],
+    &quot;team&quot;: [&quot;core&quot;, &quot;web&quot;, &quot;core&quot;, &quot;data&quot;, &quot;web&quot;],
+    &quot;salary&quot;: [120, 95, 130, 110, 88],
+})
+
+min_salary = 100
+print(df.query(&quot;salary &gt;= @min_salary and team != &#x27;web&#x27;&quot;))
+print(df.query(&quot;team in [&#x27;web&#x27;, &#x27;data&#x27;]&quot;).shape)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>       name  team  salary
+0       Ada  core     120
+2     Linus  core     130
+3  Margaret  data     110
+(3, 3)</pre></div>
+      <p><code>query</code> is great for exploration and readable pipelines. Column names with spaces need backticks, for example <code>df.query("`unit price` &gt; 5")</code>.</p>
+      <h2>Updating rows safely</h2>
+      <p>To change values in some rows, do the selection and the assignment in <strong>one</strong> <code>.loc</code> call. A common beginner pattern is chained indexing like <code>df[df["team"] == "web"]["salary"] = 100</code>. The first bracket returns a new object, and the assignment modifies that temporary copy, not <code>df</code>. Since pandas 3.0 turned on Copy-on-Write by default, this pattern never updates the original.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    &quot;name&quot;: [&quot;Ada&quot;, &quot;Grace&quot;, &quot;Linus&quot;, &quot;Ken&quot;],
+    &quot;team&quot;: [&quot;core&quot;, &quot;web&quot;, &quot;core&quot;, &quot;web&quot;],
+    &quot;salary&quot;: [120, 95, 130, 88],
+})
+
+# Right: one .loc call with a mask and a column
+df.loc[df[&quot;team&quot;] == &quot;web&quot;, &quot;salary&quot;] += 10
+df.loc[df[&quot;name&quot;] == &quot;Ada&quot;, [&quot;team&quot;, &quot;salary&quot;]] = [&quot;lead&quot;, 140]
+print(df)</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>    name  team  salary
+0    Ada  lead     140
+1  Grace   web     105
+2  Linus  core     130
+3    Ken   web      98</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Keep the dtype in mind</p><p class="learn-callout-body">pandas 3 refuses to silently change a column's type during a partial update. Writing <code>104.5</code> into some rows of an integer column raises a <code>TypeError</code>. Convert first with <code>df["salary"] = df["salary"].astype(float)</code> if you need decimals.</p></aside>
+      <p>The same rule applies when you take a subset to work on later. If you filter a DataFrame and then add columns to the result, call <code>.copy()</code> to make it clear you want an independent table: <code>web = df[df["team"] == "web"].copy()</code>.</p>
+      <h2>Fast single values: at and iat</h2>
+      <p>For reading or writing exactly one cell inside a loop, <code>.at[row, col]</code> (labels) and <code>.iat[i, j]</code> (positions) skip some of the overhead of <code>.loc</code>/<code>.iloc</code>. You will rarely need them if you stick to vectorized code, but they are handy in small scripts.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>import pandas as pd
+
+df = pd.DataFrame({&quot;salary&quot;: [120, 95]}, index=[&quot;ada&quot;, &quot;grace&quot;])
+df.at[&quot;grace&quot;, &quot;salary&quot;] = 99
+print(df.iat[1, 0])</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>99</pre></div>
+      <h2>Recap</h2>
+      <ul><li><code>.loc</code> uses labels and includes the end of a slice; <code>.iloc</code> uses positions and excludes it.</li><li>Both take <code>[rows, columns]</code>, so you can filter rows and pick columns in one step.</li><li>Combine conditions with <code>&amp;</code>, <code>|</code>, <code>~</code> and parentheses, or use <code>isin</code>, <code>between</code> and <code>query</code>.</li><li>Update with a single <code>df.loc[mask, col] = value</code>; chained indexing never writes back.</li><li>Use <code>.copy()</code> when you keep a filtered subset to modify later.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Using the DataFrame below, (1) print the name and price of products in the <code>books</code> or <code>games</code> category that cost under 30, using <code>.loc</code>; (2) print the same result using <code>query</code>; (3) apply a 10% discount to every <code>games</code> row in place and print the final prices as a list.<br><code>products = pd.DataFrame({"name": ["Dune", "Chess", "Lamp", "Tetris", "SICP"], "category": ["books", "games", "home", "games", "books"], "price": [18.0, 25.0, 40.0, 35.0, 55.0]})</code></p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="import pandas as pd
+
+products = pd.DataFrame({
+    &quot;name&quot;: [&quot;Dune&quot;, &quot;Chess&quot;, &quot;Lamp&quot;, &quot;Tetris&quot;, &quot;SICP&quot;],
+    &quot;category&quot;: [&quot;books&quot;, &quot;games&quot;, &quot;home&quot;, &quot;games&quot;, &quot;books&quot;],
+    &quot;price&quot;: [18.0, 25.0, 40.0, 35.0, 55.0],
+})
+
+mask = products[&quot;category&quot;].isin([&quot;books&quot;, &quot;games&quot;]) &amp; (products[&quot;price&quot;] &lt; 30)
+print(products.loc[mask, [&quot;name&quot;, &quot;price&quot;]])
+
+print(products.query(&quot;category in [&#x27;books&#x27;, &#x27;games&#x27;] and price &lt; 30&quot;)[[&quot;name&quot;, &quot;price&quot;]])
+
+products.loc[products[&quot;category&quot;] == &quot;games&quot;, &quot;price&quot;] *= 0.9
+print(products[&quot;price&quot;].tolist())"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="pandas-selecting" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/pandas/cleaning/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Cleaning Data</strong><small>Missing values, duplicates, types and text cleanup.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/pandas/io/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/pandas/cleaning/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

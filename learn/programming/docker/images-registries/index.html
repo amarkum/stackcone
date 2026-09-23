@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Images, Layers and Registries | Docker Tutorial | stackcone</title>
+  <meta name="description" content="Understand Docker image layers, tags and digests, then pull, tag and push images to Docker Hub and GitHub Container Registry the right way.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/docker/images-registries/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/docker/images-registries/">
+  <meta property="og:title" content="Images, Layers and Registries | Docker Tutorial | stackcone">
+  <meta property="og:description" content="Understand Docker image layers, tags and digests, then pull, tag and push images to Docker Hub and GitHub Container Registry the right way.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Images, Layers and Registries | Docker Tutorial | stackcone">
+  <meta name="twitter:description" content="Understand Docker image layers, tags and digests, then pull, tag and push images to Docker Hub and GitHub Container Registry the right way.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/docker/introduction/">
+  <link rel="next" href="https://stackcone.com/learn/programming/docker/dockerfile/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Docker", "item": "https://stackcone.com/learn/programming/docker/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Images, Layers and Registries", "item": "https://stackcone.com/learn/programming/docker/images-registries/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Images, Layers and Registries", "headline": "Images, Layers and Registries", "description": "Understand Docker image layers, tags and digests, then pull, tag and push images to Docker Hub and GitHub Container Registry the right way.", "url": "https://stackcone.com/learn/programming/docker/images-registries/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT15M", "isAccessibleForFree": true, "teaches": ["Explain how images are built from read-only layers", "Read image names: registry, repository, tag and digest", "Tag and push an image to a registry", "Clean up unused images safely"], "position": 2, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Docker Course", "url": "https://stackcone.com/learn/programming/docker/introduction/", "description": "Package apps into containers and run multi-service stacks with Compose.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/docker/introduction/">Docker</a> / <span aria-current="page">Images, Layers and Registries</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="docker">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/docker/introduction/">Docker</a></p>
+              <p class="learn-sidebar-tagline">11 lessons · Learn Docker from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 11 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Docker lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/docker/introduction/" data-lesson="docker-introduction" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Containers and Docker Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/docker/images-registries/" aria-current="page" data-lesson="docker-images-registries" data-minutes="15"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Images, Layers and Registries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/dockerfile/" data-lesson="docker-dockerfile" data-minutes="16"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Writing a Dockerfile</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/volumes-networks/" data-lesson="docker-volumes-networks" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Volumes, Bind Mounts and Networks</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/compose/" data-lesson="docker-compose" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Docker Compose</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/multistage/" data-lesson="docker-multistage" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Multi-stage Builds and Small Images</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/config-secrets/" data-lesson="docker-config-secrets" data-minutes="15"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Environment Variables, Config and Secrets</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/debugging/" data-lesson="docker-debugging" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Debugging and Inspecting Containers</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/security/" data-lesson="docker-security" data-minutes="16"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Container Security Best Practices</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/ci-deploy/" data-lesson="docker-ci-deploy" data-minutes="18"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Build, Push and Deploy with CI</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/docker/kubernetes-intro/" data-lesson="docker-kubernetes-intro" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">From Compose to Kubernetes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/docker/introduction/">Docker</a> · Lesson 2 of 11</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/docker/introduction/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="docker-images-registries" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/docker/dockerfile/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Images, Layers and Registries</h1>
+          <p class="learn-summary">Understand Docker image layers, tags and digests, then pull, tag and push images to Docker Hub and GitHub Container Registry the right way.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>15 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/docker/introduction/">Lesson 1: Containers and Docker Basics</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain how images are built from read-only layers</li><li>Read image names: registry, repository, tag and digest</li><li>Tag and push an image to a registry</li><li>Clean up unused images safely</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 11 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 11</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>In the first lesson you ran <code>nginx</code> and <code>hello-world</code> without thinking much about where they came from. Every container starts from an <strong>image</strong>, and every image lives somewhere: on your machine, on Docker Hub, or in a private registry your company runs. Knowing how images are stored and named saves you from slow pulls, surprise upgrades and bloated disks.</p>
+      <p>This lesson looks inside an image, explains what a tag really is, and walks through pushing your own image to a registry so a server (or a teammate) can pull it.</p>
+      <h2>An image is a stack of layers</h2>
+      <p>An image is not one big file. It is an ordered stack of read-only <strong>layers</strong>, each one a set of filesystem changes (files added, changed or deleted). When you start a container, Docker adds one thin writable layer on top. Everything the container writes goes into that top layer, which is thrown away when the container is removed.</p>
+      <p>Layers are shared. If ten images are all based on <code>python:3.12-slim</code>, the base layers are stored once on disk and downloaded once. You can see the layers of any image with <code>docker history</code>:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker pull python:3.12-slim
+docker history python:3.12-slim</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
+a1f3c2e9b7d4   2 weeks ago   CMD [&quot;python3&quot;]                                 0B        buildkit.dockerfile.v0
+&lt;missing&gt;      2 weeks ago   RUN /bin/sh -c set -eux; for src in idle3 p...  36B       buildkit.dockerfile.v0
+&lt;missing&gt;      2 weeks ago   RUN /bin/sh -c set -eux; savedAptMark=&quot;$(a...  41.2MB    buildkit.dockerfile.v0
+&lt;missing&gt;      2 weeks ago   ENV PYTHON_VERSION=3.12.11                      0B        buildkit.dockerfile.v0
+&lt;missing&gt;      2 weeks ago   RUN /bin/sh -c set -eux; apt-get update; a...  9.4MB     buildkit.dockerfile.v0
+&lt;missing&gt;      2 weeks ago   ENV LANG=C.UTF-8                                0B        buildkit.dockerfile.v0
+&lt;missing&gt;      2 weeks ago   # debian.sh --arch &#x27;arm64&#x27; out/ &#x27;bookworm&#x27; ...  97.2MB    debuerreotype 0.15</pre></div>
+      <p>Read it bottom to top: a Debian base, some system packages, then Python itself. Instructions like <code>ENV</code> and <code>CMD</code> only change metadata, so they show <code>0B</code>. The <code>&lt;missing&gt;</code> IDs are normal: intermediate layers pulled from a registry do not have local image IDs.</p>
+      <h2>Anatomy of an image name</h2>
+      <p>A full image reference has up to four parts:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>ghcr.io/stackcone/api:1.4.2@sha256:9c1e...
+|______| |_______| |_| |___| |__________|
+registry namespace repo  tag     digest</code></pre></div>
+      <ul><li><strong>Registry</strong>: the server that stores the image. If omitted, Docker assumes Docker Hub (<code>docker.io</code>).</li><li><strong>Namespace/repository</strong>: the user or organisation and the image name. Official images like <code>nginx</code> are really <code>docker.io/library/nginx</code>.</li><li><strong>Tag</strong>: a human-friendly label. If omitted, Docker uses <code>latest</code>.</li><li><strong>Digest</strong>: a SHA-256 hash of the image manifest. It identifies exactly one image and never changes.</li></ul>
+      <h2>Tags move, digests do not</h2>
+      <p>A tag is just a pointer, like a Git branch. The maintainers of <code>postgres:16</code> move that tag every time they publish a patch release. That is convenient, but it means <code>postgres:16</code> today and <code>postgres:16</code> next month can be different images. The tag <code>latest</code> is the worst offender: it means "whatever was pushed last", not "the newest stable version".</p>
+      <p>To see the digest behind a tag:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker images --digests postgres</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>REPOSITORY   TAG       DIGEST                                                                    IMAGE ID       CREATED       SIZE
+postgres     16        sha256:4f8b3e1c2a7d9e0f5b6c8a1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f   3c7a9e2b1f40   10 days ago   438MB</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Do not deploy :latest</p><p class="learn-callout-body">Using <code>latest</code> (or no tag at all) in production means a routine restart can silently pull a new major version. Pin a specific version tag like <code>postgres:16.4</code> at minimum, and pin a digest when you need builds that are byte-for-byte repeatable.</p></aside>
+      <h2>Multi-platform images</h2>
+      <p>One tag can point to several images, one per CPU architecture. When you pull <code>python:3.12-slim</code> on an Apple Silicon Mac you get the <code>linux/arm64</code> variant; on a typical cloud VM you get <code>linux/amd64</code>. This list is called a <em>manifest list</em> (or image index):</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker buildx imagetools inspect python:3.12-slim</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>Name:      docker.io/library/python:3.12-slim
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:2b0079146a74e23bf4ae8f6a28e1b484c6292f6fb904cbb51825b4a19812fcd8
+
+Manifests:
+  Name:      docker.io/library/python:3.12-slim@sha256:6d1e...
+  Platform:  linux/amd64
+
+  Name:      docker.io/library/python:3.12-slim@sha256:e2a4...
+  Platform:  linux/arm64/v8
+  ...</pre></div>
+      <p>This matters when you build on a Mac and deploy to an amd64 server. An image built only for arm64 will fail with <code>exec format error</code> on amd64. The CI lesson later in this course shows how to build both at once.</p>
+      <h2>Tagging and pushing your own image</h2>
+      <p>To share an image you give it a name that includes the target registry, log in, and push. Here is the flow for GitHub Container Registry (GHCR), which is free for public images and works well with GitHub Actions:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code># build with a local name
+docker build -t stackcone-api:1.0.0 .
+
+# add a second name that points at the registry
+docker tag stackcone-api:1.0.0 ghcr.io/stackcone/api:1.0.0
+
+# log in (you will be prompted for a personal access token)
+docker login ghcr.io -u ada
+
+# upload
+docker push ghcr.io/stackcone/api:1.0.0</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>The push refers to repository [ghcr.io/stackcone/api]
+5f70bf18a086: Pushed
+8d2e1b9a4c33: Pushed
+1c3f7e5d9b21: Mounted from library/python
+0a9b8c7d6e5f: Mounted from library/python
+1.0.0: digest: sha256:9c1e4b7a2d3f5e6a8b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a size: 1789</pre></div>
+      <p>Notice that only your own layers were uploaded. The Python base layers were already known to the registry, so they were "mounted" instead of re-sent. The final line gives you the digest you can pin in deployments. <code>docker tag</code> never copies data; it just adds another name to the same image ID.</p>
+      <p>For Docker Hub the name is simply <code>youruser/api:1.0.0</code>. For AWS ECR, Google Artifact Registry or Azure ACR, the registry part is a long hostname and you log in with the cloud CLI, but the tag and push steps are identical.</p>
+      <h2>Keeping your disk under control</h2>
+      <p>Images pile up quickly, especially <em>dangling</em> images (old builds that lost their tag when you rebuilt). Check what is using space, then prune:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>docker system df
+docker image prune        # remove dangling images
+docker image prune -a     # remove every image not used by a container</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          23        4         6.12GB    4.87GB (79%)
+Containers      5         2         48.3MB    12.1MB (25%)
+Local Volumes   6         3         1.02GB    310MB (30%)
+Build Cache     112       0         2.4GB     2.4GB</pre></div>
+      <h2>Recap</h2>
+      <ul><li>An image is a stack of shared, read-only layers; a container adds one writable layer on top.</li><li>A reference is registry/namespace/repo:tag@digest; the default registry is Docker Hub and the default tag is <code>latest</code>.</li><li>Tags are movable pointers; digests identify one exact image forever.</li><li>Share images with <code>docker tag</code>, <code>docker login</code> and <code>docker push</code>; unchanged base layers are not re-uploaded.</li><li>Use <code>docker system df</code> and <code>docker image prune</code> to reclaim disk space.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">You built <code>orders-service:dev</code> locally. Write the commands to publish it to Docker Hub under the user <code>ada</code> with the version tag <code>2.1.0</code> and also as <code>2.1</code>, then print the digest of what you pushed.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="docker tag orders-service:dev ada/orders-service:2.1.0
+docker tag orders-service:dev ada/orders-service:2.1
+docker login -u ada
+docker push ada/orders-service:2.1.0
+docker push ada/orders-service:2.1
+docker images --digests ada/orders-service"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="docker-images-registries" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/docker/dockerfile/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 3</span><strong>Writing a Dockerfile</strong><small>Build your own image, use layer caching and keep images small.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/docker/introduction/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/docker/dockerfile/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

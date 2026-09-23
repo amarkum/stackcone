@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Config, .gitignore and Aliases | Git &amp; Command Line | stackcone</title>
+  <meta name="description" content="Set up git config at the right level, master .gitignore patterns and global ignores, and create Git aliases that make your everyday commands faster.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/git/config-ignore/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/git/config-ignore/">
+  <meta property="og:title" content="Config, .gitignore and Aliases | Git &amp; Command Line | stackcone">
+  <meta property="og:description" content="Set up git config at the right level, master .gitignore patterns and global ignores, and create Git aliases that make your everyday commands faster.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Config, .gitignore and Aliases | Git &amp; Command Line | stackcone">
+  <meta name="twitter:description" content="Set up git config at the right level, master .gitignore patterns and global ignores, and create Git aliases that make your everyday commands faster.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/git/introduction/">
+  <link rel="next" href="https://stackcone.com/learn/programming/git/branching-merging/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Git & Command Line", "item": "https://stackcone.com/learn/programming/git/command-line/"}, {"@type": "ListItem", "position": 4, "name": "Config, .gitignore and Aliases", "item": "https://stackcone.com/learn/programming/git/config-ignore/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Config, .gitignore and Aliases", "headline": "Config, .gitignore and Aliases", "description": "Set up git config at the right level, master .gitignore patterns and global ignores, and create Git aliases that make your everyday commands faster.", "url": "https://stackcone.com/learn/programming/git/config-ignore/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Beginner", "timeRequired": "PT14M", "isAccessibleForFree": true, "teaches": ["Understand system, global and local config", "Write .gitignore rules including negation", "Untrack a file that was committed by mistake", "Create time-saving aliases"], "position": 4, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Git & Command Line Course", "url": "https://stackcone.com/learn/programming/git/command-line/", "description": "Move around the terminal and track work with Git branches and pull requests.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> / <span aria-current="page">Config, .gitignore and Aliases</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="git">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn Git &amp; Command Line from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Git &amp; Command Line lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/git/command-line/" data-lesson="git-command-line" data-minutes="14"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Command Line Essentials</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/shell-scripting/" data-lesson="git-shell-scripting" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Pipes, Redirection and Shell Scripts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/introduction/" data-lesson="git-introduction" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Git Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/git/config-ignore/" aria-current="page" data-lesson="git-config-ignore" data-minutes="14"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Config, .gitignore and Aliases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/branching-merging/" data-lesson="git-branching-merging" data-minutes="16"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Branching and Merging</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/merge-conflicts/" data-lesson="git-merge-conflicts" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Resolving Merge Conflicts</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/rebase/" data-lesson="git-rebase" data-minutes="16"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Rebase and a Clean History</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/remote-github/" data-lesson="git-remote-github" data-minutes="15"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Remotes, GitHub and Pull Requests</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/undo-workflows/" data-lesson="git-undo-workflows" data-minutes="15"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Undoing Things and Team Workflows</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/stash-tags/" data-lesson="git-stash-tags" data-minutes="14"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Stash, Tags and Releases</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/advanced-recovery/" data-lesson="git-advanced-recovery" data-minutes="16"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Cherry-pick, Bisect and Reflog</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/git/github-actions/" data-lesson="git-github-actions" data-minutes="17"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">CI with GitHub Actions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/git/command-line/">Git &amp; Command Line</a> · Lesson 4 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/git/introduction/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="git-config-ignore" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/git/branching-merging/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Config, .gitignore and Aliases</h1>
+          <p class="learn-summary">Set up git config at the right level, master .gitignore patterns and global ignores, and create Git aliases that make your everyday commands faster.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Beginner</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>14 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/git/introduction/">Lesson 3: Git Basics</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Understand system, global and local config</li><li>Write .gitignore rules including negation</li><li>Untrack a file that was committed by mistake</li><li>Create time-saving aliases</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Git has hundreds of settings, but a handful of them make a big difference every day: who you are, what your default branch is called, how line endings behave and which files Git should never touch. Setting them up once saves you from a lot of small annoyances, and from accidentally committing secrets.</p>
+      <h2>Three levels of config</h2>
+      <p>Git reads settings from three places, and the most specific one wins:</p>
+      <ul><li><strong>System</strong> (<code>--system</code>): every user on the machine. Rarely touched.</li><li><strong>Global</strong> (<code>--global</code>): you, in every repo. Stored in <code>~/.gitconfig</code>.</li><li><strong>Local</strong> (<code>--local</code>, the default inside a repo): just this repository, stored in <code>.git/config</code>.</li></ul>
+      <p>So you can set your personal email globally and override it with your work email in work repositories only.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git config --global user.name &quot;Ada Lovelace&quot;
+git config --global init.defaultBranch main
+git config --global --list</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>user.name=Ada Lovelace
+init.defaultbranch=main</pre></div>
+      <p>Notice Git prints keys in lower case; config keys are case-insensitive. To see which file a value came from, use <code>git config --list --show-origin</code>.</p>
+      <h2>Settings worth setting</h2>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git config --global user.email &quot;ada@stackcone.com&quot;
+git config --global core.editor &quot;code --wait&quot;   # VS Code for commit messages
+git config --global pull.rebase true             # pull = fetch + rebase
+git config --global push.autoSetupRemote true    # first push sets upstream
+git config --global fetch.prune true             # drop deleted remote branches
+git config --global rerere.enabled true          # remember conflict fixes</code></pre></div>
+      <p>For line endings, Windows users usually want <code>core.autocrlf true</code> and macOS/Linux users <code>core.autocrlf input</code>. Better still, commit a <code>.gitattributes</code> file with <code>* text=auto</code> so the whole team behaves the same regardless of personal settings.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Work email per folder</p><p class="learn-callout-body">Add a conditional include to <code>~/.gitconfig</code>: <code>[includeIf "gitdir:~/work/"]</code> followed by <code>path = ~/.gitconfig-work</code>. Every repo under <code>~/work/</code> then picks up the work identity automatically.</p></aside>
+      <h2>.gitignore patterns</h2>
+      <p>A <code>.gitignore</code> file lists paths Git should pretend do not exist when they are untracked. Commit it so everyone shares the same rules. Each line is a pattern:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code># dependencies and build output
+node_modules/
+dist/
+__pycache__/
+
+# any .log file, anywhere
+*.log
+# ...except this one
+!keep.log
+
+# secrets
+.env
+.env.*
+
+# only at the repo root
+/config.local.json
+
+# any depth under docs
+docs/**/*.tmp</code></pre></div>
+      <ul><li>A trailing <code>/</code> matches directories only.</li><li>A leading <code>/</code> anchors the pattern to the folder containing the .gitignore.</li><li><code>*</code> matches anything except <code>/</code>; <code>**</code> matches across folders.</li><li><code>!</code> re-includes something an earlier rule excluded. You cannot re-include a file if its parent folder is ignored.</li></ul>
+      <p>Here is a repo with <code>node_modules/</code>, <code>app.log</code>, <code>keep.log</code>, <code>.env</code> and <code>index.js</code>, using the first rules above. Only the files we want show up, and <code>check-ignore -v</code> tells you exactly which rule hides a file:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git status --short
+git check-ignore -v app.log</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>?? .gitignore
+?? index.js
+?? keep.log
+.gitignore:2:*.log	app.log</pre></div>
+      <p>GitHub keeps ready-made templates for every language at github.com/github/gitignore, and <code>gh repo create</code> can add one for you.</p>
+      <h2>A global ignore for your machine&#x27;s junk</h2>
+      <p>Files like <code>.DS_Store</code> or your editor's <code>.idea/</code> folder come from <em>your</em> setup, not the project. Instead of adding them to every repo, put them in a personal global ignore file:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>printf &#x27;.DS_Store\n.idea/\n*.swp\n&#x27; &gt;&gt; ~/.gitignore_global
+git config --global core.excludesFile ~/.gitignore_global</code></pre></div>
+      <h2>Already committed? Untrack it</h2>
+      <p>Adding a file to <code>.gitignore</code> does nothing if Git already tracks it. You have to remove it from the index while keeping it on disk:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>echo &quot;.env&quot; &gt;&gt; .gitignore
+git rm --cached .env
+git commit -m &quot;Stop tracking .env&quot;</code></pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>A committed secret is still leaked</p><p class="learn-callout-body"><code>git rm --cached</code> only stops tracking from now on; the secret is still in old commits and on GitHub. Rotate the key immediately. Rewriting history (for example with <code>git filter-repo</code>) is a second step, not a replacement for rotating.</p></aside>
+      <h2>Tracked but locally changed files</h2>
+      <p>Sometimes a file must stay in the repo (a shared settings template, say) but you need a personal tweak that should never be committed. Ignoring will not help because the file is tracked. For a quick, local-only fix, tell Git to stop noticing changes:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git update-index --skip-worktree config/settings.json   # hide my edits
+git update-index --no-skip-worktree config/settings.json  # undo</code></pre></div>
+      <p>A cleaner long-term pattern is to commit <code>settings.example.json</code>, ignore <code>settings.json</code>, and have each developer copy the example. That way nobody fights over a shared file, and a new teammate can see exactly which keys they need to fill in.</p>
+      <h2>Aliases</h2>
+      <p>Aliases are shortcuts stored in your config. They are great for long commands you type every day:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>git config --global alias.st &quot;status --short --branch&quot;
+git config --global alias.lg &quot;log --oneline --graph --decorate&quot;
+git config --global alias.undo &quot;reset --soft HEAD~1&quot;
+git config --global alias.last &quot;log -1 --stat&quot;
+
+git lg</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>* 770e41a (HEAD -&gt; main) init</pre></div>
+      <p>An alias starting with <code>!</code> runs a shell command, which lets you combine steps: <code>git config --global alias.sync '!git switch main &amp;&amp; git pull'</code>. Keep aliases few and memorable; if you cannot remember what one does, you will not use it.</p>
+      <h2>Recap</h2>
+      <ul><li>Config levels are system, global and local; the most specific wins.</li><li>Set name, email, default branch and a few quality-of-life options once.</li><li>Commit a project <code>.gitignore</code>; keep machine junk in a global ignore file.</li><li>Ignoring does not untrack: use <code>git rm --cached</code>, and rotate any leaked secret.</li><li>Aliases turn long commands like a graph log into two letters.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">In a new repo, write a <code>.gitignore</code> that ignores all <code>.csv</code> files except <code>data/sample.csv</code>, ignores a top-level <code>build/</code> folder, and ignores <code>.env</code>. Then add an alias <code>git ignored</code> that lists ignored files. (Hint: <code>git status --ignored --short</code>.)</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="bash" data-solution="cat &gt; .gitignore &lt;&lt;&#x27;EOF&#x27;
+*.csv
+!data/sample.csv
+/build/
+.env
+EOF
+
+git config --global alias.ignored &quot;status --ignored --short&quot;
+
+git check-ignore -v data/sample.csv || echo &quot;sample.csv is tracked&quot;
+git ignored"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="git-config-ignore" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/git/branching-merging/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Branching and Merging</strong><small>Work in parallel, merge, resolve conflicts and rebase.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/git/introduction/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/git/branching-merging/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

@@ -311,6 +311,19 @@
     return out;
   }
 
+  // SQL runs against the lesson database seeded by sql-runner.js, so Run is only
+  // offered on the SQL course. Comment-only snippets have nothing to execute,
+  // except the practice blocks, where the learner types the statement.
+  function sqlCanRun(block) {
+    if (!SQL_PAGE_ALLOW.test(location.pathname || '')) return false;
+    if (block.solution !== null && block.solution !== undefined) return true;
+    var bare = block.code
+      .replace(/--[^\n]*/g, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .trim();
+    return bare.length > 0;
+  }
+
   function runnerFor(block, lang) {
     if (!block.wrap || !document.body.classList.contains('learn-page')) return null;
     var r = RUNNERS[lang];
@@ -318,7 +331,7 @@
     if (lang === 'python' && !pythonCanRunInPyodide(block.code)) return null;
     if (lang === 'javascript' && !jsCanRunInBrowser(block.code)) return null;
     if (lang === 'java' && !javaCanRunInBrowser(block.code)) return null;
-    if (lang === 'sql' && !SQL_PAGE_ALLOW.test(location.pathname || '')) return null;
+    if (lang === 'sql' && !sqlCanRun(block)) return null;
     return r;
   }
 

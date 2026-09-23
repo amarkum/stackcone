@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Build Tools: Maven and Gradle | Java Tutorial | stackcone</title>
+  <meta name="description" content="Build Java projects with Maven and Gradle: project layout, pom.xml, build.gradle.kts, dependencies and scopes, lifecycle commands and wrappers.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/java/build-tools/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/java/build-tools/">
+  <meta property="og:title" content="Build Tools: Maven and Gradle | Java Tutorial | stackcone">
+  <meta property="og:description" content="Build Java projects with Maven and Gradle: project layout, pom.xml, build.gradle.kts, dependencies and scopes, lifecycle commands and wrappers.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Build Tools: Maven and Gradle | Java Tutorial | stackcone">
+  <meta name="twitter:description" content="Build Java projects with Maven and Gradle: project layout, pom.xml, build.gradle.kts, dependencies and scopes, lifecycle commands and wrappers.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/java/concurrency/">
+  <link rel="next" href="https://stackcone.com/learn/programming/java/testing-junit/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "Java", "item": "https://stackcone.com/learn/programming/java/hello-world/"}, {"@type": "ListItem", "position": 4, "name": "Build Tools: Maven and Gradle", "item": "https://stackcone.com/learn/programming/java/build-tools/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Build Tools: Maven and Gradle", "headline": "Build Tools: Maven and Gradle", "description": "Build Java projects with Maven and Gradle: project layout, pom.xml, build.gradle.kts, dependencies and scopes, lifecycle commands and wrappers.", "url": "https://stackcone.com/learn/programming/java/build-tools/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT17M", "isAccessibleForFree": true, "teaches": ["Explain what a build tool does and why every real project uses one", "Read and write a Maven pom.xml and run the Maven lifecycle", "Set up the same project with Gradle's Kotlin DSL", "Manage dependency versions, scopes and wrappers"], "position": 19, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Java Course", "url": "https://stackcone.com/learn/programming/java/hello-world/", "description": "Static typing, OOP, and the collections you use every day.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/java/hello-world/">Java</a> / <span aria-current="page">Build Tools: Maven and Gradle</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="java">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/java/hello-world/">Java</a></p>
+              <p class="learn-sidebar-tagline">20 lessons · Learn Java from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 20 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Java lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/java/hello-world/" data-lesson="java-hello-world" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Hello, Java</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/variables-types/" data-lesson="java-variables-types" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Variables and Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/control-flow/" data-lesson="java-control-flow" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Control Flow</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/oop-classes/" data-lesson="java-oop-classes" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Classes and Objects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/collections/" data-lesson="java-collections" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Collections Framework</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/exceptions/" data-lesson="java-exceptions" data-minutes="13"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Exception Handling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/strings/" data-lesson="java-strings" data-minutes="12"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Strings and StringBuilder</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/arrays/" data-lesson="java-arrays" data-minutes="12"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Arrays</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/methods/" data-lesson="java-methods" data-minutes="12"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Methods and Overloading</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/inheritance/" data-lesson="java-inheritance" data-minutes="15"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Inheritance and Polymorphism</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/interfaces-abstract/" data-lesson="java-interfaces-abstract" data-minutes="14"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Interfaces and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/enums-records/" data-lesson="java-enums-records" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Enums, Records and Optional</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/generics/" data-lesson="java-generics" data-minutes="14"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Generics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/lambdas-streams/" data-lesson="java-lambdas-streams" data-minutes="16"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Lambdas and Streams</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/modern-features/" data-lesson="java-modern-features" data-minutes="20"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Modern Java: var, switch expressions, text blocks, pattern matching, sealed classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/date-time/" data-lesson="java-date-time" data-minutes="17"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Dates and Times with java.time</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/files-io/" data-lesson="java-files-io" data-minutes="14"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">Files and I/O</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/concurrency/" data-lesson="java-concurrency" data-minutes="22"><span class="learn-sidebar-num">18</span><span class="learn-sidebar-title">Threads, Executors and CompletableFuture</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/java/build-tools/" aria-current="page" data-lesson="java-build-tools" data-minutes="17"><span class="learn-sidebar-num">19</span><span class="learn-sidebar-title">Build Tools: Maven and Gradle</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/java/testing-junit/" data-lesson="java-testing-junit" data-minutes="14"><span class="learn-sidebar-num">20</span><span class="learn-sidebar-title">Testing with JUnit</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/java/hello-world/">Java</a> · Lesson 19 of 20</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/java/concurrency/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="java-build-tools" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/java/testing-junit/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Build Tools: Maven and Gradle</h1>
+          <p class="learn-summary">Build Java projects with Maven and Gradle: project layout, pom.xml, build.gradle.kts, dependencies and scopes, lifecycle commands and wrappers.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>17 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/java/concurrency/">Lesson 18: Threads, Executors and CompletableFuture</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Explain what a build tool does and why every real project uses one</li><li>Read and write a Maven pom.xml and run the Maven lifecycle</li><li>Set up the same project with Gradle&#x27;s Kotlin DSL</li><li>Manage dependency versions, scopes and wrappers</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 20 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 20</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>So far you have run programs with <code>java Main.java</code>. That is perfect for learning, but a real application has dozens of source files, depends on libraries like Jackson or Spring, has tests to run, and must be packaged into a JAR that a server can start. Doing all that by hand with <code>javac</code> and a folder of downloaded JARs is fragile and slow.</p>
+      <p>A <strong>build tool</strong> automates it: it downloads dependencies (and their dependencies) from a repository such as Maven Central, compiles your code, runs tests, and packages the result, the same way on every machine and in CI. The Java world has two main tools: <strong>Maven</strong> and <strong>Gradle</strong>. You will meet both, so this lesson covers each.</p>
+      <h2>The standard project layout</h2>
+      <p>Both tools share the same conventional folder structure. If you follow it, you need almost no configuration, because the tool already knows where everything lives.</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>orders-service/
+  pom.xml                     (Maven)  or  build.gradle.kts + settings.gradle.kts (Gradle)
+  src/
+    main/
+      java/com/stackcone/orders/App.java
+      resources/application.properties
+    test/
+      java/com/stackcone/orders/AppTest.java
+  target/   (Maven output)   or   build/   (Gradle output)</code></pre></div>
+      <p>Production code goes in <code>src/main/java</code>, tests in <code>src/test/java</code>, and non-code files (config, templates) in <code>resources</code>. The output folder is generated, so add it to <code>.gitignore</code>.</p>
+      <h2>Coordinates: how libraries are identified</h2>
+      <p>Every library, including your own project, is identified by three <strong>coordinates</strong>: a <code>groupId</code> (usually a reversed domain, like <code>com.fasterxml.jackson.core</code>), an <code>artifactId</code> (the library name, <code>jackson-databind</code>) and a <code>version</code>. Written together they look like <code>com.fasterxml.jackson.core:jackson-databind:2.18.2</code>. You look these up on search.maven.org or in a library's README.</p>
+      <h2>Maven: pom.xml</h2>
+      <p>Maven describes a project in an XML file called <code>pom.xml</code> (Project Object Model). It is verbose but very predictable: you declare <em>what</em> the project is, and Maven's fixed lifecycle decides <em>how</em> to build it.</p>
+      <div class="learn-code-wrap" data-lang="html"><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+  &lt;groupId&gt;com.stackcone&lt;/groupId&gt;
+  &lt;artifactId&gt;orders-service&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+  &lt;packaging&gt;jar&lt;/packaging&gt;
+
+  &lt;properties&gt;
+    &lt;maven.compiler.release&gt;21&lt;/maven.compiler.release&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+      &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+      &lt;version&gt;2.18.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+      &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+      &lt;version&gt;5.11.4&lt;/version&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+        &lt;version&gt;3.5.2&lt;/version&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+&lt;/project&gt;</code></pre></div>
+      <p><code>maven.compiler.release</code> sets the Java version. The <code>1.0.0-SNAPSHOT</code> suffix marks a version still in development. Jackson is a normal dependency; JUnit has <code>test</code> scope, so it is available to tests but not shipped with the app. Plugins add or configure build steps; Surefire is the plugin that runs unit tests.</p>
+      <h2>The Maven lifecycle</h2>
+      <p>Maven builds happen in ordered <strong>phases</strong>. Running a phase runs every phase before it, so <code>mvn package</code> also validates, compiles and tests.</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>mvn compile            # compile src/main/java into target/classes
+mvn test               # compile and run unit tests
+mvn package            # ... and build target/orders-service-1.0.0-SNAPSHOT.jar
+mvn verify             # ... and run integration checks
+mvn install            # ... and copy the JAR into your local ~/.m2 repository
+mvn clean package      # delete target/ first, then build from scratch
+mvn dependency:tree    # show every dependency and where it came from
+mvn package -DskipTests   # skip tests (use sparingly!)</code></pre></div>
+      <p>Downloaded libraries are cached in <code>~/.m2/repository</code>, so the first build is slow and later ones are fast.</p>
+      <h2>Gradle: build.gradle.kts</h2>
+      <p>Gradle configures builds with code instead of XML. The Kotlin DSL (<code>build.gradle.kts</code>) is now the default for new projects and gives editor autocompletion; older projects use a Groovy <code>build.gradle</code>. Gradle is more flexible and usually faster thanks to incremental builds and a build cache, which is why Android and many large projects use it. Here is the same project:</p>
+      <div class="learn-code-wrap" data-lang="text"><pre><code>// settings.gradle.kts
+rootProject.name = &quot;orders-service&quot;
+
+// build.gradle.kts
+plugins {
+    application
+}
+
+group = &quot;com.stackcone&quot;
+version = &quot;1.0.0-SNAPSHOT&quot;
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(&quot;com.fasterxml.jackson.core:jackson-databind:2.18.2&quot;)
+    testImplementation(&quot;org.junit.jupiter:junit-jupiter:5.11.4&quot;)
+    testRuntimeOnly(&quot;org.junit.platform:junit-platform-launcher&quot;)
+}
+
+application {
+    mainClass = &quot;com.stackcone.orders.App&quot;
+}
+
+tasks.test {
+    useJUnitPlatform()
+}</code></pre></div>
+      <p>Gradle calls scopes <strong>configurations</strong>: <code>implementation</code> (compile and runtime), <code>testImplementation</code> (tests only), <code>compileOnly</code> and <code>runtimeOnly</code>. The <code>toolchain</code> block even downloads the right JDK if it is missing. Builds are made of <strong>tasks</strong>:</p>
+      <div class="learn-code-wrap" data-lang="bash"><pre><code>./gradlew build          # compile, test and assemble build/libs/orders-service-1.0.0-SNAPSHOT.jar
+./gradlew test           # run tests only
+./gradlew run            # run the application (from the application plugin)
+./gradlew clean build    # rebuild from scratch
+./gradlew dependencies   # print the dependency tree
+./gradlew tasks          # list available tasks</code></pre></div>
+      <h2>Wrappers: pin the build tool version</h2>
+      <p>Notice <code>./gradlew</code> rather than <code>gradle</code>. The <strong>wrapper</strong> is a small script committed to the repository that downloads the exact build tool version the project expects. Anyone who clones the repo can build without installing Gradle, and everyone uses the same version. Maven has the same idea: <code>./mvnw</code>. Generate them with <code>gradle wrapper</code> or <code>mvn wrapper:wrapper</code>, then commit the scripts and the small <code>gradle/wrapper</code> or <code>.mvn/wrapper</code> folder.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistake: dependency conflicts</p><p class="learn-callout-body">Two libraries may pull in different versions of the same transitive dependency. Maven picks the one "nearest" to your project; Gradle picks the highest. Either can lead to <code>NoSuchMethodError</code> at runtime. Inspect with <code>mvn dependency:tree</code> or <code>./gradlew dependencies</code>, and align versions with a BOM (bill of materials), such as <code>platform("com.fasterxml.jackson:jackson-bom:2.18.2")</code> in Gradle or a <code>&lt;dependencyManagement&gt;</code> import in Maven.</p></aside>
+      <h2>Maven or Gradle?</h2>
+      <ul><li><strong>Maven</strong>: convention over configuration, very predictable, huge ecosystem, easy to read; common in enterprise and Spring projects.</li><li><strong>Gradle</strong>: flexible and fast (incremental builds, build cache), required for Android, better for large multi-module builds with custom logic.</li><li>Both use Maven Central and the same coordinates, so any library works with either. Spring Initializr (start.spring.io) generates both.</li><li>Pick whatever your team already uses; for a new small project, either is fine.</li></ul>
+      <h2>Recap</h2>
+      <ul><li>Build tools download dependencies, compile, test and package the same way on every machine.</li><li>Both Maven and Gradle use the <code>src/main/java</code> and <code>src/test/java</code> layout and <code>group:artifact:version</code> coordinates.</li><li>Maven uses <code>pom.xml</code> and lifecycle phases (<code>mvn clean package</code>); scopes like <code>test</code> control where a dependency is used.</li><li>Gradle uses <code>build.gradle.kts</code>, tasks (<code>./gradlew build</code>) and configurations like <code>implementation</code> and <code>testImplementation</code>.</li><li>Commit the wrapper (<code>mvnw</code> or <code>gradlew</code>) and inspect dependency trees when versions clash.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write the <code>dependencies</code> block of a <code>build.gradle.kts</code> for a project that uses Google Guava <code>com.google.guava:guava:33.4.0-jre</code> at runtime and AssertJ <code>org.assertj:assertj-core:3.27.3</code> plus JUnit Jupiter 5.11.4 for tests only. Then write the equivalent Maven <code>&lt;dependency&gt;</code> entry for AssertJ.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="text" data-solution="// build.gradle.kts
+dependencies {
+    implementation(&quot;com.google.guava:guava:33.4.0-jre&quot;)
+    testImplementation(&quot;org.assertj:assertj-core:3.27.3&quot;)
+    testImplementation(&quot;org.junit.jupiter:junit-jupiter:5.11.4&quot;)
+    testRuntimeOnly(&quot;org.junit.platform:junit-platform-launcher&quot;)
+}
+
+&lt;!-- pom.xml --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.assertj&lt;/groupId&gt;
+  &lt;artifactId&gt;assertj-core&lt;/artifactId&gt;
+  &lt;version&gt;3.27.3&lt;/version&gt;
+  &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="java-build-tools" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/java/testing-junit/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 20</span><strong>Testing with JUnit</strong><small>Write unit tests, assertions and run them with Maven or Gradle.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/java/concurrency/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/java/testing-junit/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Narrowing, Type Guards and Discriminated Unions | stackcone</title>
+  <meta name="description" content="Learn TypeScript narrowing with typeof, instanceof, in, custom type guards, assertion functions and exhaustive discriminated unions using never.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/typescript/narrowing/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/typescript/narrowing/">
+  <meta property="og:title" content="Narrowing, Type Guards and Discriminated Unions | stackcone">
+  <meta property="og:description" content="Learn TypeScript narrowing with typeof, instanceof, in, custom type guards, assertion functions and exhaustive discriminated unions using never.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Narrowing, Type Guards and Discriminated Unions | stackcone">
+  <meta name="twitter:description" content="Learn TypeScript narrowing with typeof, instanceof, in, custom type guards, assertion functions and exhaustive discriminated unions using never.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/typescript/functions/">
+  <link rel="next" href="https://stackcone.com/learn/programming/typescript/generics-utility/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "TypeScript", "item": "https://stackcone.com/learn/programming/typescript/introduction/"}, {"@type": "ListItem", "position": 4, "name": "Narrowing, Type Guards and Discriminated Unions", "item": "https://stackcone.com/learn/programming/typescript/narrowing/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Narrowing, Type Guards and Discriminated Unions", "headline": "Narrowing, Type Guards and Discriminated Unions", "description": "Learn TypeScript narrowing with typeof, instanceof, in, custom type guards, assertion functions and exhaustive discriminated unions using never.", "url": "https://stackcone.com/learn/programming/typescript/narrowing/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT16M", "isAccessibleForFree": true, "teaches": ["Narrow unions with typeof, instanceof, in and equality checks", "Write custom type guards and assertion functions", "Make switches exhaustive with never"], "position": 4, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "TypeScript Course", "url": "https://stackcone.com/learn/programming/typescript/introduction/", "description": "Add static types to JavaScript: interfaces, generics and safer code.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/typescript/introduction/">TypeScript</a> / <span aria-current="page">Narrowing, Type Guards and Discriminated Unions</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="typescript">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/typescript/introduction/">TypeScript</a></p>
+              <p class="learn-sidebar-tagline">12 lessons · Learn TypeScript from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 12 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="TypeScript lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/introduction/" data-lesson="ts-introduction" data-minutes="12"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Why TypeScript</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/types-interfaces/" data-lesson="ts-types-interfaces" data-minutes="16"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Types, Interfaces and Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/functions/" data-lesson="ts-functions" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Typing Functions and Overloads</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/typescript/narrowing/" aria-current="page" data-lesson="ts-narrowing" data-minutes="16"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Narrowing, Type Guards and Discriminated Unions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/generics-utility/" data-lesson="ts-generics-utility" data-minutes="17"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Generics and Utility Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/classes/" data-lesson="ts-classes" data-minutes="15"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Classes, Access Modifiers and Abstract Classes</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/advanced-types/" data-lesson="ts-advanced-types" data-minutes="18"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Mapped, Conditional and Template Literal Types</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/modules-declarations/" data-lesson="ts-modules-declarations" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Enums, Modules and Declaration Files</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/async-apis/" data-lesson="ts-async-apis" data-minutes="18"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Typing Async Code, fetch and API Responses</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/tsconfig-strict/" data-lesson="ts-tsconfig-strict" data-minutes="16"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">tsconfig, Strict Mode and Tooling</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/react/" data-lesson="ts-react" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">TypeScript with React</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/typescript/real-world/" data-lesson="ts-real-world" data-minutes="15"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">TypeScript in Real Projects</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/typescript/introduction/">TypeScript</a> · Lesson 4 of 12</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/typescript/functions/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="ts-narrowing" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/typescript/generics-utility/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Narrowing, Type Guards and Discriminated Unions</h1>
+          <p class="learn-summary">Learn TypeScript narrowing with typeof, instanceof, in, custom type guards, assertion functions and exhaustive discriminated unions using never.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>16 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/typescript/functions/">Lesson 3: Typing Functions and Overloads</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Narrow unions with typeof, instanceof, in and equality checks</li><li>Write custom type guards and assertion functions</li><li>Make switches exhaustive with never</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 12 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 12</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 3 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>A union type like <code>string | number</code> says a value could be one of several things. Before you can do anything specific with it, you have to find out which one it is. <strong>Narrowing</strong> is how TypeScript follows your runtime checks (<code>if</code>, <code>switch</code>, early returns) and refines the type inside each branch.</p>
+      <p>You met basic narrowing and discriminated unions in the types lesson. Here we go further: every built-in narrowing tool, how to write your own, and how to make the compiler force you to handle every case.</p>
+      <h2>Control flow analysis</h2>
+      <p>TypeScript reads your code the way you do. After an <code>if</code> that returns, it knows the rest of the function only runs in the other case. This is called control flow analysis, and it works with <code>typeof</code>, truthiness and equality checks.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>function describe(value: string | number | null): string {
+  if (value === null) return &quot;nothing&quot;;   // value: null
+  if (typeof value === &quot;number&quot;) {
+    return value.toFixed(2);              // value: number
+  }
+  return value.trim();                    // value: string (the only option left)
+}</code></pre></div>
+      <p>The <code>typeof</code> operator returns one of a few strings at runtime: <code>"string"</code>, <code>"number"</code>, <code>"boolean"</code>, <code>"bigint"</code>, <code>"symbol"</code>, <code>"undefined"</code>, <code>"function"</code> and <code>"object"</code>. You can run this to see them:</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>const samples = [&quot;hi&quot;, 42, true, 10n, undefined, () =&gt; 1, { a: 1 }, [1, 2], null];
+for (const s of samples) {
+  console.log(typeof s);
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>string
+number
+boolean
+bigint
+undefined
+function
+object
+object
+object</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>typeof null is &quot;object&quot;</p><p class="learn-callout-body">The last line is a famous JavaScript quirk. Arrays and <code>null</code> both report <code>"object"</code>, so <code>typeof x === "object"</code> does not rule out null. Check <code>x !== null</code> as well, or use <code>Array.isArray(x)</code> for arrays. TypeScript knows this and keeps <code>null</code> in the type after a bare <code>typeof</code> object check.</p></aside>
+      <h2>instanceof and in</h2>
+      <p>For class instances, <code>instanceof</code> narrows to the class. For plain objects (which have no class), the <code>in</code> operator checks whether a property exists and narrows to the union members that have it.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>function errorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;   // err: Error
+  if (typeof err === &quot;string&quot;) return err;
+  return &quot;Unknown error&quot;;
+}
+
+interface Card { cardNumber: string; }
+interface Upi { upiId: string; }
+
+function paymentLabel(method: Card | Upi): string {
+  if (&quot;upiId&quot; in method) {
+    return `UPI ${method.upiId}`;                 // method: Upi
+  }
+  return `Card ending ${method.cardNumber.slice(-4)}`; // method: Card
+}</code></pre></div>
+      <p>The <code>errorMessage</code> function is worth memorising. In a <code>catch</code> block the error is <code>unknown</code> (under strict mode), because JavaScript lets you <code>throw</code> anything, and this is the standard way to get a message out safely.</p>
+      <h2>Custom type guards</h2>
+      <p>Built-in checks cannot express everything. When you have a reusable check, write a function whose return type is a <strong>type predicate</strong>: <code>value is SomeType</code>. When it returns <code>true</code>, TypeScript narrows the argument at the call site.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>interface User { id: number; name: string; }
+
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === &quot;object&quot; &amp;&amp;
+    value !== null &amp;&amp;
+    &quot;id&quot; in value &amp;&amp; typeof value.id === &quot;number&quot; &amp;&amp;
+    &quot;name&quot; in value &amp;&amp; typeof value.name === &quot;string&quot;
+  );
+}
+
+const data: unknown = JSON.parse(&#x27;{&quot;id&quot;: 1, &quot;name&quot;: &quot;Ada&quot;}&#x27;);
+if (isUser(data)) {
+  console.log(data.name.toUpperCase());   // data: User
+}
+
+// Type guards also work with filter to drop null/undefined
+const maybe: (User | null)[] = [{ id: 1, name: &quot;Ada&quot; }, null];
+const users = maybe.filter((u): u is User =&gt; u !== null);   // User[]</code></pre></div>
+      <p>Since TypeScript 5.5, simple filters like <code>maybe.filter((u) =&gt; u !== null)</code> infer the predicate automatically, so the explicit <code>u is User</code> is often unnecessary. Writing it out still helps when the check is more complex.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>A type guard is a promise you make</p><p class="learn-callout-body">TypeScript trusts your predicate completely. If <code>isUser</code> returned <code>true</code> for the wrong shape, the compiler would happily treat bad data as a <code>User</code>. Keep guards small and honest, or use a validation library (covered in the async lesson) for large shapes.</p></aside>
+      <h2>Assertion functions</h2>
+      <p>An assertion function throws instead of returning a boolean. Its return type <code>asserts value is T</code> tells TypeScript that if the function returns at all, the value has that type for the rest of the scope. They are handy for preconditions at the top of a function.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>function assertDefined&lt;T&gt;(value: T, msg: string): asserts value is NonNullable&lt;T&gt; {
+  if (value === null || value === undefined) throw new Error(msg);
+}
+
+function sendInvoice(email: string | undefined) {
+  assertDefined(email, &quot;Customer has no email&quot;);
+  return email.toLowerCase();   // email: string from here on
+}</code></pre></div>
+      <h2>Discriminated unions and exhaustiveness</h2>
+      <p>The most useful narrowing pattern is the discriminated union: each variant has a shared literal field (often <code>type</code>, <code>kind</code> or <code>status</code>). Switching on that field narrows to exactly one variant. Add a <code>never</code> check in the <code>default</code> branch and the compiler will fail the build if someone adds a new variant but forgets to handle it.</p>
+      <div class="learn-code-wrap" data-lang="typescript"><pre><code>type Event =
+  | { type: &quot;signup&quot;; email: string }
+  | { type: &quot;purchase&quot;; orderId: string; amount: number }
+  | { type: &quot;refund&quot;; orderId: string };
+
+function assertNever(x: never): never {
+  throw new Error(`Unhandled case: ${JSON.stringify(x)}`);
+}
+
+function summarize(e: Event): string {
+  switch (e.type) {
+    case &quot;signup&quot;:   return `New user ${e.email}`;
+    case &quot;purchase&quot;: return `Order ${e.orderId}: $${e.amount}`;
+    case &quot;refund&quot;:   return `Refund for ${e.orderId}`;
+    default:         return assertNever(e);   // e: never
+  }
+}</code></pre></div>
+      <p>Why does this work? After the three cases, every possible variant has been removed from the union, so <code>e</code> has the type <code>never</code> (a type with no values). If you add <code>{ type: "cancel" }</code> to <code>Event</code>, <code>e</code> in the default branch becomes that variant, which is not assignable to <code>never</code>, and you get a compile error pointing at the exact switch you need to update.</p>
+      <p>Here is the runtime behaviour in JavaScript, including what happens when unexpected data slips through:</p>
+      <div class="learn-code-wrap" data-lang="javascript"><pre><code>function summarize(e) {
+  switch (e.type) {
+    case &quot;signup&quot;:   return `New user ${e.email}`;
+    case &quot;purchase&quot;: return `Order ${e.orderId}: $${e.amount}`;
+    case &quot;refund&quot;:   return `Refund for ${e.orderId}`;
+    default: throw new Error(`Unhandled case: ${JSON.stringify(e)}`);
+  }
+}
+
+const events = [
+  { type: &quot;signup&quot;, email: &quot;ada@stackcone.com&quot; },
+  { type: &quot;purchase&quot;, orderId: &quot;A1&quot;, amount: 49 },
+  { type: &quot;refund&quot;, orderId: &quot;A1&quot; },
+  { type: &quot;cancel&quot;, orderId: &quot;A2&quot; },
+];
+for (const e of events) {
+  try {
+    console.log(summarize(e));
+  } catch (err) {
+    console.log(&quot;Error:&quot;, err.message);
+  }
+}</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>New user ada@stackcone.com
+Order A1: $49
+Refund for A1
+Error: Unhandled case: {&quot;type&quot;:&quot;cancel&quot;,&quot;orderId&quot;:&quot;A2&quot;}</pre></div>
+      <h2>Recap</h2>
+      <ul><li>TypeScript narrows unions by following <code>if</code>, <code>switch</code>, early returns and equality checks.</li><li>Use <code>typeof</code> for primitives, <code>instanceof</code> for classes and <code>in</code> for plain object shapes; remember <code>typeof null</code> is <code>"object"</code>.</li><li>Custom type guards (<code>value is T</code>) and assertion functions (<code>asserts value is T</code>) package reusable checks, but TypeScript trusts them blindly.</li><li>In <code>catch</code>, the error is <code>unknown</code>; narrow with <code>instanceof Error</code>.</li><li>Discriminated unions plus an <code>assertNever</code> default make switches exhaustive and future-proof.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Model a UI request state as a discriminated union with four variants: <code>idle</code>, <code>loading</code>, <code>success</code> (with <code>data: string[]</code>) and <code>error</code> (with <code>message: string</code>). Write <code>render(state)</code> that returns a string for each and uses <code>assertNever</code> for exhaustiveness.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="typescript" data-solution="type RequestState =
+  | { status: &quot;idle&quot; }
+  | { status: &quot;loading&quot; }
+  | { status: &quot;success&quot;; data: string[] }
+  | { status: &quot;error&quot;; message: string };
+
+function assertNever(x: never): never {
+  throw new Error(`Unhandled: ${JSON.stringify(x)}`);
+}
+
+function render(state: RequestState): string {
+  switch (state.status) {
+    case &quot;idle&quot;:    return &quot;Click load to start&quot;;
+    case &quot;loading&quot;: return &quot;Loading...&quot;;
+    case &quot;success&quot;: return state.data.length ? state.data.join(&quot;, &quot;) : &quot;No results&quot;;
+    case &quot;error&quot;:   return `Something went wrong: ${state.message}`;
+    default:        return assertNever(state);
+  }
+}"><pre><code>// Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="ts-narrowing" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/programming/typescript/generics-utility/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 5</span><strong>Generics and Utility Types</strong><small>Write reusable typed functions and transform types with Partial, Pick and more.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/typescript/functions/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/typescript/generics-utility/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

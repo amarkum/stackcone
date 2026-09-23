@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>Binary Search Patterns | Algorithms Tutorial | stackcone</title>
+  <meta name="description" content="Master binary search patterns in Python: lower and upper bounds, rotated sorted arrays, peak finding, 2D matrices and binary search on the answer.">
+  <link rel="canonical" href="https://stackcone.com/learn/ds-algo/algorithms/binary-search-patterns/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/ds-algo/algorithms/binary-search-patterns/">
+  <meta property="og:title" content="Binary Search Patterns | Algorithms Tutorial | stackcone">
+  <meta property="og:description" content="Master binary search patterns in Python: lower and upper bounds, rotated sorted arrays, peak finding, 2D matrices and binary search on the answer.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Binary Search Patterns | Algorithms Tutorial | stackcone">
+  <meta name="twitter:description" content="Master binary search patterns in Python: lower and upper bounds, rotated sorted arrays, peak finding, 2D matrices and binary search on the answer.">
+  <link rel="prev" href="https://stackcone.com/learn/ds-algo/algorithms/two-pointers/">
+  <link rel="next" href="https://stackcone.com/learn/ds-algo/algorithms/sorting/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "DS & Algo", "item": "https://stackcone.com/learn/ds-algo/"}, {"@type": "ListItem", "position": 3, "name": "Algorithms", "item": "https://stackcone.com/learn/ds-algo/algorithms/searching/"}, {"@type": "ListItem", "position": 4, "name": "Binary Search Patterns", "item": "https://stackcone.com/learn/ds-algo/algorithms/binary-search-patterns/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Binary Search Patterns", "headline": "Binary Search Patterns", "description": "Master binary search patterns in Python: lower and upper bounds, rotated sorted arrays, peak finding, 2D matrices and binary search on the answer.", "url": "https://stackcone.com/learn/ds-algo/algorithms/binary-search-patterns/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Intermediate", "timeRequired": "PT18M", "isAccessibleForFree": true, "teaches": ["Use one reliable template for lower and upper bounds", "Search rotated sorted arrays and find peaks", "Treat a 2D matrix as a flat sorted list", "Binary search over an answer range with a yes/no check"], "position": 3, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "Algorithms Course", "url": "https://stackcone.com/learn/ds-algo/algorithms/searching/", "description": "Searching, sorting, recursion, greedy, backtracking and dynamic programming.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/ds-algo/">DS &amp; Algo</a> / <a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> / <span aria-current="page">Binary Search Patterns</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="algorithms">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn Algorithms from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="Algorithms lessons">
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/searching/" data-lesson="algo-searching" data-minutes="13"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Searching</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/two-pointers/" data-lesson="algo-two-pointers" data-minutes="18"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">Two Pointers and Sliding Window</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/ds-algo/algorithms/binary-search-patterns/" aria-current="page" data-lesson="algo-binary-search-patterns" data-minutes="18"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Binary Search Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/sorting/" data-lesson="algo-sorting" data-minutes="18"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Sorting</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/recursion/" data-lesson="algo-recursion" data-minutes="15"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">Recursion</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/divide-conquer/" data-lesson="algo-divide-conquer" data-minutes="17"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Divide and Conquer</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/greedy/" data-lesson="algo-greedy" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">Greedy Algorithms</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/backtracking/" data-lesson="algo-backtracking" data-minutes="16"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">Backtracking</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dynamic-programming/" data-lesson="algo-dynamic-programming" data-minutes="20"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dynamic Programming</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/dp-patterns/" data-lesson="algo-dp-patterns" data-minutes="22"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Dynamic Programming Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bfs-dfs/" data-lesson="algo-bfs-dfs" data-minutes="18"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">Graph Traversal: BFS and DFS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/shortest-paths/" data-lesson="algo-shortest-paths" data-minutes="20"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Shortest Paths: Dijkstra and Bellman-Ford</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/topological-sort/" data-lesson="algo-topological-sort" data-minutes="16"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">Topological Sort</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/mst/" data-lesson="algo-mst" data-minutes="18"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Minimum Spanning Trees: Kruskal and Prim</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/bit-manipulation/" data-lesson="algo-bit-manipulation" data-minutes="16"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Bit Manipulation</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/string-matching/" data-lesson="algo-string-matching" data-minutes="20"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">String Algorithms: KMP and Rabin-Karp</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/ds-algo/algorithms/interview-strategy/" data-lesson="algo-interview-strategy" data-minutes="18"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">How to Solve Coding Interview Problems</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/ds-algo/algorithms/searching/">Algorithms</a> · Lesson 3 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/ds-algo/algorithms/two-pointers/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="algo-binary-search-patterns" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/ds-algo/algorithms/sorting/" data-complete-on-click aria-label="Next lesson"><span>Next</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>Binary Search Patterns</h1>
+          <p class="learn-summary">Master binary search patterns in Python: lower and upper bounds, rotated sorted arrays, peak finding, 2D matrices and binary search on the answer.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Intermediate</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>4 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/ds-algo/algorithms/two-pointers/">Lesson 2: Two Pointers and Sliding Window</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Use one reliable template for lower and upper bounds</li><li>Search rotated sorted arrays and find peaks</li><li>Treat a 2D matrix as a flat sorted list</li><li>Binary search over an answer range with a yes/no check</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 5 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>The <a href="/learn/ds-algo/algorithms/searching/">Searching</a> lesson introduced binary search: halve the range each step and find an item in O(log n). In practice, the tricky problems rarely ask "is x in the list?". They ask for the <em>first</em> position that satisfies something, or they hide the sorted order inside a rotated array, a grid or a range of possible answers. This lesson gives you one template and shows how it covers all of them.</p>
+      <p>The mental model that makes everything click: binary search does not really search for a value. It searches for the <strong>boundary</strong> in a list of booleans that looks like <code>False False False True True</code>. If you can phrase your question as a condition that flips from false to true exactly once, binary search finds the flip point in O(log n).</p>
+      <h2>One template: find the first True</h2>
+      <p>Keep a half-open range <code>[lo, hi)</code>. The answer is always inside it. Look at the middle; if the condition holds, the first True is at <code>mid</code> or earlier, so set <code>hi = mid</code>. Otherwise it is after <code>mid</code>, so set <code>lo = mid + 1</code>. When <code>lo == hi</code>, you have found it.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>def first_true(lo, hi, cond):
+    # smallest i in [lo, hi) with cond(i) True; returns hi if none
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if cond(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+scores = [12, 20, 20, 20, 35, 41, 58]
+n = len(scores)
+lower = first_true(0, n, lambda i: scores[i] &gt;= 20)   # first 20
+upper = first_true(0, n, lambda i: scores[i] &gt; 20)    # first after the 20s
+print(&quot;first index of 20:&quot;, lower)
+print(&quot;count of 20:&quot;, upper - lower)
+print(&quot;insert 40 at:&quot;, first_true(0, n, lambda i: scores[i] &gt;= 40))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>first index of 20: 1
+count of 20: 3
+insert 40 at: 5</pre></div>
+      <p>Because the loop always shrinks the range and never skips the answer, there is no off-by-one guesswork and no infinite loop. <strong>Time O(log n), space O(1).</strong> Python's standard library has the same two searches built in: <code>bisect_left</code> is the lower bound and <code>bisect_right</code> the upper bound.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code>from bisect import bisect_left, bisect_right
+
+scores = [12, 20, 20, 20, 35, 41, 58]
+print(bisect_left(scores, 20), bisect_right(scores, 20))
+print(bisect_left(scores, 99))   # past the end means &quot;not present&quot;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1 4
+7</pre></div>
+      <h2>Rotated sorted arrays</h2>
+      <p>A sorted list that has been rotated, like <code>[40, 50, 60, 10, 20, 30]</code>, is no longer sorted, but it still has a monotonic condition: "is this element less than or equal to the last element?" is False for the left part and True for the right part. The first True is the minimum, which is also the rotation point.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def first_true(lo, hi, cond):
+    # smallest i in [lo, hi) with cond(i) True; returns hi if none
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if cond(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+scores = [12, 20, 20, 20, 35, 41, 58]
+
+# new code
+def rotation_point(nums):
+    last = nums[-1]
+    return first_true(0, len(nums), lambda i: nums[i] &lt;= last)
+
+def search_rotated(nums, target):
+    k = rotation_point(nums)
+    # pick the sorted half that could contain target
+    if target &lt;= nums[-1]:
+        lo, hi = k, len(nums)
+    else:
+        lo, hi = 0, k
+    i = first_true(lo, hi, lambda j: nums[j] &gt;= target)
+    return i if i &lt; len(nums) and nums[i] == target else -1
+
+temps = [40, 50, 60, 10, 20, 30]
+print(&quot;min at&quot;, rotation_point(temps))
+print(search_rotated(temps, 50), search_rotated(temps, 20), search_rotated(temps, 35))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>min at 3
+1 4 -1</pre></div>
+      <p>Two O(log n) searches in a row is still O(log n). Splitting a tricky problem into "find the structure, then search the easy part" is a habit worth building.</p>
+      <h2>Peak finding</h2>
+      <p>A <em>peak</em> is an element bigger than its neighbours. The list is not sorted at all, yet binary search still works: if <code>nums[mid] &lt; nums[mid + 1]</code>, you are on an uphill slope, and there must be a peak to the right. The condition "<code>nums[i] &gt; nums[i + 1]</code>" is guaranteed to become True somewhere, and the first place it does is a peak.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def first_true(lo, hi, cond):
+    # smallest i in [lo, hi) with cond(i) True; returns hi if none
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if cond(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+scores = [12, 20, 20, 20, 35, 41, 58]
+
+# new code
+def find_peak(nums):
+    return first_true(0, len(nums) - 1, lambda i: nums[i] &gt; nums[i + 1])
+
+traffic = [3, 9, 14, 22, 18, 7, 11, 4]
+p = find_peak(traffic)
+print(p, traffic[p])</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>3 22</pre></div>
+      <p>Note the condition is not monotonic over the whole list (the hill at index 6 means it goes False again), but the search still returns <em>a</em> valid peak because each step keeps a range that must contain one. This is the sort of reasoning interviewers want to hear.</p>
+      <h2>Searching a sorted 2D matrix</h2>
+      <p>If every row of a matrix is sorted and each row starts after the previous one ends, the whole grid is one sorted list laid out row by row. Map a flat index <code>i</code> to <code>(i // cols, i % cols)</code> and search as normal.</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def first_true(lo, hi, cond):
+    # smallest i in [lo, hi) with cond(i) True; returns hi if none
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if cond(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+scores = [12, 20, 20, 20, 35, 41, 58]
+
+# new code
+def search_matrix(grid, target):
+    rows, cols = len(grid), len(grid[0])
+    cell = lambda i: grid[i // cols][i % cols]
+    i = first_true(0, rows * cols, lambda i: cell(i) &gt;= target)
+    return i &lt; rows * cols and cell(i) == target
+
+grid = [[1, 4, 7, 9],
+        [12, 15, 18, 21],
+        [30, 33, 36, 40]]
+print(search_matrix(grid, 18), search_matrix(grid, 19))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>True False</pre></div>
+      <p><strong>Time O(log(rows * cols)), space O(1).</strong></p>
+      <h2>Binary search on the answer</h2>
+      <p>The most powerful pattern: when the question asks for the <em>smallest value that works</em>, and "works" is monotonic (if 10 works, 11 also works), binary search over the possible answers and write a <code>feasible(x)</code> check. Example: stackcone has video files of given sizes that must be uploaded in order over <code>d</code> days. What is the smallest daily upload capacity that finishes in time?</p>
+      <div class="learn-code-wrap" data-lang="python"><pre><code># from earlier in this lesson
+def first_true(lo, hi, cond):
+    # smallest i in [lo, hi) with cond(i) True; returns hi if none
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if cond(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+scores = [12, 20, 20, 20, 35, 41, 58]
+
+# new code
+def days_needed(sizes, cap):
+    days, load = 1, 0
+    for s in sizes:
+        if load + s &gt; cap:
+            days += 1
+            load = 0
+        load += s
+    return days
+
+def min_capacity(sizes, d):
+    lo, hi = max(sizes), sum(sizes) + 1
+    return first_true(lo, hi, lambda cap: days_needed(sizes, cap) &lt;= d)
+
+sizes = [7, 2, 5, 10, 8]
+print(min_capacity(sizes, 2))
+print(min_capacity(sizes, 3))</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>18
+14</pre></div>
+      <p>The answer range is from the largest single file (you must fit it in one day) to the total. Each check is O(n), and there are O(log S) checks where S is the sum, so the total is <strong>O(n log S) time and O(1) space</strong>. The same shape solves "minimum eating speed", "split array largest sum" and many scheduling problems.</p>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Common mistakes</p><p class="learn-callout-body">Using <code>hi = len(nums) - 1</code> with a template that expects a half-open range, which silently skips the last element. Writing <code>lo = mid</code> instead of <code>mid + 1</code>, which loops forever when <code>hi = lo + 1</code>. And forgetting to check that the returned index is in range and actually equals the target. Pick one template and use it everywhere.</p></aside>
+      <h2>Recap</h2>
+      <ul><li>Binary search finds the boundary where a condition flips from False to True.</li><li>One half-open <code>first_true</code> template covers lower bound, upper bound and insert position.</li><li>Rotated arrays and peaks are not sorted but still have a condition you can halve on.</li><li>A sorted 2D matrix is a flat sorted list with index maths.</li><li>Binary search on the answer turns "minimum value that works" into O(log range) feasibility checks.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Write <code>int_sqrt(n)</code> that returns the largest integer <code>r</code> with <code>r * r &lt;= n</code>, without using <code>math.sqrt</code> or <code>**0.5</code>. Use the first-True template. Check <code>int_sqrt(0)</code>, <code>int_sqrt(15)</code>, <code>int_sqrt(16)</code> and <code>int_sqrt(10**12)</code>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="python" data-solution="def first_true(lo, hi, cond):
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if cond(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+
+def int_sqrt(n):
+    # first r whose square is too big, minus one
+    return first_true(0, n + 2, lambda r: r * r &gt; n) - 1
+
+print([int_sqrt(x) for x in [0, 15, 16, 10**12]])"><pre><code># Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="algo-binary-search-patterns" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext" href="/learn/ds-algo/algorithms/sorting/" data-complete-on-click><span class="learn-upnext-label">Up next · Lesson 4</span><strong>Sorting</strong><small>Bubble, merge and quick sort, plus stability and what Python really uses.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/ds-algo/algorithms/two-pointers/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/ds-algo/algorithms/sorting/" data-complete-on-click>Next lesson</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>

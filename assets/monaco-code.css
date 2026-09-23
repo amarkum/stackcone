@@ -31,7 +31,7 @@
   font-family: var(--font-mono) !important;
 }
 
-.learn-code-wrap.monaco-ready pre,
+.learn-code-wrap.monaco-ready pre:not(.sql-step-out),
 .blog-article pre.monaco-replaced {
   display: none !important;
 }
@@ -230,41 +230,126 @@
   cursor: default;
 }
 
-/* SQL results render as a real table instead of preformatted text. */
-.learn-code-output .sql-result-table {
-  width: auto;
-  min-width: min(100%, 18rem);
-  border-collapse: collapse;
-  margin: 0 0 0.75rem;
+/* SQL output stays raw, the way the sqlite shell prints it: monospace, padded
+   columns, no wrapping. The box scrolls sideways for wide results. */
+.learn-code-output--sql {
+  white-space: pre;
+  overflow-x: auto;
+  word-break: normal;
+  tab-size: 4;
+}
+
+/* When a snippet holds several statements, each one is echoed above its own
+   output so it is clear which result came from which query. */
+.learn-code-output--steps { white-space: normal; overflow-x: visible; }
+
+.sql-step + .sql-step {
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--code-line);
+}
+
+.sql-step-sql {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  white-space: nowrap;
-}
-
-.learn-code-output .sql-result-table:last-child { margin-bottom: 0; }
-
-.learn-code-output .sql-result-table th,
-.learn-code-output .sql-result-table td {
-  padding: 0.3rem 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid var(--code-line);
-}
-
-.learn-code-output .sql-result-table th {
-  font-weight: 600;
-  color: var(--code-out-text);
-  opacity: 0.75;
-  border-bottom-width: 2px;
-}
-
-.learn-code-output .sql-result-table tr:last-child td { border-bottom: none; }
-.learn-code-output .sql-result-table td.is-num { text-align: right; font-variant-numeric: tabular-nums; }
-.learn-code-output .sql-result-table td.is-null { opacity: 0.5; font-style: italic; }
-
-.learn-code-output .sql-result-note { opacity: 0.75; }
-
-/* The output box scrolls sideways when a result is wider than the lesson column. */
-.learn-code-wrap.monaco-runnable[data-language="sql"] .learn-code-output,
-.learn-code-wrap[data-lang="sql"] .learn-code-output {
+  line-height: 1.55;
+  white-space: pre;
   overflow-x: auto;
+  margin-bottom: 0.45rem;
 }
+
+.sql-step-out {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--code-out-text);
+}
+
+.sql-step-out.is-error { color: var(--code-err); }
+
+/* Reference card of the seeded data, injected on every SQL lesson. */
+.sql-seed-card {
+  margin: 2rem 0;
+  padding: 1.1rem 1.25rem 1rem;
+  border: 1px solid var(--code-line);
+  border-radius: 14px;
+  background: var(--code-out-bg);
+}
+
+.sql-seed-head { margin-bottom: 0.9rem; }
+
+.sql-seed-card .sql-seed-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.sql-seed-sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* No radius here: a rounded border-top renders as a curved divider. */
+.sql-seed-table + .sql-seed-table {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--code-line);
+}
+
+.sql-seed-table > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  list-style: none;
+}
+
+.sql-seed-table > summary::-webkit-details-marker { display: none; }
+
+.sql-seed-table > summary::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  opacity: 0.6;
+  transition: transform 0.15s ease;
+}
+
+.sql-seed-table[open] > summary::before { transform: rotate(90deg); }
+
+.sql-seed-name { font-weight: 600; }
+
+.sql-seed-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* The article stylesheet boxes every `pre`; the sample rows read better bare. */
+.sql-seed-card .sql-seed-pre {
+  margin: 0;
+  padding: 0.1rem 0.85rem 0.85rem;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  white-space: pre;
+  color: var(--code-out-text);
+}
+
+/* Rounded corners on the runnable block as a whole. */
+.learn-code-wrap.monaco-runnable { border-radius: 12px; }

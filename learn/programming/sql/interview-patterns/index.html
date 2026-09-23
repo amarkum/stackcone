@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/theme.js?v=1"></script>
+  <meta name="robots" content="index, follow">
+  <title>SQL Interview Patterns Tutorial | stackcone Learn</title>
+  <meta name="description" content="The six query shapes that cover most interview and LeetCode SQL questions. Free SQL lesson 17 of 17 with runnable examples and exercises.">
+  <link rel="canonical" href="https://stackcone.com/learn/programming/sql/interview-patterns/">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css?v=27">
+  <link rel="stylesheet" href="/blog/blog.css?v=11">
+  <link rel="stylesheet" href="/learn/learn.css?v=37">
+  <link rel="stylesheet" href="/assets/auth.css?v=50">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=23">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+  <!-- sc:seo -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="og:url" content="https://stackcone.com/learn/programming/sql/interview-patterns/">
+  <meta property="og:title" content="SQL Interview Patterns Tutorial | stackcone Learn">
+  <meta property="og:description" content="The six query shapes that cover most interview and LeetCode SQL questions. Free SQL lesson 17 of 17 with runnable examples and exercises.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SQL Interview Patterns Tutorial | stackcone Learn">
+  <meta name="twitter:description" content="The six query shapes that cover most interview and LeetCode SQL questions. Free SQL lesson 17 of 17 with runnable examples and exercises.">
+  <link rel="prev" href="https://stackcone.com/learn/programming/sql/indexes-performance/">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Learn", "item": "https://stackcone.com/learn/"}, {"@type": "ListItem", "position": 2, "name": "Programming", "item": "https://stackcone.com/learn/programming/"}, {"@type": "ListItem", "position": 3, "name": "SQL", "item": "https://stackcone.com/learn/programming/sql/introduction/"}, {"@type": "ListItem", "position": 4, "name": "SQL Interview Patterns", "item": "https://stackcone.com/learn/programming/sql/interview-patterns/"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "SQL Interview Patterns", "headline": "SQL Interview Patterns", "description": "The six query shapes that cover most interview and LeetCode SQL questions. Free SQL lesson 17 of 17 with runnable examples and exercises.", "url": "https://stackcone.com/learn/programming/sql/interview-patterns/", "inLanguage": "en", "learningResourceType": "Lesson", "educationalLevel": "Advanced", "timeRequired": "PT20M", "isAccessibleForFree": true, "teaches": ["Recognise the pattern behind a question", "Write Nth-highest and top-N queries", "Handle duplicates, gaps and pivots"], "position": 17, "dateModified": "2026-09-23", "author": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/"}, "publisher": {"@type": "Organization", "name": "stackcone", "url": "https://stackcone.com/", "logo": {"@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone.png"}}, "isPartOf": {"@type": "Course", "name": "SQL Course", "url": "https://stackcone.com/learn/programming/sql/introduction/", "description": "Query, filter, join and aggregate data in relational databases.", "provider": {"@type": "Organization", "name": "stackcone", "sameAs": "https://stackcone.com/"}}}</script>
+  <!-- /sc:seo -->
+</head>
+<body class="learn-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <main class="learn-main">
+    <div class="learn-main-inner">
+      <nav class="learn-breadcrumb" aria-label="Breadcrumb"><a href="/learn/">Learn</a> / <a href="/learn/programming/">Programming</a> / <a href="/learn/programming/sql/introduction/">SQL</a> / <span aria-current="page">SQL Interview Patterns</span></nav>
+      <div class="learn-layout">
+        <aside class="learn-sidebar" aria-label="Course lessons" data-course="sql">
+          <div class="learn-sidebar-head">
+            <div class="learn-sidebar-head-text">
+              <p class="learn-sidebar-track"><a href="/learn/programming/sql/introduction/">SQL</a></p>
+              <p class="learn-sidebar-tagline">17 lessons · Learn SQL from scratch</p>
+            </div>
+            <div class="learn-ring" aria-hidden="true">
+              <svg viewBox="0 0 44 44"><circle class="learn-ring-track" cx="22" cy="22" r="19"/><circle class="learn-ring-arc" cx="22" cy="22" r="19" data-progress-ring-arc/></svg>
+              <span data-progress-pct>0%</span>
+            </div>
+          </div>
+          <p class="learn-sidebar-progress" data-progress-count>0 of 17 lessons completed</p>
+          <div class="learn-bar" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-bar><span data-progress-fill></span></div>
+          <nav class="learn-sidebar-lessons" aria-label="SQL lessons">
+          <a class="learn-sidebar-link" href="/learn/programming/sql/introduction/" data-lesson="sql-introduction" data-minutes="10"><span class="learn-sidebar-num">1</span><span class="learn-sidebar-title">Databases and SQL Basics</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/select-where/" data-lesson="sql-select-where" data-minutes="14"><span class="learn-sidebar-num">2</span><span class="learn-sidebar-title">SELECT and WHERE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/sorting-aggregates/" data-lesson="sql-sorting-aggregates" data-minutes="15"><span class="learn-sidebar-num">3</span><span class="learn-sidebar-title">Sorting and Aggregates</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/joins/" data-lesson="sql-joins" data-minutes="17"><span class="learn-sidebar-num">4</span><span class="learn-sidebar-title">Joins</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/set-operations/" data-lesson="sql-set-operations" data-minutes="12"><span class="learn-sidebar-num">5</span><span class="learn-sidebar-title">UNION, INTERSECT and EXCEPT</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/subqueries/" data-lesson="sql-subqueries" data-minutes="16"><span class="learn-sidebar-num">6</span><span class="learn-sidebar-title">Subqueries and EXISTS</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/case-conditionals/" data-lesson="sql-case-conditionals" data-minutes="14"><span class="learn-sidebar-num">7</span><span class="learn-sidebar-title">CASE and Conditional Logic</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/string-functions/" data-lesson="sql-string-functions" data-minutes="13"><span class="learn-sidebar-num">8</span><span class="learn-sidebar-title">String Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/date-time/" data-lesson="sql-date-time" data-minutes="14"><span class="learn-sidebar-num">9</span><span class="learn-sidebar-title">Dates and Times</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/numeric-functions/" data-lesson="sql-numeric-functions" data-minutes="12"><span class="learn-sidebar-num">10</span><span class="learn-sidebar-title">Numbers, Rounding and Ratios</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/cte/" data-lesson="sql-cte" data-minutes="15"><span class="learn-sidebar-num">11</span><span class="learn-sidebar-title">CTEs and Recursive Queries</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/window-functions/" data-lesson="sql-window-functions" data-minutes="18"><span class="learn-sidebar-num">12</span><span class="learn-sidebar-title">Window Functions</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/modifying-data/" data-lesson="sql-modifying-data" data-minutes="12"><span class="learn-sidebar-num">13</span><span class="learn-sidebar-title">INSERT, UPDATE, DELETE</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/schema-design/" data-lesson="sql-schema-design" data-minutes="15"><span class="learn-sidebar-num">14</span><span class="learn-sidebar-title">Creating Tables and Design</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/views/" data-lesson="sql-views" data-minutes="10"><span class="learn-sidebar-num">15</span><span class="learn-sidebar-title">Views</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link" href="/learn/programming/sql/indexes-performance/" data-lesson="sql-indexes-performance" data-minutes="14"><span class="learn-sidebar-num">16</span><span class="learn-sidebar-title">Indexes and Query Performance</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="learn-sidebar-link is-active" href="/learn/programming/sql/interview-patterns/" aria-current="page" data-lesson="sql-interview-patterns" data-minutes="20"><span class="learn-sidebar-num">17</span><span class="learn-sidebar-title">SQL Interview Patterns</span><span class="learn-sidebar-state" data-lesson-state aria-label="Not started"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          </nav>
+        </aside>
+        <article class="blog-article learn-lesson">
+          <div class="learn-lesson-top">
+            <p class="learn-eyebrow"><a href="/learn/programming/sql/introduction/">SQL</a> · Lesson 17 of 17</p>
+            <nav class="learn-top-nav" aria-label="Lesson navigation (top)">
+              <a class="learn-top-btn" href="/learn/programming/sql/indexes-performance/" aria-label="Previous lesson"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Previous</span></a>
+              <button type="button" class="learn-top-btn learn-top-complete" data-mark-complete="sql-interview-patterns" aria-pressed="false" title="Mark this lesson as complete"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark complete</span></button>
+              <a class="learn-top-btn learn-top-btn--primary" href="/learn/programming/" data-complete-on-click><span>Finish</span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            </nav>
+          </div>
+          <h1>SQL Interview Patterns</h1>
+          <p class="learn-summary">The six query shapes that cover most interview and LeetCode SQL questions.</p>
+          <ul class="learn-facts">
+            <li><span class="learn-badge">Advanced</span></li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 min read</li>
+            <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>3 objectives</li>
+          </ul>
+          <p class="learn-prereq"><span>Before this lesson</span><a href="/learn/programming/sql/indexes-performance/">Lesson 16: Indexes and Query Performance</a></p>
+          <div class="learn-objectives">
+            <h2><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg>What you will learn</h2>
+            <ul><li>Recognise the pattern behind a question</li><li>Write Nth-highest and top-N queries</li><li>Handle duplicates, gaps and pivots</li></ul>
+          </div>
+          <section class="learn-progress" aria-label="Your progress">
+            <div class="learn-progress-head">
+              <h2>Your Progress</h2>
+              <p><span data-progress-short>0 of 17 lessons</span> <strong data-progress-pct>0%</strong></p>
+            </div>
+            <div class="learn-bar" aria-hidden="true"><span data-progress-fill></span></div>
+            <ul class="learn-progress-stats">
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5c3-1.5 6.5-1.5 10 1 3.5-2.5 7-2.5 10-1v14c-3-1.5-6.5-1.5-10 1-3.5-2.5-7-2.5-10-1z"/><path d="M12 6v14"/></svg></span><span><small>Lessons</small><strong data-progress-fraction>0 / 17</strong></span></li>
+              <li><span class="learn-stat-icon is-green"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5.5-6"/></svg></span><span><small>Completed</small><strong data-progress-done>0</strong></span></li>
+              <li><span class="learn-stat-icon is-blue"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><small>Est. time left</small><strong data-progress-left>~ 4 hours</strong></span></li>
+            </ul>
+            <p class="learn-progress-note" data-auth-note><a href="/signup/">Create a free account</a> to keep your progress on every device.</p>
+            <p class="learn-progress-note learn-progress-tip">Tip: pressing <strong>Next</strong> marks this lesson complete automatically.</p>
+          </section>
+      <p>Interview SQL questions are written to look different from each other and are not. Almost all of them are one of six shapes. Learn to recognise the shape and the query writes itself.</p>
+      <h2>Pattern 1 — Nth highest</h2>
+      <p>Two approaches. <code>LIMIT ... OFFSET</code> is shortest but returns nothing (not <code>NULL</code>) when there are too few rows. Wrapping it in a scalar subquery fixes that, which is what LeetCode 176 asks for.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>salary
+-------
+150000</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT (SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1)
+       AS second_highest;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>second_highest
+---------------
+150000</pre></div>
+      <p>The <code>DENSE_RANK</code> version generalises to "per department" and to "the Nth highest for every group at once":</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>WITH ranked AS (
+  SELECT DISTINCT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk
+  FROM employees
+)
+SELECT salary AS second_highest FROM ranked WHERE rnk = 2;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>second_highest
+---------------
+150000</pre></div>
+      <h2>Pattern 2 — Find and delete duplicates</h2>
+      <p>Finding them is <code>GROUP BY</code> plus <code>HAVING COUNT(*) &gt; 1</code>. Deleting them means keeping the smallest id per group — LeetCode 182 and 196.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT email, COUNT(*) AS n
+FROM person
+GROUP BY email
+HAVING COUNT(*) &gt; 1;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>email           | n
+----------------+--
+ada@example.com | 2</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>DELETE FROM person
+WHERE id NOT IN (SELECT MIN(id) FROM person GROUP BY email);
+
+SELECT id, email FROM person ORDER BY id;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>1 row affected.
+
+id | email
+---+-------------------
+1  | ada@example.com
+2  | linus@example.com
+4  | GRACE@example.com</pre></div>
+      <aside class="learn-callout learn-note"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7.25v3.5M8 5.15v.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>The MySQL self-join form</p><p class="learn-callout-body">Your repo solves this as <code>DELETE p1 FROM person p1, person p2 WHERE p1.email = p2.email AND p1.id &gt; p2.id</code>. That multi-table <code>DELETE</code> is MySQL-specific; the <code>NOT IN (SELECT MIN(id) ...)</code> form above is standard and works everywhere.</p></aside>
+      <h2>Pattern 3 — Top N per group</h2>
+      <p>Rank inside a partition, then filter outside. Change <code>= 1</code> to <code>&lt;= 3</code> and you have a top-three-per-group report.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>WITH ranked AS (
+  SELECT department, name, salary,
+         DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+  FROM employees
+)
+SELECT department, name, salary FROM ranked WHERE rnk &lt;= 2
+ORDER BY department, salary DESC;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>department  | name     | salary
+------------+---------+-------
+Design      | Margaret | 140000
+Design      | Alan     | 110000
+Design      | Barbara  | 110000
+Engineering | Grace    | 190000
+Engineering | Ada      | 150000</pre></div>
+      <h2>Pattern 4 — Compare a row to its neighbour</h2>
+      <p>"Higher than yesterday", "three logins in a row", "time between events" — all of them are <code>LAG</code>/<code>LEAD</code>, or a self-join on an offset key when windows are unavailable.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>WITH compared AS (
+  SELECT id, record_date, temperature,
+         LAG(temperature) OVER (ORDER BY record_date) AS yesterday
+  FROM weather
+)
+SELECT id FROM compared WHERE temperature &gt; yesterday;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id
+---
+2
+4</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT w1.id
+FROM weather w1
+JOIN weather w2 ON julianday(w1.record_date) - julianday(w2.record_date) = 1
+WHERE w1.temperature &gt; w2.temperature;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>id
+---
+2
+4</pre></div>
+      <h2>Pattern 5 — Pivot with conditional aggregation</h2>
+      <p>Anything phrased as "report X and Y as separate columns" is <code>SUM(CASE WHEN ...)</code>, one branch per column.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT strftime(&#x27;%Y-%m&#x27;, trans_date) AS month,
+       country,
+       COUNT(*) AS trans_count,
+       SUM(CASE WHEN state = &#x27;approved&#x27; THEN 1 ELSE 0 END) AS approved_count,
+       SUM(amount) AS trans_total,
+       SUM(CASE WHEN state = &#x27;approved&#x27; THEN amount ELSE 0 END) AS approved_total
+FROM transactions
+GROUP BY month, country
+ORDER BY month, country;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>month   | country | trans_count | approved_count | trans_total | approved_total
+--------+--------+------------+---------------+------------+---------------
+2018-12 | US      | 2           | 1              | 3000        | 1000
+2019-01 | DE      | 2           | 1              | 2500        | 2000
+2019-01 | US      | 1           | 1              | 2000        | 2000</pre></div>
+      <h2>Pattern 6 — The anti-join: who never did X</h2>
+      <p>Three spellings of one idea. <code>NOT EXISTS</code> is the safest, <code>LEFT JOIN ... IS NULL</code> the most common, <code>NOT IN</code> the one that breaks on <code>NULL</code>.</p>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT v.customer_id, COUNT(*) AS count_no_trans
+FROM visits v
+LEFT JOIN purchases p ON p.visit_id = v.visit_id
+WHERE p.purchase_id IS NULL
+GROUP BY v.customer_id
+ORDER BY v.customer_id;</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>customer_id | count_no_trans
+------------+---------------
+30          | 1
+54          | 2</pre></div>
+      <div class="learn-code-wrap" data-lang="sql"><pre><code>SELECT c.name
+FROM customers c
+WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);</code></pre></div>
+      <div class="learn-output"><span class="learn-output-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M3 4l3 3-3 3M8.5 10.5H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Output</span><pre>name
+------
+Linus</pre></div>
+      <h2>A checklist for the interview itself</h2>
+      <ol><li>Say the shape out loud first: "this is a top-N-per-group".</li><li>Ask what should happen with ties and with missing rows — it is the point of the question.</li><li>Name intermediate steps with a CTE; nobody has ever complained a query was too readable.</li><li>State the assumption you made about <code>NULL</code> before they ask.</li><li>Mention the index that would support your <code>WHERE</code> clause.</li></ol>
+      <h2>Key takeaways</h2>
+      <ul><li>Nth highest: <code>OFFSET</code> for one value, <code>DENSE_RANK</code> to generalise.</li><li>Duplicates: <code>GROUP BY ... HAVING COUNT(*) &gt; 1</code>, keep <code>MIN(id)</code>.</li><li>Top N per group and neighbour comparisons are window functions.</li><li>"Never did X" is <code>NOT EXISTS</code> or <code>LEFT JOIN ... IS NULL</code>.</li></ul>
+      <aside class="learn-callout learn-exercise"><p class="learn-callout-label"><svg class="learn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M10.4 2.6l3 3L6 13H3v-3l7.4-7.4z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Try it yourself</p><p class="learn-callout-body">Report each customer who made visits but never a purchase, with how many such visits they made (columns <code>customer_id</code> and <code>count_no_trans</code>). This is LeetCode 1581 <em>Customer Who Visited but Did Not Make Any Transactions</em>.</p></aside>
+      <div class="learn-code-wrap learn-practice" data-lang="sql" data-solution="SELECT v.customer_id, COUNT(*) AS count_no_trans
+FROM visits v
+LEFT JOIN purchases p ON p.visit_id = v.visit_id
+WHERE p.purchase_id IS NULL
+GROUP BY v.customer_id
+ORDER BY v.customer_id;"><pre><code>-- Write your solution here
+</code></pre></div>
+          <div class="learn-finish" data-finish>
+            <p class="learn-finish-text"><strong>Finished reading?</strong> <span>Mark this lesson complete to track your progress.</span></p>
+            <button type="button" class="learn-complete" data-mark-complete="sql-interview-patterns" aria-pressed="false"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-mark-label>Mark as complete</span></button>
+          </div>
+          <a class="learn-upnext learn-upnext--done" href="/learn/programming/" data-complete-on-click><span class="learn-upnext-label">Last lesson</span><strong>Finish SQL</strong><small>Mark this lesson complete and pick your next course.</small></a>
+          <nav class="learn-lesson-nav" aria-label="Lesson navigation">
+            <a class="learn-nav-btn" href="/learn/programming/sql/indexes-performance/">Previous</a>
+            <div class="learn-lesson-nav-end">
+            <a class="learn-nav-btn learn-nav-btn--primary" href="/learn/programming/" data-complete-on-click>Finish course</a>
+            </div>
+          </nav>
+          <aside class="blog-cta">
+            <h2>Want a custom curriculum for your team?</h2>
+            <p>stackcone builds internal training, workshops, and production engineering courses tailored to your stack.</p>
+            <div class="blog-cta-links">
+              <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+              <a href="/contact/" class="cta cta--secondary">Contact us</a>
+            </div>
+          </aside>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48"></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a><a href="/solutions/">Solutions</a><a href="/learn/">Learn</a><a href="/blog/">Blog</a><a href="/about/">About</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+  <script src="/site-nav.js?v=21" defer></script>
+  <script src="/assets/learn-progress.js?v=3" defer></script>
+  <script src="/assets/firebase-config.js" defer></script>
+  <script type="module" src="/assets/learn-auth.js?v=5"></script>
+  <script src="/assets/pyodide-runner.js?v=4" defer></script>
+  <script src="/assets/js-runner.js" defer></script>
+  <script src="/assets/java-runner.js?v=6" defer></script>
+  <script src="/assets/sql-runner.js?v=9" defer></script>
+  <script src="/assets/monaco-code.js?v=23" defer></script>
+  <script src="/script.js?v=2" defer></script>
+</body>
+</html>
