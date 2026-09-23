@@ -4,8 +4,15 @@
     '<path d="M3.25 5.25L6.5 8.5L9.75 5.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
   var NAV_ITEMS = [
-    { href: "/work/", label: "Portfolio" },
-    { href: "/solutions/", label: "Solutions" },
+    {
+      id: "work",
+      label: "Work",
+      href: "/work/",
+      children: [
+        { href: "/work/", label: "Portfolio" },
+        { href: "/solutions/", label: "Solutions", matches: ["/solutions"] }
+      ]
+    },
     {
       id: "programming",
       label: "Programming",
