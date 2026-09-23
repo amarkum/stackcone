@@ -19,11 +19,19 @@
         existing.addEventListener('error', reject);
         return;
       }
+      // Monaco's AMD loader exposes window.define, which makes the CheerpJ
+      // loader register as an AMD module and cheerpjInit never resolves.
+      // Hide it while the loader script evaluates.
+      var amdDefine = window.define;
+      window.define = undefined;
+      function restoreDefine() {
+        if (window.define === undefined) window.define = amdDefine;
+      }
       var script = document.createElement('script');
       script.src = CHEERPJ_LOADER;
       script.setAttribute('data-cheerpj', 'true');
-      script.onload = function () { resolve(); };
-      script.onerror = reject;
+      script.onload = function () { restoreDefine(); resolve(); };
+      script.onerror = function (e) { restoreDefine(); reject(e); };
       document.head.appendChild(script);
     });
   }
