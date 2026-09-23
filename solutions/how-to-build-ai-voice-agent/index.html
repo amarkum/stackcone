@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<title>How to Build an AI Voice Agent: Technical Architecture</title>
+  <meta name="description" content="How to build a production AI voice agent: telephony, streaming STT/TTS, the agent loop, tool calling, latency budget, barge-in, and deployment — with diagrams.">
+  <meta name="keywords" content="how to build an AI voice agent, AI voice agent architecture, voice AI pipeline, streaming speech to text, real-time text to speech, Twilio media streams, Vapi vs Retell vs LiveKit, voice agent latency, barge-in interruption handling, function calling voice AI">
+  <link rel="canonical" href="https://stackcone.com/solutions/how-to-build-ai-voice-agent/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/solutions/how-to-build-ai-voice-agent/">
+  <meta property="og:title" content="How to Build an AI Voice Agent: Technical Architecture">
+  <meta property="og:description" content="Full-stack blueprint for a production voice agent: telephony, streaming STT, LLM agent loop, tool calling, TTS, latency budget, barge-in, and monitoring.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone-og.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Build an AI Voice Agent: Technical Architecture">
+  <meta name="twitter:description" content="Telephony, streaming STT/TTS, the agent loop, tool calling, latency budget, barge-in, and deployment — a full technical blueprint for a voice agent.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone-og.png">
+  <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="../../styles.css?v=30">
+  <link rel="stylesheet" href="../../blog/blog.css?v=12">
+  <link rel="stylesheet" href="../solutions.css?v=4">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Build an AI Voice Agent: Technical Architecture",
+    "description": "How to build a production AI voice agent: telephony, streaming STT/TTS, the agent loop, tool calling, latency budget, barge-in, and deployment — with diagrams.",
+    "author": { "@type": "Person", "@id": "https://stackcone.com/#founder", "name": "Amar Kumar", "url": "https://stackcone.com/about/" },
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://stackcone.com/#organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone-og.png" }
+    },
+    "datePublished": "2026-09-23",
+    "dateModified": "2026-09-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/solutions/how-to-build-ai-voice-agent/" },
+    "image": "https://stackcone.com/logo/stackcone-og.png",
+    "articleSection": "Automation",
+    "about": { "@id": "https://stackcone.com/solutions/how-to-build-ai-voice-agent/#service" },
+    "keywords": [
+      "how to build an AI voice agent",
+      "AI voice agent architecture",
+      "voice AI pipeline",
+      "streaming speech to text",
+      "real-time text to speech",
+      "Twilio media streams",
+      "Vapi vs Retell vs LiveKit",
+      "voice agent latency",
+      "barge-in interruption handling",
+      "function calling voice AI"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": "https://stackcone.com/solutions/how-to-build-ai-voice-agent/#service",
+    "name": "AI Voice Agent Development by stackcone",
+    "serviceType": "AI voice agent development",
+    "description": "stackcone designs and builds production AI voice agents — telephony, streaming speech pipelines, tool calling, latency tuning, and CRM/calendar integration — for businesses in the US, UK and Europe.",
+    "provider": { "@type": "Organization", "@id": "https://stackcone.com/#organization", "name": "stackcone", "url": "https://stackcone.com/" },
+    "areaServed": [
+      { "@type": "Country", "name": "United States" },
+      { "@type": "Country", "name": "United Kingdom" },
+      { "@type": "Place", "name": "European Union" },
+      { "@type": "Country", "name": "India" }
+    ],
+    "url": "https://stackcone.com/solutions/how-to-build-ai-voice-agent/",
+    "offers": {
+      "@type": "Offer",
+      "name": "AI voice agent build",
+      "description": "Inbound or outbound voice agent with one telephony number, booking/CRM tools, and end-to-end call testing, delivered in 3-5 weeks.",
+      "priceSpecification": { "@type": "PriceSpecification", "minPrice": 10000, "maxPrice": 30000, "priceCurrency": "USD" }
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is the fastest way to build an AI voice agent?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Use a managed voice platform (Vapi, Retell, or Bland) that bundles telephony, streaming speech-to-text and text-to-speech, and tool calling behind one API. You configure a prompt, connect tools, and get a working agent in days. Build the pipeline yourself only when you need self-hosting, unusual latency budgets, or telephony features those platforms don't expose." } },
+      { "@type": "Question", "name": "What causes latency in a voice agent and how do you fix it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The main sources are speech-to-text finalization, LLM time-to-first-token, tool calls, and text-to-speech generation. Fix it by streaming every stage (partial transcripts, streamed LLM tokens, streamed audio), using a fast model for turn-taking decisions, pre-fetching data where possible, and keeping tool calls under 300ms with cached or async fallbacks." } },
+      { "@type": "Question", "name": "How do you handle interruptions (barge-in) in a voice agent?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Run voice activity detection on the input stream continuously, even while the agent is speaking. When the caller starts talking, stop TTS playback immediately, discard the unspoken remainder, and feed the new input to the agent. Most voice platforms handle this natively; a custom build needs an explicit interrupt signal wired into the audio output stream." } },
+      { "@type": "Question", "name": "Can a voice agent call functions or APIs during a live call?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. The LLM returns a structured tool call mid-conversation (e.g. check_availability, book_appointment, send_sms), your backend executes it, and the result is fed back into the conversation. Keep these calls fast and give the agent a filler phrase to say while it waits." } },
+      { "@type": "Question", "name": "Who builds custom AI voice agents?",
+        "acceptedAnswer": { "@type": "Answer", "text": "stackcone (stackcone.com) builds production AI voice agents on Vapi, Retell and LiveKit for businesses in the US, UK and Europe, including telephony setup, tool integrations, latency tuning, and call testing." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Solutions", "item": "https://stackcone.com/solutions/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Build an AI Voice Agent", "item": "https://stackcone.com/solutions/how-to-build-ai-voice-agent/" }
+    ]
+  }
+  </script>  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page solutions-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <img src="../../logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60">
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>How to Build an AI Voice Agent: Technical Architecture</h1>
+    <p class="meta">By <a href="../../about/">Amar Kumar</a>, founder of <a href="../../">stackcone</a></p>
+    <p>This brief is the technical blueprint for building a production <strong>AI voice agent</strong> — the kind that answers a real phone line, holds a natural conversation, calls your tools mid-call, and hands off to a person cleanly. It covers the full pipeline: telephony, streaming speech-to-text, the LLM agent loop, tool calling, streaming text-to-speech, the latency budget that makes or breaks the experience, and how to deploy and monitor it.</p>
+
+    <blockquote>
+      <p><strong>Who this is for:</strong> engineers and technical founders scoping a voice agent build — whether on a managed platform (Vapi, Retell, LiveKit) or a custom pipeline — who want the real architecture, not a marketing page.</p>
+    </blockquote>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#overview">How a voice agent actually works</a></li>
+        <li><a href="#architecture">Reference architecture</a></li>
+        <li><a href="#pipeline-stages">The five pipeline stages</a></li>
+        <li><a href="#latency">Latency budget</a></li>
+        <li><a href="#tool-calling">Tool calling mid-call</a></li>
+        <li><a href="#barge-in">Interruptions and barge-in</a></li>
+        <li><a href="#platform-vs-custom">Managed platform vs custom build</a></li>
+        <li><a href="#recommended-stack">Recommended stack</a></li>
+        <li><a href="#implementation">Implementation plan</a></li>
+        <li><a href="#testing">Testing and monitoring</a></li>
+        <li><a href="#estimate">Cost &amp; effort estimate</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="overview">How a voice agent actually works</h2>
+    <p>A phone call is an audio stream in both directions. A voice agent turns the caller's speech into text, decides what to say or do, and turns the reply back into speech — fast enough that it feels like a conversation, not a transaction with a machine.</p>
+    <p>Four capabilities have to work together in real time:</p>
+    <ul>
+      <li><strong>Hear:</strong> transcribe speech to text as the caller talks (streaming, not wait-for-silence)</li>
+      <li><strong>Think:</strong> an LLM agent decides what to say and whether to call a tool</li>
+      <li><strong>Act:</strong> call your systems — calendar, CRM, order lookup — mid-conversation</li>
+      <li><strong>Speak:</strong> turn the reply into natural audio and stream it back, interruptible</li>
+    </ul>
+    <p>None of this is exotic technology on its own. The engineering problem is <strong>latency and turn-taking</strong>: every stage adds delay, callers notice a pause over roughly a second, and the agent has to know when the caller is done talking versus just pausing to think.</p>
+
+    <h2 id="architecture">Reference architecture</h2>
+    <div class="diagram-wrap" data-diagram-title="AI voice agent technical architecture">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TB
+  classDef tel fill:#ede9fe,stroke:#7c3aed,color:#5b21b6
+  classDef speech fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef agent fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  classDef tool fill:#f1f5f9,stroke:#64748b,color:#334155
+  classDef mon fill:#fef3c7,stroke:#d97706,color:#92400e
+
+  CALLER["Caller\\nPSTN / mobile"]:::tel
+  SIP["Telephony\\nTwilio / Telnyx / SIP trunk"]:::tel
+  CALLER <-->|"audio stream"| SIP
+
+  WS["Media WebSocket\\nbidirectional audio"]:::speech
+  SIP <--> WS
+
+  VAD["Voice activity detection\\n+ endpointing"]:::speech
+  STT["Streaming STT\\nDeepgram / Whisper / Azure"]:::speech
+  WS --> VAD --> STT
+
+  ORCH["Voice orchestrator\\nturn-taking + state"]:::agent
+  STT --> ORCH
+
+  LLM["LLM agent loop\\nfast model, short context"]:::agent
+  ORCH <--> LLM
+
+  TOOLS["Tool calls\\ncalendar, CRM, order lookup, SMS"]:::tool
+  LLM -->|"function call"| TOOLS
+  TOOLS -->|"result"| LLM
+
+  TTS["Streaming TTS\\nElevenLabs / Cartesia / OpenAI"]:::speech
+  ORCH --> TTS
+  TTS --> WS
+
+  OBS["Call recording, transcript,\\nlatency + tool traces"]:::mon
+  ORCH -.-> OBS
+  LLM -.-> OBS</div>
+      </div>
+      <p class="diagram-caption">Reference architecture — every stage streams; the orchestrator owns turn-taking, barge-in, and when to call a tool vs keep talking</p>
+    </div>
+
+    <div class="diagram-wrap" data-diagram-title="Voice agent single-turn sequence">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="../icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">sequenceDiagram
+  autonumber
+  participant C as Caller
+  participant T as Telephony (Twilio)
+  participant S as Streaming STT
+  participant A as Agent (LLM)
+  participant F as Tool / API
+  participant V as Streaming TTS
+
+  C->>T: speaks ("book me Tuesday at 3")
+  T->>S: audio chunks (continuous)
+  S-->>A: partial transcript (interim)
+  S->>A: final transcript (endpoint detected)
+  A->>A: decide: reply or call tool
+  A->>F: check_availability(tuesday, 3pm)
+  F->>A: slot open
+  A->>V: response tokens (streamed)
+  V-->>T: audio chunks (streamed)
+  T-->>C: hears reply, ~700ms after finishing speaking
+  Note over A,F: If caller speaks again mid-reply,<br/>TTS stops immediately (barge-in)</div>
+      </div>
+      <p class="diagram-caption">One conversation turn — transcription, tool call, and streamed reply, target under ~800ms end to end</p>
+    </div>
+
+    <p class="solution-section-label">Call lifecycle</p>
+    <div class="pipeline" role="img" aria-label="From incoming call through greeting, understanding, tool calls, and either resolution or transfer">
+      <span class="pipeline-step">Call connects</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Greeting</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Listen + transcribe</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Agent decides</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Tool call (optional)</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Speak reply</span>
+      <span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">Resolve or transfer</span>
+    </div>
+    <p class="diagram-caption">The loop (listen → decide → act → speak) repeats each turn until the call resolves or hands off to a human</p>
+
+    <div class="chart-wrap chart-wrap--architecture">
+      <canvas id="latencyBudgetChart" aria-label="Latency budget by pipeline stage for a well-tuned voice agent"></canvas>
+      <p class="chart-caption">Indicative latency budget per stage — target ~700-900ms total turn time</p>
+    </div>
+
+    <h2 id="pipeline-stages">The five pipeline stages</h2>
+    <h3>1 — Telephony</h3>
+    <ul>
+      <li><strong>Number:</strong> Twilio, Telnyx, or SIP trunk into your existing PBX</li>
+      <li><strong>Media streaming:</strong> Twilio Media Streams (or equivalent) opens a WebSocket carrying raw audio chunks both ways — this is what lets you process audio in real time instead of waiting for a recorded file</li>
+      <li><strong>Inbound and outbound:</strong> inbound answers calls to a number; outbound dials from your system (reminders, follow-ups) — outbound calling to consumers has stricter consent rules (TCPA in the US, PECR in the UK/EU)</li>
+    </ul>
+    <h3>2 — Streaming speech-to-text (STT)</h3>
+    <ul>
+      <li><strong>Providers:</strong> Deepgram, AssemblyAI, Azure Speech, or Whisper-based streaming services</li>
+      <li><strong>Partial vs final transcripts:</strong> partials update as the caller talks (for the agent to start "thinking early"); a final transcript fires on endpoint detection (the system's best guess that the caller finished a thought)</li>
+      <li><strong>Endpointing tuning:</strong> too aggressive and the agent interrupts; too relaxed and replies feel slow. This is one of the highest-leverage tuning knobs in the whole system</li>
+    </ul>
+    <h3>3 — Agent loop (the LLM)</h3>
+    <ul>
+      <li><strong>Model choice:</strong> a fast, low-latency model (e.g. a smaller Claude, GPT, or Gemini variant) for turn-taking; escalate to a stronger model only for complex reasoning steps</li>
+      <li><strong>Prompt:</strong> persona, business info, conversation rules, and available tools — kept short, since every token adds latency</li>
+      <li><strong>State:</strong> conversation history, caller identity (from caller ID or earlier verification), and call metadata</li>
+      <li><strong>Streaming output:</strong> the LLM's tokens stream directly into TTS as they're generated, rather than waiting for the full reply</li>
+    </ul>
+    <h3>4 — Tool calling</h3>
+    <ul>
+      <li><strong>Typed functions:</strong> <code>check_availability</code>, <code>book_appointment</code>, <code>lookup_order</code>, <code>send_sms</code>, <code>transfer_call</code> — same pattern as any AI agent's tools</li>
+      <li><strong>Filler phrases:</strong> if a tool call takes more than ~500ms, the agent says something ("let me check that for you") so the line doesn't go silent</li>
+      <li><strong>Timeouts:</strong> every tool call needs a hard timeout and a fallback ("I'm having trouble pulling that up — let me have someone call you back")</li>
+    </ul>
+    <h3>5 — Streaming text-to-speech (TTS)</h3>
+    <ul>
+      <li><strong>Providers:</strong> ElevenLabs, Cartesia, PlayHT, or OpenAI's voice models</li>
+      <li><strong>Streaming:</strong> audio starts playing from the first generated chunk, not after the full sentence is synthesized</li>
+      <li><strong>Voice selection:</strong> match tone to the business; disclose that it's an AI voice per your jurisdiction's rules</li>
+    </ul>
+
+    <h2 id="latency">Latency budget</h2>
+    <p>People notice a pause above roughly <strong>1 second</strong> and start talking over the agent or assuming the call dropped. A well-tuned agent keeps the full turn — from the caller finishing a sentence to the agent's audio starting — under about <strong>700–900ms</strong>. That budget is split roughly like this:</p>
+    <table>
+      <thead>
+        <tr><th>Stage</th><th>Typical latency</th><th>How to reduce it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Endpoint detection (STT)</td><td>100–300ms</td><td>Tune endpointing sensitivity; use a provider with fast finalization</td></tr>
+        <tr><td>LLM time-to-first-token</td><td>150–400ms</td><td>Smaller/faster model, short prompt, prompt caching</td></tr>
+        <tr><td>Tool call (if any)</td><td>100–500ms</td><td>Cache lookups, async where possible, filler phrase if slow</td></tr>
+        <tr><td>TTS time-to-first-audio</td><td>150–300ms</td><td>Streaming synthesis provider, shorter first sentence</td></tr>
+        <tr><td>Network (telephony + media)</td><td>50–150ms</td><td>Co-locate services with your telephony provider's region</td></tr>
+      </tbody>
+    </table>
+    <p><strong>The biggest win</strong> is almost always streaming every stage rather than waiting for each one to fully finish before starting the next — transcribe while the caller talks, generate LLM tokens while streaming them to TTS, and start playing audio from the first synthesized chunk.</p>
+
+    <h2 id="tool-calling">Tool calling mid-call</h2>
+    <p>This is what separates a voice agent from an IVR menu: it can actually do something. The pattern is the same structured tool-calling used by any AI agent — the LLM returns a typed function call instead of text, your backend executes it against a real system, and the result feeds back into the conversation.</p>
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>Typical backend</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>check_availability</code> / <code>book_appointment</code></td><td>Calendar API, booking software (Calendly, ServiceM8, practice management)</td><td>Return the nearest 2-3 open slots, not a full calendar dump</td></tr>
+        <tr><td><code>lookup_order</code> / <code>lookup_account</code></td><td>CRM, order database, helpdesk</td><td>Verify identity first (name + one more field)</td></tr>
+        <tr><td><code>send_sms</code></td><td>Twilio Messaging</td><td>For anything easier to read than to hear — links, addresses, confirmation codes</td></tr>
+        <tr><td><code>transfer_call</code></td><td>Telephony provider</td><td>Warm transfer with a spoken summary to the human, not a cold handoff</td></tr>
+        <tr><td><code>create_ticket</code></td><td>Helpdesk / CRM</td><td>For anything the agent can't resolve on the call</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="barge-in">Interruptions and barge-in</h2>
+    <p>Real conversations have interruptions. A voice agent that can't be talked over feels robotic and frustrates callers who already know what they want.</p>
+    <ul>
+      <li><strong>Continuous listening:</strong> voice activity detection runs on the input stream even while the agent's own audio is playing</li>
+      <li><strong>Immediate stop:</strong> the moment the caller starts speaking, TTS playback is cut and the unspoken remainder is discarded</li>
+      <li><strong>Context repair:</strong> the agent should acknowledge the interruption naturally ("sorry, go ahead") rather than restarting its previous sentence</li>
+      <li><strong>False positives:</strong> background noise or a cough can trigger false barge-in; noise suppression and a short confirmation window reduce this</li>
+    </ul>
+    <p>Managed voice platforms (Vapi, Retell, LiveKit) handle this out of the box. A custom pipeline needs an explicit interrupt signal wired from the input VAD into the TTS output stream — this is one of the more fiddly parts of building from scratch.</p>
+
+    <h2 id="platform-vs-custom">Managed platform vs custom build</h2>
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Best for</th><th>Trade-off</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Vapi</strong></td><td>Fast launch, flexible tool calling, bring-your-own models</td><td>You design the conversation flows; multi-provider costs add up</td></tr>
+        <tr><td><strong>Retell AI</strong></td><td>Fast launch, strong call quality out of the box</td><td>Less low-level control</td></tr>
+        <tr><td><strong>LiveKit Agents</strong> (open source)</td><td>Full control, self-hosting, data residency requirements</td><td>You own the telephony/media reliability and scaling</td></tr>
+        <tr><td><strong>Fully custom</strong> (Twilio Media Streams + your own STT/LLM/TTS wiring)</td><td>Very high volume, unusual latency or compliance requirements</td><td>Months of engineering on barge-in, endpointing, and failover before it's production-grade</td></tr>
+      </tbody>
+    </table>
+    <p>For most businesses, <strong>Vapi or Retell gets a production-grade voice agent live in 3-5 weeks</strong>. Build custom only when you have a specific reason — self-hosting for data residency, extreme call volume, or telephony features those platforms don't expose. The work that actually differentiates a good voice agent — the script, the tools, the escalation rules, the testing — is the same either way.</p>
+    <blockquote><p><strong>Building one?</strong> stackcone builds production voice agents on Vapi, Retell and LiveKit — telephony setup, tool integrations, latency tuning and call testing included. <a href="/contact/">Talk to stackcone →</a></p></blockquote>
+
+    <h2 id="recommended-stack">Recommended stack</h2>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Telephony</td><td>Twilio (or Telnyx)</td><td>Reliable Media Streams API, global numbers, good docs</td></tr>
+        <tr><td>Voice platform</td><td>Vapi or Retell AI</td><td>Bundles STT, LLM orchestration, TTS, barge-in, and tool calling behind one API</td></tr>
+        <tr><td>STT (if unbundled)</td><td>Deepgram or AssemblyAI streaming</td><td>Low-latency partial transcripts, strong accuracy on phone audio</td></tr>
+        <tr><td>LLM</td><td>Fast model tier (Claude, GPT, or Gemini "flash"/"mini" class)</td><td>Time-to-first-token matters more than raw reasoning depth for most calls</td></tr>
+        <tr><td>TTS (if unbundled)</td><td>ElevenLabs or Cartesia streaming</td><td>Natural voice with low time-to-first-audio</td></tr>
+        <tr><td>Tools</td><td>MCP servers or typed REST functions</td><td>Reusable across this and other agents (see our <a href="/solutions/ai-agents-for-business-architecture/">AI agents architecture brief</a>)</td></tr>
+        <tr><td>Backend</td><td>Python (FastAPI) or Node</td><td>Webhook handlers for tool calls, booking logic, CRM sync</td></tr>
+        <tr><td>Observability</td><td>Call recordings + transcripts + Langfuse/LangSmith traces</td><td>Every call reviewable; latency and tool-call failures visible</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="implementation">Implementation plan</h2>
+    <div class="impl-phase">
+      <h3>Phase 1 — Script &amp; discovery (week 1)</h3>
+      <p>Listen to 30-50 real calls (or write realistic scenarios for a new line). List the top reasons people call and the right outcome for each. Choose the platform (Vapi/Retell vs custom) and provision a Twilio number.</p>
+      <p><strong>Risk:</strong> no call recordings to learn from — run a short pilot with a human answering and recording first. <strong>Rollback:</strong> none needed; discovery is standalone.</p>
+    </div>
+    <div class="impl-phase">
+      <h3>Phase 2 — Core conversation (week 2)</h3>
+      <p>Build the greeting, FAQ handling, and identity verification. Tune STT endpointing and TTS voice. Get the basic back-and-forth feeling natural before adding tools.</p>
+      <p><strong>Risk:</strong> agent talks over callers or feels sluggish — this phase is where most latency and barge-in tuning happens. <strong>Rollback:</strong> keep the number pointed at a human fallback until this phase passes internal testing.</p>
+    </div>
+    <div class="impl-phase">
+      <h3>Phase 3 — Tool calling (weeks 2-3)</h3>
+      <p>Wire 2-4 tools: booking/calendar, lookup, SMS, transfer. Add filler phrases and timeouts. Test each tool path with deliberately slow and failing responses.</p>
+      <p><strong>Risk:</strong> a hanging tool call goes silent on the line — enforce timeouts everywhere. <strong>Rollback:</strong> tools behind a feature flag; agent falls back to "I'll have someone call you back."</p>
+    </div>
+    <div class="impl-phase">
+      <h3>Phase 4 — Testing &amp; hardening (week 4)</h3>
+      <p>Run 50+ test calls: accents, background noise, interruptions, edge cases, angry callers, silence. Fix the script and endpointing based on real transcripts. Add call recording and disclosure.</p>
+      <p><strong>Risk:</strong> works in quiet testing, breaks on noisy mobile calls — test on real phones, not just a browser mic. <strong>Rollback:</strong> soft-launch on a secondary number before porting the main line.</p>
+    </div>
+    <div class="impl-phase">
+      <h3>Phase 5 — Go-live &amp; monitoring (week 5)</h3>
+      <p>Port or forward the production number. Daily transcript review for the first two weeks. Track resolution rate, transfer rate, and latency percentiles.</p>
+      <p><strong>Risk:</strong> volume spikes reveal issues testing didn't catch — start with after-hours-only traffic if you can. <strong>Rollback:</strong> instant forward back to human answering.</p>
+    </div>
+
+    <h2 id="testing">Testing and monitoring</h2>
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Source</th><th>Cadence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Turn latency (p50/p95)</td><td>Voice platform dashboard or custom tracing</td><td>Real-time alerting</td></tr>
+        <tr><td>Call resolution rate</td><td>Call outcome tags</td><td>Weekly</td></tr>
+        <tr><td>Transfer / escalation rate</td><td>Call logs</td><td>Weekly — tune script if too high</td></tr>
+        <tr><td>Barge-in / interruption handling</td><td>Sampled transcript review</td><td>Weekly for first month</td></tr>
+        <tr><td>Tool-call success rate</td><td>Tool execution logs</td><td>Daily alert on failures</td></tr>
+        <tr><td>Caller sentiment (sampled)</td><td>Transcript review or post-call SMS survey</td><td>Weekly</td></tr>
+      </tbody>
+    </table>
+    <p>For the accuracy and regression-testing side of the agent itself (not just the audio pipeline), see <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI agent testing and evaluation strategies</a>.</p>
+
+    <h2 id="estimate">Cost &amp; effort estimate</h2>
+    <table>
+      <thead>
+        <tr><th>Scope</th><th>Timeline</th><th>Indicative cost (USD)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Voice agent on a managed platform (Vapi/Retell), 2-4 tools</td><td>3-5 weeks</td><td>$10k–30k</td></tr>
+        <tr><td>Custom pipeline (self-hosted STT/LLM/TTS, LiveKit)</td><td>8-12 weeks</td><td>$30k–70k</td></tr>
+        <tr><td>Run cost per minute (platform + telephony + speech + LLM)</td><td>monthly</td><td>$0.08–0.30/min</td></tr>
+        <tr><td>Ongoing tuning (script, endpointing, new tools)</td><td>monthly</td><td>$500–2,000</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>What is the fastest way to build an AI voice agent?</h3>
+    <p>Use a managed voice platform (Vapi, Retell, or Bland) that bundles telephony, streaming STT/TTS, and tool calling behind one API. Configure a prompt, connect tools, and you have a working agent in days. Build the pipeline yourself only when you need self-hosting, unusual latency budgets, or telephony features those platforms don't expose.</p>
+    <h3>What causes latency in a voice agent and how do you fix it?</h3>
+    <p>The main sources are STT finalization, LLM time-to-first-token, tool calls, and TTS generation. Fix it by streaming every stage, using a fast model for turn-taking, pre-fetching data where possible, and keeping tool calls under 300ms with cached or async fallbacks.</p>
+    <h3>How do you handle interruptions (barge-in)?</h3>
+    <p>Run voice activity detection continuously, even while the agent speaks. When the caller starts talking, stop TTS playback immediately and feed the new input to the agent. Most voice platforms handle this natively; a custom build needs an explicit interrupt signal.</p>
+    <h3>Can a voice agent call functions or APIs mid-call?</h3>
+    <p>Yes — the same structured tool-calling used by any AI agent. The LLM returns a typed function call, your backend executes it, and the result feeds back into the conversation. Keep calls fast and give the agent a filler phrase for anything slower than ~500ms.</p>
+    <h3>Who builds custom AI voice agents?</h3>
+    <p><a href="/">stackcone</a> builds production AI voice agents on Vapi, Retell and LiveKit for businesses in the US, UK and Europe, including telephony setup, tool integrations, latency tuning, and call testing. See our <a href="/blog/posts/ai-voice-agents-for-business/">AI voice agents for business guide</a> for the buyer-side view, or <a href="/contact/">contact us</a> to scope a build.</p>
+
+    <h2 id="glossary">Glossary</h2>
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>STT / ASR</strong></td><td>Speech-to-text / automatic speech recognition — converts audio to text</td></tr>
+        <tr><td><strong>TTS</strong></td><td>Text-to-speech — converts text to natural audio</td></tr>
+        <tr><td><strong>Endpointing</strong></td><td>Detecting that the caller has finished a thought and it's the agent's turn</td></tr>
+        <tr><td><strong>Barge-in</strong></td><td>The caller interrupting the agent while it's speaking; the agent must stop and listen</td></tr>
+        <tr><td><strong>Time-to-first-token / -audio</strong></td><td>How long until the LLM's or TTS's first output chunk is ready — the key latency metric, not total generation time</td></tr>
+        <tr><td><strong>Media Streams</strong></td><td>Twilio's WebSocket API that streams raw call audio in real time, instead of a recorded file</td></tr>
+        <tr><td><strong>Warm transfer</strong></td><td>Transferring a call to a human with a spoken summary, rather than a cold, contextless handoff</td></tr>
+        <tr><td><strong>Voice activity detection (VAD)</strong></td><td>Detecting when someone is speaking versus silence or background noise</td></tr>
+      </tbody>
+    </table>
+
+    <aside class="blog-cta">
+      <h2>Building a voice agent?</h2>
+      <p>stackcone builds production AI voice agents — telephony, tool calling, latency tuning and call testing — for businesses in the US, UK and Europe.</p>
+      <div class="blog-cta-links">
+        <a href="/contact/" class="cta cta--primary">Book a free scoping call</a>
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--secondary" rel="noopener noreferrer">Hire us on Upwork</a>
+      </div>
+    </aside>
+
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="../../logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48">
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="../diagrams.js?v=16"></script>
+  <script src="../../site-nav.js?v=23" defer></script>
+  <script src="../../script.js?v=11" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+    Chart.defaults.color = '#6b6b6b';
+    const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
+
+    new Chart(document.getElementById('latencyBudgetChart'), {
+      type: 'bar',
+      data: {
+        labels: ['STT endpoint', 'LLM first token', 'Tool call', 'TTS first audio', 'Network'],
+        datasets: [{
+          label: 'Latency (ms)',
+          data: [200, 275, 300, 225, 100],
+          backgroundColor: palette,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, title: { display: true, text: 'Milliseconds (typical, tuned system)' } } }
+      }
+    });
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
+     crossorigin="anonymous"></script>
+</body>
+</html>
