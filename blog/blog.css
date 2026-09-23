@@ -1524,3 +1524,50 @@
 [data-theme="dark"] .diagram-icon { filter: invert(1); }
 [data-theme="dark"] .diagram-tool-btn.is-active .diagram-icon,
 [data-theme="dark"] .diagram-lightbox-close:hover .diagram-icon { filter: none; }
+
+/* Related lessons / articles (blog posts and Learn lessons) */
+.blog-article .blog-related,
+.blog-article .learn-related {
+  margin: 2.5rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.blog-article .blog-related h2,
+.blog-article .learn-related h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+.blog-article .blog-related h2 + ul + h2 { margin-top: 1.5rem; }
+.blog-article .blog-related-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.blog-article .blog-related-list li { margin: 0; padding: 0; }
+.blog-article .blog-related-list li::before { content: none; }
+.blog-article .blog-related-list a {
+  display: grid;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.blog-article .blog-related-list a:hover { border-color: var(--text-dim); text-decoration: none; }
+.blog-article .blog-related-list strong { font-size: 0.95rem; line-height: 1.35; color: var(--text-bright); }
+.blog-article .blog-related-list span {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-dim);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
