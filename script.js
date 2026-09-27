@@ -168,10 +168,10 @@ function initTestimonials(testimonials) {
   var paginationEl = document.getElementById('testimonials-pagination');
   if (!grid || !paginationEl) return;
   if (!testimonials || !testimonials.length) testimonials = testimonialsFallback;
-  // Reviews from clients with a logo come first; order is otherwise unchanged.
+  // Featured reviews first, then clients with a logo; order is otherwise unchanged.
   testimonials = testimonials
     .map(function (t, i) { return { t: t, i: i }; })
-    .sort(function (a, b) { return (b.t.logo ? 1 : 0) - (a.t.logo ? 1 : 0) || a.i - b.i; })
+    .sort(function (a, b) { return (b.t.featured ? 1 : 0) - (a.t.featured ? 1 : 0) || (b.t.logo ? 1 : 0) - (a.t.logo ? 1 : 0) || a.i - b.i; })
     .map(function (x) { return x.t; });
   var perPage = 6;
   var currentPage = 1;
@@ -188,7 +188,7 @@ function initTestimonials(testimonials) {
           : '<div class="testimonial-avatar" aria-hidden="true">' + escapeHtml(t.initial || 'C') + '</div>') +
         '<div class="testimonial-who">' +
           '<cite class="testimonial-name">' + escapeHtml(t.client) + '</cite>' +
-          '<span class="testimonial-source">Verified on Upwork</span>' +
+          '<span class="testimonial-source">' + escapeHtml(t.source || 'Verified on Upwork') + '</span>' +
         '</div>' +
       '</footer>';
     return article;
