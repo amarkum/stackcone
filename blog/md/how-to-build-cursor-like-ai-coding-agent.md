@@ -1,6 +1,6 @@
 # How to Build a Cursor-Like AI Coding Agent — Complete Guide
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 Cursor Agent mode, Claude Code, and Windsurf share the same core pattern: an LLM in a **tool-calling loop** that reads a real codebase, edits files, runs shell commands, and streams progress back to an IDE. You do not need LangChain, a vector database, or a cloud orchestration platform to build one. I built **[LiveCode](https://github.com/amarkum/livecode-ai)** — a self-hosted browser IDE with Monaco, an integrated terminal, and a full agent harness — entirely in Python and vanilla JavaScript. This guide walks through every layer with architecture diagrams, comparison tables, and pseudocode you can adapt.
 

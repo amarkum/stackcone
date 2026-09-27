@@ -1,6 +1,6 @@
 # Best Autocomplete Models for Coding
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 **Tab autocomplete** is not the same as **agent mode**. Autocomplete predicts your next lines as you type. Agents read the repo and edit multiple files. Claude Code has no Tab model at all — it is agent-only.
 

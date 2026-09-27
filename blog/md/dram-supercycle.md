@@ -1,6 +1,6 @@
 # The DRAM Supercycle
 
-**September 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026**
 
 The first time this cycle got personal for me was not a GPU quote. It was a boring 64 GB DIMM kit for a workstation that used to be a rounding error on the invoice. Same SKU. Same vendor. The price had quietly grown a personality. That is the tell of a memory supercycle: the unglamorous parts get expensive while everyone is still arguing about FLOPS.
 

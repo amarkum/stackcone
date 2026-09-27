@@ -1,6 +1,6 @@
 # How to Build a Production RAG Chatbot — Complete Guide
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 A practical guide to building a production RAG chatbot from scratch: concepts, stack, architecture, code, and launch.
 

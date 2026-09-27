@@ -1,6 +1,6 @@
 # Auto Model Routing Without Calling an LLM to Pick an LLM
 
-**July 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · July 2026**
 
 Most production chat products offer an **Auto** model mode. The obvious implementation: call a cheap LLM to classify the user's question, then route to the right tier. That works — but it adds latency, tokens, and failure modes on **every request**.
 

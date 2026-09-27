@@ -1,6 +1,6 @@
 # Multi-Agent Pipeline for SEO and Content Automation
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 Publishing one AI-generated blog post does not compound. You ship it, hope Google indexes it, and repeat the whole workflow manually next week. A multi-agent pipeline fixes that: specialized agents for intent, SERP research, writing, metadata, and QA — with machine-checkable gates between each phase.
 

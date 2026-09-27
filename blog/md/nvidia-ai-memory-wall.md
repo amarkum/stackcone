@@ -1,6 +1,6 @@
 # NVIDIA and the AI Memory Wall
 
-**September 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026**
 
 For two years the AI infrastructure story was a gym slogan: more FLOPS, more GPUs, more NVIDIA. Buy the bigger rack. The bottleneck would sort itself out, presumably out of respect for the purchase order.
 

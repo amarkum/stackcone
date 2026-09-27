@@ -1,6 +1,6 @@
 # Cohere Reranking & Production RAG Retrieval Optimization
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 How to tune retrieval in a production RAG system: wide vector recall, Cohere rerank-v3.5 for precision, conditional skip logic, MMR diversity, and cost-aware gates.
 

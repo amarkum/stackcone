@@ -1,6 +1,6 @@
 # How Much Should Your Upwork Hourly Rate Be in India?
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 A $50/hr profile on Upwork does **not** mean ₹4 lakh/month in your bank account. For Indian freelancers, the number that matters is **monthly in-hand INR** after Upwork fees, TDS, forex conversion, and income tax under the **new regime** — with **Section 44ADA** presumptive taxation and the **₹12 lakh rebate** under Section 87A.
 

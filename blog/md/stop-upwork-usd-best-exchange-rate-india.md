@@ -1,6 +1,6 @@
 # How to Get the Best USD Exchange Rate from Upwork (India)
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 Your Upwork hourly rate is only half the story. **How you withdraw USD** can cost you ₹1,000–₹3,000 extra per **$1,000** — before income tax.
 

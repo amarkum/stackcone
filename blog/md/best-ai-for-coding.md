@@ -1,6 +1,6 @@
 # Best AI for Coding
 
-September 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026
 
 “Best AI for coding” is a bad question if you treat every product as the same chatbot with a logo. Tab complete, chat, multi-file agents, CI, and GitHub PRs are different purchases. Buying Claude Code because a friend loves Cursor Tab — or skipping Copilot because ChatGPT can write a function — is how you waste a month and a subscription.
 

@@ -1,6 +1,6 @@
 # Will AI Replace Software Engineers?
 
-September 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026
 
 The previous piece — [Will AI Take Coding Jobs?](/blog/posts/will-ai-take-coding-jobs/) — covered the timeline, which roles get hit first, and what a real employment shock would do to the economy. This is the follow-up people search after that: **what do engineers still get paid** in India and the US, **which skills still clear interviews**, and whether “AI jobs” are a lifeboat.
 

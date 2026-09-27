@@ -1,6 +1,6 @@
 # Best AI Tools for Students, Writers, and Developers
 
-September 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026
 
 Most people do not have one job. A CS undergrad writes lab reports, fights a calculus set, and pastes a compiler error into chat before dinner. A journalist outlines in the morning and codes a scraper at night. Buying a separate “best AI” for each hat is how three $20 plans show up on the same card.
 

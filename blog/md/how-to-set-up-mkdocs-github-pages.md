@@ -1,6 +1,6 @@
 # How to Set Up MkDocs for GitHub Pages — Complete Guide
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 MkDocs turns a folder of Markdown files into a fast, searchable documentation site. This guide walks through installation, configuration, the Material theme, navigation, plugins, local preview, and production deployment to GitHub Pages — with patterns that also work when your docs feed a RAG chatbot.
 

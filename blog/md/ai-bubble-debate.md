@@ -1,6 +1,6 @@
 # The AI Bubble Debate
 
-**September 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026**
 
 Every dinner party with people who work in tech now has a version of this fight. Someone says the whole thing is a bubble. Someone else says look at the HBM quotes, look at the interconnect queues, look at the fact that you cannot buy a fat DIMM without filling out a form that feels like a mortgage. They talk past each other for forty minutes. Both of them can be right.
 

@@ -1,6 +1,6 @@
 # ChatGPT Plus vs Gemini Advanced vs Claude Pro
 
-September 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026
 
 Twenty dollars a month is the default price of a serious consumer AI seat. OpenAI, Google, and Anthropic all parked a flagship plan in that band. The useful question is not which logo wins a screenshot. It is **which ecosystem you already live in** — and whether you should pay at all.
 

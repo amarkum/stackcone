@@ -1,6 +1,6 @@
 # iPhone Duo in India: Full INR Price Guide, Cheapest Countries, and Why It Costs More
 
-**September 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026**
 
 For years, the big Apple rumour every September was the same: *when* will they ship a foldable? In 2026 they finally did — and they did not soft-launch it.
 

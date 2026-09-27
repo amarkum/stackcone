@@ -1,6 +1,6 @@
 # How to Use ChatGPT and Gemini for Coding
 
-September 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026
 
 ChatGPT and Gemini will write a function that looks finished. Then you paste it into your file, run it, and the traceback points at a line the model invented. The gap is not “you need a better model.” It is that a chat box is a rubber duck with a keyboard — useful if you give it the right slice of code, useless if you treat it like an IDE that already knows your repo.
 

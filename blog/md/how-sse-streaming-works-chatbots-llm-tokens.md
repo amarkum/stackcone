@@ -1,6 +1,6 @@
 # How SSE Streaming Works in Chatbots
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 When ChatGPT-style UIs print text word by word, it looks like a **typing animation**. It is not. The browser is receiving **real tokens** from the server as the LLM generates them — usually over **HTTP streaming**, often shaped as **Server-Sent Events (SSE)**.
 

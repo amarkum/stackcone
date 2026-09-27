@@ -1,6 +1,6 @@
 # Claude Code vs Cursor vs Copilot: Which Should You Use?
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 Picking between **Claude Code**, **Cursor**, and **GitHub Copilot** is less about which tool wins a benchmark and more about what you actually do all day. Claude Code is a terminal agent. Cursor is an AI-native IDE. Copilot is an extension in the editor you already use. They are not interchangeable — and many developers end up using two at once.
 

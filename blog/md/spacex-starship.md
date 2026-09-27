@@ -1,6 +1,6 @@
 # SpaceX Starship and the Falcon Drawdown
 
-**September 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026**
 
 Falcon 9 is the most useful rocket of the decade. It is also, if Gwynne Shotwell is to be believed, a rocket SpaceX is trying to fly *less*.
 

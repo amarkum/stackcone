@@ -1,6 +1,6 @@
 # How to Use Claude Code Effectively: CLAUDE.md, AGENTS.md, and Rules
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 Claude Code works brilliantly in one session, then forgets everything the next day — or ignores instructions buried in a 400-line rules file. The fix is not more prompts. It is knowing what belongs in `CLAUDE.md`, what goes in `.claude/rules`, and how to wire verification so the agent actually stops when tests pass.
 

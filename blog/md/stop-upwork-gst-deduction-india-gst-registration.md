@@ -1,6 +1,6 @@
 # Stop Upwork GST Deduction (India)
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 If you earn **$1,000 on Upwork**, you are **not** paying 18% GST on the full $1,000. Upwork charges **10% freelancer service fee** ($100), then **18% GST on that fee only** ($18) — unless you add a valid **GSTIN** to your tax settings.
 

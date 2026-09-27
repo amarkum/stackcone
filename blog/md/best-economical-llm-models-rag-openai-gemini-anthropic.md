@@ -1,6 +1,6 @@
 # Best Economical LLM Models for RAG
 
-**June 2026 · Published by Amar Kumar**
+**By [Amar Kumar](/about/), founder of [stackcone](/) · June 2026**
 
 Picking a chat model is not just a quality decision — it is a **unit economics** decision. In RAG, every turn sends **system prompt + chat history + retrieved chunks + user query** to the API. A model that costs 10× more per token can turn a $5/month side project into a $200/month bill at the same traffic.
 

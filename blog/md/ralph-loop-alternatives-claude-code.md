@@ -1,6 +1,6 @@
 # Ralph Loop Alternatives for Claude Code and Cursor
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 You have probably seen the **Ralph loop** meme: paste a prompt, let Claude run in a loop, walk away, come back to finished code. The pattern works — but it is blunt. No verification gates, context bloats, and loops burn tokens on repeated mistakes.
 

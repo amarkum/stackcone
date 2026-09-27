@@ -1,6 +1,6 @@
 # ChatGPT vs Gemini vs Claude
 
-September 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · September 2026
 
 Most people compare ChatGPT, Gemini, and Claude as if they were three chat boxes with different logos. That is the wrong purchase. You are choosing a file ecosystem, a research habit, a writing voice, and (if you code) whether the agent lives in chat or in an IDE — not a leaderboard row.
 

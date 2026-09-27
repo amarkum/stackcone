@@ -1,6 +1,6 @@
 # Skills vs Rules in Claude Code and Cursor: When to Use Each
 
-August 2026 · Published by Amar Kumar
+By [Amar Kumar](/about/), founder of [stackcone](/) · August 2026
 
 Developers setting up Claude Code or Cursor often ask: **should this go in a rule or a skill?** They paste a 40-step release checklist into `CLAUDE.md`, then wonder why Claude ignores half of it. Or they create a skill for "use 2-space indent" and it never loads.
 
