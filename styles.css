@@ -445,9 +445,12 @@ html.js #main-nav:not(.is-ready) {
   -webkit-tap-highlight-color: transparent;
 }
 
+.nav-toggle,
 .nav-toggle:hover,
-.nav-toggle:focus-visible {
-  background: var(--bg-soft);
+.nav-toggle:focus,
+.nav-toggle:active {
+  background: transparent;
+  touch-action: manipulation;
 }
 
 .nav-toggle:focus {
@@ -2375,7 +2378,14 @@ body.landing-page main > section:not(.hero) {
 
   .header.is-menu-open .nav-toggle:hover,
   .header.is-menu-open .nav-toggle:focus-visible {
-    background: var(--bg-soft);
+    background: transparent;
+  }
+
+  /* Safari: a blurred header becomes the containing block for the fixed drawer */
+  .header.is-menu-open,
+  .header.is-menu-open.is-scrolled {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   /* Hamburger bars become X when menu is open */
@@ -3654,8 +3664,7 @@ samp {
 /* ---------- Phone-friendly buttons (iPhone SE 320px and up) ---------- */
 @media (max-width: 640px) {
   /* The off-canvas menu must never widen the page */
-  html,
-  body {
+  html {
     overflow-x: clip;
   }
 
