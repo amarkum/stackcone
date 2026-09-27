@@ -3726,3 +3726,73 @@ samp {
     height: auto;
   }
 }
+
+/* ---------- Homepage hero on phones: tighter, softer, less blocky ---------- */
+@media (max-width: 640px) {
+  html body.landing-page .hero.hero--lead {
+    position: relative;
+    min-height: 0;
+    padding: 3rem 1.25rem 3.25rem;
+    justify-content: flex-start;
+    isolation: isolate;
+  }
+
+  html body.landing-page main > .stack-strip {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+  }
+
+  body.landing-page .hero.hero--lead::before {
+    content: "";
+    position: absolute;
+    inset: 0 -20% auto;
+    height: 75%;
+    background: radial-gradient(60% 55% at 50% 30%, var(--hero-glow, rgba(15, 23, 42, 0.07)), transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .hero--lead .hero-trust {
+    margin-bottom: 1.1rem;
+  }
+
+  .hero--lead .hero-title {
+    font-size: clamp(2rem, 9vw, 2.5rem);
+    line-height: 1.08;
+    margin-bottom: 0.9rem;
+  }
+
+  .hero--lead .hero-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Two pill buttons side by side instead of full-width slabs */
+  .hero--lead .hero-ctas {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .hero--lead .hero-ctas > .cta {
+    width: auto;
+    flex: 0 1 auto;
+    padding: 0.8rem 1.35rem;
+    font-size: 0.95rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 340px) {
+  .hero--lead .hero-ctas > .cta {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+[data-theme="dark"] {
+  --hero-glow: rgba(255, 255, 255, 0.07);
+}
