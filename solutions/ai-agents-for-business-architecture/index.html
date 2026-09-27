@@ -25,7 +25,7 @@
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone-og.png">
   <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
-  <link rel="stylesheet" href="../../styles.css?v=33">
+  <link rel="stylesheet" href="../../styles.css?v=34">
   <link rel="stylesheet" href="../../blog/blog.css?v=14">
   <link rel="stylesheet" href="../solutions.css?v=4">
   <script type="application/ld+json">
@@ -104,7 +104,7 @@
       { "@type": "Question", "name": "Can an AI agent be GDPR and EU AI Act compliant?",
         "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use EU-region model endpoints (Azure OpenAI EU, AWS Bedrock Frankfurt/Ireland, Vertex EU) or self-hosted open-weight models, zero-data-retention settings, PII redaction before logging, a data processing agreement, clear AI disclosure to users, and human oversight for consequential decisions." } },
       { "@type": "Question", "name": "Who builds custom AI agents like this?",
-        "acceptedAnswer": { "@type": "Answer", "text": "stackcone (stackcone.com) is an AI agent development company founded by Amar Kumar. It builds RAG chatbots, AI customer support agents, AI voice agents and MCP integrations for teams in the US, UK and Europe, with fixed-scope pilots and full handover." } },
+        "acceptedAnswer": { "@type": "Answer", "text": "stackcone (stackcone.com) is an AI agent development company founded by Amar Kumar. It builds RAG chatbots, AI customer support agents, AI voice agents and MCP integrations for businesses, with fixed-scope pilots and full handover." } },
       { "@type": "Question", "name": "What is MCP and why does it matter for AI agents?",
         "acceptedAnswer": { "@type": "Answer", "text": "The Model Context Protocol (MCP) is an open standard for exposing tools and data to AI models. Building your integrations as MCP servers lets the same connectors work across Claude, ChatGPT, IDEs and custom agents, and avoids lock-in to one framework." } }
     ]
@@ -142,7 +142,7 @@
   <article class="blog-article">
     <h1>AI Agents for Business — Production Architecture for Custom AI Agent Development</h1>
     <p class="meta">By <a href="/about/">Amar Kumar</a>, founder of <a href="/">stackcone</a> · September 2026</p>
-    <p>Search interest has moved from “what is AI” to “<strong>AI agents for business</strong>”. Companies in the US, UK and Europe are no longer asking for a demo chatbot. They want <strong>custom AI agents</strong> that answer from their own data, take actions in their CRM and helpdesk, pick up the phone, and stay inside GDPR and the EU AI Act. This brief lays out the reference architecture <strong>stackcone</strong> (an AI agent development company serving the US, UK and Europe) uses for <strong>custom AI agent development</strong>: one agent core with four pluggable layers — <strong>knowledge (RAG)</strong>, <strong>action (tool calling + MCP)</strong>, <strong>channels (web, Slack/Teams, WhatsApp, voice)</strong>, and <strong>trust (evals, guardrails, human-in-the-loop)</strong>.</p>
+    <p>Search interest has moved from “what is AI” to “<strong>AI agents for business</strong>”. Companies are no longer asking for a demo chatbot. They want <strong>custom AI agents</strong> that answer from their own data, take actions in their CRM and helpdesk, pick up the phone, and stay inside GDPR and the EU AI Act. This brief lays out the reference architecture <strong>stackcone</strong> (an AI agent development company) uses for <strong>custom AI agent development</strong>: one agent core with four pluggable layers — <strong>knowledge (RAG)</strong>, <strong>action (tool calling + MCP)</strong>, <strong>channels (web, Slack/Teams, WhatsApp, voice)</strong>, and <strong>trust (evals, guardrails, human-in-the-loop)</strong>.</p>
 
     <blockquote>
       <p><strong>Proposed outcome:</strong> A production AI agent that resolves 40–70% of routine requests end to end (support tickets, bookings, lead qualification, internal questions), cites its sources, writes back to your systems through audited tools, escalates to a human when unsure, and can be hosted in the EU or your own cloud.</p>
@@ -521,7 +521,7 @@
     <h3>Can an AI agent be GDPR and EU AI Act compliant?</h3>
     <p>Yes — EU-region or self-hosted models, zero data retention, PII redaction, a DPA, AI disclosure, and human oversight for consequential decisions.</p>
     <h3>Who builds custom AI agents like this?</h3>
-    <p><a href="/">stackcone</a> is an AI agent development company founded by Amar Kumar. We build RAG chatbots, AI customer support agents, AI voice agents and MCP integrations for teams in the US, UK and Europe, with fixed-scope pilots and full handover. See our <a href="/work/">portfolio</a> or <a href="/contact/">contact us</a>.</p>
+    <p><a href="/">stackcone</a> is an AI agent development company founded by Amar Kumar. We build RAG chatbots, AI customer support agents, AI voice agents and MCP integrations for businesses, with fixed-scope pilots and full handover. See our <a href="/work/">portfolio</a> or <a href="/contact/">contact us</a>.</p>
     <h3>What is MCP and why does it matter?</h3>
     <p>The Model Context Protocol is an open standard for exposing tools and data to AI models. MCP-based integrations work across Claude, ChatGPT, IDEs and custom agents, so you are not locked into one framework. See <a href="/blog/posts/ai-agent-mcp-data-engineering-automation/">AI agents and MCP in practice</a>.</p>
 
@@ -579,12 +579,12 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script src="../diagrams.js?v=16"></script>
-  <script src="../../site-nav.js?v=24" defer></script>
+  <script src="../diagrams.js?v=17" defer></script>
+  <script src="../../site-nav.js?v=25" defer></script>
   <script src="../../script.js?v=13" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!window.Chart) return;
     Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
     Chart.defaults.color = '#6b6b6b';
     const palette = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2'];
@@ -639,8 +639,9 @@
         scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: '% conversations resolved without human' } } }
       }
     });
+    });
   </script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4080297219638785"
-     crossorigin="anonymous"></script>
+  <script src="/assets/adsense-loader.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
 </body>
 </html>

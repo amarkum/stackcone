@@ -289,7 +289,7 @@
   if (!document.querySelector('script[src*="learn-auth.js"]')) {
     var auth = document.createElement("script");
     auth.type = "module";
-    auth.src = "/assets/learn-auth.js?v=5";
+    auth.src = "/assets/learn-auth.js?v=6";
     document.head.appendChild(auth);
   }
 

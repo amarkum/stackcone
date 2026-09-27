@@ -620,23 +620,40 @@
     if (!blocks.length) return;
     window.__stackconeMonacoBooted = true;
 
-    loadMonaco()
-      .then(function (monaco) {
-        blocks.forEach(function (block) {
-          var host = createHost(block);
-          if (!host) return;
-          createEditor(monaco, host, block);
+    whenNearViewport(blocks, function () {
+      loadMonaco()
+        .then(function (monaco) {
+          blocks.forEach(function (block) {
+            var host = createHost(block);
+            if (!host) return;
+            createEditor(monaco, host, block);
+          });
+        })
+        .catch(function () {
+          window.__stackconeMonacoBooted = false;
+          blocks.forEach(function (block) {
+            block.pre.classList.remove('monaco-replaced');
+            if (block.wrap) {
+              block.wrap.classList.remove('monaco-ready', 'monaco-booting');
+            }
+          });
         });
-      })
-      .catch(function () {
-        window.__stackconeMonacoBooted = false;
-        blocks.forEach(function (block) {
-          block.pre.classList.remove('monaco-replaced');
-          if (block.wrap) {
-            block.wrap.classList.remove('monaco-ready', 'monaco-booting');
-          }
-        });
-      });
+    });
+  }
+
+  // Monaco is several MB, so wait until a code block is about to scroll into view.
+  // Until then the plain <pre> stays readable.
+  function whenNearViewport(blocks, fn) {
+    if (!('IntersectionObserver' in window)) {
+      fn();
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (e) { return e.isIntersecting; })) return;
+      io.disconnect();
+      fn();
+    }, { rootMargin: '600px 0px' });
+    blocks.forEach(function (block) { io.observe(block.pre); });
   }
 
   window.initMonacoCodeBlocks = initMonacoCodeBlocks;

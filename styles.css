@@ -3738,6 +3738,15 @@ samp {
 
 /* ---------- Homepage hero on phones: tighter, softer, less blocky ---------- */
 @media (max-width: 640px) {
+  /* Show the hero straight away: the entrance fade delayed the first paint on phones */
+  body.landing-page .hero-title,
+  body.landing-page .hero-desc,
+  body.landing-page .hero-ctas {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
   html body.landing-page .hero.hero--lead {
     position: relative;
     min-height: 0;

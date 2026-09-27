@@ -40,6 +40,31 @@
     return api;
   }
 
+  // Mermaid is over 1 MB, so it loads on demand (when a diagram nears the viewport)
+  // instead of blocking every page that has a diagram.
+  var MERMAID_SRC = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
+  var mermaidLoading = null;
+
+  function loadMermaid() {
+    if (getMermaid()) return Promise.resolve(getMermaid());
+    if (!mermaidLoading) {
+      mermaidLoading = new Promise(function (resolve, reject) {
+        var script = document.createElement("script");
+        script.src = MERMAID_SRC;
+        script.async = true;
+        script.onload = function () {
+          resolve(getMermaid());
+        };
+        script.onerror = function () {
+          mermaidLoading = null;
+          reject(new Error("Mermaid not loaded"));
+        };
+        document.head.appendChild(script);
+      });
+    }
+    return mermaidLoading;
+  }
+
   function findDiagramNodes() {
     return Array.from(
       document.querySelectorAll(
@@ -505,11 +530,17 @@
 
     var api = getMermaid();
     if (!api) {
-      pending.forEach(function (node) {
-        var wrap = node.closest(".diagram-wrap");
-        if (wrap) showDiagramError(wrap, "Mermaid library failed to load.");
-      });
-      return Promise.reject(new Error("Mermaid not loaded"));
+      var showLoadError = function (err) {
+        pending.forEach(function (node) {
+          var wrap = node.closest(".diagram-wrap");
+          if (wrap) showDiagramError(wrap, "Mermaid library failed to load.");
+        });
+        throw err;
+      };
+      return loadMermaid().then(function (loaded) {
+        if (!loaded) return showLoadError(new Error("Mermaid not loaded"));
+        return renderMermaidDiagrams();
+      }, showLoadError);
     }
 
     window.StackconeMermaidConfig.themeVariables = themeVariables();
@@ -572,9 +603,18 @@
   }
 
   function scheduleBoot() {
-    document.querySelectorAll(".diagram-wrap").forEach(wireMaximizeButton);
-    boot();
-    window.addEventListener("load", boot, { once: true });
+    var wraps = document.querySelectorAll(".diagram-wrap");
+    wraps.forEach(wireMaximizeButton);
+    if (!wraps.length || !("IntersectionObserver" in window)) {
+      boot();
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (e) { return e.isIntersecting; })) return;
+      io.disconnect();
+      boot();
+    }, { rootMargin: "800px 0px" });
+    wraps.forEach(function (wrap) { io.observe(wrap); });
   }
 
   if (document.readyState === "loading") {

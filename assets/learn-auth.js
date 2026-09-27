@@ -19,10 +19,19 @@ async function boot() {
   return { auth, fs, a: auth.getAuth(app), db: fs.getFirestore(app) };
 }
 
-const ready = boot().catch((e) => {
-  console.warn("[stackcone] auth unavailable:", e);
-  return null;
-});
+// Firebase is ~500 KB of JS, so it loads only when needed: on Learn / login / signup
+// pages, for visitors whose cached snapshot says they are signed in, or when an
+// auth function is called. Everyone else gets a plain "Log in" link.
+let readyPromise = null;
+function ready() {
+  if (!readyPromise) {
+    readyPromise = boot().catch((e) => {
+      console.warn("[stackcone] auth unavailable:", e);
+      return null;
+    });
+  }
+  return readyPromise;
+}
 
 /* ---------- API used by the login / signup pages ---------- */
 
@@ -50,7 +59,7 @@ export function friendlyError(err) {
 }
 
 async function need() {
-  const f = await ready;
+  const f = await ready();
   if (!f) throw { code: "auth/configuration-not-found" };
   return f;
 }
@@ -283,23 +292,32 @@ function stopSync() {
   renderAccount(snap.user);
 })();
 
-ready.then((f) => {
-  if (!f) return;
-  f.auth.onAuthStateChanged(f.a, (user) => {
-    let pending = false;
-    try { pending = sessionStorage.getItem("sc.auth.pendingLogout") === "1"; } catch (e) { /* ignore */ }
-    if (pending) {
-      try { sessionStorage.removeItem("sc.auth.pendingLogout"); } catch (e) { /* ignore */ }
-      writeSnap(null);
-      if (user) {
-        logOut().catch(() => {});
-        return;
+function watchAuth() {
+  ready().then((f) => {
+    if (!f) return;
+    f.auth.onAuthStateChanged(f.a, (user) => {
+      let pending = false;
+      try { pending = sessionStorage.getItem("sc.auth.pendingLogout") === "1"; } catch (e) { /* ignore */ }
+      if (pending) {
+        try { sessionStorage.removeItem("sc.auth.pendingLogout"); } catch (e) { /* ignore */ }
+        writeSnap(null);
+        if (user) {
+          logOut().catch(() => {});
+          return;
+        }
       }
-    }
-    writeSnap(user);
-    stopSync();
-    renderAccount(user);
-    if (user) startSync(f, user);
-    document.dispatchEvent(new CustomEvent("sc:auth", { detail: { user } }));
+      writeSnap(user);
+      stopSync();
+      renderAccount(user);
+      if (user) startSync(f, user);
+      document.dispatchEvent(new CustomEvent("sc:auth", { detail: { user } }));
+    });
   });
-});
+}
+
+(function startAuth() {
+  const snap = readSnap();
+  const authPage = /^\/(learn|login|signup)(\/|$)/.test(location.pathname);
+  if (authPage || (snap.known && snap.user)) watchAuth();
+  else if (!snap.known) renderAccount(null);
+})();
