@@ -60,6 +60,8 @@
     });
 
     if (hero && !hero.classList.contains("hero--split")) {
+      // Phones: the compact hero would slide over the next section, so no parallax.
+      var phone = window.matchMedia("(max-width: 640px)");
       var ticking = false;
       window.addEventListener(
         "scroll",
@@ -69,7 +71,9 @@
           requestAnimationFrame(function () {
             var scrollY = window.scrollY;
             var limit = window.innerHeight;
-            if (scrollY < limit) {
+            if (phone.matches) {
+              hero.style.transform = "";
+            } else if (scrollY < limit) {
               hero.style.transform = "translate3d(0, " + scrollY * 0.22 + "px, 0)";
             } else {
               hero.style.transform = "";
