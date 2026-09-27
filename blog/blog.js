@@ -64,10 +64,21 @@
       "<button type=\"button\" class=\"list-pagination-btn\"" +
         (currentPage <= 1 ? " disabled" : "") +
         " data-page=\"" + (currentPage - 1) + "\" aria-label=\"Previous page\">" +
-        "Prev</button>"
+        "‹</button>"
     );
 
+    // Always one line: first, last, current ±1, with ellipses between gaps.
+    var pages = [];
+    var radius = window.innerWidth < 360 ? 0 : 1;
     for (var page = 1; page <= totalPages; page += 1) {
+      if (totalPages <= 7 || page === 1 || page === totalPages || Math.abs(page - currentPage) <= radius) {
+        pages.push(page);
+      }
+    }
+    pages.forEach(function (page, i) {
+      if (i > 0 && page - pages[i - 1] > 1) {
+        parts.push("<span class=\"list-pagination-gap\" aria-hidden=\"true\">…</span>");
+      }
       var active = page === currentPage ? " is-active" : "";
       parts.push(
         "<button type=\"button\" class=\"list-pagination-btn" + active + "\"" +
@@ -75,13 +86,13 @@
           (page === currentPage ? " aria-current=\"page\"" : "") +
           ">" + page + "</button>"
       );
-    }
+    });
 
     parts.push(
       "<button type=\"button\" class=\"list-pagination-btn\"" +
         (currentPage >= totalPages ? " disabled" : "") +
         " data-page=\"" + (currentPage + 1) + "\" aria-label=\"Next page\">" +
-        "Next</button>"
+        "›</button>"
     );
 
     nav.innerHTML = parts.join("");
