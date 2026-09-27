@@ -4,6 +4,11 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      indexnow_all:
+        description: "Also submit every sitemap URL to IndexNow"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -50,4 +55,5 @@ jobs:
       - name: Submit changed pages to IndexNow
         env:
           BEFORE: ${{ github.event.before }}
+          ALL: ${{ github.event.inputs.indexnow_all }}
         run: python3 .github/scripts/indexnow.py
