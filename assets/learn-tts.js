@@ -166,32 +166,37 @@
     }
   }
 
+  // Queue every remaining chunk at once. Chaining on "end" events stalls after the
+  // first chunk on iOS Safari (and sometimes Chrome), so the browser owns the queue.
+  var live = []; // keep references so utterances are not garbage-collected mid-queue
   function speakNext() {
     if (state !== "playing") return;
     if (index >= queue.length) {
       stop();
       return;
     }
-    var item = queue[index];
     var g = gen;
-    var u = new SpeechSynthesisUtterance(item.text);
     var voice = pickVoice();
-    if (voice) u.voice = voice;
-    u.lang = (voice && voice.lang) || document.documentElement.lang || "en-US";
-    u.rate = RATES[rateIndex];
-    u.onstart = function () { if (g === gen) mark(item.el); };
-    u.onend = function () {
-      if (g !== gen || state !== "playing") return;
-      index++;
-      speakNext();
-    };
-    u.onerror = function (e) {
-      if (g !== gen) return;
-      if (e.error === "interrupted" || e.error === "canceled") return;
-      index++;
-      speakNext();
-    };
-    synth.speak(u);
+    live = [];
+    for (var i = index; i < queue.length; i++) {
+      (function (i) {
+        var item = queue[i];
+        var u = new SpeechSynthesisUtterance(item.text);
+        if (voice) u.voice = voice;
+        u.lang = (voice && voice.lang) || document.documentElement.lang || "en-US";
+        u.rate = RATES[rateIndex];
+        u.onstart = function () {
+          if (g !== gen) return;
+          index = i;
+          mark(item.el);
+        };
+        if (i === queue.length - 1) {
+          u.onend = function () { if (g === gen && state === "playing") stop(); };
+        }
+        live.push(u);
+        synth.speak(u);
+      })(i);
+    }
   }
 
   function play() {
@@ -223,6 +228,7 @@
   function stop() {
     state = "idle";
     gen++;
+    live = [];
     synth.cancel();
     index = 0;
     mark(null);
