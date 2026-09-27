@@ -2166,6 +2166,21 @@ body.landing-page main > section:not(.hero) {
   color: var(--accent);
 }
 
+/* Mobile: keep the footer short; the rest lives in the header menu */
+@media (max-width: 640px) {
+  .footer-nav {
+    gap: 0.5rem 1.5rem;
+  }
+
+  .footer-nav a[href="/work/"],
+  .footer-nav a[href="/learn/"],
+  .footer-nav a[href="/about/"],
+  .footer-nav a[href="/terms/"],
+  .footer-nav a[href^="http"] {
+    display: none;
+  }
+}
+
 .footer-copy {
   font-size: 0.8rem;
   color: var(--text-dim);
