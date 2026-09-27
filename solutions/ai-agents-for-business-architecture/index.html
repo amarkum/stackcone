@@ -21,7 +21,7 @@
   <meta property="og:site_name" content="stackcone">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AI Agents for Business Architecture | stackcone">
-  <meta name="twitter:description" content="How to design custom AI agents that answer, act, and talk — RAG, tool calling, MCP, voice, evals, and EU/UK compliance.">
+  <meta name="twitter:description" content="How to design custom AI agents that answer, act, and talk — RAG, tool calling, MCP, voice, evals, and GDPR compliance.">
   <meta name="twitter:image" content="https://stackcone.com/logo/stackcone-og.png">
   <link rel="icon" type="image/png" href="../../favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="../../favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
@@ -75,12 +75,7 @@
     "serviceType": "AI agent development",
     "description": "stackcone designs and builds custom AI agents for business: RAG knowledge agents, AI customer support agents, AI voice agents and receptionists, MCP integrations, and multi-agent systems with evals and GDPR / EU AI Act guardrails.",
     "provider": { "@type": "Organization", "@id": "https://stackcone.com/#organization", "name": "stackcone", "url": "https://stackcone.com/" },
-    "areaServed": [
-      { "@type": "Country", "name": "United States" },
-      { "@type": "Country", "name": "United Kingdom" },
-      { "@type": "Place", "name": "European Union" },
-      { "@type": "Country", "name": "India" }
-    ],
+    "areaServed": { "@type": "Place", "name": "Worldwide" },
     "url": "https://stackcone.com/solutions/ai-agents-for-business-architecture/",
     "offers": {
       "@type": "Offer",
@@ -356,7 +351,7 @@
         <tr><td>Workflows</td><td>n8n (SMB), Temporal (engineering teams)</td><td>Durable retries and schedules outside the LLM loop</td></tr>
         <tr><td>Observability &amp; evals</td><td>Langfuse or LangSmith, plus a pytest eval suite in CI</td><td>Trace every run; block releases that regress accuracy</td></tr>
         <tr><td>Frontend</td><td>Next.js widget + admin console; Slack/Teams apps</td><td>Streaming responses (SSE), feedback buttons, source previews</td></tr>
-        <tr><td>Hosting</td><td>AWS / GCP / Azure in client’s account, EU or UK region</td><td>Data residency and procurement are simpler when it runs in their cloud</td></tr>
+        <tr><td>Hosting</td><td>AWS / GCP / Azure in the client’s account and chosen region</td><td>Data residency and procurement are simpler when it runs in their cloud</td></tr>
       </tbody>
     </table>
     <p><strong>Why MCP for integrations?</strong> A HubSpot or Zendesk MCP server built once can be used by the support agent, the sales agent, and staff inside Claude or ChatGPT. It also forces clean tool contracts — name, typed arguments, scope — which is exactly what security reviews ask for.</p>
@@ -422,7 +417,7 @@
         <tr><th>Requirement</th><th>How the design handles it</th></tr>
       </thead>
       <tbody>
-        <tr><td>Data residency</td><td>EU/UK-region model endpoints (Bedrock Frankfurt/Ireland/London, Azure OpenAI EU, Vertex EU) or self-hosted open-weight models; vector DB and logs in the same region</td></tr>
+        <tr><td>Data residency</td><td>In-region model endpoints (Bedrock, Azure OpenAI or Vertex AI in the required region) or self-hosted open-weight models; vector DB and logs in the same region</td></tr>
         <tr><td>No training on customer data</td><td>Enterprise/API terms with zero data retention where offered; documented in the DPA</td></tr>
         <tr><td>Data minimisation</td><td>PII redacted before tracing; configurable log retention (e.g. 30 days)</td></tr>
         <tr><td>Right of access / erasure</td><td>Conversations keyed by user ID; delete endpoint cascades to logs and memory</td></tr>
@@ -555,7 +550,7 @@
 
     <aside class="blog-cta">
       <h2>Need an AI agent built for your business?</h2>
-      <p>stackcone is an AI agent development partner for US, UK and EU teams — RAG, tool-calling and voice agents with eval gates, EU hosting options, and fixed-scope pilots.</p>
+      <p>stackcone is an AI agent development partner for teams worldwide — RAG, tool-calling and voice agents with eval gates, regional hosting options, and fixed-scope pilots.</p>
       <div class="blog-cta-links">
         <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
         <a href="/contact/" class="cta cta--secondary">Contact us</a>
