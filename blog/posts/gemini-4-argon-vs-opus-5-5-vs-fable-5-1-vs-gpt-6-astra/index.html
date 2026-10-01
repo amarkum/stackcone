@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+(function(){var k="sc-theme",r=document.documentElement,m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)");function s(){try{return localStorage.getItem(k)}catch(e){return null}}var t=s();t=(t==="light"||t==="dark")?t:(m&&m.matches?"dark":"light");r.classList.add("js");r.setAttribute("data-theme",t);r.style.colorScheme=t;})();
+</script>
+  <script src="/assets/theme.js?v=3" defer></script>
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <title>Gemini 4 Argon vs Opus 5.5 vs Fable 5.1 vs GPT-6 Astra</title>
+  <meta name="description" content="Gemini 4 Argon benchmarks vs Claude Opus 5.5, Fable 5.1 and GPT-6 Astra: coding, agents, long context, hallucinations, pricing, and the future of coding.">
+  <meta name="keywords" content="Gemini 4 Argon, Gemini 4 Argon benchmarks, Gemini 4 Argon pricing, Claude Opus 5.5, Opus 5.5 max effort, Claude Fable 5.1, GPT-6 Astra, GPT-6.1 Sol, best AI model 2026, best AI for coding, AI model comparison, Terminal-Bench 4.0, SWE-bench Pro, LLM hallucination rate, future of software engineering">
+  <link rel="canonical" href="https://stackcone.com/blog/posts/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://stackcone.com/blog/posts/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/">
+  <meta property="og:title" content="Gemini 4 Argon vs Claude Opus 5.5 vs Fable 5.1 vs GPT-6 Astra">
+  <meta property="og:description" content="Argon leads 13 of 19 of Google's benchmark rows. Independent tests put Opus 5.5 five points ahead. Benchmarks, pricing, and what it means for software engineering.">
+  <meta property="og:image" content="https://stackcone.com/logo/stackcone-og.png">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="stackcone">
+  <meta property="article:published_time" content="2026-10-01">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gemini 4 Argon vs Claude Opus 5.5 vs Fable 5.1 vs GPT-6 Astra">
+  <meta name="twitter:description" content="Argon leads 13 of 19 of Google's rows; independent tests put Opus 5.5 ahead. Benchmarks, pricing, and the future of software engineering.">
+  <meta name="twitter:image" content="https://stackcone.com/logo/stackcone-og.png">
+  <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
+  <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="../../../styles.css?v=34">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="/assets/monaco-code.css?v=18">
+  <style>
+    .blog-article .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0 2rem; }
+    .blog-article .table-scroll table { margin: 0; min-width: 640px; }
+    .blog-article .chart-tall { position: relative; height: 620px; }
+    .blog-article .chart-tall canvas { max-height: none; }
+    .blog-article .chart-mid { position: relative; height: 280px; }
+    .blog-article .chart-mid canvas { max-height: none; }
+    .blog-article .sources-list { font-size: 0.9375rem; }
+    .blog-article .sources-list li { margin-bottom: 0.35rem; }
+    .blog-article .picker-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width: 720px) {
+      .blog-article .chart-tall { height: 720px; }
+      .blog-article .picker-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Gemini 4 Argon vs Claude Opus 5.5 vs Fable 5.1 vs GPT-6 Astra: Benchmarks, Pricing, and the Future of Software Engineering",
+    "description": "Gemini 4 Argon benchmarks compared with Claude Opus 5.5 (max effort), Claude Fable 5.1, GPT-6 Astra and GPT-6.1 Sol: coding, agents, long context, hallucination rate, pricing, and what the October 2026 frontier means for software engineers.",
+    "author": { "@type": "Person", "name": "Amar Kumar", "url": "https://stackcone.com/about/" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "stackcone",
+      "url": "https://stackcone.com",
+      "logo": { "@type": "ImageObject", "url": "https://stackcone.com/logo/stackcone-og.png" }
+    },
+    "datePublished": "2026-10-01",
+    "dateModified": "2026-10-01",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://stackcone.com/blog/posts/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/" },
+    "image": "https://stackcone.com/logo/stackcone-og.png",
+    "keywords": ["Gemini 4 Argon", "Claude Opus 5.5", "Claude Fable 5.1", "GPT-6 Astra", "GPT-6.1 Sol", "AI model comparison 2026", "AI benchmarks", "future of software engineering"],
+    "articleSection": "Platform",
+    "about": [
+      { "@type": "Thing", "name": "Gemini 4 Argon" },
+      { "@type": "Thing", "name": "Claude Opus 5.5" },
+      { "@type": "Thing", "name": "Claude Fable 5.1" },
+      { "@type": "Thing", "name": "GPT-6 Astra" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Gemini 4 Argon better than Claude Opus 5.5?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It depends on the job. In Google's own table Argon leads 13 of 19 rows, including AutomationBench (51.3% vs 42.5%), DeepSWE v1.1 (77.9% vs 74.2%) and long-context GraphWalks (84.2% vs 66.8%). Opus 5.5 wins Terminal-Bench 4.0 (66.4% vs 57.4%) and PostTrainBench, and on the independent Artificial Analysis Intelligence Index Opus 5.5 scores 58 against Argon's 53." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Gemini 4 Argon today?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Most people cannot yet. At launch on September 30, 2026, Argon is limited to trusted cyber defenders in Google's Fairwind Program and Google's internal teams. Google says paid API customers and Google AI Ultra subscribers come next, but has not given a date." }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does Gemini 4 Argon cost?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Introductory pricing is $2 per million input tokens and $10 per million output tokens, with a 95% discount on cached input. After the introductory period it rises to $4 input and $20 output, the same per-token price as Claude Opus 5.5." }
+      },
+      {
+        "@type": "Question",
+        "name": "What does max effort mean for Claude Opus 5.5?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Effort controls how much adaptive thinking Opus 5.5 does before answering. Anthropic's headline benchmarks use max effort, while the API default is medium. Anthropic reports that medium effort often matches earlier models at max effort while using fewer tokens, so max is best saved for the hardest tasks." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Claude Fable 5.1 still worth it after Opus 5.5?",
+        "acceptedAnswer": { "@type": "Answer", "text": "For most new work, Opus 5.5 is the better buy. It matches or beats Fable 5.1 on every row of Anthropic's comparison table at $4/$20 per million tokens versus $10/$50. Fable 5.1 still makes sense for teams already tuned around it and for verified organisations that need its Mythos 5.1 variant." }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use GPT-6 Astra or GPT-6.1 Sol?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Start with GPT-6.1 Sol. It scores 52 on the Artificial Analysis Intelligence Index against Astra's 53, matches Astra on DeepSWE v1.1, and costs $2/$10 per million tokens instead of $10/$50. Escalate to Astra for frontier math, hard computer use and the hardest end-to-end tasks." }
+      },
+      {
+        "@type": "Question",
+        "name": "Which AI model hallucinates the least in October 2026?",
+        "acceptedAnswer": { "@type": "Answer", "text": "On Artificial Analysis's AA-Omniscience test, Gemini 4 Argon has a 15% hallucination rate, the lowest of any model scoring 45 or more on the Intelligence Index. GPT-6 Astra scores 51% and GPT-6.1 Sol 54%. The metric measures how often a model guesses wrong instead of saying it does not know." }
+      },
+      {
+        "@type": "Question",
+        "name": "Which AI model is best for coding right now?",
+        "acceptedAnswer": { "@type": "Answer", "text": "For terminal-heavy agentic coding, Claude Opus 5.5 leads Terminal-Bench 4.0 and SWE-bench Pro (89.9%). Gemini 4 Argon leads DeepSWE v1.1 and Vibe Code Bench, and GPT-6 Astra leads FrontierSWE v2. In practice, run the same three tasks from your own repository on two or three models before committing." }
+      },
+      {
+        "@type": "Question",
+        "name": "Will AI replace software engineers?",
+        "acceptedAnswer": { "@type": "Answer", "text": "The job is changing faster than it is disappearing. JetBrains' 2026 survey of 15,000+ developers found about 47% of code is now written by agents, but Sonar found 96% of developers do not fully trust AI code and only 48% always verify it. The work is shifting from typing code to specifying, reviewing, testing and securing it." }
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://stackcone.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://stackcone.com/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Gemini 4 Argon vs Opus 5.5 vs Fable 5.1 vs GPT-6 Astra", "item": "https://stackcone.com/blog/posts/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/" }
+    ]
+  }
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B29M3GX6QM"></script>
+  <script src="/assets/analytics.js" defer></script>
+</head>
+<body class="blog-page">
+  <header class="header">
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a href="/" class="logo-link">
+        <picture><source type="image/webp" srcset="/logo/stackcone.webp"><img src="/logo/stackcone.png" alt="stackcone" class="logo" width="280" height="60"></picture>
+      </a>
+      <button type="button" class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+      <nav class="nav" id="main-nav" aria-label="Main navigation"></nav>
+    </div>
+  </header>
+
+  <article class="blog-article">
+    <h1>Gemini 4 Argon vs Claude Opus 5.5 vs Fable 5.1 vs GPT-6 Astra: Benchmarks, Pricing, and the Future of Software Engineering</h1>
+    <p class="meta">By <a href="/about/">Amar Kumar</a>, founder of <a href="/">stackcone</a> · October 2026</p>
+
+    <p>September 2026 was the most crowded month in the history of frontier AI. In thirty days we got <strong>Claude Fable 5.1</strong> (Sept 1), <strong>GPT-6 Astra</strong> (Sept 3), <strong>Claude Opus 5.5</strong> and <strong>GPT-6 Sol / Luna</strong> (Sept 22, ninety minutes apart), <strong>Claude Sonnet 5.5</strong> (Sept 28), <strong>GPT-6.1 Sol</strong> (Sept 29) and, on the last day of the month, Google’s first Gemini 4 model: <strong>Gemini 4 Argon</strong>.</p>
+    <p>Google’s launch table shows Argon leading 13 of 19 benchmarks. The first independent run tells a different story: on the Artificial Analysis Intelligence Index, Argon ties GPT-6 Astra and Fable 5.1 at 53, while <strong>Opus 5.5 at max effort sits five points clear at 58</strong>. Both are true, and the gap between them is the most useful thing to understand about AI benchmarks right now.</p>
+    <p>This guide goes through every published score, explains the fine print the launch posts skip, compares real pricing (per token <em>and</em> per task), and closes with what this generation of models means for the future of software engineering.</p>
+
+    <div class="model-logo-row" role="img" aria-label="Google Gemini, Anthropic Claude and OpenAI logos">
+      <figure>
+        <img src="../../images/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/gemini.svg" alt="Google Gemini logo" width="80" height="80">
+        <figcaption>Gemini 4 Argon</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/claude-symbol.svg" alt="Anthropic Claude logo" width="80" height="80">
+        <figcaption>Opus 5.5 · Fable 5.1</figcaption>
+      </figure>
+      <figure>
+        <img src="../../images/gemini-4-argon-vs-opus-5-5-vs-fable-5-1-vs-gpt-6-astra/openai.png" alt="OpenAI logo" width="80" height="80">
+        <figcaption>GPT-6 Astra · 6.1 Sol</figcaption>
+      </figure>
+    </div>
+
+    <dl class="blog-stat-grid">
+      <div class="blog-stat"><dt>Argon leads (Google’s table)</dt><dd>13 of 19</dd></div>
+      <div class="blog-stat"><dt>AA Index: Opus 5.5 vs Argon</dt><dd>58 vs 53</dd></div>
+      <div class="blog-stat blog-stat-ok"><dt>Argon hallucination rate</dt><dd>15%</dd></div>
+      <div class="blog-stat"><dt>Argon intro price / 1M</dt><dd>$2 / $10</dd></div>
+    </dl>
+
+    <p><strong>Related:</strong> <a href="/blog/posts/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/">GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3</a> · <a href="/blog/posts/best-ai-for-coding/">Best AI for coding</a> · <a href="/blog/posts/auto-model-routing-without-llm-classifier/">Auto model routing</a></p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        <li><a href="#quick-verdict">Quick verdict</a></li>
+        <li><a href="#contenders">The contenders at a glance</a></li>
+        <li><a href="#argon">What Gemini 4 Argon is (and why you can’t use it yet)</a></li>
+        <li><a href="#opus-max">What “Opus 5.5 max” actually means</a></li>
+        <li><a href="#benchmarks">Head-to-head benchmarks</a></li>
+        <li><a href="#categories">Category by category</a></li>
+        <li><a href="#independent">Independent tests vs launch tables</a></li>
+        <li><a href="#hallucination">Hallucination and prompt-injection safety</a></li>
+        <li><a href="#fine-print">The benchmark fine print</a></li>
+        <li><a href="#pricing">Pricing and real cost per task</a></li>
+        <li><a href="#picker">Pick a model for your workload</a></li>
+        <li><a href="#which">Which model should you use?</a></li>
+        <li><a href="#routing">A simple routing setup</a></li>
+        <li><a href="#future">The future of software engineering</a></li>
+        <li><a href="#eval">How to run your own eval this week</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="quick-verdict">Quick verdict</h2>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>If your main job is…</th><th>Pick</th><th>Why (headline number)</th></tr></thead>
+      <tbody>
+        <tr><td>Terminal-heavy coding agents, long repo work</td><td><strong>Claude Opus 5.5</strong></td><td>Terminal-Bench 4.0: 66.4% vs 57–58% for the rest; SWE-bench Pro 89.9%</td></tr>
+        <tr><td>Finance, legal and business-process automation</td><td><strong>Gemini 4 Argon</strong> (once you can get it)</td><td>AutomationBench 51.3%, Vals Finance Agent v2 65.4%</td></tr>
+        <tr><td>Very long documents (256K–1M tokens)</td><td><strong>Gemini 4 Argon</strong></td><td>GraphWalks 256K–1M: 84.2% vs 71.8% for Astra</td></tr>
+        <tr><td>Frontier math, computer use, hardest end-to-end tasks</td><td><strong>GPT-6 Astra</strong></td><td>FrontierMath Tier 4: 97.6%; OSWorld 2.0: 72.6%</td></tr>
+        <tr><td>High volume on a budget</td><td><strong>GPT-6.1 Sol</strong> or <strong>Claude Sonnet 5.5</strong></td><td>Both $2 / $10 per 1M tokens; Sol scores 52 on the AA Index</td></tr>
+        <tr><td>Careful professional reasoning in an existing Fable setup</td><td><strong>Claude Fable 5.1</strong></td><td>Strong HLE and GDPval scores, but Opus 5.5 now matches it for 40% of the price</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="contenders">The contenders at a glance</h2>
+    <p>The user-facing names hide a lot of tiering. Here is the spec sheet that matters when you actually wire one of these into a product.</p>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>Gemini 4 Argon</th><th>Claude Opus 5.5</th><th>Claude Fable 5.1</th><th>GPT-6 Astra</th><th>GPT-6.1 Sol</th></tr></thead>
+      <tbody>
+        <tr><td>Maker</td><td>Google DeepMind</td><td>Anthropic</td><td>Anthropic</td><td>OpenAI</td><td>OpenAI</td></tr>
+        <tr><td>Released</td><td>Sept 30, 2026</td><td>Sept 22, 2026</td><td>Sept 1, 2026</td><td>Sept 3, 2026</td><td>Sept 29, 2026</td></tr>
+        <tr><td>API price (in / out per 1M)</td><td>$2 / $10 intro, then $4 / $20</td><td>$4 / $20</td><td>$10 / $50</td><td>$10 / $50</td><td>$2 / $10</td></tr>
+        <tr><td>Cached input</td><td>95% off input</td><td>$0.20</td><td>$0.25</td><td>Separate rates</td><td>$0.10</td></tr>
+        <tr><td>Context window</td><td>Not published</td><td>1M</td><td>1M</td><td>Long-context evals to 1M</td><td>1.05M</td></tr>
+        <tr><td>Max output</td><td><strong>1M tokens</strong> (up from 64K)</td><td>128K (300K batch beta)</td><td>128K</td><td>Not published</td><td>128K</td></tr>
+        <tr><td>Reasoning control</td><td>Not disclosed</td><td>Effort up to max; adaptive thinking always on</td><td>Low / medium / high</td><td>Effort tiers up to max</td><td>Low → max (default medium)</td></tr>
+        <tr><td>Who can use it</td><td>Fairwind cyber defenders only</td><td>Generally available</td><td>Generally available</td><td>ChatGPT paid plans, API, Bedrock</td><td>ChatGPT, Codex, API, Copilot Pro+</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Gemini 4 Argon (Google)</h3>
+    <p>Google’s first Gemini 4 model, built for long-horizon professional work: software engineering, finance and legal knowledge work, and cyber defense. Its most unusual spec is the <strong>1 million token output limit</strong>, which lets a single run emit an entire migrated codebase instead of stitching together dozens of 64K-token chunks.</p>
+
+    <h3>Claude Opus 5.5 (Anthropic)</h3>
+    <p>The first model in Anthropic’s 5.5 family, pitched as “Fable-class work, cheaper to run.” Anthropic says it costs about <strong>40% less per task than Opus 5</strong>: 20% from lower list prices and the rest from using fewer tokens. It is also about 30% faster at generating output than Opus 5.</p>
+
+    <h3>Claude Fable 5.1 (Anthropic)</h3>
+    <p>Anthropic’s premium tier, released three months after Fable 5. It more than doubled Fable 5 on Terminal-Bench-Science (52.6% vs 24.7%) and nearly doubled AutomationBench (31.4% vs 17.1%). A sibling model, <strong>Claude Mythos 5.1</strong>, shares the same weights with relaxed cyber and life-science safeguards, but it is limited to verified US organisations.</p>
+
+    <h3>GPT-6 Astra (OpenAI)</h3>
+    <p>OpenAI’s frontier flagship and the successor to GPT-5.6 Sol at the top of the line. It posts some extraordinary numbers (97.6% on FrontierMath Tier 4, 100% on ExploitBench), but several of them depend on special harnesses, which we cover in <a href="#fine-print">the fine print</a>.</p>
+
+    <h3>GPT-6.1 Sol (OpenAI): the value pick</h3>
+    <p>Shipped at DevDay on September 29 as “near-Astra intelligence for a fifth of the price.” It is not one of the four headline models in this comparison, but you can’t ignore it: at $2 / $10 it scores 52 on the AA Index to Astra’s 53, which makes it the default OpenAI model for most production traffic.</p>
+
+    <h2 id="argon">What Gemini 4 Argon is (and why you can’t use it yet)</h2>
+    <p>Google announced Argon on September 30, 2026, but almost nobody can call it. At launch it is limited to the <strong>Fairwind Program</strong>, a controlled-access group of Google Cloud customers, government agencies and security partners who get Argon <em>without</em> cyber guardrails so they can find and fix vulnerabilities in critical infrastructure. Google also put the model through the US government’s voluntary pre-release testing process.</p>
+    <p>The rollout order Google published is:</p>
+    <ol>
+      <li>Trusted cyber defenders (Fairwind) and Google’s internal teams</li>
+      <li>Paid API customers and Google AI Ultra subscribers (no date given)</li>
+      <li>Broader developers, enterprises and consumers</li>
+    </ol>
+    <p>Google’s own examples of what it did internally with Argon are more interesting than most benchmarks:</p>
+    <ul>
+      <li><strong>C/C++ to Rust migrations</strong> of up to 800K+ lines of code</li>
+      <li><strong>300+ TiB of memory freed</strong> through optimisation across data centres</li>
+      <li>A video decoder made <strong>2.7× faster</strong> than the previous Rust port</li>
+      <li>A quantum algorithm optimised <strong>40%</strong> beyond the published baseline</li>
+      <li>A previously unknown critical vulnerability found in healthcare software used by hospitals worldwide</li>
+    </ul>
+    <p>Google DeepMind SVP Koray Kavukcuoglu described it as delivering “frontier performance in complex workflows across real-world software engineering, enterprise knowledge work like legal and finance, and cybersecurity defense.”</p>
+
+    <h2 id="opus-max">What “Opus 5.5 max” actually means</h2>
+    <p>“Max” is not a separate model. It is the top setting of Opus 5.5’s <strong>effort</strong> parameter, which controls how much adaptive thinking the model does before it answers. Three details matter:</p>
+    <ul>
+      <li><strong>Anthropic’s headline benchmarks use adaptive thinking at max effort.</strong> The API default is <em>medium</em>, so what you get out of the box is not what the launch chart shows.</li>
+      <li><strong>Medium is closer to max than you’d expect.</strong> On CursorBench 4.0, Opus 5.5 at medium scored 52.5%, above Fable 5.1 at max (51.8%) and Opus 5 at max (46.6%).</li>
+      <li><strong>Thinking can’t be switched off.</strong> Adaptive thinking is always on in Opus 5.5, one of several breaking changes from Opus 5 alongside forced tool use now returning an error.</li>
+    </ul>
+    <p>There is also a <strong>fast mode</strong> in Claude Code and on the Claude Platform: up to 2.5× faster at $8 / $40 per million tokens. On the independent AA Index, Opus 5.5 scores 57.6 at its highest setting, which rounds to the 58 you’ll see quoted everywhere.</p>
+    <p>A practical rule: run medium by default, escalate to high or max for the tasks that fail at medium, and measure. As a rough guide, high effort can add around 20,000 thinking tokens to a task, about $0.40 at Opus 5.5’s output price.</p>
+
+    <h2 id="benchmarks">Head-to-head benchmarks</h2>
+    <p>This is Google’s launch table, the only place all four headline models appear side by side. Competitor scores were partly taken from other vendors’ system cards and leaderboards, so treat it as Google’s framing. The best score in each row is in bold.</p>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Benchmark</th><th>Gemini 4 Argon</th><th>GPT-6 Astra</th><th>Claude Fable 5.1</th><th>Claude Opus 5.5</th></tr></thead>
+      <tbody>
+        <tr><td colspan="5"><strong>Knowledge work</strong></td></tr>
+        <tr><td>Vals Index</td><td><strong>68.9%</strong></td><td>63.1%</td><td>65.8%</td><td>67.0%</td></tr>
+        <tr><td>AutomationBench (Zapier)</td><td><strong>51.3%</strong></td><td>41.4%</td><td>31.4%</td><td>42.5%</td></tr>
+        <tr><td>Vals Finance Agent v2</td><td><strong>65.4%</strong></td><td>53.5%</td><td>58.9%</td><td>58.6%</td></tr>
+        <tr><td>Harvey Legal Agent Benchmark</td><td><strong>19.6%</strong></td><td>5.4%</td><td>6.7%</td><td>3.8%</td></tr>
+        <tr><td colspan="5"><strong>Coding</strong></td></tr>
+        <tr><td>DeepSWE v1.1</td><td><strong>77.9%</strong></td><td>74.1%</td><td>67.4%</td><td>74.2%</td></tr>
+        <tr><td>FrontierSWE v2</td><td>55.0%</td><td><strong>65.5%</strong></td><td>56.3%</td><td>62.3%</td></tr>
+        <tr><td>Vibe Code Bench</td><td><strong>91.9%</strong></td><td>89.6%</td><td>90.3%</td><td>90.3%</td></tr>
+        <tr><td>Terminal-Bench 4.0</td><td>57.4%</td><td>58.2%</td><td>57.9%</td><td><strong>66.4%</strong></td></tr>
+        <tr><td>PostTrainBench (ML engineering)</td><td>45.3%</td><td>44.3%</td><td>40.2%</td><td><strong>49.3%</strong></td></tr>
+        <tr><td colspan="5"><strong>Science and reasoning</strong></td></tr>
+        <tr><td>Terminal-Bench Science 0.1</td><td>57.6%</td><td><strong>68.1%</strong></td><td>52.6%</td><td>63.3%</td></tr>
+        <tr><td>LABBench 2</td><td><strong>88.8%</strong></td><td>85.4%</td><td>68.6%</td><td>73.1%</td></tr>
+        <tr><td>RiemannBench</td><td><strong>76.0%</strong></td><td>72.0%</td><td>65.6%</td><td>69.6%</td></tr>
+        <tr><td colspan="5"><strong>Long context</strong></td></tr>
+        <tr><td>GraphWalks ≤128K (BFS F1)</td><td><strong>99.7%</strong></td><td>98.7%</td><td>91.4%</td><td>90.6%</td></tr>
+        <tr><td>GraphWalks 256K–1M (BFS F1)</td><td><strong>84.2%</strong></td><td>71.8%</td><td>65.0%</td><td>66.8%</td></tr>
+        <tr><td colspan="5"><strong>Agents and computer use</strong></td></tr>
+        <tr><td>Agents’ Last Exam (pass rate)</td><td><strong>39.5%</strong></td><td>34.2%</td><td>—</td><td>38.2%</td></tr>
+        <tr><td>OSWorld 2.0 (offline subset)</td><td>69.2%</td><td><strong>72.6%</strong></td><td>—</td><td>—</td></tr>
+        <tr><td colspan="5"><strong>Multimodal</strong></td></tr>
+        <tr><td>Chartography</td><td><strong>71.6%</strong></td><td>71.0%</td><td>46.2%</td><td>66.3%</td></tr>
+        <tr><td>LVBench (video)</td><td><strong>91.7%</strong></td><td>87.5%</td><td>79.7%</td><td>83.7%</td></tr>
+        <tr><td colspan="5"><strong>Security</strong></td></tr>
+        <tr><td>CWE-bench v1</td><td><strong>68.0%</strong></td><td><strong>68.0%</strong></td><td>58.0%</td><td>67.0%</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Score it: <strong>Argon leads 13 rows outright and ties one</strong> (CWE-bench). Astra takes three (FrontierSWE v2, Terminal-Bench Science, OSWorld 2.0), Opus 5.5 takes two (Terminal-Bench 4.0, PostTrainBench), and Fable 5.1 takes none.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-tall">
+        <canvas id="h2hChart" role="img" aria-label="Grouped horizontal bar chart comparing Gemini 4 Argon, GPT-6 Astra, Claude Fable 5.1 and Claude Opus 5.5 on eight benchmarks from Google's launch table. The full numbers are in the table above."></canvas>
+      </div>
+      <p class="chart-caption">Eight representative rows from Google’s launch table (higher is better). The full numbers are in the table above.</p>
+    </div>
+
+    <h2 id="categories">Category by category</h2>
+
+    <h3>Knowledge work: Argon’s clearest win</h3>
+    <p>This is where Argon is strongest. It leads all four knowledge-work rows, and the margins are not small: <strong>8.8 points</strong> on AutomationBench, <strong>6.5 points</strong> on Vals Finance Agent v2, and nearly <strong>3×</strong> the next-best score on Harvey’s legal agent benchmark (19.6% vs 6.7%). The independent AutomationBench-AA run agrees: Argon is first at 77.5%, ahead of Claude Sonnet 5.5 at 71.5%. If your product automates spreadsheets, filings, contracts or back-office workflows, Argon is the model to watch.</p>
+
+    <h3>Coding: no single winner</h3>
+    <p>Coding is split four ways depending on which benchmark you trust:</p>
+    <ul>
+      <li><strong>Argon</strong> wins DeepSWE v1.1 (77.9%) and Vibe Code Bench (91.9%), but comes <em>last</em> of the four on FrontierSWE v2 and Terminal-Bench 4.0.</li>
+      <li><strong>Opus 5.5</strong> leads Terminal-Bench 4.0 by about 8 points and posts <strong>89.9% on SWE-bench Pro</strong> (10.7 points over Opus 5), 93.9% on SWE-bench Multilingual and 91.2% on ProgramBench in its system card.</li>
+      <li><strong>GPT-6 Astra</strong> leads FrontierSWE v2 (65.5%), the hardest of the SWE suites here.</li>
+      <li><strong>GPT-6.1 Sol</strong> matches Astra on DeepSWE v1.1 at about a fifth of the cost.</li>
+    </ul>
+    <p>The pattern: Argon is strong at <em>writing</em> software from a spec, and Opus 5.5 is strong at <em>operating</em> in a terminal over many steps. Those are different skills, and agentic coding tools like Claude Code, Codex and Antigravity mostly need the second one.</p>
+
+    <h3>Terminal work, science and computer use</h3>
+    <p>Terminal and desktop automation is Argon’s clearest weakness. It trails Opus 5.5 by 9 points on Terminal-Bench 4.0, Astra by 10.5 points on Terminal-Bench Science, and Astra by 3.4 points on OSWorld 2.0. Astra sets the computer-use frontier: 72.6% on OSWorld 2.0 while taking about 47% less time per task than GPT-5.6 Sol, plus 92.7% on ScreenSpot-Pro. Opus 5.5 reports 81.8% on OSWorld 2.0 partial credit (48.7% strict) in Anthropic’s own scoring.</p>
+
+    <h3>Math and hard reasoning</h3>
+    <p>OpenAI’s table has Astra at <strong>97.6% on FrontierMath Tier 4</strong> (Fable 5.1: 87.8%) and 96.0% on GPQA Diamond. But Astra is not a clean sweep: on Humanity’s Last Exam with tools it scores 57.2%, behind Fable 5.1 (65.0%) and Opus 5.5 (67.7%). Argon leads RiemannBench (76.0%) and LABBench 2 (88.8%) in Google’s table.</p>
+
+    <h3>Long context: Argon by a mile</h3>
+    <p>Below 128K tokens everyone is near the ceiling. Between <strong>256K and 1M tokens</strong>, Argon holds 84.2% on GraphWalks while Astra drops to 71.8%, Opus 5.5 to 66.8% and Fable 5.1 to 65.0%. Combined with the 1M-token output limit, Argon is the most credible “read the whole monorepo and rewrite it” model so far. (OpenAI reports Astra at 96.3% on its own MRCR v2 512K–1M test, a different task, which is a reminder that “long context” is not one skill.)</p>
+
+    <h3>Multimodal</h3>
+    <p>Argon leads LVBench video understanding (91.7%) and Chartography (71.6%), though the LVBench result comes with a big caveat about frame rates, covered below.</p>
+
+    <h3>Security</h3>
+    <p>Argon and Astra tie at 68.0% on CWE-bench v1. Astra also scores 100% on ExploitBench (possible contamination is flagged for GPT-6.1 Sol’s 99.7%), and GPT-6.1 Sol trails Astra on newer, uncontaminated vulnerabilities (21.5% vs 31.5% on ExploitBench Internal Port). Security is now a launch category in its own right, and both Google and Anthropic gate their most capable cyber variants behind verification programs.</p>
+
+    <h2 id="independent">Independent tests vs launch tables</h2>
+    <p>Every number above is vendor-reported. Artificial Analysis (AA) runs the same test suite across models with one harness, and its first results reshuffle the leaderboard:</p>
+
+    <div class="chart-wrap">
+      <div class="chart-mid">
+        <canvas id="aaIndexChart" role="img" aria-label="Bar chart of the Artificial Analysis Intelligence Index: Claude Opus 5.5 58, Gemini 4 Argon 53, Claude Fable 5.1 53, GPT-6 Astra 53, GPT-6.1 Sol 52."></canvas>
+      </div>
+      <p class="chart-caption">Artificial Analysis Intelligence Index, highest reasoning setting (higher is better)</p>
+    </div>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Independent signal (AA)</th><th>Gemini 4 Argon</th><th>Claude Opus 5.5</th><th>Claude Fable 5.1</th><th>GPT-6 Astra</th><th>GPT-6.1 Sol</th></tr></thead>
+      <tbody>
+        <tr><td>Intelligence Index</td><td>53</td><td><strong>58</strong></td><td>53</td><td>53</td><td>52</td></tr>
+        <tr><td>Terminal Bench 4</td><td>57%</td><td><strong>60%</strong></td><td>—</td><td>59%</td><td>—</td></tr>
+        <tr><td>AA-Omniscience hallucination rate (lower is better)</td><td><strong>15%</strong></td><td>—</td><td>—</td><td>51%</td><td>54%</td></tr>
+        <tr><td>Cost per Index task</td><td>$1.99 (intro price)</td><td>—</td><td>—</td><td>$3.26</td><td><strong>$0.74</strong></td></tr>
+        <tr><td>Avg. output tokens per task</td><td>62,000</td><td>—</td><td>—</td><td>27,000</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Three takeaways:</p>
+    <ol>
+      <li><strong>Opus 5.5 is the strongest generalist.</strong> Five points is a large gap at the top of this index, and it is the only model clearly ahead of the 52–53 pack.</li>
+      <li><strong>Terminal work tightens up.</strong> Opus 5.5’s 66.4% Terminal-Bench 4.0 headline becomes 60% in AA’s run, and the field compresses to 57–60%. Claude Sonnet 5.5 actually scores highest at 64%, a strong result for a $2 / $10 model.</li>
+      <li><strong>Argon is verbose.</strong> It uses about 2.3× more output tokens per task than Astra. Cheap tokens are not the same as cheap tasks.</li>
+    </ol>
+
+    <h2 id="hallucination">Hallucination and prompt-injection safety</h2>
+    <p>The most important number in Argon’s launch may not be a capability score. On <strong>AA-Omniscience</strong>, Argon’s hallucination rate is <strong>15%</strong>, the lowest of any model scoring 45+ on the Intelligence Index. GPT-6 Astra is at 51% and GPT-6.1 Sol at 54%.</p>
+
+    <div class="chart-wrap">
+      <div class="chart-mid">
+        <canvas id="hallucinationChart" role="img" aria-label="Bar chart of AA-Omniscience hallucination rate: Gemini 4 Argon 15 percent, GPT-6 Astra 51 percent, GPT-6.1 Sol 54 percent. Lower is better."></canvas>
+      </div>
+      <p class="chart-caption">AA-Omniscience hallucination rate: how often a model guesses wrong when it doesn’t know (lower is better)</p>
+    </div>
+
+    <p>Read the metric carefully. It is not “accuracy.” It measures what a model does when it <em>doesn’t</em> know the answer: the share of wrong guesses among responses that weren’t correct. A low rate means the model says “I don’t know” instead of making something up. For RAG chatbots, legal research and finance, that behaviour is often worth more than a few benchmark points. (Our lesson on <a href="/learn/ai/artificial-intelligence/hallucinations/">why LLMs hallucinate</a> covers the mechanics.)</p>
+    <p>Argon also leads <strong>Gray Swan’s indirect prompt-injection benchmark</strong> with a 0.7% attack success rate, better than Opus 5.5 and Fable 5.1 and far better than Astra’s 8.5%. If your agent reads email, web pages or user-uploaded files, prompt-injection resistance is a production requirement, not a nice-to-have.</p>
+    <p>Each lab also reported safety trade-offs:</p>
+    <ul>
+      <li><strong>GPT-6 Astra:</strong> shows a regression in chain-of-thought monitorability, and the UK AI Security Institute found Astra could evade monitoring under adversarial prompting.</li>
+      <li><strong>GPT-6.1 Sol:</strong> “unwanted persistence” appeared in 23.5% of rollouts against 17.4% for Astra, and coding deception was 1.50% vs 0.51%.</li>
+      <li><strong>Claude Opus 5.5 / Fable 5.1:</strong> production safeguards route some cyber and biology tasks to fallback models (Opus 4.8 and Opus 5), which Anthropic says probably lowers its Terminal-Bench scores in production.</li>
+      <li><strong>Gemini 4 Argon:</strong> Google monitors chain-of-thought and actions and halts execution when Argon goes beyond user intent, and keeps that monitoring data out of training so the model can’t learn to evade it.</li>
+    </ul>
+
+    <h2 id="fine-print">The benchmark fine print</h2>
+    <p>Before you quote any of these numbers in a slide deck, know what’s behind them:</p>
+    <ul>
+      <li><strong>LVBench wasn’t a fair fight.</strong> Argon was given video at one frame per second; GPT-6 Astra got 800 frames per video.</li>
+      <li><strong>Argon needed extra time on Terminal-Bench Science</strong>: a verifier timeout six times the default.</li>
+      <li><strong>Astra’s 99.9% on ARC-AGI-3</strong> uses OpenAI’s stateful adapter harness and a run costing tens of thousands of dollars. The standard stateless harness gives roughly 17% to 63% depending on reasoning tier.</li>
+      <li><strong>Nobody outside Fairwind has reproduced Argon’s scores yet.</strong> AA’s numbers are the first independent check, and they are less flattering.</li>
+      <li><strong>The same model scores differently in different vendors’ tables.</strong> Astra is 57.7% on Terminal-Bench 4.0 in OpenAI’s post and 58.2% in Google’s. Opus 5.5 is 40.0% on AutomationBench in Anthropic’s table and 42.5% in Google’s. On Agents’ Last Exam, OpenAI reports 59.3% for Astra under its own scoring, while Google’s pass-rate table shows 34.2%.</li>
+      <li><strong>Benchmark versions keep moving.</strong> Fable 5.1 launched at 1853 Elo on GDPval-AA v2; Anthropic’s Opus 5.5 table uses GDPval-AA v2.1, where Opus 5.5 scores 1846 and Fable 5.1 1735. OSWorld 2.0 changed its task set in August 2026, so older results don’t compare.</li>
+    </ul>
+    <p>None of this makes the benchmarks useless. It means a 1–3 point gap is noise, and a 10+ point gap on a task that looks like yours is a signal.</p>
+
+    <h2 id="pricing">Pricing and real cost per task</h2>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Model</th><th>Input / 1M</th><th>Output / 1M</th><th>Cached input</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Gemini 4 Argon (intro)</td><td>$2</td><td>$10</td><td>95% off</td><td>Length of the intro period not published</td></tr>
+        <tr><td>Gemini 4 Argon (after intro)</td><td>$4</td><td>$20</td><td>—</td><td>Same per-token price as Opus 5.5</td></tr>
+        <tr><td>Claude Opus 5.5</td><td>$4</td><td>$20</td><td>$0.20</td><td>Fast mode $8 / $40; batch 50% off</td></tr>
+        <tr><td>Claude Fable 5.1</td><td>$10</td><td>$50</td><td>$0.25</td><td>Batch 50% off</td></tr>
+        <tr><td>GPT-6 Astra</td><td>$10</td><td>$50</td><td>Separate rates</td><td>Fast mode $20 / $100</td></tr>
+        <tr><td>GPT-6.1 Sol</td><td>$2</td><td>$10</td><td>$0.10</td><td>2× input, 1.5× output above 272K tokens</td></tr>
+        <tr><td>Claude Sonnet 5.5</td><td>$2</td><td>$10</td><td>$0.20</td><td>Anthropic’s faster, cheaper complement to Opus 5.5</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Per-token prices hide the real bill. What you pay is <strong>price × tokens used × retries</strong>. Two examples from the data:</p>
+    <ul>
+      <li>On AA’s Index, Argon costs <strong>$1.99 per task</strong> at intro pricing against Astra’s $3.26, even though Argon uses 2.3× more output tokens. If the price doubles after the promo and token use stays the same, Argon would land at roughly <strong>$4 per task</strong>, more than Astra. That last figure is our estimate, not a published one.</li>
+      <li>On Terminal-Bench Science at max effort, GPT-6.1 Sol costs <strong>$5.47 per task</strong>; Astra costs $23.80 and Opus 5.5 $23.21.</li>
+    </ul>
+
+    <div class="chart-wrap">
+      <div class="chart-mid">
+        <canvas id="costChart" role="img" aria-label="Bar chart of cost per Artificial Analysis Intelligence Index task: GPT-6.1 Sol $0.74, Gemini 4 Argon at intro price $1.99, GPT-6 Astra $3.26, and an estimated $3.98 for Argon after the intro price ends."></canvas>
+      </div>
+      <p class="chart-caption">Cost per AA Intelligence Index task in USD (lower is better). “Argon after intro” is our estimate: published task cost × 2.</p>
+    </div>
+    <p>Anthropic’s 40% saving for Opus 5.5 over Opus 5 is the same idea: about half comes from lower prices and the rest from finishing tasks with fewer tokens. For deeper unit economics, see our guides on <a href="/learn/ai/artificial-intelligence/tokens-context/">tokens, context windows and cost</a> and <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">economical LLMs for RAG</a>.</p>
+
+    <h2 id="picker">Pick a model for your workload</h2>
+    <div class="blog-widget" id="modelPicker">
+      <h3>What are you building?</h3>
+      <p class="blog-widget-lead">Pick the closest workload to see the model we’d start with, the runner-up, and the number behind it.</p>
+      <div class="blog-pills" role="group" aria-label="Workload type">
+        <button type="button" class="blog-pill" data-work="terminal" aria-pressed="true">Coding agents</button>
+        <button type="button" class="blog-pill" data-work="knowledge" aria-pressed="false">Finance &amp; legal</button>
+        <button type="button" class="blog-pill" data-work="longdoc" aria-pressed="false">1M-token docs</button>
+        <button type="button" class="blog-pill" data-work="math" aria-pressed="false">Math &amp; computer use</button>
+        <button type="button" class="blog-pill" data-work="volume" aria-pressed="false">High volume</button>
+        <button type="button" class="blog-pill" data-work="factual" aria-pressed="false">Low hallucination</button>
+      </div>
+      <dl class="blog-stat-grid picker-grid">
+        <div class="blog-stat"><dt>Start with</dt><dd id="pickModel">Claude Opus 5.5</dd></div>
+        <div class="blog-stat"><dt>Runner-up</dt><dd id="pickRunner">GPT-6 Astra</dd></div>
+        <div class="blog-stat"><dt>Key number</dt><dd id="pickStat">66.4% TB 4.0</dd></div>
+      </dl>
+      <p class="blog-widget-lead" id="pickNote" aria-live="polite">Opus 5.5 leads Terminal-Bench 4.0 and SWE-bench Pro (89.9%). Try Sonnet 5.5 too: it scored 64% on AA’s independent Terminal Bench run at half the price.</p>
+    </div>
+
+    <h2 id="which">Which model should you use?</h2>
+
+    <h3>Choose Gemini 4 Argon if you…</h3>
+    <ul>
+      <li>Automate finance, legal, tax or back-office workflows (it leads all four knowledge-work benchmarks)</li>
+      <li>Work with huge inputs or outputs: whole-repo migrations, long contracts, hours of video</li>
+      <li>Need a model that admits uncertainty (15% hallucination rate) or reads untrusted content (0.7% prompt-injection success)</li>
+      <li>Are in the Fairwind Program or can wait for paid API access</li>
+    </ul>
+
+    <h3>Choose Claude Opus 5.5 if you…</h3>
+    <ul>
+      <li>Run agentic coding in Claude Code or any terminal-first workflow</li>
+      <li>Want the highest independent general-intelligence score available today (AA Index 58)</li>
+      <li>Need something generally available on the Claude API, AWS, Google Cloud and Microsoft Foundry right now</li>
+      <li>Want Fable-class results at $4 / $20 instead of $10 / $50</li>
+    </ul>
+
+    <h3>Choose Claude Fable 5.1 if you…</h3>
+    <ul>
+      <li>Already have prompts, evals and workflows tuned around Fable and can’t re-validate yet</li>
+      <li>Are a verified organisation that needs Mythos 5.1 for cyber or life-science work</li>
+      <li>Otherwise, test Opus 5.5 at medium effort first. Anthropic positions it as Fable-class at lower cost, but suggests Fable-tuned teams verify medium-effort results before switching</li>
+    </ul>
+
+    <h3>Choose GPT-6 Astra if you…</h3>
+    <ul>
+      <li>Need the frontier on math (FrontierMath Tier 4: 97.6%) or computer use (OSWorld 2.0: 72.6%)</li>
+      <li>Tackle the hardest SWE tasks (FrontierSWE v2: 65.5%)</li>
+      <li>Live in ChatGPT, Codex and the OpenAI API, and can afford $10 / $50 for the hard cases</li>
+    </ul>
+
+    <h3>Choose GPT-6.1 Sol (or Sonnet 5.5) if you…</h3>
+    <ul>
+      <li>Run high-volume production traffic where $ per successful task matters more than the last point of quality</li>
+      <li>Want near-frontier results for a fifth of the frontier price</li>
+    </ul>
+
+    <div class="diagram-wrap" data-diagram-title="Which frontier model should you use in October 2026?">
+      <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
+        <img class="diagram-icon" src="/solutions/icons/expand.svg" width="16" height="16" alt="Expand diagram" aria-hidden="true">
+      </button>
+      <div class="diagram-body">
+        <div class="mermaid-pending">flowchart TD
+  classDef q fill:#f1f5f9,stroke:#64748b,color:#0f172a
+  classDef g fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef a fill:#ffedd5,stroke:#ea580c,color:#7c2d12
+  classDef o fill:#fef3c7,stroke:#d97706,color:#78350f
+  classDef v fill:#ccfbf1,stroke:#0d9488,color:#115e59
+  S["New task"]:::q --> Q1{"High volume or\ncost-sensitive?"}:::q
+  Q1 -->|yes| V["GPT-6.1 Sol or\nClaude Sonnet 5.5"]:::v
+  Q1 -->|no| Q2{"Terminal-heavy coding\nor long agent runs?"}:::q
+  Q2 -->|yes| O["Claude Opus 5.5\n(medium effort, escalate to max)"]:::a
+  Q2 -->|no| Q3{"Finance, legal, automation\nor 256K+ token inputs?"}:::q
+  Q3 -->|yes| G["Gemini 4 Argon\n(when you have access)"]:::g
+  Q3 -->|no| Q4{"Frontier math or\ncomputer use?"}:::q
+  Q4 -->|yes| X["GPT-6 Astra"]:::o
+  Q4 -->|no| D["Claude Opus 5.5\nas the default generalist"]:::a</div>
+      </div>
+      <p class="diagram-caption">A starting point, not a law: confirm with your own three-task eval</p>
+    </div>
+
+    <h2 id="routing">A simple routing setup</h2>
+    <p>The teams getting the most out of this generation don’t pick one model. They route each task type to the cheapest model that clears their quality bar, and measure <strong>cost per successful task</strong> rather than cost per token. A minimal version looks like this:</p>
+    <div class="learn-code-wrap" data-lang="python"><pre><code>from dataclasses import dataclass
+
+# Route each task type to the cheapest model that passes your own eval.
+ROUTES = {
+    "terminal_agent": "claude-opus-5-5",   # Terminal-Bench 4.0 leader
+    "knowledge_work": "gemini-4-argon",    # placeholder: no public API model ID yet
+    "hard_reasoning": "gpt-6-astra",
+    "careful_review": "claude-fable-5-1",
+    "high_volume":    "gpt-6.1-sol",
+}
+FALLBACK = "gpt-6.1-sol"
+
+# USD per 1M tokens (input, output) as of October 2026
+PRICES = {
+    "claude-opus-5-5":  (4.00, 20.00),
+    "claude-fable-5-1": (10.00, 50.00),
+    "gpt-6-astra":      (10.00, 50.00),
+    "gpt-6.1-sol":      (2.00, 10.00),
+    "gemini-4-argon":   (2.00, 10.00),     # intro price; $4 / $20 afterwards
+}
+
+
+def pick_model(task_type: str, available: set[str]) -> str:
+    model = ROUTES.get(task_type, FALLBACK)
+    return model if model in available else FALLBACK
+
+
+@dataclass
+class Run:
+    model: str
+    input_tokens: int
+    output_tokens: int
+    passed: bool
+
+
+def cost_per_success(runs: list[Run]) -> float:
+    """The number that matters: total spend divided by tasks that actually passed."""
+    spend = 0.0
+    for r in runs:
+        price_in, price_out = PRICES[r.model]
+        spend += (r.input_tokens * price_in + r.output_tokens * price_out) / 1_000_000
+    wins = sum(r.passed for r in runs)
+    return spend / wins if wins else float("inf")</code></pre></div>
+    <p>Start with static rules like these, then let your eval results move tasks between tiers. Our post on <a href="/blog/posts/auto-model-routing-without-llm-classifier/">auto model routing without an LLM classifier</a> shows how to do it with heuristics instead of an extra model call.</p>
+
+    <h2 id="future">The future of software engineering</h2>
+    <p>Look past the leaderboard and this generation of models says a lot about where the job is heading. The survey data has already moved:</p>
+    <dl class="blog-stat-grid">
+      <div class="blog-stat"><dt>Code written by agents</dt><dd>~47%</dd></div>
+      <div class="blog-stat"><dt>AI tool users on it daily</dt><dd>72%</dd></div>
+      <div class="blog-stat blog-stat-warn"><dt>Don’t fully trust AI code</dt><dd>96%</dd></div>
+      <div class="blog-stat blog-stat-bad"><dt>Always verify before commit</dt><dd>48%</dd></div>
+    </dl>
+    <p>JetBrains’ May–July 2026 survey of 15,000+ professional developers found that about <strong>47% of code is now written by agents</strong> on average, and one in five developers wrote no code by hand at all last month. Agent use is highest in Go, JavaScript and TypeScript (54–55% agent-written) and lowest in C and C++ (38%). Sonar’s 2026 State of Code survey puts AI at <strong>42% of committed code, heading for 65% by 2027</strong>, but also found that <strong>96% of developers don’t fully trust AI-generated code</strong>, only 48% always verify it before committing, and 38% say reviewing AI code takes more effort than reviewing a colleague’s. Among developers who use AI coding tools, 72% now use them every day.</p>
+    <p>Put those numbers next to this month’s launches and six shifts stand out.</p>
+
+    <h3>1. The bottleneck moves from writing code to verifying it</h3>
+    <p>When an agent can produce a pull request in minutes, the scarce resource is a human who can tell whether it is correct, secure and maintainable. Sonar calls this the verification bottleneck. Teams that pair fast generation with automated tests, static analysis and security scanning get the speed without the incidents. Teams that don’t will ship faster and break more.</p>
+
+    <h3>2. Runs get longer: from autocomplete to overnight agents</h3>
+    <p>Argon’s 1M-token output limit, Opus 5.5’s focus on multi-step repository migrations, audits and overnight agentic runs, and Google’s 800K-line C++-to-Rust migrations all point the same way. The unit of AI work is moving from a line, to a function, to a ticket, to a project. That rewards engineers who can write a clear spec, break work into checkable milestones and design the harness an agent runs in. Our lesson on <a href="/learn/ai/artificial-intelligence/agent-harness/">the agent harness</a> is a good primer.</p>
+
+    <h3>3. Multi-model is the default architecture</h3>
+    <p>No model won every category this month, and the leader changes every few weeks. Hard-coding one vendor’s model ID into your product is now technical debt. Expect a router, a shared eval suite and per-task cost tracking to become standard infrastructure, the way CI did a decade ago.</p>
+
+    <h3>4. Security becomes a model capability and an attack surface</h3>
+    <p>Two of the three labs now gate their most capable models behind cyber-verification programs (Fairwind for Argon, Anthropic’s verification programs for Mythos 5.1). Models that can find and patch zero-days can also be pointed at your systems, and agents that read untrusted input can be hijacked. Prompt-injection resistance, sandboxing and least-privilege tool access are now part of everyday software engineering, not a specialist’s problem.</p>
+
+    <h3>5. Cost per task replaces cost per token</h3>
+    <p>Argon is cheap per token and verbose. GPT-6.1 Sol is a fifth of Astra’s price for nearly the same score. Opus 5.5 is cheaper than Opus 5 mostly because it finishes in fewer tokens. Engineers who can measure and optimise <strong>$ per successful task</strong> will be the ones making the build-vs-buy and model-choice decisions.</p>
+
+    <h3>6. Evals are the new unit tests</h3>
+    <p>This month showed that vendor benchmarks disagree with each other and with independent runs. The only number you can trust is the one from your own tasks. Writing a small, honest eval suite for your product is quickly becoming as basic as writing unit tests. See our guide to <a href="/blog/posts/ai-agent-testing-evaluation-strategies/">AI agent testing and evaluation</a>.</p>
+
+    <h3>What this means for your career</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Role</th><th>What changes</th><th>What to do now</th></tr></thead>
+      <tbody>
+        <tr><td>Junior developer</td><td>Fewer “write this function” tickets; more reviewing and testing agent output</td><td>Learn to read code fast, write tests first, and explain <em>why</em> a diff is wrong. Debugging skill compounds.</td></tr>
+        <tr><td>Senior engineer</td><td>Becomes the spec-writer, reviewer and harness designer for several agents at once</td><td>Practise breaking projects into verifiable milestones; own the eval suite and CI gates.</td></tr>
+        <tr><td>Engineering manager</td><td>Throughput rises, review load explodes, and model spend becomes a budget line</td><td>Track $ per merged PR and defect rates, not lines of code. Make AGENTS.md / CLAUDE.md part of every repo.</td></tr>
+        <tr><td>CTO / founder</td><td>Vendor lead changes monthly; security and data exposure grow</td><td>Build model-agnostic, add a router, and require prompt-injection and sandboxing reviews for every agent.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Will AI replace software engineers? The evidence so far says it is replacing <em>typing</em>, not judgment. For salary bands and the skills that still pay, read <a href="/blog/posts/will-ai-replace-software-engineers/">Will AI replace software engineers?</a></p>
+
+    <h2 id="eval">How to run your own eval this week</h2>
+    <ol>
+      <li><strong>Pick three real tasks</strong> from last month: one bug fix in your repo, one research or document task, and one UI or automation task.</li>
+      <li><strong>Write the pass criteria first</strong>: tests that must pass, facts that must be right, a rubric a teammate can apply blind.</li>
+      <li><strong>Run each task 3–5 times per model</strong> (Opus 5.5 at medium and max, GPT-6.1 Sol, GPT-6 Astra, and Argon once you have access). One run is an anecdote.</li>
+      <li><strong>Log tokens, latency and cost</strong> for every run, and compute cost per successful task with the snippet above.</li>
+      <li><strong>Re-run monthly.</strong> At September’s release pace, your winner has a shelf life of about six weeks.</li>
+    </ol>
+
+    <h2>Bottom line</h2>
+    <p>Gemini 4 Argon is a genuine frontier model and Google’s strongest launch yet: best-in-class at knowledge work and long context, the most honest about what it doesn’t know, and the hardest to hijack with prompt injection. But it isn’t the outright leader the launch table suggests. Claude Opus 5.5 is still the strongest generalist on independent tests and the best terminal coding agent, GPT-6 Astra owns math and computer use, and GPT-6.1 Sol and Sonnet 5.5 deliver most of that quality for a fraction of the price.</p>
+    <p>The winning strategy for October 2026 is the same as it will be next month: <strong>route the right model to the right job, and let your own evals, not launch charts, decide.</strong></p>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>Is Gemini 4 Argon better than Claude Opus 5.5?</h3>
+    <p>It depends on the job. In Google’s table Argon leads 13 of 19 rows, including AutomationBench (51.3% vs 42.5%), DeepSWE v1.1 (77.9% vs 74.2%) and GraphWalks 256K–1M (84.2% vs 66.8%). Opus 5.5 wins Terminal-Bench 4.0 (66.4% vs 57.4%) and PostTrainBench, and scores 58 to Argon’s 53 on the independent AA Intelligence Index.</p>
+
+    <h3>Can I use Gemini 4 Argon today?</h3>
+    <p>Most people can’t yet. It is limited to Google’s Fairwind Program for trusted cyber defenders and to Google’s internal teams. Paid API customers and Google AI Ultra subscribers are next, with no date announced.</p>
+
+    <h3>How much does Gemini 4 Argon cost?</h3>
+    <p>$2 per million input tokens and $10 per million output tokens at launch, with 95% off cached input. After the introductory period, $4 / $20, the same per-token price as Claude Opus 5.5.</p>
+
+    <h3>What does “max effort” mean for Claude Opus 5.5?</h3>
+    <p>It is the highest setting of the effort parameter, which controls how much the model thinks before answering. Anthropic’s headline benchmarks use max; the API default is medium. Medium often matches older models at max, so save max for tasks that fail at lower settings.</p>
+
+    <h3>Is Claude Fable 5.1 still worth it after Opus 5.5?</h3>
+    <p>For most new work, no. Opus 5.5 matches or beats Fable 5.1 on every row of Anthropic’s comparison at 40% of the price. Fable 5.1 makes sense if your workflows are already tuned to it, or if you are a verified organisation that needs Mythos 5.1.</p>
+
+    <h3>Should I use GPT-6 Astra or GPT-6.1 Sol?</h3>
+    <p>Start with GPT-6.1 Sol: 52 vs 53 on the AA Index, the same DeepSWE score, and a fifth of the price. Escalate to Astra for frontier math, hard computer use and the hardest SWE tasks.</p>
+
+    <h3>Which AI model hallucinates the least?</h3>
+    <p>Gemini 4 Argon, with a 15% AA-Omniscience hallucination rate, against 51% for GPT-6 Astra and 54% for GPT-6.1 Sol. The test measures how often a model guesses wrong instead of admitting it doesn’t know.</p>
+
+    <h3>Which AI model is best for coding right now?</h3>
+    <p>For terminal-heavy agentic coding, Claude Opus 5.5 (Terminal-Bench 4.0 and SWE-bench Pro leader). Argon leads DeepSWE v1.1 and Vibe Code Bench; Astra leads FrontierSWE v2. Test two or three on your own repo before committing. Our <a href="/blog/posts/best-ai-for-coding/">best AI for coding</a> guide covers the tools around them.</p>
+
+    <h3>Will AI replace software engineers?</h3>
+    <p>The job is changing faster than it is disappearing. About 47% of code is now agent-written (JetBrains), but 96% of developers don’t fully trust it and only 48% always verify it (Sonar). The work is shifting toward specifying, reviewing, testing and securing software.</p>
+
+    <h2 id="sources">Sources</h2>
+    <p>All scores are as published at launch (September–October 2026) and may change as benchmarks are re-run.</p>
+    <ul class="sources-list">
+      <li><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/" rel="noopener noreferrer">Google: Gemini 4 Argon, our next era of frontier intelligence</a></li>
+      <li><a href="https://www.datacamp.com/blog/gemini-4-argon" rel="noopener noreferrer">DataCamp: Gemini 4 Argon benchmarks, pricing, and access</a></li>
+      <li><a href="https://emergent.sh/learn/gemini-4-argon-benchmarks" rel="noopener noreferrer">Emergent: Gemini 4 Argon benchmarks, every score and its source</a></li>
+      <li><a href="https://the-decoder.com/google-gemini-4-argon-closes-the-gap-with-openai-and-anthropic-but-doesnt-take-a-clear-lead/" rel="noopener noreferrer">The Decoder: Artificial Analysis results for Gemini 4 Argon</a></li>
+      <li><a href="https://thehackernews.com/2026/10/google-rolls-out-gemini-4-argon-to.html" rel="noopener noreferrer">The Hacker News: Google rolls out Gemini 4 Argon to trusted cyber defenders</a></li>
+      <li><a href="https://llm-stats.com/blog/research/claude-opus-5-5-launch" rel="noopener noreferrer">LLM Stats: Claude Opus 5.5 launch analysis</a></li>
+      <li><a href="https://www.anthropic.com/claude-fable-and-mythos-5-1" rel="noopener noreferrer">Anthropic: Introducing Claude Fable 5.1 and Claude Mythos 5.1</a></li>
+      <li><a href="https://www.datacamp.com/blog/claude-fable-5-1" rel="noopener noreferrer">DataCamp: Claude Fable 5.1 features, benchmarks, and pricing</a></li>
+      <li><a href="https://www.datacamp.com/blog/gpt-6-astra" rel="noopener noreferrer">DataCamp: GPT-6 Astra features, benchmarks, and pricing</a></li>
+      <li><a href="https://www.datacamp.com/blog/gpt-6-1-sol" rel="noopener noreferrer">DataCamp: GPT-6.1 Sol features, benchmarks, pricing, and access</a></li>
+      <li><a href="https://blog.jetbrains.com/research/2026/08/how-much-code-do-developers-really-let-agents-write/" rel="noopener noreferrer">JetBrains Research: How much code do developers really let agents write?</a></li>
+      <li><a href="https://www.sonarsource.com/blog/state-of-code-developer-survey-report-the-current-reality-of-ai-coding/" rel="noopener noreferrer">Sonar: State of Code developer survey report</a></li>
+    </ul>
+
+    <aside class="blog-related">
+      <h2>Related guides</h2>
+      <ul>
+        <li><a href="/blog/posts/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/">GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3</a></li>
+        <li><a href="/blog/posts/best-ai-for-coding/">Best AI for Coding</a></li>
+        <li><a href="/blog/posts/claude-code-vs-cursor-vs-copilot/">Claude Code vs Codex vs Cursor vs Copilot</a></li>
+        <li><a href="/blog/posts/codex-vs-google-antigravity/">Codex vs Google Antigravity</a></li>
+        <li><a href="/blog/posts/will-ai-replace-software-engineers/">Will AI Replace Software Engineers?</a></li>
+      </ul>
+    </aside>
+    <!-- sc:related -->
+    <section class="blog-related" aria-label="Related lessons and articles"><h2>Learn this hands-on</h2><ul class="blog-related-list"><li><a href="/learn/ai/artificial-intelligence/hallucinations/"><strong>Hallucinations: Why and How to Reduce Them</strong><span>AI (Artificial Intelligence) · free lesson · 20 min</span></a></li><li><a href="/learn/ai/artificial-intelligence/agent-harness/"><strong>The Agent Harness and Agent SDKs</strong><span>AI (Artificial Intelligence) · free lesson · 32 min</span></a></li><li><a href="/learn/ai/artificial-intelligence/tokens-context/"><strong>Tokens, Context Windows and Cost</strong><span>AI (Artificial Intelligence) · free lesson · 20 min</span></a></li></ul><h2>Related reading</h2><ul class="blog-related-list"><li><a href="/blog/posts/auto-model-routing-without-llm-classifier/"><strong>Auto Model Routing Without an LLM Classifier</strong><span>Route requests between cheap and expensive models using heuristics instead of a classifier call — rules, thresholds, and the cost maths behind each hop.</span></a></li><li><a href="/blog/posts/ai-agent-testing-evaluation-strategies/"><strong>AI Agent Testing and Evaluation Strategies</strong><span>Production AI agent testing — golden dataset eval, unit tests for tools, trace replay, regression gates, and continuous monitoring patterns for reliable agent deployment.</span></a></li></ul></section>
+    <!-- /sc:related -->
+    <aside class="blog-cta">
+      <h2>Choosing models for a production system?</h2>
+      <p>stackcone builds model-agnostic RAG systems and agent workflows with routing, eval gates and cost tracking, so you can switch to next month’s best model without a rewrite.</p>
+      <div class="blog-cta-links">
+        <a href="https://www.upwork.com/agencies/2022687811186513260/" class="cta cta--primary" rel="noopener noreferrer">Hire us on Upwork</a>
+        <a href="/contact/" class="cta cta--secondary">Contact us</a>
+      </div>
+    </aside>
+  </article>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="/"><picture><source type="image/webp" srcset="/logo/stackcone.webp"><img src="/logo/stackcone.png" alt="stackcone" class="footer-logo" width="220" height="48" loading="lazy" decoding="async"></picture></a>
+      <nav class="footer-nav" aria-label="Site links">
+        <a href="/work/">Portfolio</a>
+        <a href="/solutions/">Solutions</a>
+        <a href="/learn/">Learn</a><a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+      <p class="footer-copy">© stackcone 2026</p>
+    </div>
+  </footer>
+
+  <script src="../../../solutions/diagrams.js?v=17" defer></script>
+  <script src="/site-nav.js?v=25" defer></script>
+  <script src="/assets/monaco-code.js?v=24" defer></script>
+  <script src="/script.js?v=13" defer></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var picks = {
+        terminal: { model: 'Claude Opus 5.5', runner: 'GPT-6 Astra', stat: '66.4% TB 4.0', note: 'Opus 5.5 leads Terminal-Bench 4.0 and SWE-bench Pro (89.9%). Try Sonnet 5.5 too: it scored 64% on AA’s independent Terminal Bench run at half the price.' },
+        knowledge: { model: 'Gemini 4 Argon', runner: 'Claude Opus 5.5', stat: '51.3% AutoBench', note: 'Argon leads every knowledge-work row: AutomationBench, Vals Index, Vals Finance Agent v2 (65.4%) and Harvey’s legal benchmark (19.6%). Until you have access, Opus 5.5 is the best available option.' },
+        longdoc: { model: 'Gemini 4 Argon', runner: 'GPT-6 Astra', stat: '84.2% @ 1M', note: 'On GraphWalks 256K–1M, Argon holds 84.2% while Astra drops to 71.8% and the Claude models to about 65–67%. Argon can also output up to 1M tokens in one run.' },
+        math: { model: 'GPT-6 Astra', runner: 'Claude Opus 5.5', stat: '97.6% FM T4', note: 'Astra scores 97.6% on FrontierMath Tier 4 and 72.6% on OSWorld 2.0. Its ARC-AGI-3 headline needs a special harness, so test on your own tasks.' },
+        volume: { model: 'GPT-6.1 Sol', runner: 'Claude Sonnet 5.5', stat: '$0.74 / task', note: 'At $2 / $10 per 1M tokens, Sol scores 52 on the AA Index (Astra: 53) and costs $0.74 per Index task. Sonnet 5.5 has the same list price.' },
+        factual: { model: 'Gemini 4 Argon', runner: 'Any model + RAG', stat: '15% halluc.', note: 'Argon’s 15% AA-Omniscience hallucination rate compares with 51% for Astra. For any model, grounding answers in your own documents with citations matters more than the model choice.' }
+      };
+      var buttons = document.querySelectorAll('#modelPicker [data-work]');
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+          var p = picks[btn.dataset.work];
+          document.getElementById('pickModel').textContent = p.model;
+          document.getElementById('pickRunner').textContent = p.runner;
+          document.getElementById('pickStat').textContent = p.stat;
+          document.getElementById('pickNote').textContent = p.note;
+        });
+      });
+
+      if (!window.Chart) return;
+      // Categorical slots follow the entity (validated for CVD separation in light and dark).
+      var SERIES = {
+        light: { argon: '#2a78d6', opus: '#eb6834', fable: '#1baf7a', astra: '#eda100', sol: '#e87ba4', est: '#94a3b8', ink: '#52514e', grid: 'rgba(15,23,42,0.08)' },
+        dark:  { argon: '#3987e5', opus: '#d95926', fable: '#199e70', astra: '#c98500', sol: '#d55181', est: '#64748b', ink: '#c3c2b7', grid: 'rgba(255,255,255,0.08)' }
+      };
+      function mode() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+      Chart.defaults.font.family = "'DM Sans', system-ui, sans-serif";
+      var charts = [];
+
+      function pct(v) { return v + '%'; }
+      function baseScales(c, title, xIsValue, max) {
+        var value = { beginAtZero: true, grid: { color: c.grid }, ticks: { color: c.ink }, title: { display: !!title, text: title, color: c.ink } };
+        if (max) value.max = max;
+        var cat = { grid: { display: false }, ticks: { color: c.ink } };
+        return xIsValue ? { x: value, y: cat } : { x: cat, y: value };
+      }
+
+      function build() {
+        var c = SERIES[mode()];
+        Chart.defaults.color = c.ink;
+        charts.forEach(function (ch) { ch.destroy(); });
+        charts = [];
+
+        charts.push(new Chart(document.getElementById('h2hChart'), {
+          type: 'bar',
+          data: {
+            labels: ['AutomationBench', 'Vals Index', 'DeepSWE v1.1', ['FrontierSWE', 'v2'], ['Terminal-Bench', '4.0'], ['Terminal-Bench', 'Science 0.1'], ['GraphWalks', '256K–1M'], 'LVBench'],
+            datasets: [
+              { label: 'Gemini 4 Argon', data: [51.3, 68.9, 77.9, 55.0, 57.4, 57.6, 84.2, 91.7], backgroundColor: c.argon },
+              { label: 'GPT-6 Astra', data: [41.4, 63.1, 74.1, 65.5, 58.2, 68.1, 71.8, 87.5], backgroundColor: c.astra },
+              { label: 'Claude Fable 5.1', data: [31.4, 65.8, 67.4, 56.3, 57.9, 52.6, 65.0, 79.7], backgroundColor: c.fable },
+              { label: 'Claude Opus 5.5', data: [42.5, 67.0, 74.2, 62.3, 66.4, 63.3, 66.8, 83.7], backgroundColor: c.opus }
+            ].map(function (d) { d.borderRadius = 4; d.borderSkipped = 'start'; d.barPercentage = 0.85; d.categoryPercentage = 0.8; return d; })
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top', labels: { color: c.ink, usePointStyle: true, pointStyle: 'rectRounded' } },
+              tooltip: { callbacks: { label: function (ctx) { return ctx.dataset.label + ': ' + ctx.parsed.x + '%'; } } }
+            },
+            scales: baseScales(c, 'Score (%)', true, 100)
+          }
+        }));
+
+        charts.push(new Chart(document.getElementById('aaIndexChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Claude Opus 5.5', 'Gemini 4 Argon', 'Claude Fable 5.1', 'GPT-6 Astra', 'GPT-6.1 Sol'],
+            datasets: [{ label: 'AA Intelligence Index', data: [58, 53, 53, 53, 52], backgroundColor: [c.opus, c.argon, c.fable, c.astra, c.sol], borderRadius: 4, borderSkipped: 'start', maxBarThickness: 40 }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: baseScales(c, 'Index score', true, 60)
+          }
+        }));
+
+        charts.push(new Chart(document.getElementById('hallucinationChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Gemini 4 Argon', 'GPT-6 Astra', 'GPT-6.1 Sol'],
+            datasets: [{ label: 'Hallucination rate', data: [15, 51, 54], backgroundColor: [c.argon, c.astra, c.sol], borderRadius: 4, borderSkipped: 'start', maxBarThickness: 40 }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (ctx) { return 'Hallucination rate: ' + pct(ctx.parsed.x); } } } },
+            scales: baseScales(c, 'Hallucination rate (%)', true, 60)
+          }
+        }));
+
+        charts.push(new Chart(document.getElementById('costChart'), {
+          type: 'bar',
+          data: {
+            labels: ['GPT-6.1 Sol', ['Gemini 4 Argon', '(intro price)'], 'GPT-6 Astra', ['Argon after', 'intro (est.)']],
+            datasets: [{ label: 'USD per task', data: [0.74, 1.99, 3.26, 3.98], backgroundColor: [c.sol, c.argon, c.astra, c.est], borderRadius: 4, borderSkipped: 'start', maxBarThickness: 40 }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (ctx) { return '$' + ctx.parsed.x.toFixed(2) + ' per task'; } } } },
+            scales: baseScales(c, 'USD per Index task', true)
+          }
+        }));
+      }
+
+      build();
+      var current = mode();
+      new MutationObserver(function () {
+        if (mode() !== current) { current = mode(); build(); }
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    });
+  </script>
+  <script src="/assets/adsense-loader.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
+</body>
+</html>
