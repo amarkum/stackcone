@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../styles.css?v=37">
-  <link rel="stylesheet" href="contact.css?v=1">
+  <link rel="stylesheet" href="contact.css?v=2">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -120,6 +120,17 @@
           <div class="contact-form-field">
             <label for="contact-message">Message</label>
             <textarea id="contact-message" name="message" required rows="5" placeholder="Goals, timeline, stack, and anything else that helps us understand the project."></textarea>
+          </div>
+          <div class="contact-form-field">
+            <label for="contact-files">Attachments <span class="contact-form-optional">(optional)</span></label>
+            <div class="contact-dropzone" id="contact-dropzone">
+              <input type="file" id="contact-files" class="contact-dropzone-input" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.rtf,.png,.jpg,.jpeg,.gif,.webp,.heic,.zip" aria-describedby="contact-files-hint">
+              <svg class="contact-dropzone-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+              <p class="contact-dropzone-text"><button type="button" class="contact-dropzone-browse">Choose files</button> or drag them here</p>
+              <p class="contact-dropzone-hint" id="contact-files-hint">Up to 3 files, 10 MB total · PDF, Word, Excel, PowerPoint, images or ZIP</p>
+            </div>
+            <ul class="contact-files" id="contact-files-list" hidden></ul>
+            <p class="contact-files-error" id="contact-files-error" role="alert" hidden></p>
           </div>
           <button type="submit" class="cta cta--primary contact-form-submit">Send message</button>
           <p class="contact-form-note">By submitting, you agree to our <a href="/privacy/">Privacy Policy</a>.</p>
@@ -238,7 +249,7 @@
 
   <script src="/site-nav.js?v=28" defer></script>
   <script src="/script.js?v=13" defer></script>
-  <script src="/contact/contact-form.js?v=2" defer></script>
+  <script src="/contact/contact-form.js?v=3" defer></script>
   <script src="/assets/adsense-loader.js" defer></script>
 </body>
 </html>
