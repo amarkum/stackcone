@@ -9,12 +9,6 @@
   var closeTriggers = modal.querySelectorAll("[data-contact-modal-close]");
   var lastFocused = null;
 
-  var params = new URLSearchParams(window.location.search);
-  if (params.get("sent") === "1") {
-    openModal("success", "Message sent", "Thanks — we received your message and will reply within 24 hours.");
-    window.history.replaceState({}, "", window.location.pathname);
-  }
-
   form.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -23,13 +17,17 @@
     submitBtn.disabled = true;
     submitBtn.textContent = "Sending…";
 
+    // Google Apps Script web app (scripts/contact-form-apps-script.gs) → hello@stackcone.com.
+    // URL-encoded body keeps this a "simple" CORS request (no preflight, which Apps Script can't answer).
     fetch(form.action, {
       method: "POST",
-      body: new FormData(form),
-      headers: { Accept: "application/json" }
+      body: new URLSearchParams(new FormData(form))
     })
       .then(function (response) {
-        if (response.ok) {
+        return response.json();
+      })
+      .then(function (data) {
+        if (data.ok) {
           form.reset();
           
           // Fire GA4 event for successful form submission
@@ -47,15 +45,15 @@
           openModal("success", "Message sent", "Thanks — we received your message and will reply within 24 hours.");
           return;
         }
-        return response.json().then(function (data) {
-          throw new Error(data.error || "Could not send your message. Please try again.");
-        });
+        throw new Error(data.error || "Could not send your message. Please try again.");
       })
       .catch(function (error) {
+        // Network/parse failures surface as generic TypeError/SyntaxError text — show a friendlier fallback.
+        var message = error instanceof TypeError || error instanceof SyntaxError ? "" : error.message;
         openModal(
           "error",
           "Could not send",
-          error.message || "Something went wrong. Email hello@stackcone.com directly."
+          message || "Something went wrong. Email hello@stackcone.com directly."
         );
       })
       .finally(function () {
