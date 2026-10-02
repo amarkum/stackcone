@@ -102,6 +102,8 @@ ChatGPT: paste is the default. Attachments work for source files, logs, and scre
 
 Gemini: attach files or fold them into **Canvas / apps** when Google offers that surface. **Gems** are the Gemini analogue of Custom GPTs — saved instructions. The headline advantage is **long context** (on the order of **1M tokens** on paid Gemini): whole files and long logs fit when ChatGPT’s window feels tight. If your homework already lives in Google Docs or Colab, stay in Gemini so you are not exporting every five minutes.
 
+New to tokens and context windows? Start with our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
+
 Rule of thumb: **paste the smallest thing that still reproduces the bug**. Attach when the file is the unit. Do not attach `node_modules`, build folders, or anything with credentials.
 
 ## The beginner coding loop {#loop}

@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <link rel="stylesheet" href="../../../solutions/solutions.css?v=4">
   <script type="application/ld+json">
   {
@@ -165,6 +165,7 @@
     <h2 id="architecture">System architecture</h2>
     <h3>Two halves, two channels</h3>
     <p>LiveCode Agent splits cleanly into a Python backend and a JavaScript frontend. They communicate over <strong>two simultaneous real-time channels</strong>: SSE for answer tokens, WebSocket for structured tool progress, diffs, permissions, and shell streams.</p>
+    <p class="learn-more">New to streaming APIs? Start with our free lesson <a href="/learn/ai/artificial-intelligence/apis-streaming/">APIs, SSE, WebSockets and Streaming</a>.</p>
 
     <div class="diagram-wrap" data-diagram-title="LiveCode Agent system architecture">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
@@ -210,6 +211,7 @@ index cache"]:::disk
       <p class="diagram-caption">Browser UI talks to Flask over SSE (answer text) and WebSocket (tool activity) in parallel</p>
     </div>
     <p><strong>SSE</strong> (<code>text/event-stream</code>) streams the model's final answer text — token by token. It is a simple unidirectional pipe.</p>
+    <p class="learn-more">Want to learn more about tokens and context windows? Our free lesson <a href="/learn/ai/artificial-intelligence/tokens-context/">Tokens, Context Windows and Cost</a> covers it step by step.</p>
     <p><strong>WebSocket</strong> (implemented with Socket.IO in my stack) carries everything else: tool-call progress, streamed shell output, diff blocks, permission prompts, and thinking indicators. These payloads have rich, differently-shaped JSON structures that would be painful to shoehorn into a flat SSE text stream.</p>
 
     <h3>Why fetch() + ReadableStream instead of EventSource</h3>
@@ -718,6 +720,7 @@ LLM 7-section summary"]:::hot
 
     <h3>Tier 3: Full-replace compaction (≥85%)</h3>
     <p>LLM-driven summarization with a seven-section prompt: Primary Request and Intent; Key Technical Concepts; Tool Usage and Verification; Files and Code Artifacts; Errors and Fixes; Problem Solving; All User Messages. Keeps the last 2–6 messages verbatim. Stores <code>prefix_hash</code> for staleness detection. Retries with a shorter prompt if the summary is degenerate (too short, repetitive, or template-echo).</p>
+    <p class="learn-more">If you want to go deeper on how LLMs work, read our free lesson <a href="/learn/ai/artificial-intelligence/what-is-an-llm/">What Is AI? What Is an LLM?</a>.</p>
 
     <h3>Token estimation</h3>
     <div class="learn-code-wrap" data-lang="python"><pre><code>def estimate_tokens(messages):

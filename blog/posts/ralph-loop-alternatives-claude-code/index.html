@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -308,6 +308,7 @@ done
 
 exit 0</code></pre></div>
     <p>Make executable: <code>chmod +x .claude/hooks/prevent-dangerous-git.sh</code></p>
+    <p class="learn-more">Want to learn more about Git? Our free lesson <a href="/learn/programming/git/introduction/">Git Basics</a> covers it step by step.</p>
     <h3 id="hook-script-lint-touched-filessh-posttooluse">Hook script: <code>lint-touched-files.sh</code> (PostToolUse)</h3>
     <p>Runs ESLint on edited TypeScript files immediately after each edit:</p>
     <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash
@@ -427,6 +428,7 @@ fi</code></pre></div>
     <p>Claude can also write hooks for you: <em>&quot;Write a Stop hook that runs <code>pnpm test src/billing/</code> when files under <code>src/billing/</code> changed.&quot;</em></p>
     <h2 id="alternative-4-verification-subagent">Alternative 4: Verification subagent</h2>
     <p>Spawn a <strong>fresh subagent</strong> to review work the main agent cannot grade itself. The subagent gets a clean context window — no 200k tokens of failed attempts.</p>
+    <p class="learn-more">If you want to go deeper on MCP and multi-agent systems, read our free lesson <a href="/learn/ai/artificial-intelligence/multi-agent-mcp-safety/">Multi-Agent Systems, MCP and AI Safety</a>.</p>
     <h3 id="worked-example-diff-review-against-plan">Worked example: diff review against plan</h3>
     <p><strong>Phase 1 — plan (main agent or plan mode):</strong></p>
     <div class="learn-code-wrap" data-lang="plaintext"><pre><code>Read src/auth/ and design OAuth callback flow for Google sign-in.
@@ -505,6 +507,7 @@ Do not run migrations or edit files.</code></pre></div>
     <p><strong>vs Ralph:</strong> Separates exploration from execution — fewer wrong-direction loops.</p>
     <h2 id="alternative-6-headless-ci-claude--p">Alternative 6: Headless CI (<code>claude -p</code>)</h2>
     <p><code>claude -p</code> runs a single prompt non-interactively and exits. Pair with <code>CLAUDE.md</code> for project context. Wrap in a shell script for <strong>bounded retries</strong> — the CI-native alternative to infinite Ralph loops.</p>
+    <p class="learn-more">New to GitHub Actions and CI? Start with our free lesson <a href="/learn/programming/git/github-actions/">CI with GitHub Actions</a>.</p>
     <h3 id="complete-ci-script-with-bounded-retries">Complete CI script with bounded retries</h3>
     <p>Save as <code>scripts/claude-fix-loop.sh</code>:</p>
     <div class="learn-code-wrap" data-lang="shell"><pre><code>#!/usr/bin/env bash

@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -118,7 +118,9 @@
     <h2 id="why-rerank">Why rerank at all?</h2>
     <p>Embedding models optimize for <strong>recall</strong> — finding anything plausibly related. They compress meaning into a fixed vector, so subtle distinctions ("reset password" vs "change email") get blurred.</p>
     <p>A <strong>cross-encoder reranker</strong> (Cohere <code>rerank-v3.5</code>) scores each query–document pair jointly. It's slower and more expensive per document, but far more accurate at ordering.</p>
+    <p class="learn-more">Want to learn more about hybrid search and reranking? Our free lesson <a href="/learn/ai/artificial-intelligence/hybrid-rerank/">Hybrid Search and Reranking</a> covers it step by step.</p>
     <p>The standard production pattern: cast a wide net with vector search, then let the reranker pick the best handful.</p>
+    <p class="learn-more">If you want to go deeper on vector databases and chunking, read our free lesson <a href="/learn/ai/artificial-intelligence/vector-search/">Chunking, Vector Databases and ANN Search</a>.</p>
 
     <table>
       <thead>
@@ -157,6 +159,7 @@
     </div>
 
     <p>Why 40 → 10 → 8? Vector top-40 catches chunks that embeddings rank poorly but rerankers love (common with procedural docs and rule tables). Rerank to 10 gives MMR room to swap near-duplicates. Final 8 fits most context budgets without drowning the LLM.</p>
+    <p class="learn-more">New to how LLMs work? Start with our free lesson <a href="/learn/ai/artificial-intelligence/what-is-an-llm/">What Is AI? What Is an LLM?</a>.</p>
 
     <h3>Typical latency</h3>
     <table>

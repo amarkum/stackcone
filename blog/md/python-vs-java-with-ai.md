@@ -34,6 +34,8 @@ Python is easier to start. Java is stricter and more verbose. Agents flatten tha
 
 If you want language fundamentals with exercises, use the stackcone tracks: [Python](/learn/programming/python/hello-world/), [Java](/learn/programming/java/hello-world/), and [frameworks](/learn/frameworks/) (FastAPI, Django, Spring).
 
+New to FastAPI? Start with our free lesson [Introduction and First Endpoint](/learn/frameworks/fastapi/introduction/).
+
 ## What coding agents changed {#agents}
 
 Three products changed the daily cost of writing code. None of them changed the daily cost of owning a system.
@@ -77,6 +79,8 @@ Languages do not get you hired. Stacks do.
 
 Django still matters for CRUD products and admin-heavy internal tools. FastAPI is the current default for Python APIs and for wrapping RAG or agent backends. Flask is what you inherit. On the Java side, Spring is the default; Quarkus and Micronaut show up in newer JVM shops but will not decide your first job.
 
+Want to learn more about RAG? Our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/) covers it step by step.
+
 Do not learn "Python" or "Java" in the abstract for six months. Learn enough language to read errors, then pick one framework and ship something that has auth, a database, and tests. The [frameworks track](/learn/frameworks/) is built that way.
 
 ## AI libraries: Python wins ML, Java keeps enterprise {#ai-libs}
@@ -117,6 +121,8 @@ Use this as a default, then override it if you already have a job target.
 4. **If you have no signal yet:** Python. Faster to a first shipped project, better agent support for the AI-shaped work that is growing, easy to add Java later. The [Python track](/learn/programming/python/hello-world/) is the shortest path to that first project.
 
 In all four cases, learn git on day one. Agents produce diffs. If you cannot review a diff, you cannot use an agent safely. SQL is the other non-negotiable: both ecosystems talk to databases, and interviews still use it as a filter.
+
+If you want to go deeper on SQL, read our free lesson [Databases and SQL Basics](/learn/programming/sql/introduction/).
 
 ## Both is fine {#both}
 

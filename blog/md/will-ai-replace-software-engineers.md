@@ -58,6 +58,8 @@ That split is why “average fresher salary” articles are mush. A TCS-style se
 
 AI tools in the IDE do not, by themselves, move you from ₹6 LPA to ₹18 LPA. They can make you faster at the work that product companies already screened for: shipping, tests, and explaining tradeoffs. Language choice still matters for campus vs off-campus paths; see [Python vs Java vs JavaScript](/blog/posts/python-vs-java-vs-javascript/).
 
+New to Python? Start with our free lesson [Hello, Python](/learn/programming/python/hello-world/).
+
 ## US total-comp planning bands {#us}
 
 US numbers below are **total compensation planning bands** (salary + typical bonus + equity as people quote “TC”). Cost of living, remote vs bay-area, and whether equity is real or a slide deck matter more than the midpoint. Again: planning bands, not a Levels.fyi scrape presented as destiny.
@@ -148,7 +150,11 @@ Job boards filled with “GenAI engineer” titles. Some of those roles are real
 
 The ironic hiring pattern from the earlier post still holds: **AI-adjacent engineering** (evals, routing, RAG, harnesses) is in demand because models are bad at being unsupervised employees. That demand is not infinite and it is not a substitute for being able to ship. If you chase only the title, you will compete with every bootcamp that added “LangChain” to a slide.
 
+Want to learn more about RAG? Our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/) covers it step by step.
+
 For how prompting relates to agents as a skill, not a job title, read [Prompt Engineering vs AI Agents](/blog/posts/prompt-engineering-vs-ai-agents/).
+
+If you want to go deeper on prompting and sampling, read our free lesson [Prompts, Temperature and Sampling](/learn/ai/artificial-intelligence/prompts-sampling/).
 
 ## A practical path {#path}
 

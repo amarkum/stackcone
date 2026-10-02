@@ -25,16 +25,22 @@ This post is a decision table, not a winner. Syntax arguments are cheaper than t
 
 **Python** is the language of scripts, data, ML, and a lot of new backend. It is the fastest path to a first shipped project and the language almost every RAG tutorial assumes.
 
+New to Python? Start with our free lesson [Hello, Python](/learn/programming/python/hello-world/).
+
 <img src="../images/python-vs-java-vs-javascript/java.svg" alt="Java logo" width="80" height="80">
 <img src="../images/python-vs-java-vs-javascript/coffee.svg" alt="Java coffee cup mascot" width="80" height="80">
 
 **Java** is the language of long-lived enterprise systems: banks, insurers, telcos, and the Indian IT services machine that serves them. Spring is the stack name you will hear in campus drives. The coffee-cup mascot is optional; the JVM jobs are not.
+
+Want to learn more about Java? Our free lesson [Hello, Java](/learn/programming/java/hello-world/) covers it step by step.
 
 <img src="../images/python-vs-java-vs-javascript/javascript.svg" alt="Unofficial JavaScript logo by Chris Williams">
 
 *Unofficial JavaScript logo by Chris Williams, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Unofficial_JavaScript_logo_2.svg).*
 
 **JavaScript** (and TypeScript, which is what serious teams actually type) is the language of the web: browsers, Node, and a large share of US bootcamp curricula. It is also how you ship UI around an AI backend, and how a lot of Node-based agents and tool servers get written.
+
+If you want to go deeper on JavaScript, read our free lesson [Hello, JavaScript](/learn/programming/javascript/hello-world/).
 
 | | Python | Java | JavaScript / TypeScript |
 |---|--------|------|-------------------------|

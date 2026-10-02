@@ -41,6 +41,8 @@ Google’s ~$20 Gemini plan used to be marketed as **Gemini Advanced**. It is no
 
 What did not change: you are buying **Gemini** (currently **Gemini 3.1 Pro** on the Pro seat, plus Deep Research), **long context** on the order of **1 million tokens**, **Gemini in Gmail and Docs**, and a large **Google One** storage allotment (about **5TB** on Pro). The storage is why this plan can be rational even if you barely open the Gemini chat URL.
 
+If you want to go deeper on tokens and context windows, read our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
+
 If a comparison table on the internet still says only “Gemini Advanced,” read it as Google AI Pro unless the date is ancient.
 
 ## Side-by-side list prices {#prices}
@@ -63,6 +65,8 @@ Published consumer list prices as of this writing. Not invoices. India adds FX c
 Same neighborhood of twenty dollars. Completely different boxes. ChatGPT Plus is a **toolkit** (GPTs, research, Codex). Claude Pro is a **writing surface plus the on-ramp to Claude Code**. Google AI Pro is **Gemini plus Workspace plus storage**.
 
 API prices are a different market. If you are wiring RAG, start with [Best economical LLM models for RAG](/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/), not a consumer chat plan. If you care which frontier checkpoint sits behind the logo this quarter, that is [GPT-5.6 Sol vs Claude Fable 5 vs Kimi K3](/blog/posts/gpt-5-6-sol-vs-claude-fable-5-vs-kimi-k3/).
+
+New to RAG? Start with our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/).
 
 ## What you actually get {#what-you-get}
 

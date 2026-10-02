@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -258,6 +258,7 @@ es.onerror = () =&gt; {
 
     <h3>Browser client — fetch + ReadableStream (POST + SSE)</h3>
     <p>Chat APIs usually POST the user message, then read an SSE body from the response — <code>EventSource</code> only supports GET, so use <code>fetch</code>:</p>
+    <p class="learn-more">New to streaming APIs? Start with our free lesson <a href="/learn/ai/artificial-intelligence/apis-streaming/">APIs, SSE, WebSockets and Streaming</a>.</p>
     <div class="learn-code-wrap" data-lang="javascript"><pre><code>async function streamChat(message) {
   const res = await fetch("/api/chat/stream", {
     method: "POST",
@@ -409,6 +410,7 @@ ws.onmessage = (e) =&gt; handleControl(JSON.parse(e.data));
 const es = new EventSource(`/api/runs/${run_id}/tokens`);
 es.onmessage = (e) =&gt; appendToken(JSON.parse(e.data).content);</code></pre></div>
     <p>Separating <strong>control</strong> (WebSocket) from <strong>content</strong> (SSE) keeps token parsers simple and avoids multiplexing text chunks with binary-ish frame ordering bugs.</p>
+    <p class="learn-more">Want to learn more about tokens and context windows? Our free lesson <a href="/learn/ai/artificial-intelligence/tokens-context/">Tokens, Context Windows and Cost</a> covers it step by step.</p>
 
     <h2 id="browser-agent">Browser agent: ask input and continue</h2>
     <p>A minimal agent loop on the server:</p>

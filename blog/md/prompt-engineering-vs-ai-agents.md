@@ -30,6 +30,8 @@ This is a beginner map for that split. It is not a claim that prompt engineering
 
 Prompt engineering did not get replaced. It got **demoted from the product to a layer**. The product, when the work is multi-file or operational, is the agent.
 
+New to prompting and sampling? Start with our free lesson [Prompts, Temperature and Sampling](/learn/ai/artificial-intelligence/prompts-sampling/).
+
 
 ## What prompt engineering actually is {#prompts}
 
@@ -68,6 +70,8 @@ That is why Claude Code, Cursor Agent, and Codex feel different from a chat box.
 
 **RAG operations** are the same shape: retrieve, generate, maybe write back, maybe re-retrieve. A single prompt over a pasted PDF is not an agent. A pipeline that chunks, embeds, retrieves, and refuses when scores are low *is* — even if a human still clicks “run.”
 
+Want to learn more about RAG? Our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/) covers it step by step.
+
 ## You still prompt inside the agent {#inside}
 
 Agents do not remove prompts. They **multiply** them, and they hide them in files:
@@ -99,6 +103,8 @@ The quality of that file is prompt engineering. The quality of the **loop** (did
 Magic templates fail here because the next step depends on **tool output**, not on a clever first sentence. If `pytest` failed on line 40, no “think step by step” preface saves you — you need the agent to read the failure and change the code. That is evals and tools, not incantations.
 
 For how skills, MCP, and subagents divide that work, see [Skills vs MCP vs subagents](/blog/posts/skills-vs-mcp-vs-subagents/).
+
+If you want to go deeper on MCP and multi-agent systems, read our free lesson [Multi-Agent Systems, MCP and AI Safety](/learn/ai/artificial-intelligence/multi-agent-mcp-safety/).
 
 ## When a chat prompt is enough {#when-prompts}
 

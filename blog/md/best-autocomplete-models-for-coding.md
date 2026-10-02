@@ -42,6 +42,8 @@ The practical question is whether suggestions appear fast enough to keep flow, a
 
 Autocomplete quality depends on **context window** (how much surrounding code the model sees) and **indexing** (whether the tool understands your whole repo or just the open file). The best Tab experience feels invisible: you think about the logic, and the editor fills in the boilerplate before you finish the thought.
 
+Want to learn more about tokens and context windows? Our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/) covers it step by step.
+
 ### The three layers of a Tab product
 
 Every serious autocomplete tool stacks three layers:
@@ -469,6 +471,8 @@ tabAutocompleteModel:
 
 Claude Code excels at multi-file refactors, test runs, and CI integration (`claude -p`). It does not show ghost text while you type. **Pair it with Cursor Tab or Copilot** in your editor for the typing layer.
 
+If you want to go deeper on GitHub Actions and CI, read our free lesson [CI with GitHub Actions](/learn/programming/git/github-actions/).
+
 ## Measuring accept rate
 
 Accept rate is the percentage of shown Tab suggestions you accept (fully or via Partial Accept). It is the closest thing to a real-world quality metric — better than benchmark scores on HumanEval.
@@ -511,6 +515,8 @@ Accept rate = Accepted / Shown × 100%
 ## Language-specific performance
 
 Tab models train heavily on Python, JavaScript/TypeScript, Java, C#, Go, and Rust. Expect the best accept rates there.
+
+New to TypeScript? Start with our free lesson [Why TypeScript](/learn/programming/typescript/introduction/).
 
 | Language / ecosystem | Typical Tab quality | Notes |
 |---------------------|---------------------|-------|

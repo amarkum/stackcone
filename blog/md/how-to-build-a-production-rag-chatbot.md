@@ -37,6 +37,8 @@ This guide shows how to build a production RAG chatbot: ingest documents, store 
 
 An **LLM (Large Language Model)** generates text — answers, summaries, code. Examples: GPT-4o, Gemini, Claude, Llama.
 
+New to how LLMs work? Start with our free lesson [What Is AI? What Is an LLM?](/learn/ai/artificial-intelligence/what-is-an-llm/).
+
 It only knows training data plus what you send in the prompt. It does **not** automatically know your wiki, PDFs, or tickets. RAG feeds it the right text at question time.
 
 ---
@@ -63,6 +65,8 @@ Text is converted to a **vector** (a list of numbers). Similar meaning → simil
 - "Reset password" and "weather forecast" → far apart  
 
 An **embedding model** (separate from your chat LLM) creates these vectors. You embed all docs at ingest time and embed each user question at query time, then find the closest doc vectors.
+
+Want to learn more about embeddings? Our free lesson [Vectors and Embeddings](/learn/ai/artificial-intelligence/embeddings/) covers it step by step.
 
 ```text
 "How do I reset my password?"  →  [0.12, -0.45, 0.88, ...]
@@ -163,6 +167,8 @@ frontend/       ← chat UI
 | **Weaviate** | Hybrid BM25 + vector built-in | Medium |
 
 Start with **Pinecone** or **Chroma**. Switch when you outgrow free tier or need hybrid search at scale.
+
+If you want to go deeper on hybrid search and reranking, read our free lesson [Hybrid Search and Reranking](/learn/ai/artificial-intelligence/hybrid-rerank/).
 
 ---
 

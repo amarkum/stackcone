@@ -45,6 +45,8 @@ Rough rule from production deployments: **more than half of "bad answers" are re
 
 Focus on retrieval metrics first. Generation quality (LLM-as-judge, human rating) comes second.
 
+Want to learn more about how LLMs work? Our free lesson [What Is AI? What Is an LLM?](/learn/ai/artificial-intelligence/what-is-an-llm/) covers it step by step.
+
 | Metric | What it tells you | Target to start |
 |--------|-------------------|-----------------|
 | **hit@k** | Expected source doc in top-k results | ≥ 85% at k=10 after rerank |

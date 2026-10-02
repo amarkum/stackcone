@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -178,6 +178,7 @@
 
     <h2 id="what-is-sse">What is Server-Sent Events (SSE)?</h2>
     <p><strong>SSE</strong> is a web standard for <strong>server → client</strong> push over a single HTTP connection.</p>
+    <p class="learn-more">New to streaming APIs? Start with our free lesson <a href="/learn/ai/artificial-intelligence/apis-streaming/">APIs, SSE, WebSockets and Streaming</a>.</p>
     <ul>
       <li><strong>Content-Type:</strong> <code>text/event-stream</code></li>
       <li><strong>Client API:</strong> <code>EventSource</code> (GET) or <code>fetch</code> + <code>ReadableStream</code> (POST)</li>
@@ -217,6 +218,7 @@ data: {"finish_reason":"stop"}</code></pre></div>
     </div>
 
     <p>Most RAG chatbots use <strong>POST + streaming response</strong>. WebSockets shine when the same socket carries dozens of event types both ways — not required for "user asks → assistant streams answer."</p>
+    <p class="learn-more">Want to learn more about RAG? Our free lesson <a href="/learn/ai/artificial-intelligence/rag/">RAG: Retrieval-Augmented Generation</a> covers it step by step.</p>
 
     <h2 id="e2e-flow">End-to-end flow in a chatbot</h2>
     <div class="pipeline">
@@ -247,6 +249,7 @@ data: {"finish_reason":"stop"}</code></pre></div>
 
     <h2 id="llm-streaming">How LLM providers stream tokens</h2>
     <p>Providers send <strong>token deltas</strong> (subword pieces), not whole words. Your server normalizes them into one text stream for the UI.</p>
+    <p class="learn-more">If you want to go deeper on tokens and context windows, read our free lesson <a href="/learn/ai/artificial-intelligence/tokens-context/">Tokens, Context Windows and Cost</a>.</p>
 
     <h3>OpenAI / compatible APIs</h3>
     <div class="learn-code-wrap" data-lang="python"><pre><code>stream = client.chat.completions.create(

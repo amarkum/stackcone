@@ -101,6 +101,8 @@ Chat-level coding in ChatGPT or Gemini is a different workflow — paste, decide
 
 If two tools both “can” do the task, pick the one that matches the *shape* you will sit in for an hour. Agents you babysit in a browser lose to Tab when the job is typing. Tab you accept blindly loses to an agent when the job is twenty files and a red CI run.
 
+If you want to go deeper on GitHub Actions and CI, read our free lesson [CI with GitHub Actions](/learn/programming/git/github-actions/).
+
 ## Pricing {#pricing}
 
 USD list prices unless noted. Credits, GST, and FX change the invoice.

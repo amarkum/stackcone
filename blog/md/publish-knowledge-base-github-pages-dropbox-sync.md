@@ -90,6 +90,8 @@ published/ .md → Sync job → Chunk + embed → Vector DB upsert → Mirror si
 
 The sync job reads **only** `published/**/*.md` (plus tracker state). Changed files are chunked, embedded, upserted to your vector database, copied into the MkDocs tree, built, and pushed.
 
+If you want to go deeper on vector databases and chunking, read our free lesson [Chunking, Vector Databases and ANN Search](/learn/ai/artificial-intelligence/vector-search/).
+
 **Editorial funnel:** Drafts → reviewed → published → indexed → live.
 
 ---
@@ -97,6 +99,8 @@ The sync job reads **only** `published/**/*.md` (plus tracker state). Changed fi
 ## Sync job flow
 
 A typical run processes six stages. Embedding dominates wall time; listing and git push are comparatively cheap.
+
+New to embeddings? Start with our free lesson [Vectors and Embeddings](/learn/ai/artificial-intelligence/embeddings/).
 
 | Stage | Time % |
 |-------|--------|
@@ -202,6 +206,8 @@ def download_file(path: str) -> bytes:
 ## SSE progress streaming
 
 Sync jobs can run several minutes. Expose progress via **Server-Sent Events (SSE)** so the admin UI shows live status without polling.
+
+Want to learn more about streaming APIs? Our free lesson [APIs, SSE, WebSockets and Streaming](/learn/ai/artificial-intelligence/apis-streaming/) covers it step by step.
 
 Each stage emits a JSON event: stage name, percent complete, files processed, and optional error detail. The client opens `EventSource('/sync/stream')` and updates a progress bar.
 

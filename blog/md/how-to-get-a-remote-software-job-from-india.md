@@ -54,6 +54,8 @@ You do not need seven languages. You need one stack you can ship and explain: wh
 
 Language wars are a distraction. For Python vs Java vs JavaScript as a career pick, read [Python vs Java vs JavaScript](/blog/posts/python-vs-java-vs-javascript/). AI-adjacent jobs: [Python vs Java with AI](/blog/posts/python-vs-java-with-ai/). Courses are optional ([best AI courses](/blog/posts/best-ai-courses-and-skills-to-learn/), [India vs US](/blog/posts/best-ai-ml-data-science-course-india-us/)) — they are not a substitute for a public repo.
 
+New to Python? Start with our free lesson [Hello, Python](/learn/programming/python/hello-world/).
+
 Depth beats a certificate wall. A hiring manager will open GitHub before they open your Coursera PDF.
 
 ## Proof: GitHub, demos, writing {#proof}
@@ -207,6 +209,8 @@ What to show instead of “I use AI”:
 - You can refuse a hallucinated API and cite the real one.
 
 The longer argument is in [Will AI take coding jobs?](/blog/posts/will-ai-take-coding-jobs/) and [Will AI replace software engineers?](/blog/posts/will-ai-replace-software-engineers/). For which tool to actually buy, use [Best AI for coding](/blog/posts/best-ai-for-coding/). Agents without evals are a liability — the same reason [prompt engineering vs AI agents](/blog/posts/prompt-engineering-vs-ai-agents/) is a career question, not a Twitter poll.
+
+Want to learn more about prompting and sampling? Our free lesson [Prompts, Temperature and Sampling](/learn/ai/artificial-intelligence/prompts-sampling/) covers it step by step.
 
 A 90-second demo of you driving an agent **and then catching its bug** is stronger proof than a certificate in “prompt engineering.”
 

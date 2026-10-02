@@ -50,11 +50,15 @@ If you are wiring docs into a vector search pipeline, see the companion guide: [
 
 MkDocs wins when your source of truth is **Markdown in Git** and you want **minutes-to-live** deployment. The [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme adds professional navigation, dark mode, and built-in search without a Node build step.
 
+If you want to go deeper on Git, read our free lesson [Git Basics](/learn/programming/git/introduction/).
+
 ---
 
 ## Prerequisites and installation
 
 You need **Python 3.9+** and `pip`. Use a virtual environment so MkDocs does not pollute system Python.
+
+New to Python? Start with our free lesson [Hello, Python](/learn/programming/python/hello-world/).
 
 ```bash
 python3 -m venv .venv

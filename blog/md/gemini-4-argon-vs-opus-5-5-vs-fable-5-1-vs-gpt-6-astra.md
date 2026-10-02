@@ -170,6 +170,8 @@ Coding is split four ways depending on which benchmark you trust:
 
 The pattern: Argon is strong at *writing* software from a spec, and Opus 5.5 is strong at *operating* in a terminal over many steps. Those are different skills, and agentic coding tools like Claude Code, Codex and Antigravity mostly need the second one.
 
+If you want to go deeper on AI agents, read our free lesson [Agentic AI: From Chatbots to Agents](/learn/ai/artificial-intelligence/agentic/).
+
 ### Terminal work, science and computer use
 
 Terminal and desktop automation is Argon’s clearest weakness. It trails Opus 5.5 by 9 points on Terminal-Bench 4.0, Astra by 10.5 points on Terminal-Bench Science, and Astra by 3.4 points on OSWorld 2.0. Astra sets the computer-use frontier: 72.6% on OSWorld 2.0 while taking about 47% less time per task than GPT-5.6 Sol, plus 92.7% on ScreenSpot-Pro. Opus 5.5 reports 81.8% on OSWorld 2.0 partial credit (48.7% strict) in Anthropic’s own scoring.
@@ -218,6 +220,8 @@ The most important number in Argon’s launch may not be a capability score. On 
 
 Read the metric carefully. It is not “accuracy.” It measures what a model does when it *doesn’t* know the answer: the share of wrong guesses among responses that weren’t correct. A low rate means the model says “I don’t know” instead of making something up. For RAG chatbots, legal research and finance, that behaviour is often worth more than a few benchmark points. (Our lesson on [why LLMs hallucinate](/learn/ai/artificial-intelligence/hallucinations/) covers the mechanics.)
 
+New to how LLMs work? Start with our free lesson [What Is AI? What Is an LLM?](/learn/ai/artificial-intelligence/what-is-an-llm/).
+
 Argon also leads **Gray Swan’s indirect prompt-injection benchmark** with a 0.7% attack success rate, better than Opus 5.5 and Fable 5.1 and far better than Astra’s 8.5%. If your agent reads email, web pages or user-uploaded files, prompt-injection resistance is a production requirement, not a nice-to-have.
 
 Each lab also reported safety trade-offs:
@@ -260,6 +264,8 @@ Per-token prices hide the real bill. What you pay is **price × tokens used × r
 > Chart (published page): cost per AA Index task — GPT-6.1 Sol $0.74, Argon (intro) $1.99, Astra $3.26, Argon after intro (est.) $3.98.
 
 Anthropic’s 40% saving for Opus 5.5 over Opus 5 is the same idea: about half comes from lower prices and the rest from finishing tasks with fewer tokens. For deeper unit economics, see our guides on [tokens, context windows and cost](/learn/ai/artificial-intelligence/tokens-context/) and [economical LLMs for RAG](/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/).
+
+Want to learn more about RAG? Our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/) covers it step by step.
 
 ## Pick a model for your workload
 

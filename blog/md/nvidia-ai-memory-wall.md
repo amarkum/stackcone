@@ -28,6 +28,8 @@ This is a builder’s read of that shift: why decode is a memory problem wearing
 
 Classic GPU marketing ranks chips by peak dense FLOPS, the way car ads rank horsepower. Decode — the generation phase of inference, the part users actually feel — barely cares. Each new token re-reads the model weights and a growing KV cache. Achieved **memory bandwidth** and **on-package capacity** decide tokens per second, concurrency, and whether you offload cache to host DRAM and wait for the bus like it’s 1999.
 
+If you want to go deeper on tokens and context windows, read our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
+
 ```mermaid
 flowchart TB
   classDef mem fill:#fce7f3,stroke:#db2777,color:#9f1239
@@ -75,6 +77,8 @@ Each generated token re-reads weights and the entire KV cache. Extra FLOPS do li
 ## KV cache math
 
 Weights are the fixed tax. You pay them once per model, like rent. KV cache is the variable that blows up with RAG windows and concurrency — the utility bill that arrives when everyone leaves the lights on. This is the part of the post where a spreadsheet becomes a personality.
+
+New to RAG? Start with our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/).
 
 ```
 bytes_per_token = 2 * n_layers * n_kv_heads * head_dim * dtype_bytes
@@ -189,6 +193,8 @@ You do not need a Rubin reservation to design around the wall. The same constrai
 **1. Measure decode, not prefill.** Profile tokens/sec vs batch size and context length, not only TFLOPS. Prefill makes you look fast in a benchmark. Decode is what your user is staring at.
 
 **2. Treat KV cache as a first-class budget.** Stuffing 40 retrieved chunks into a 128K window can evict other tenants. Retrieval quality is a memory optimization wearing a relevance costume. See [how we evaluate RAG retrieval](/blog/posts/how-to-evaluate-rag-retrieval/) and [Cohere reranking](/blog/posts/cohere-reranking-production-rag-retrieval/).
+
+Want to learn more about hybrid search and reranking? Our free lesson [Hybrid Search and Reranking](/learn/ai/artificial-intelligence/hybrid-rerank/) covers it step by step.
 
 **3. Route models by job, not by prestige.** A frontier model on a memory-tight GPU is worse than a smaller model that stays resident. Prestige does not pay the HBM bill. [Economical LLM choices](/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/) and [heuristic routing](/blog/posts/auto-model-routing-without-llm-classifier/) exist for this reason.
 

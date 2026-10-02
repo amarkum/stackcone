@@ -56,11 +56,15 @@ flowchart TD
 
 **Layer 1: Golden dataset evaluation** runs your agent against curated test cases and measures pass rate.
 
+Want to learn more about evaluating RAG? Our free lesson [Evaluating and Improving RAG](/learn/ai/artificial-intelligence/rag-evaluation/) covers it step by step.
+
 **Layer 2: Tool unit tests** verify individual tool functions work correctly in isolation.
 
 **Layer 3: Trace replay** captures and replays successful agent runs to catch behavior changes.
 
 **Layer 4: Regression gates** block CI/CD deploys when quality drops below thresholds.
+
+If you want to go deeper on GitHub Actions and CI, read our free lesson [CI with GitHub Actions](/learn/programming/git/github-actions/).
 
 **Layer 5: Production monitoring** tracks live metrics and turns failures into new test cases.
 
@@ -174,6 +178,8 @@ Run tool tests in CI. They're fast and catch breaking changes before they reach 
 Trace replay takes a real agent execution (the "trace"), saves it, and replays it later to verify behavior stayed consistent. It's the agent equivalent of snapshot testing in frontend development — you capture what "good" looks like, then verify future versions match.
 
 The power of trace replay is catching regressions you didn't anticipate. When you change a system prompt or switch models, golden dataset eval tells you if pass rate dropped. Trace replay tells you _how_ behavior changed — which tool calls are different, where the agent took a different path, what specific steps regressed.
+
+New to tool calling? Start with our free lesson [Tool Calling and Structured Output](/learn/ai/artificial-intelligence/tool-calling/).
 
 ### What's in a trace
 

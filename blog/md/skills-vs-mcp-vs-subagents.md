@@ -30,6 +30,8 @@ In 2026, coding agents (Claude Code, Cursor, Codex, Gemini CLI) share a common v
 
 **MCP adds capability. Skills change behavior. Subagents protect context.**
 
+Want to learn more about MCP and multi-agent systems? Our free lesson [Multi-Agent Systems, MCP and AI Safety](/learn/ai/artificial-intelligence/multi-agent-mcp-safety/) covers it step by step.
+
 ![MCP logo](../images/skills-vs-mcp-vs-subagents/mcp-logo.png)
 
 ## What each one actually does
@@ -84,6 +86,8 @@ description: Ship a stackcone blog post — md source, HTML publish, posts.json,
 ### Subagents
 
 A subagent is a **separate agent run** with its own context window, tools, and (often) model. Examples in Cursor: `explore`, `shell`, `ci-investigator`, `best-of-n-runner`.
+
+If you want to go deeper on tokens and context windows, read our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
 
 ## Subagent types in Cursor
 

@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -148,6 +148,7 @@
 
     <h2 id="bottleneck">The bottleneck moved</h2>
     <p>Classic GPU marketing ranks chips by peak dense FLOPS, the way car ads rank horsepower. Decode — the generation phase of inference, the part users actually feel — barely cares. Each new token re-reads the model weights and a growing KV cache. Achieved <strong>memory bandwidth</strong> and <strong>on-package capacity</strong> decide tokens per second, concurrency, and whether you offload cache to host DRAM and wait for the bus like it’s 1999.</p>
+    <p class="learn-more">If you want to go deeper on tokens and context windows, read our free lesson <a href="/learn/ai/artificial-intelligence/tokens-context/">Tokens, Context Windows and Cost</a>.</p>
 
     <div class="diagram-wrap" data-diagram-title="Where a decode token spends time">
       <button type="button" class="diagram-maximize" aria-label="View diagram fullscreen" title="Fullscreen">
@@ -212,6 +213,7 @@
 
     <h2 id="kv-math">KV cache math</h2>
     <p>Weights are the fixed tax. You pay them once per model, like rent. KV cache is the variable that blows up with RAG windows and concurrency — the utility bill that arrives when everyone leaves the lights on. This is the part of the post where a spreadsheet becomes a personality.</p>
+    <p class="learn-more">New to RAG? Start with our free lesson <a href="/learn/ai/artificial-intelligence/rag/">RAG: Retrieval-Augmented Generation</a>.</p>
     <div class="learn-code-wrap" data-lang="plaintext"><pre><code>bytes_per_token = 2 * n_layers * n_kv_heads * head_dim * dtype_bytes
 kv_gb = bytes_per_token * seq_len * sessions / 1e9
 weights_gb ≈ n_params_B * bytes_per_param</code></pre></div>
@@ -380,6 +382,7 @@ weights_gb ≈ n_params_B * bytes_per_param</code></pre></div>
     <p>You do not need a Rubin reservation to design around the wall. The same constraints show up on Blackwell, H100, and rented cloud GPUs — which is either comforting or insulting, depending on how much you spent last year.</p>
     <p><strong>1. Measure decode, not prefill.</strong> Profile tokens/sec vs batch size and context length, not only TFLOPS. Prefill makes you look fast in a benchmark. Decode is what your user is staring at.</p>
     <p><strong>2. Treat KV cache as a first-class budget.</strong> Stuffing 40 retrieved chunks into a 128K window can evict other tenants. Retrieval quality is a memory optimization wearing a relevance costume. See <a href="/blog/posts/how-to-evaluate-rag-retrieval/">how we evaluate RAG retrieval</a> and <a href="/blog/posts/cohere-reranking-production-rag-retrieval/">Cohere reranking</a>.</p>
+    <p class="learn-more">Want to learn more about hybrid search and reranking? Our free lesson <a href="/learn/ai/artificial-intelligence/hybrid-rerank/">Hybrid Search and Reranking</a> covers it step by step.</p>
     <p><strong>3. Route models by job, not by prestige.</strong> A frontier model on a memory-tight GPU is worse than a smaller model that stays resident. Prestige does not pay the HBM bill. <a href="/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/">Economical LLM choices</a> and <a href="/blog/posts/auto-model-routing-without-llm-classifier/">heuristic routing</a> exist for this reason.</p>
     <p><strong>4. Plan for offload paths.</strong> NVLink-C2C and host DRAM are the safety valve. Make offload a config flag, not a rewrite you do at 2 a.m. after the first 128K tenant arrives.</p>
 

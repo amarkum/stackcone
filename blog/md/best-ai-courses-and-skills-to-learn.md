@@ -22,7 +22,11 @@ A certificate proves you clicked through a vendor's content and maybe passed a m
 
 That sounds harsh because the market is noisy. DeepLearning.AI-style programs, Google/OpenAI/Anthropic badges, and university micromasters all have a place as *structured practice*. They are not a substitute for Python, SQL, git, and one ugly project that actually answers questions from a folder of PDFs.
 
+Want to learn more about Git? Our free lesson [Git Basics](/learn/programming/git/introduction/) covers it step by step.
+
 If you need a language decision before this plan, read [Python vs Java with AI](/blog/posts/python-vs-java-with-ai/). The rest of this post assumes Python as the AI-shaped default, with Java as a parallel path if that is who hires you.
+
+If you want to go deeper on Java, read our free lesson [Hello, Java](/learn/programming/java/hello-world/).
 
 ## The core stack {#core}
 
@@ -41,6 +45,8 @@ Seven skills. You do not need a PhD. You do need to be able to use each one with
 ### Prompting vs evals
 
 Prompting is how you talk to the model. Evals are how you know whether that talk worked yesterday and still works after you change the chunk size. Teams that only prompt thrash. Teams that keep a golden set of 30–100 questions can tell whether a change helped. If you learn one "AI-native" habit, learn evals. Retrieval evals are the version that matters for RAG: see [how to evaluate RAG retrieval](/blog/posts/how-to-evaluate-rag-retrieval/).
+
+New to RAG? Start with our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/).
 
 ### Agents without the science-fair
 

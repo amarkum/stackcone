@@ -69,6 +69,8 @@ Typical **single RAG turn** token budget:
 
 **Add-ons:** embeddings (~$0.000002/query), optional rerank (~$0.001/search), optional query rewrite (cheap LLM call).
 
+New to hybrid search and reranking? Start with our free lesson [Hybrid Search and Reranking](/learn/ai/artificial-intelligence/hybrid-rerank/).
+
 **Chat history tip:** A 20-turn thread can add **5,000+ tokens** before retrieval — summarize older turns.
 
 ## Cost per RAG turn (with history + context)

@@ -37,7 +37,11 @@ Embedding models optimize for **recall** — finding anything plausibly related.
 
 A **cross-encoder reranker** (Cohere `rerank-v3.5`) scores each query–document pair jointly. It's slower and more expensive per document, but far more accurate at ordering.
 
+Want to learn more about hybrid search and reranking? Our free lesson [Hybrid Search and Reranking](/learn/ai/artificial-intelligence/hybrid-rerank/) covers it step by step.
+
 The standard production pattern: cast a wide net with vector search, then let the reranker pick the best handful.
+
+If you want to go deeper on vector databases and chunking, read our free lesson [Chunking, Vector Databases and ANN Search](/learn/ai/artificial-intelligence/vector-search/).
 
 | Stage | Goal | Typical k |
 |-------|------|-----------|
@@ -55,6 +59,8 @@ Stage 1 pulls **top-k ≈ 40** from Pinecone by cosine similarity. Stage 2 sends
 **Pipeline:** Query → Embed → Pinecone top-40 → Cohere rerank-v3.5 → Top 10 → MMR → 8 → LLM prompt
 
 Why 40 → 10 → 8? Vector top-40 catches chunks that embeddings rank poorly but rerankers love (common with procedural docs and rule tables). Rerank to 10 gives MMR room to swap near-duplicates. Final 8 fits most context budgets without drowning the LLM.
+
+New to how LLMs work? Start with our free lesson [What Is AI? What Is an LLM?](/learn/ai/artificial-intelligence/what-is-an-llm/).
 
 ### Typical latency
 

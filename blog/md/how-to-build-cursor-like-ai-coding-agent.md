@@ -29,6 +29,8 @@ Cursor Agent mode, Claude Code, and Windsurf share the same core pattern: an LLM
 
 A Cursor-like coding agent is not a chatbot with code snippets. It is a **closed loop** between an LLM and a filesystem:
 
+New to how LLMs work? Start with our free lesson [What Is AI? What Is an LLM?](/learn/ai/artificial-intelligence/what-is-an-llm/).
+
 | Capability | Why it matters |
 |------------|----------------|
 | **Tool calling** | The model decides *when* to grep, read, edit, or run commands — not the UI |
@@ -96,6 +98,8 @@ def agent_turn():
 ```
 
 **Why not EventSource?** The browser's built-in `EventSource` only supports GET. The frontend uses `fetch()` + `ReadableStream`, decodes SSE `data:` lines manually, and handles progress, command output, and the final `done` payload in one loop.
+
+Want to learn more about streaming APIs? Our free lesson [APIs, SSE, WebSockets and Streaming](/learn/ai/artificial-intelligence/apis-streaming/) covers it step by step.
 
 ## Phase 2 — The agent harness loop
 

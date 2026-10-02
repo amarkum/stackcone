@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -185,6 +185,7 @@
       <span class="pipeline-step">Git push → GitHub Pages</span>
     </div>
     <p>The sync job reads <strong>only</strong> <code>published/**/*.md</code> (plus tracker state). Changed files are chunked, embedded, upserted to your vector database, copied into the MkDocs tree, built, and pushed.</p>
+    <p class="learn-more">If you want to go deeper on vector databases and chunking, read our free lesson <a href="/learn/ai/artificial-intelligence/vector-search/">Chunking, Vector Databases and ANN Search</a>.</p>
 
     <div class="chart-wrap">
       <canvas id="publishFlowChart" aria-label="Content funnel from drafts to GitHub Pages"></canvas>
@@ -193,6 +194,7 @@
 
     <h2 id="sync-job-flow">Sync job flow</h2>
     <p>A typical run processes six stages. Embedding dominates wall time; listing and git push are comparatively cheap.</p>
+    <p class="learn-more">New to embeddings? Start with our free lesson <a href="/learn/ai/artificial-intelligence/embeddings/">Vectors and Embeddings</a>.</p>
 
     <div class="chart-wrap">
       <canvas id="syncStagesChart" aria-label="Sync job time by stage"></canvas>
@@ -283,6 +285,7 @@ def download_file(path: str) -&gt; bytes:
 
     <h2 id="sse-progress">SSE progress streaming</h2>
     <p>Sync jobs can run several minutes. Expose progress via <strong>Server-Sent Events (SSE)</strong> so the admin UI shows live status without polling.</p>
+    <p class="learn-more">Want to learn more about streaming APIs? Our free lesson <a href="/learn/ai/artificial-intelligence/apis-streaming/">APIs, SSE, WebSockets and Streaming</a> covers it step by step.</p>
     <p>Each stage emits a JSON event: stage name, percent complete, files processed, and optional error detail. The client opens <code>EventSource('/sync/stream')</code> and updates a progress bar.</p>
 
     <div class="learn-code-wrap" data-lang="plaintext"><pre><code>// SSE events during sync

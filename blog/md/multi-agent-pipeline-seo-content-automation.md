@@ -36,6 +36,8 @@ This guide covers agent roles, a concrete pipeline flow, copy-paste prompts, orc
 
 A single “write me an SEO blog post” prompt mixes too many jobs:
 
+New to SEO and page performance? Start with our free lesson [Meta Tags, SEO and Page Performance](/learn/programming/htmlcss/seo-performance/).
+
 | Job | Why isolate it |
 |-----|----------------|
 | Pick the topic from real search data | Needs GSC/Ahrefs context, not creative writing |
@@ -254,6 +256,8 @@ QA agent runs read-only. If fail → routes back to metadata agent (head/sitemap
 ## Intent agent prompt template
 
 Save as `_pipeline/prompts/intent-agent.md` or pass directly to a subagent. Replace `{SITE}`, `{GSC_EXPORT}`, `{POSTS_JSON}` with real paths.
+
+Want to learn more about MCP and multi-agent systems? Our free lesson [Multi-Agent Systems, MCP and AI Safety](/learn/ai/artificial-intelligence/multi-agent-mcp-safety/) covers it step by step.
 
 ```markdown
 You are the Intent agent for {SITE} content pipeline. You produce topic briefs only.
@@ -692,6 +696,8 @@ See [Skills vs Rules in Claude Code and Cursor](/blog/posts/skills-vs-rules-clau
 ## Orchestration with claude -p
 
 Headless Claude Code runs each pipeline phase in CI or a local script. Pattern from [Ralph Loop Alternatives](/blog/posts/ralph-loop-alternatives-claude-code/) and [How to Use Claude Code Effectively](/blog/posts/how-to-use-claude-code-effectively/): one phase per invocation, fresh context, exit code gates the next step.
+
+If you want to go deeper on GitHub Actions and CI, read our free lesson [CI with GitHub Actions](/learn/programming/git/github-actions/).
 
 ### Directory layout for headless runs
 

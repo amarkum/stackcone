@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -102,6 +102,7 @@
     </nav>
     <h2 id="why-multi-agent-instead-of-one-prompt">Why multi-agent instead of one prompt</h2>
     <p>A single “write me an SEO blog post” prompt mixes too many jobs:</p>
+    <p class="learn-more">New to SEO and page performance? Start with our free lesson <a href="/learn/programming/htmlcss/seo-performance/">Meta Tags, SEO and Page Performance</a>.</p>
     <table>
 <thead><tr><th>Job</th><th>Why isolate it</th></tr></thead>
 <tbody>
@@ -267,6 +268,7 @@ echo "QA PASS: ${SLUG}"</code></pre></div>
     <p>QA agent runs read-only. If fail → routes back to metadata agent (head/sitemap/registry issues) or writer agent (content/link issues) with specific fixes.</p>
     <h2 id="intent-agent-prompt-template">Intent agent prompt template</h2>
     <p>Save as <code>_pipeline/prompts/intent-agent.md</code> or pass directly to a subagent. Replace <code>{SITE}</code>, <code>{GSC_EXPORT}</code>, <code>{POSTS_JSON}</code> with real paths.</p>
+    <p class="learn-more">Want to learn more about MCP and multi-agent systems? Our free lesson <a href="/learn/ai/artificial-intelligence/multi-agent-mcp-safety/">Multi-Agent Systems, MCP and AI Safety</a> covers it step by step.</p>
     <div class="learn-code-wrap" data-lang="plaintext"><pre><code>You are the Intent agent for {SITE} content pipeline. You produce topic briefs only.
 You do NOT write article prose, titles for publication, or edit any files.
 
@@ -457,7 +459,7 @@ Output: _pipeline/outlines/multi-agent-pipeline-seo-outline.md</code></pre></div
   &lt;meta name="twitter:description" content="Multi-agent pipeline for SEO and content automation — five agent roles, metadata checklist, static site workflow, and GSC feedback loop with copy-paste patterns."&gt;
   &lt;meta name="twitter:image" content="https://stackcone.com/blog/images/multi-agent-pipeline-seo-content-automation/hero.png"&gt;
   &lt;link rel="stylesheet" href="../../../styles.css"&gt;
-  &lt;link rel="stylesheet" href="../../../blog/blog.css?v=14"&gt;
+  &lt;link rel="stylesheet" href="../../../blog/blog.css?v=15"&gt;
   &lt;script type="application/ld+json"&gt;
   {
     "@context": "https://schema.org",
@@ -628,6 +630,7 @@ You are the SEO metadata + QA agent. Markdown draft already exists at
     <p>See <a href="/blog/posts/skills-vs-rules-claude-code-cursor/">Skills vs Rules in Claude Code and Cursor</a> for when to use skills vs rules for SEO constraints.</p>
     <h2 id="orchestration-with-claude--p">Orchestration with claude -p</h2>
     <p>Headless Claude Code runs each pipeline phase in CI or a local script. Pattern from <a href="/blog/posts/ralph-loop-alternatives-claude-code/">Ralph Loop Alternatives</a> and <a href="/blog/posts/how-to-use-claude-code-effectively/">How to Use Claude Code Effectively</a>: one phase per invocation, fresh context, exit code gates the next step.</p>
+    <p class="learn-more">If you want to go deeper on GitHub Actions and CI, read our free lesson <a href="/learn/programming/git/github-actions/">CI with GitHub Actions</a>.</p>
     <h3 id="directory-layout-for-headless-runs">Directory layout for headless runs</h3>
     <div class="learn-code-wrap" data-lang="plaintext"><pre><code>_pipeline/
 ├── run-pipeline.sh

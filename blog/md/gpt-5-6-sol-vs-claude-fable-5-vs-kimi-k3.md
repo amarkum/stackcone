@@ -107,6 +107,8 @@ Still leads many professional and economically weighted agent evals (for example
 
 List prices move often; treat this as orientation (per 1M tokens, mid-July 2026 reporting):
 
+New to tokens and context windows? Start with our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
+
 | Model | Input / output (approx.) | Notes |
 | --- | --- | --- |
 | Kimi K3 | ~$3 / $15 | Aggressive cache (~$0.30 cached input) |

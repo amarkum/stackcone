@@ -27,6 +27,8 @@ People in India really are looking for this. Kantar has reported that searches f
 
 Python is the default language on every serious path below. If you still need a language decision, read [Python vs Java vs JavaScript](/blog/posts/python-vs-java-vs-javascript/).
 
+If you want to go deeper on Python, read our free lesson [Hello, Python](/learn/programming/python/hello-world/).
+
 ## What “best” actually means {#best}
 
 “Best” splits into three different scores. Rankings that mash them together are marketing.
@@ -72,7 +74,11 @@ India’s public online stack is under-advertised because it does not buy ads li
 
 This path is strong if you need **discipline and theory** without a large invoice. It is weak if you need a career-switch wrapper: there is no placement cell, no resume workshop, and the syllabus may stop at classical ML while the job post asks for RAG.
 
+New to RAG? Start with our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/).
+
 Use NPTEL/SWAYAM as the *course*, not as the *portfolio*. Pair a completed ML or DL course with a repo that calls a current LLM API. Working engineers can skip what they know, sit the exam if HR likes institute names, and put saved hours into a RAG prototype.
+
+Want to learn more about how LLMs work? Our free lesson [What Is AI? What Is an LLM?](/learn/ai/artificial-intelligence/what-is-an-llm/) covers it step by step.
 
 ## Path 3: Indian paid bootcamps {#bootcamps}
 

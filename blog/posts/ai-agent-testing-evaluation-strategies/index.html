@@ -28,7 +28,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../blog.css?v=14">
+  <link rel="stylesheet" href="../../blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -150,9 +150,11 @@ flowchart TD
         </div>
         
         <p><strong>Layer 1: Golden dataset evaluation</strong> runs your agent against curated test cases and measures pass rate.</p>
+    <p class="learn-more">Want to learn more about evaluating RAG? Our free lesson <a href="/learn/ai/artificial-intelligence/rag-evaluation/">Evaluating and Improving RAG</a> covers it step by step.</p>
         <p><strong>Layer 2: Tool unit tests</strong> verify individual tool functions work correctly in isolation.</p>
         <p><strong>Layer 3: Trace replay</strong> captures and replays successful agent runs to catch behavior changes.</p>
         <p><strong>Layer 4: Regression gates</strong> block CI/CD deploys when quality drops below thresholds.</p>
+    <p class="learn-more">If you want to go deeper on GitHub Actions and CI, read our free lesson <a href="/learn/programming/git/github-actions/">CI with GitHub Actions</a>.</p>
         <p><strong>Layer 5: Production monitoring</strong> tracks live metrics and turns failures into new test cases.</p>
         
         <p>Together, these layers give you confidence to ship agent changes fast while maintaining reliability. Let's dive into each one.</p>
@@ -258,6 +260,7 @@ flowchart TD
         <h2>Trace replay testing</h2>
         <p>Trace replay takes a real agent execution (the "trace"), saves it, and replays it later to verify behavior stayed consistent. It's the agent equivalent of snapshot testing in frontend development — you capture what "good" looks like, then verify future versions match.</p>
         <p>The power of trace replay is catching regressions you didn't anticipate. When you change a system prompt or switch models, golden dataset eval tells you if pass rate dropped. Trace replay tells you <em>how</em> behavior changed — which tool calls are different, where the agent took a different path, what specific steps regressed.</p>
+    <p class="learn-more">New to tool calling? Start with our free lesson <a href="/learn/ai/artificial-intelligence/tool-calling/">Tool Calling and Structured Output</a>.</p>
 
         <h3>What's in a trace</h3>
         <p>A trace is the full log of one agent run:</p>

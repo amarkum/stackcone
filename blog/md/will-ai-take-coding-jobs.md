@@ -62,6 +62,8 @@ flowchart LR
 
 Anthropic's arc parallels OpenAI's but starts later: founded **2021**, Claude 1 in **2023**, then rapid iteration on context length, tool use, and **Claude Code** as a terminal-native agent. Google's Gemini, Amazon CodeWhisperer, and Meta's open models added competition but did not change the core story: **models got better at token prediction; products got better at putting tokens next to your git repo.**
 
+If you want to go deeper on tokens and context windows, read our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
+
 ## What each wave actually changed {#waves}
 
 ### Phase 1: Completion (2021–2022)
@@ -124,6 +126,8 @@ Three product shapes matter in 2026:
 3. **Cloud agents (background PRs, scheduled tasks)** — model drives async, you merge or revert
 
 MCP (Model Context Protocol) standardized **tools**: databases, browsers, Jira, custom APIs. Agents stopped being "a chat window with ambition" and became **plug-in workers**.
+
+New to MCP and multi-agent systems? Start with our free lesson [Multi-Agent Systems, MCP and AI Safety](/learn/ai/artificial-intelligence/multi-agent-mcp-safety/).
 
 That does not mean they are reliable workers. It means the **interface** to replace junior tasks exists. Reliability is an engineering problem — evals, sandboxes, human gates — and companies that solve it will hire **fewer** people per feature and **different** people per feature.
 

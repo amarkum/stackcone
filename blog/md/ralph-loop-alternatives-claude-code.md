@@ -299,6 +299,8 @@ exit 0
 
 Make executable: `chmod +x .claude/hooks/prevent-dangerous-git.sh`
 
+Want to learn more about Git? Our free lesson [Git Basics](/learn/programming/git/introduction/) covers it step by step.
+
 ### Hook script: `lint-touched-files.sh` (PostToolUse)
 
 Runs ESLint on edited TypeScript files immediately after each edit:
@@ -453,6 +455,8 @@ Claude can also write hooks for you: *"Write a Stop hook that runs `pnpm test sr
 
 Spawn a **fresh subagent** to review work the main agent cannot grade itself. The subagent gets a clean context window — no 200k tokens of failed attempts.
 
+If you want to go deeper on MCP and multi-agent systems, read our free lesson [Multi-Agent Systems, MCP and AI Safety](/learn/ai/artificial-intelligence/multi-agent-mcp-safety/).
+
 ### Worked example: diff review against plan
 
 **Phase 1 — plan (main agent or plan mode):**
@@ -587,6 +591,8 @@ Implement the migration plan. Run pnpm test src/db/ and pnpm typecheck before st
 ## Alternative 6: Headless CI (`claude -p`)
 
 `claude -p` runs a single prompt non-interactively and exits. Pair with `CLAUDE.md` for project context. Wrap in a shell script for **bounded retries** — the CI-native alternative to infinite Ralph loops.
+
+New to GitHub Actions and CI? Start with our free lesson [CI with GitHub Actions](/learn/programming/git/github-actions/).
 
 ### Complete CI script with bounded retries
 

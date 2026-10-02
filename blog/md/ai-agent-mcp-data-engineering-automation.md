@@ -31,6 +31,8 @@ This guide documents how I automated that loop end to end with an **AI coding ag
 
 The goal is one agent session that can **read the ticket**, **edit code**, **check CI**, **trigger and debug Airflow**, **run validation queries**, and **loop until every gate passes**.
 
+New to GitHub Actions and CI? Start with our free lesson [CI with GitHub Actions](/learn/programming/git/github-actions/).
+
 ## Architecture
 
 ```
@@ -63,6 +65,8 @@ Jira / Confluence ──► Agent rules (context)
 
 Scattering tokens across `.env`, shell exports, and per-agent config files breaks quickly. I added a **settings panel in the CodeBench app** where a data engineer stores credentials once:
 
+Want to learn more about tokens and context windows? Our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/) covers it step by step.
+
 | Integration | Keys / config |
 |-------------|----------------|
 | GitHub | PAT or app token, repo allowlist |
@@ -72,6 +76,8 @@ Scattering tokens across `.env`, shell exports, and per-agent config files break
 | Jira / Confluence | base URL, email, API token |
 
 The MCP server reads from the same secure store the UI uses — no duplicate secrets in the repo. The agent only needs the MCP endpoint (`http://127.0.0.1:9193/mcp` or similar), not raw tokens scattered across client configs.
+
+If you want to go deeper on MCP and multi-agent systems, read our free lesson [Multi-Agent Systems, MCP and AI Safety](/learn/ai/artificial-intelligence/multi-agent-mcp-safety/).
 
 ## Expose integrations as MCP tools
 

@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -176,6 +176,7 @@
     </table>
 
     <p><strong>Heuristic routing</strong> accepts imperfect classification on edge cases in exchange for zero routing cost, instant routing, and full test coverage. Cursor's Auto mode uses a similar philosophy — feature-based routing, not a meta-LLM call.</p>
+    <p class="learn-more">Want to learn more about how LLMs work? Our free lesson <a href="/learn/ai/artificial-intelligence/what-is-an-llm/">What Is AI? What Is an LLM?</a> covers it step by step.</p>
 
     <div class="chart-wrap">
       <canvas id="costCompareChart" aria-label="Cost comparison classifier vs heuristic routing"></canvas>
@@ -199,6 +200,7 @@
 
     <p><strong>Pass 1 (pre-retrieval):</strong> Inspect message text, word count, conversation history, and regex patterns. Pick a starting model tier.</p>
     <p><strong>Pass 2 (post-retrieval):</strong> After vector search and optional Cohere rerank, check retrieval confidence. If the top rerank score is low, bump the model up one or two tiers on the ladder.</p>
+    <p class="learn-more">If you want to go deeper on hybrid search and reranking, read our free lesson <a href="/learn/ai/artificial-intelligence/hybrid-rerank/">Hybrid Search and Reranking</a>.</p>
     <p>This split matters because a short FAQ ("how do I zoom in?") needs a cheap model when retrieval is confident — but the same cheap model fails when retrieval returns weak chunks on a troubleshooting question.</p>
 
     <h2 id="tier-ladder">The tier ladder</h2>
@@ -234,6 +236,7 @@ def _bump_model_tier(model: str, steps: int = 1) -&gt; str:
 
     <h2 id="pre-retrieval">Pre-retrieval heuristics</h2>
     <p>Before any vector search, <code>resolve_auto_model()</code> inspects the user message using regex signal patterns:</p>
+    <p class="learn-more">New to vector databases and chunking? Start with our free lesson <a href="/learn/ai/artificial-intelligence/vector-search/">Chunking, Vector Databases and ANN Search</a>.</p>
 
     <table>
       <thead>

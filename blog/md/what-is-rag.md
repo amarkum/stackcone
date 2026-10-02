@@ -24,6 +24,8 @@ A closed-book exam is what you get from ChatGPT out of the box. The student (the
 
 RAG is an **open-book exam**. The student may still be smart, but they are allowed to flip to the relevant chapter before writing. You do not re-train the student every time the handbook changes. You update the handbook and let them look it up.
 
+Want to learn more about RAG? Our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/) covers it step by step.
+
 That analogy carries further than it first looks:
 
 - **The book is your knowledge base** — markdown, PDFs, tickets, Notion exports, API docs.
@@ -36,6 +38,8 @@ Teams often blame the model when the index is the problem. Keep that in mind as 
 ## Why models hallucinate without docs {#hallucinate}
 
 Language models predict the next token. They are extremely good at producing text that *looks* like an answer. They are not a database. When they have no source, they still complete the sentence, because that is the only job they were trained to do.
+
+If you want to go deeper on tokens and context windows, read our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
 
 Three common failure shapes follow from that:
 
@@ -50,6 +54,8 @@ There is a second, quieter reason RAG exists: **privacy and control**. You often
 ## The pipeline: query, retrieve, rerank, generate {#pipeline}
 
 Every RAG system, from a weekend demo to a production chatbot, is the same four beats. Some skip rerank. None skip retrieve.
+
+New to hybrid search and reranking? Start with our free lesson [Hybrid Search and Reranking](/learn/ai/artificial-intelligence/hybrid-rerank/).
 
 | Step | What happens | What can go wrong |
 |------|----------------|-------------------|

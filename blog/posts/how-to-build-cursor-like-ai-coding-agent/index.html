@@ -26,7 +26,7 @@
   <link rel="icon" type="image/png" href="/favicon/dark-favicon.png">
   <link rel="icon" type="image/png" href="/favicon/white-favicon.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="../../../styles.css?v=35">
-  <link rel="stylesheet" href="../../../blog/blog.css?v=14">
+  <link rel="stylesheet" href="../../../blog/blog.css?v=15">
   <link rel="stylesheet" href="../../../solutions/solutions.css?v=4">
   <script type="application/ld+json">
   {
@@ -172,6 +172,7 @@
 
     <h2 id="what-makes-cursor-like">What makes an agent Cursor-like</h2>
     <p>A Cursor-like coding agent is not a chatbot that returns code blocks. It is a <strong>closed loop</strong> between an LLM and a filesystem on disk:</p>
+    <p class="learn-more">New to how LLMs work? Start with our free lesson <a href="/learn/ai/artificial-intelligence/what-is-an-llm/">What Is AI? What Is an LLM?</a>.</p>
     <table>
       <thead><tr><th>Capability</th><th>Why it matters</th></tr></thead>
       <tbody>
@@ -319,6 +320,7 @@ def agent_turn():
     )</code></pre></div>
 
     <p><strong>Why not EventSource?</strong> The browser's built-in <code>EventSource</code> only supports GET. The frontend uses <code>fetch()</code> + <code>ReadableStream</code>, decodes SSE <code>data:</code> lines manually, and handles progress, command output, and the final <code>done</code> payload in one loop.</p>
+    <p class="learn-more">Want to learn more about streaming APIs? Our free lesson <a href="/learn/ai/artificial-intelligence/apis-streaming/">APIs, SSE, WebSockets and Streaming</a> covers it step by step.</p>
 
     <table>
       <thead><tr><th>Endpoint</th><th>Method</th><th>Purpose</th></tr></thead>
@@ -577,6 +579,7 @@ def filter_tools_for_mode(tools, mode):
 
     <h2 id="phase-8">Phase 8 — Subagents and delegation</h2>
     <p><code>spawn_subagent</code> launches a nested mini-loop with its own ephemeral session — useful for "explore the codebase and report back" without polluting the main context.</p>
+    <p class="learn-more">If you want to go deeper on MCP and multi-agent systems, read our free lesson <a href="/learn/ai/artificial-intelligence/multi-agent-mcp-safety/">Multi-Agent Systems, MCP and AI Safety</a>.</p>
 
     <div class="learn-code-wrap" data-lang="python"><pre><code>def run_subagent_turn(project_path, goal, parent_session_id, read_only=True, max_iterations=5):
     child_session = f"{parent_session_id}_sub_{uuid.uuid4().hex[:8]}"

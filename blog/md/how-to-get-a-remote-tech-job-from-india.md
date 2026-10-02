@@ -111,6 +111,8 @@ Upwork works from India when you treat it like outbound sales with a public repu
 
 **Profile.** One specialty on the hero (e.g. “RAG chatbots in Python” or “Flutter + Firebase”), not “full stack + ML + web3.” A video is optional; a case study with numbers is not. Rate: see [the hourly-rate guide](/blog/posts/upwork-hourly-rate-india-new-tax-regime/) before you pick a vanity number.
 
+If you want to go deeper on RAG, read our free lesson [RAG: Retrieval-Augmented Generation](/learn/ai/artificial-intelligence/rag/).
+
 **Proposals.** Five good ones beat forty templates. Structure:
 
 ```

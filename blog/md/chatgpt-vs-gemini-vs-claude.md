@@ -38,6 +38,8 @@ List prices below are published consumer rates. Vendors rename plans and change 
 
 If the question is “which $20 plan is worth the invoice,” use the subscription walkthrough: [ChatGPT Plus vs Gemini Advanced vs Claude Pro](/blog/posts/chatgpt-plus-vs-gemini-advanced-vs-claude-pro/). If the question is API unit cost for a product, that is [Best economical LLM models for RAG](/blog/posts/best-economical-llm-models-rag-openai-gemini-anthropic/) — consumer chat seats do not replace token billing.
 
+If you want to go deeper on tokens and context windows, read our free lesson [Tokens, Context Windows and Cost](/learn/ai/artificial-intelligence/tokens-context/).
+
 ## What each product is {#products}
 
 The brand names hide several surfaces. Mixing them up is how people buy the wrong $20 plan, then blame the model.
