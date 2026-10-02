@@ -260,9 +260,9 @@
     bar.className = "sc-tts";
     bar.innerHTML =
       '<button type="button" class="sc-tts-play"></button>' +
-      '<button type="button" class="sc-tts-stop" title="Stop" aria-label="Stop reading" hidden>' + ICON_STOP + "</button>" +
       '<button type="button" class="sc-tts-rate" title="Reading speed" aria-label="Reading speed"></button>' +
-      '<select class="sc-tts-voice" title="Voice" aria-label="Voice" hidden></select>';
+      '<select class="sc-tts-voice" title="Voice" aria-label="Voice" hidden></select>' +
+      '<button type="button" class="sc-tts-stop" title="Stop" aria-label="Stop reading" hidden>' + ICON_STOP + "</button>";
     playBtn = bar.querySelector(".sc-tts-play");
     rateBtn = bar.querySelector(".sc-tts-rate");
     stopBtn = bar.querySelector(".sc-tts-stop");
